@@ -361,8 +361,8 @@ public class SQLite extends Database {
 	}
 
 	@Override
+	@Deprecated
 	ResultSet query(String query) {
-		// INFO Auto-generated method stub
 		// method replaced by separated method
 		return null;
 	}

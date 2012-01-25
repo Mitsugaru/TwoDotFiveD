@@ -162,13 +162,11 @@ public class MySQL extends Database {
 	}
 
 	public void standardQuery(String query) {
-		Connection connection = null;
-		Statement statement = null;
 
 		try
 		{
-			connection = this.open();
-			statement = connection.createStatement();
+			final Connection connection = this.open();
+			final Statement statement = connection.createStatement();
 			statement.executeUpdate(query);
 			statement.close();
 			connection.close();
@@ -270,9 +268,6 @@ public class MySQL extends Database {
 
 	@Override
 	public boolean wipeTable(String table) {
-		// Connection connection = null;
-		Statement statement = null;
-		String query = null;
 		try
 		{
 			if (!this.checkTable(table))
@@ -283,8 +278,8 @@ public class MySQL extends Database {
 			}
 			// connection = open();
 			this.connection = this.open();
-			statement = this.connection.createStatement();
-			query = "DELETE FROM " + table + ";";
+			final Statement statement = this.connection.createStatement();
+			final String query = "DELETE FROM " + table + ";";
 			statement.executeUpdate(query);
 
 			return true;
@@ -298,6 +293,7 @@ public class MySQL extends Database {
 	}
 
 	@Override
+	@Deprecated
 	public ResultSet query(String query) {
 		Connection connection = null;
 		Statement statement = null;
