@@ -41,7 +41,7 @@
 							<descriptors>
 								<descriptor>src/main/assembly/jar-assembly.xml</descriptor>
 							</descriptors>
-							<finalName>LoneFragment</finalName>
+							<finalName>TwoDotFiveD</finalName>
 						</configuration>
 					</execution>
 				</executions>
@@ -61,8 +61,8 @@
 				<version>2.6</version>
 				<dependencies>
 					<dependency>
-						<groupId>com.Mitsugaru</groupId>
-						<artifactId>LoneFragment</artifactId>
+						<groupId>com.ATeam</groupId>
+						<artifactId>twoDotFiveD</artifactId>
 						<version>${project.version}</version>
 					</dependency>
 				</dependencies>
