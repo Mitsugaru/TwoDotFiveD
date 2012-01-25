@@ -301,7 +301,7 @@ public class SQLite extends Database {
 	 * <br>
 	 * @param query The SQL query.
 	 */
-	public void retry(String query) {
+	/*public void retry(String query) {
 		boolean passed = false;
 		Connection connection = open();
 		Statement statement = null;
@@ -328,7 +328,7 @@ public class SQLite extends Database {
 		{
 			this.writeError("Failed to write to SQLite database. Timed out.",true);
 		}
-	}
+	}*/
 
 	/*
 	 * Retries a result.
@@ -363,7 +363,6 @@ public class SQLite extends Database {
 	@Override
 	@Deprecated
 	ResultSet query(String query) {
-		// method replaced by separated method
-		return null;
+		return select(query);
 	}
 }

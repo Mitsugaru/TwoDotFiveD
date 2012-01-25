@@ -295,40 +295,6 @@ public class MySQL extends Database {
 	@Override
 	@Deprecated
 	public ResultSet query(String query) {
-		Connection connection = null;
-		Statement statement = null;
-		ResultSet result = null/* new JdbcRowSetImpl() */;
-		try
-		{
-			connection = open();
-			// WARN ODR_OPEN_DATABASE_RESOURCE
-			/*
-			 * The method creates a database resource (such as a database
-			 * connection or row set), does not assign it to any fields, pass it
-			 * to other methods, or return it, and does not appear to close the
-			 * object on all paths out of the method. Failure to close database
-			 * resources on all paths out of a method may result in poor
-			 * performance, and could cause the application to have problems
-			 * communicating with the database.
-			 */
-			statement = connection.createStatement();
-			result = statement.executeQuery("SELECT CURTIME()");
-
-			switch (this.getStatement(query))
-			{
-				case SELECT:
-					result = statement.executeQuery(query);
-					return result;
-
-				default:
-					statement.executeUpdate(query);
-					return result;
-			}
-		}
-		catch (SQLException e)
-		{
-			this.writeError("Error in SQL query: " + e.getMessage(), false);
-		}
-		return result;
+		return select(query);
 	}
 }
