@@ -193,12 +193,9 @@ public class SQLite extends Database {
 	}
 
 	public void standardQuery(String query) {
-		Connection connection = null;
-		Statement statement = null;
-
 		try {
-			connection = this.open();
-			statement = connection.createStatement();
+			final Connection connection = this.open();
+			final Statement statement = connection.createStatement();
 			statement.executeQuery(query);
 			statement.close();
 			connection.close();
@@ -231,8 +228,7 @@ public class SQLite extends Database {
 
 	@Override
 	public boolean createTable(String query) {
-		Connection connection = open();
-		Statement statement = null;
+
 		try {
 			if(query == null)
 			{
@@ -243,7 +239,8 @@ public class SQLite extends Database {
 				this.writeError("SQL Create Table query empty.", true);
 				return false;
 			}
-			statement = connection.createStatement();
+			final Connection connection = open();
+			final Statement statement = connection.createStatement();
 			statement.execute(query);
 			statement.close();
 			connection.close();
@@ -275,18 +272,17 @@ public class SQLite extends Database {
 
 	@Override
 	public boolean wipeTable(String table) {
-		Connection connection = open();
-		Statement statement = null;
-		String query = null;
 		try {
 			if (!this.checkTable(table)) {
 				this.writeError("Error at Wipe Table: table, " + table + ", does not exist", true);
 				return false;
 			}
-			statement = connection.createStatement();
-			query = "DELETE FROM " + table + ";";
+			final Connection connection = open();
+			final Statement statement = connection.createStatement();
+			final String query = "DELETE FROM " + table + ";";
 			statement.executeQuery(query);
 			statement.close();
+			connection.close();
 			return true;
 		} catch (SQLException ex) {
 			if (!(ex.getMessage().toLowerCase().contains("locking") ||
