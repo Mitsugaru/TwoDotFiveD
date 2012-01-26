@@ -93,16 +93,17 @@ public class GLAppDemoCamera extends GLApp {
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
         // Create texture for spere
-        sphereTextureHandle = makeTexture("images/earth.gif");
+        sphereTextureHandle = makeTexture("src/main/resources/com/lovetextures/cloud.jpg");
 
         // Create texture for ground plane
-        groundTextureHandle = makeTexture("images/grass_1_512.jpg",true,true);
+        groundTextureHandle = makeTexture("src/main/resources/com/lovetextures/hedge.jpg",true,true);
 
         // set camera 1 position
         camera1.setCamera(0,4,15, 0,-.3f,-1, 0,1,0);
 
         // load the airplane model and make it a display list
-        airplane = new GLModel("models/JetFire/JetFire.obj");
+        //TODO figure out what's wrong with models
+        airplane = new GLModel("src/main/resources/com/Airplane HORNET.obj");
         airplane.mesh.regenerateNormals();
         airplane.makeDisplayList();
 
