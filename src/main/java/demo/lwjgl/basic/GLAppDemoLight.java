@@ -74,10 +74,10 @@ public class GLAppDemoLight extends GLApp {
     public void setup()
     {
         // Create sphere texture
-        marbleTextureHandle = makeTexture("images/marble.jpg");
+        marbleTextureHandle = makeTexture("src/main/resources/com/lovetextures/moon.jpg");
 
         // Create texture for ground plane
-        groundTextureHandle = makeTexture("images/mahog_texture.jpg");
+        groundTextureHandle = makeTexture("src/main/resources/com/lovetextures/yellowflowers.jpg");
 
         // setup perspective
         setPerspective();
