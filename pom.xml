@@ -11,19 +11,19 @@
 	<name>twoDotFiveD</name>
 	<url>http://maven.apache.org</url>
 
-<scm>
-    <connection>scm:git:https://github.com/Mitsugaru/TwoDotFiveD.git</connection>
-    <developerConnection>scm:git:git@github.com:Mitsugaru/TwoDotFiveD.git</developerConnection>
-    <url>https://github.com/Mitsugaru/TwoDotFiveD</url>
-  </scm>
+	<scm>
+		<connection>scm:git:https://github.com/Mitsugaru/TwoDotFiveD.git</connection>
+		<developerConnection>scm:git:git@github.com:Mitsugaru/TwoDotFiveD.git</developerConnection>
+		<url>https://github.com/Mitsugaru/TwoDotFiveD</url>
+	</scm>
 
-  <developers>
-    <developer>
-      <id>Mitsugaru</id>
-      <name>Vincent Deloso</name>
-      <email>vincent.deloso.08@cnu.edu</email>
-    </developer>
-  </developers>
+	<developers>
+		<developer>
+			<id>Mitsugaru</id>
+			<name>Vincent Deloso</name>
+			<email>vincent.deloso.08@cnu.edu</email>
+		</developer>
+	</developers>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -204,6 +204,11 @@
 			<artifactId>vecmath</artifactId>
 			<version>1.3.1</version>
 		</dependency>
+		<dependency>
+			<groupId>lessvoid</groupId>
+			<artifactId>nifty</artifactId>
+			<version>1.3.1</version>
+		</dependency>
 	</dependencies>
 	<repositories>
 		<repository>
@@ -224,6 +229,10 @@
 		<repository>
 			<id>slick-repo</id>
 			<url>http://slick.cokeandcode.com/mavenrepo</url>
+		</repository>
+		<repository>
+			<id>nifty-maven-repo.sourceforge.net</id>
+			<url>http://nifty-gui.sourceforge.net/nifty-maven-repo</url>
 		</repository>
 	</repositories>
 </project>
