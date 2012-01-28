@@ -1,6 +1,7 @@
 package demo.lwjgl.basic;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 /**
  * Change the position and orientation of a GLCamera based on input keys.  This

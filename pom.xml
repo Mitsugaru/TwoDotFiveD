@@ -11,6 +11,20 @@
 	<name>twoDotFiveD</name>
 	<url>http://maven.apache.org</url>
 
+<scm>
+    <connection>scm:git:https://github.com/Mitsugaru/TwoDotFiveD.git</connection>
+    <developerConnection>scm:git:git@github.com:Mitsugaru/TwoDotFiveD.git</developerConnection>
+    <url>https://github.com/Mitsugaru/TwoDotFiveD</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>Mitsugaru</id>
+      <name>Vincent Deloso</name>
+      <email>vincent.deloso.08@cnu.edu</email>
+    </developer>
+  </developers>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>

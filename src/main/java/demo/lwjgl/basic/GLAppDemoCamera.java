@@ -42,6 +42,8 @@ public class GLAppDemoCamera extends GLApp {
     // model of airplane and sphere displaylist for earth
     GLModel airplane;
     int earth;
+    int mouseX = displayWidth/2;
+    int mouseY = displayHeight/2;
 
     // shadow handler will draw a shadow on floor plane
     GLShadowOnPlane airplaneShadow;
@@ -252,6 +254,18 @@ public class GLAppDemoCamera extends GLApp {
 	}
 
     public void mouseMove(int x, int y) {
+    	/*System.out.println("x: " + (x) + " y: " + (y));
+    	if(x != mouseX)
+    	{
+    		cam.camera.RotateV((mouseX - x) * 0.1f);
+    	}
+    	if(y != displayHeight/2)
+    	{
+    		cam.camera.MoveForward((mouseY - y) * 0.1f);
+    	}
+    	Mouse.setCursorPosition(displayWidth/2, displayHeight/2);
+    	mouseX = x;
+    	mouseY = y;*/
     }
 
     public void mouseDown(int x, int y) {
