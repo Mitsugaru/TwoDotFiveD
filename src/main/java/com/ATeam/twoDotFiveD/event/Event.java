@@ -1,5 +1,6 @@
 package com.ATeam.twoDotFiveD.event;
 
+import com.ATeam.twoDotFiveD.Debug.Logging;
 import com.ATeam.twoDotFiveD.event.player.PlayerMoveEvent;
 
 /**
@@ -23,6 +24,7 @@ public abstract class Event<L> {
 	public Event(Type type) {
 		if(type == null)
 		{
+			Logging.log.severe("Class '"+ getClass().getName() + "' gave a null type!");
 			throw new IllegalArgumentException("type is null");
 		}
 		this.type = type;

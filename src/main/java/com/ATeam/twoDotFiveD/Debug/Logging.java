@@ -3,6 +3,7 @@ package com.ATeam.twoDotFiveD.Debug;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.FileHandler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.XMLFormatter;
 
@@ -30,10 +31,10 @@ public class Logging {
 			//Mark what to save log into config file, as well as enable/disable log
 			//Need way to auto prune older files
 		} catch (SecurityException e) {
-			log.warning("Could not create log file...");
+			log.log(Level.SEVERE, "Could not create log file...", e);
 			e.printStackTrace();
 		} catch (IOException e) {
-			log.warning("Could not create log file...");
+			log.log(Level.SEVERE, "Could not create log file...", e);
 			e.printStackTrace();
 		}
 	}
