@@ -1,7 +1,7 @@
 package com.ATeam.twoDotFiveD.event;
 
 import com.ATeam.twoDotFiveD.Debug.Logging;
-import com.ATeam.twoDotFiveD.event.player.PlayerMoveEvent;
+import com.ATeam.twoDotFiveD.event.player.*;
 
 /**
  * Class to represent an event.

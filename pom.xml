@@ -261,6 +261,17 @@
 			<version>3.6.16</version>
 		</dependency>
 		<!-- http://maximporges.blogspot.com/2007/09/build-tools-adding-sql-to-mix.html -->
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-jbullet</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jbullet</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+		</dependency>
+		<!-- https://www.assembla.com/code/friendularity/subversion/nodes/trunk/maven/org.friendularity.demo.jme3.maven/pom.xml -->
 	</dependencies>
 	<repositories>
 		<repository>
