@@ -1,10 +1,20 @@
 package lib.Mitsugaru.SQLibrary;
 
+import java.io.File;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
+
+import com.ATeam.twoDotFiveD.Debug.Logging;
+
 import junit.framework.TestCase;
 
 /**
- * The class <code>SQLiteTest</code> contains tests for the class {@link
- * <code>SQLite</code>}
+ * The class <code>SQLiteTest</code> contains tests for the class {@link <code>SQLite</code>}
  *
  * @pattern JUnit Test Case
  *
@@ -15,173 +25,204 @@ import junit.framework.TestCase;
  * @version $Revision$
  */
 public class SQLiteTest extends TestCase {
+	@Rule
+	public TemporaryFolder testFolder = new TemporaryFolder();
+	// Class variables
+	private SQLite database;
 
 	/**
 	 * Construct new test instance
 	 *
-	 * @param name the test name
+	 * @param name
+	 *            the test name
 	 */
 	public SQLiteTest(String name) {
 		super(name);
+		final File folder = testFolder.newFolder("SQLiteTest");
+		try {
+			database = new SQLite(Logging.getLogger(), "TEST", "test",
+					folder.getCanonicalPath());
+		} catch (IOException e) {
+			fail("Could not create temporary folder");
+			e.printStackTrace();
+		}
+		// Check if we need to add table
+		if (!database.checkTable("test")) {
+			// Create table
+			database.standardQuery("CREATE TABLE test ('id' INTEGER PRIMARY KEY, 'playername' STRING NOT NULL);");
+		}
+		try {
+			// Check if table is empty
+			boolean empty = true;
+			final ResultSet rs = database.select("SELECT * FROM test;");
+			if (rs.next()) {
+				empty = false;
+			}
+			rs.close();
+			if (empty) {
+				// If its empty, add a single entry
+				database.standardQuery("INSERT INTO test (playername) VALUES ('name');");
+			}
+		} catch (SQLException e) {
+			fail("SQL Exception");
+			e.printStackTrace();
+		}
 	}
 
 	/**
 	 * Run the void writeError(String, boolean) method test
 	 */
 	public void testWriteError() {
-		fail("Newly generated method - fix or disable");
-		// add test code here
-		String toWrite = null;
-		boolean severe = false;
-		// This class does not have a public, no argument constructor,
-		// so the writeError() method can not be tested
-		assertTrue(false);
+		try {
+			database.writeError("Test", false);
+		} catch (Exception e) {
+			assertTrue(false);
+		}
+		assertTrue(true);
 	}
 
 	/**
 	 * Run the Connection open() method test
 	 */
-	public void testOpen() {
-		fail("Newly generated method - fix or disable");
-		// add test code here
-		// This class does not have a public, no argument constructor,
-		// so the open() method can not be tested
-		assertTrue(false);
-	}
-
-	/**
-	 * Run the void close() method test
-	 */
-	public void testClose() {
-		fail("Newly generated method - fix or disable");
-		// add test code here
-		// This class does not have a public, no argument constructor,
-		// so the close() method can not be tested
-		assertTrue(false);
+	public void testOpenClose() {
+		if (database.open() == null) {
+			fail("Connection null");
+		}
+		database.close();
+		assertTrue(true);
 	}
 
 	/**
 	 * Run the Connection getConnection() method test
 	 */
 	public void testGetConnection() {
-		fail("Newly generated method - fix or disable");
-		// add test code here
-		// This class does not have a public, no argument constructor,
-		// so the getConnection() method can not be tested
-		assertTrue(false);
+		database.close();
+		final Connection con = database.getConnection();
+		if (con == null) {
+			assertTrue(false);
+		}
+		try {
+			con.close();
+		} catch (SQLException e) {
+			fail("SQL Exception");
+			e.printStackTrace();
+		}
+		assertTrue(true);
 	}
 
 	/**
 	 * Run the boolean checkConnection() method test
 	 */
 	public void testCheckConnection() {
-		fail("Newly generated method - fix or disable");
-		// add test code here
-		// This class does not have a public, no argument constructor,
-		// so the checkConnection() method can not be tested
-		assertTrue(false);
+		assertTrue(database.checkConnection());
 	}
 
 	/**
 	 * Run the ResultSet select(String) method test
 	 */
 	public void testSelect() {
-		fail("Newly generated method - fix or disable");
-		// add test code here
-		String query = null;
-		// This class does not have a public, no argument constructor,
-		// so the select() method can not be tested
-		assertTrue(false);
-	}
-
-	/**
-	 * Run the void retryQuery(String) method test
-	 */
-	public void testRetryQuery() {
-		fail("Newly generated method - fix or disable");
-		// add test code here
-		String query = null;
-		// This class does not have a public, no argument constructor,
-		// so the retryQuery() method can not be tested
-		assertTrue(false);
+		boolean success = false;
+		try {
+			database.close();
+			final ResultSet rs = database.select("SELECT * FROM test");
+			if (rs != null) {
+				if (rs.next()) {
+					success = true;
+				}
+			}
+			rs.close();
+		} catch (SQLException e) {
+			fail("SQL Exception");
+		}
+		assertTrue(success);
 	}
 
 	/**
 	 * Run the void standardQuery(String) method test
 	 */
 	public void testStandardQuery() {
-		fail("Newly generated method - fix or disable");
-		// add test code here
-		String query = null;
-		// This class does not have a public, no argument constructor,
-		// so the standardQuery() method can not be tested
-		assertTrue(false);
+		boolean found = false;
+		try {
+			database.close();
+			database.standardQuery("INSERT INTO test (playername) VALUES ('other');");
+			final ResultSet rs = database.select("SELECT * FROM test");
+			if (rs.next()) {
+				@SuppressWarnings("unused")
+				final String name = rs.getString("playername");
+				if(!rs.wasNull())
+				{
+					found = true;
+				}
+			}
+			rs.close();
+		} catch (SQLException e) {
+			fail("SQL Exception");
+		}
+		assertTrue(found);
 	}
 
 	/**
 	 * Run the boolean createTable(String) method test
 	 */
 	public void testCreateTable() {
-		fail("Newly generated method - fix or disable");
-		// add test code here
-		String query = null;
-		// This class does not have a public, no argument constructor,
-		// so the createTable() method can not be tested
-		assertTrue(false);
+		database.close();
+		// Check to see if we need to drop table
+		if (database.checkTable("other")) {
+			database.standardQuery("DROP TABLE other");
+		}
+		//Create table
+		database.createTable("CREATE TABLE other ('id' INTEGER PRIMARY KEY, 'count' INTEGER NOT NULL);");
+		boolean success = false;
+		//Check if it was created
+		if(database.checkTable("other"))
+		{
+			success = true;
+		}
+		assertTrue(success);
 	}
 
 	/**
 	 * Run the boolean checkTable(String) method test
 	 */
 	public void testCheckTable() {
-		fail("Newly generated method - fix or disable");
-		// add test code here
-		String table = null;
-		// This class does not have a public, no argument constructor,
-		// so the checkTable() method can not be tested
-		assertTrue(false);
+		database.close();
+		boolean success = false;
+		//Check if table exists
+		if(database.checkTable("test"))
+		{
+			success = true;
+		}
+		assertTrue(success);
 	}
 
 	/**
 	 * Run the boolean wipeTable(String) method test
 	 */
 	public void testWipeTable() {
-		fail("Newly generated method - fix or disable");
-		// add test code here
-		String table = null;
-		// This class does not have a public, no argument constructor,
-		// so the wipeTable() method can not be tested
-		assertTrue(false);
-	}
-
-	/**
-	 * Run the ResultSet retryResult(String) method test
-	 */
-	public void testRetryResult() {
-		fail("Newly generated method - fix or disable");
-		// add test code here
-		String query = null;
-		// This class does not have a public, no argument constructor,
-		// so the retryResult() method can not be tested
-		assertTrue(false);
+		database.close();
+		boolean empty = false;
+		try {
+			database.wipeTable("test");
+			final ResultSet rs = database.select("SELECT * FROM test");
+			if (!rs.next()) {
+				empty = true;
+			}
+			rs.close();
+		} catch (SQLException e) {
+			fail("SQL Exception");
+		}
+		assertTrue(empty);
 	}
 }
 
-/*$CPS$ This comment was generated by CodePro. Do not edit it.
- * patternId = com.instantiations.assist.eclipse.pattern.testCasePattern
- * strategyId = com.instantiations.assist.eclipse.pattern.testCasePattern.junitTestCase
- * additionalTestNames = 
- * assertTrue = false
- * callTestMethod = true
- * createMain = false
- * createSetUp = false
- * createTearDown = false
- * createTestFixture = false
- * createTestStubs = true
- * methods = 
- * package = lib.Mitsugaru.SQLibrary
- * package.sourceFolder = twoDotFiveD/src/test/java
- * superclassType = junit.framework.TestCase
- * testCase = SQLiteTest
- * testClassType = lib.Mitsugaru.SQLibrary.SQLite
+/*
+ * $CPS$ This comment was generated by CodePro. Do not edit it. patternId =
+ * com.instantiations.assist.eclipse.pattern.testCasePattern strategyId =
+ * com.instantiations.assist.eclipse.pattern.testCasePattern.junitTestCase
+ * additionalTestNames = assertTrue = false callTestMethod = true createMain =
+ * false createSetUp = false createTearDown = false createTestFixture = false
+ * createTestStubs = true methods = package = lib.Mitsugaru.SQLibrary
+ * package.sourceFolder = twoDotFiveD/src/test/java superclassType =
+ * junit.framework.TestCase testCase = SQLiteTest testClassType =
+ * lib.Mitsugaru.SQLibrary.SQLite
  */
