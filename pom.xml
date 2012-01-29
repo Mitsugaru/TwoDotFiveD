@@ -19,9 +19,19 @@
 
 	<developers>
 		<developer>
+			<id>cmahair</id>
+			<name>Clifford Mahair</name>
+			<email>cmahair@gmail.com</email>
+		</developer>
+		<developer>
 			<id>Mitsugaru</id>
 			<name>Vincent Deloso</name>
 			<email>vincent.deloso.08@cnu.edu</email>
+		</developer>
+		<developer>
+			<id>Krigen</id>
+			<name>Bridget Corcoran</name>
+			<email>bridget.corcoran.07@cnu.edu</email>
 		</developer>
 	</developers>
 
@@ -225,6 +235,12 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.xerial</groupId>
+			<artifactId>sqlite-jdbc</artifactId>
+			<version>3.6.16</version>
+		</dependency>
+		<!-- http://maximporges.blogspot.com/2007/09/build-tools-adding-sql-to-mix.html -->
 	</dependencies>
 	<repositories>
 		<repository>
