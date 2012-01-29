@@ -28,4 +28,9 @@ public class Logging {
 			e.printStackTrace();
 		}
 	}
+
+	public static Logger getLogger()
+	{
+		return log;
+	}
 }

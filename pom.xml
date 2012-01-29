@@ -209,6 +209,18 @@
 			<artifactId>nifty</artifactId>
 			<version>1.3.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+			<version>1.10-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>10.0.1</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
 	</dependencies>
 	<repositories>
 		<repository>
@@ -233,6 +245,11 @@
 		<repository>
 			<id>nifty-maven-repo.sourceforge.net</id>
 			<url>http://nifty-gui.sourceforge.net/nifty-maven-repo</url>
+		</repository>
+		<repository>
+			<id>Sonatype-public</id>
+			<name>SnakeYAML repository</name>
+			<url>http://oss.sonatype.org/content/groups/public/</url>
 		</repository>
 	</repositories>
 </project>
