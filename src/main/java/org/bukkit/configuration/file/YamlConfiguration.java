@@ -180,14 +180,14 @@ public class YamlConfiguration extends FileConfiguration {
             config.load(file);
         } catch (FileNotFoundException ex) {
         } catch (IOException ex) {
-        	Logging.getLogger().log(Level.SEVERE, "Cannot load " + file, ex);
+        	Logging.log.log(Level.SEVERE, "Cannot load " + file, ex);
         } catch (InvalidConfigurationException ex) {
             if (ex.getCause() instanceof YAMLException) {
-            	Logging.getLogger().severe("Config file " + file + " isn't valid! " + ex.getCause());
+            	Logging.log.severe("Config file " + file + " isn't valid! " + ex.getCause());
             } else if ((ex.getCause() == null) || (ex.getCause() instanceof ClassCastException)) {
-            	Logging.getLogger().severe("Config file " + file + " isn't valid!");
+            	Logging.log.severe("Config file " + file + " isn't valid!");
             } else {
-            	Logging.getLogger().log(Level.SEVERE, "Cannot load " + file + ": " + ex.getCause().getClass(), ex);
+            	Logging.log.log(Level.SEVERE, "Cannot load " + file + ": " + ex.getCause().getClass(), ex);
             }
         }
 
@@ -214,14 +214,14 @@ public class YamlConfiguration extends FileConfiguration {
         try {
             config.load(stream);
         } catch (IOException ex) {
-            Logging.getLogger().log(Level.SEVERE, "Cannot load configuration", ex);
+            Logging.log.log(Level.SEVERE, "Cannot load configuration", ex);
         } catch (InvalidConfigurationException ex) {
             if (ex.getCause() instanceof YAMLException) {
-            	Logging.getLogger().severe("Config file isn't valid! " + ex.getCause());
+            	Logging.log.severe("Config file isn't valid! " + ex.getCause());
             } else if ((ex.getCause() == null) || (ex.getCause() instanceof ClassCastException)) {
-            	Logging.getLogger().severe("Config file isn't valid!");
+            	Logging.log.severe("Config file isn't valid!");
             } else {
-            	Logging.getLogger().log(Level.SEVERE, "Cannot load configuration: " + ex.getCause().getClass(), ex);
+            	Logging.log.log(Level.SEVERE, "Cannot load configuration: " + ex.getCause().getClass(), ex);
             }
         }
 

@@ -40,7 +40,7 @@ public class SQLiteTest extends TestCase {
 		super(name);
 		final File folder = testFolder.newFolder("SQLiteTest");
 		try {
-			database = new SQLite(Logging.getLogger(), "TEST", "test",
+			database = new SQLite(Logging.log, "TEST", "test",
 					folder.getCanonicalPath());
 		} catch (IOException e) {
 			fail("Could not create temporary folder");
