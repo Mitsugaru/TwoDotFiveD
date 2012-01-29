@@ -2,8 +2,10 @@ package com.ATeam.twoDotFiveD.Debug;
 /**
  * Debug class holds static info about the OS, Java, and JVM that the program is running in.
  * Also has method to give details on memory.
- *
+ * <p>
  * Shout out to sk89q for some of the info here.
+ * <p>
+ * Standard system properties: http://www.mindspring.com/~mgrand/java-system-properties.htm
  *
  * @author Mitsugaru
  *

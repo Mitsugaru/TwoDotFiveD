@@ -12,13 +12,16 @@ public class Logging {
 	private static final String fileSeparator = System.getProperty("file.separator");
 	private FileHandler fh;
 
-	public Logging(String name)
+	public Logging(String name, String path)
 	{
 		log = Logger.getLogger(name);
 		try {
-			final File folder = new File(System.getProperty("user.dir") + fileSeparator + "log");
+			final File rootFolder = new File(path);
+			rootFolder.mkdir();
+			final File folder = new File(path + fileSeparator + "log");
 			folder.mkdir();
-			final File logFile = new File(folder.getCanonicalPath() + fileSeparator + "log-" + System.currentTimeMillis());
+			//TODO different files for different types, such as .txt, .xml, .html, etc.
+			final File logFile = new File(folder.getCanonicalPath() + fileSeparator + "log-" + System.currentTimeMillis() + ".xml");
 			fh = new FileHandler(logFile.getCanonicalPath());
 			fh.setFormatter(new XMLFormatter());
 			log.addHandler(fh);

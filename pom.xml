@@ -19,19 +19,39 @@
 
 	<developers>
 		<developer>
-			<id>cmahair</id>
-			<name>Clifford Mahair</name>
-			<email>cmahair@gmail.com</email>
-		</developer>
-		<developer>
-			<id>Mitsugaru</id>
-			<name>Vincent Deloso</name>
-			<email>vincent.deloso.08@cnu.edu</email>
+			<id>andrewTucker</id>
+			<name>Andrew Tucker</name>
+			<email>andrew.tucker.07@cnu.edu</email>
+			<organization>Christopher Newport University</organization>
+			<organizationUrl>http://www.cnu.edu/</organizationUrl>
 		</developer>
 		<developer>
 			<id>Krigen</id>
 			<name>Bridget Corcoran</name>
 			<email>bridget.corcoran.07@cnu.edu</email>
+			<organization>Christopher Newport University</organization>
+			<organizationUrl>http://www.cnu.edu/</organizationUrl>
+		</developer>
+		<developer>
+			<id>cmahair</id>
+			<name>Clifford Mahair</name>
+			<email>cmahair@gmail.com</email>
+			<organization>Christopher Newport University</organization>
+			<organizationUrl>http://www.cnu.edu/</organizationUrl>
+		</developer>
+		<developer>
+			<id>jwaddell</id>
+			<name>Justin Waddell</name>
+			<email>jwadd001@gmail.com</email>
+			<organization>Christopher Newport University</organization>
+			<organizationUrl>http://www.cnu.edu/</organizationUrl>
+		</developer>
+		<developer>
+			<id>Mitsugaru</id>
+			<name>Vincent Deloso</name>
+			<email>vincent.deloso.08@cnu.edu</email>
+			<organization>Christopher Newport University</organization>
+			<organizationUrl>http://www.cnu.edu/</organizationUrl>
 		</developer>
 	</developers>
 
