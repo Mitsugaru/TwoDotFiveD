@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty xmlns="http://nifty-gui.sourceforge.net/nifty.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty.xsd http://nifty-gui.sourceforge.net/nifty.xsd">
+	<screen id="start">
+		<layer id="background" backgroundColor="#000f">
+			<image filename="src/main/resources/com/lovetextures/cubes.jpg"></image>
+		</layer>
+		<layer id="foreground" backgroundColor="#0000" childLayout="vertical">
+			<panel id="panel_top" height="25%" width="75%" align="center"
+				childLayout="center" backgroundColor="#f008"></panel>
+			<panel id="panel_mid" height="50%" width="75%" align="center"
+				childLayout="center" backgroundColor="#0f08"></panel>
+			<panel id="panel_bottom" height="25%" width="75%" align="center"
+				childLayout="horizontal" backgroundColor="#00f8">
+				<panel id="panel_bottom_left" height="50%" width="50%" align="center"
+					childLayout="center" backgroundColor="#44f8"></panel>
+				<panel id="panel_bottom_right" height="50%" width="50%" align="center"
+					childLayout="center" backgroundColor="#88f8"></panel>
+			</panel>
+		</layer>
+	</screen>
+	<screen id="hud">
+		<layer id="background" backgroundColor="#000f">
+			<!-- background -->
+		</layer>
+		<layer id="foreground" backgroundColor="#0000" childLayout="horizontal">
+			<panel id="panel_left" height="100%" width="80%" childLayout="vertical"
+				backgroundColor="#0f08"></panel>
+			<panel id="panel_right" height="100%" width="25%" childLayout="vertical"
+				backgroundColor="#00f8">
+				<panel id="panel_top_``right1" height="15%" width="100%"
+					childLayout="center" backgroundColor="#00f8"></panel>
+				<panel id="panel_top_right2" height="15%" width="100%"
+					childLayout="center" backgroundColor="#44f8"></panel>
+				<panel id="panel_top_right" height="70%" width="100%"
+					childLayout="center" backgroundColor="#88f8"></panel>
+			</panel>
+		</layer>
+	</screen>
+</nifty>
