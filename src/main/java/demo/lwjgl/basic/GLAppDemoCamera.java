@@ -104,8 +104,7 @@ public class GLAppDemoCamera extends GLApp {
         camera1.setCamera(0,4,15, 0,-.3f,-1, 0,1,0);
 
         // load the airplane model and make it a display list
-        //TODO figure out what's wrong with models
-        airplane = new GLModel("src/main/resources/com/Airplane HORNET.obj");
+        airplane = new GLModel("src/main/resources/com/oyonale/toyplane.obj");
         airplane.mesh.regenerateNormals();
         airplane.makeDisplayList();
 
@@ -211,9 +210,9 @@ public class GLAppDemoCamera extends GLApp {
         	// place plane at orbit point, and orient it toward origin
         	billboardPoint(airplanePos, ORIGIN, UP);
         	// turn plane toward direction of motion
-            GL11.glRotatef(-90, 0, 1, 0);
-            // make it big
-            GL11.glScalef(4f, 4f, 4f);
+            GL11.glRotatef(180, 0, 1, 0);
+            // Make it smaller
+            GL11.glScalef(0.05f, 0.05f, 0.05f);
         	airplane.render();
         	// reset material, since model.render() will alter current material settings
             setMaterial( new float[] {.8f, .8f, .7f, 1f}, .4f);
