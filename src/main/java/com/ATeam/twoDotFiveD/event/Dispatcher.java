@@ -5,6 +5,13 @@ import java.util.HashMap;
 
 import com.ATeam.twoDotFiveD.Debug.Logging;
 
+/**
+ * Class to dispatch Events to the registered listeners
+ * <p>
+ * Based on the example from http://www.stackoverflow.com/questions/937302/simple-java-message-dispatching-system
+ * @author Tokume
+ *
+ */
 public class Dispatcher {
 	@SuppressWarnings("rawtypes")
 	private final HashMap<Class, ArrayList> map = new HashMap<Class, ArrayList>(

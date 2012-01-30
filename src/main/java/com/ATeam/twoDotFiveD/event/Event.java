@@ -6,7 +6,8 @@ import com.ATeam.twoDotFiveD.event.player.*;
 /**
  * Class to represent an event.
  * <p>
- * Based off of the example from http://www.stackoverflow.com/questions/937302/simple-java-message-dispatching-system
+ * Fusion of the example from http://www.stackoverflow.com/questions/937302/simple-java-message-dispatching-system
+ * and Bukkit's implementation of an event system
  *
  * @author Mitsugaru
  *
