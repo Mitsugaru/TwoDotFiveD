@@ -21,7 +21,6 @@ public class PlayerMoveEventTest extends TestCase
 {
 	private PlayerMoveEvent event;
 	private Player player;
-	private boolean caught;
 	/**
 	 * Construct new test instance
 	 *
@@ -31,7 +30,6 @@ public class PlayerMoveEventTest extends TestCase
 	{
 		super(name);
 		player = new Player();
-		caught = false;
 		event = new PlayerMoveEvent(player);
 	}
 
