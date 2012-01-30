@@ -3,7 +3,7 @@ package com.ATeam.twoDotFiveD.event;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.ATeam.twoDotFiveD.Debug.Logging;
+import com.ATeam.twoDotFiveD.debug.Logging;
 
 /**
  * Class to dispatch Events to the registered listeners

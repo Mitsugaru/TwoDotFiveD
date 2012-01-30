@@ -1,4 +1,4 @@
-package com.ATeam.twoDotFiveD.Debug;
+package com.ATeam.twoDotFiveD.debug;
 /**
  * Debug class holds static info about the OS, Java, and JVM that the program is running in.
  * Also has method to give details on memory.

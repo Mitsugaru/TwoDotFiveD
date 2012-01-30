@@ -1,6 +1,6 @@
 package com.ATeam.twoDotFiveD;
 
-import com.ATeam.twoDotFiveD.Debug.*;
+import com.ATeam.twoDotFiveD.debug.*;
 import com.ATeam.twoDotFiveD.entity.Player;
 import com.ATeam.twoDotFiveD.event.Dispatcher;
 import com.ATeam.twoDotFiveD.event.Event;

@@ -1,4 +1,4 @@
-package com.ATeam.twoDotFiveD.Debug;
+package com.ATeam.twoDotFiveD.debug;
 
 import java.io.File;
 import java.io.IOException;

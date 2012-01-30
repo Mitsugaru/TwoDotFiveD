@@ -15,7 +15,7 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.representer.Representer;
 
-import com.ATeam.twoDotFiveD.Debug.Logging;
+import com.ATeam.twoDotFiveD.debug.Logging;
 
 /**
  * An implementation of {@link Configuration} which saves all files in Yaml.

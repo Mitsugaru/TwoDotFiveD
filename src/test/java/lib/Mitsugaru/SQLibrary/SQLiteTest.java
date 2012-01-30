@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 
-import com.ATeam.twoDotFiveD.Debug.Logging;
+import com.ATeam.twoDotFiveD.debug.Logging;
 
 import junit.framework.TestCase;
 
