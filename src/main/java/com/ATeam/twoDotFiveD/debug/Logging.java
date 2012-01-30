@@ -18,9 +18,17 @@ public class Logging {
 		log = Logger.getLogger(name);
 		try {
 			final File rootFolder = new File(path);
-			rootFolder.mkdir();
+			final boolean rootMade = rootFolder.mkdir();
+			if(rootMade)
+			{
+				log.info("Made root directory @ " + rootFolder.getCanonicalPath());
+			}
 			final File folder = new File(path + fileSeparator + "log");
-			folder.mkdir();
+			final boolean logFolderMade = folder.mkdir();
+			if(logFolderMade)
+			{
+				log.info("Made log directory @ " + folder.getCanonicalPath());
+			}
 			//TODO different files for different types, such as .txt, .xml, .html, etc.
 			final File logFile = new File(folder.getCanonicalPath() + fileSeparator + "log-" + System.currentTimeMillis() + ".xml");
 			fh = new FileHandler(logFile.getCanonicalPath());
