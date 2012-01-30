@@ -7,7 +7,7 @@ import com.ATeam.twoDotFiveD.event.Listener;
  * @author Tokume
  *
  */
-public class PlayerListener implements Listener {
+public abstract class PlayerListener implements Listener {
 
 	public PlayerListener(){}
 

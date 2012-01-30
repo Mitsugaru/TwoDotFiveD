@@ -1,7 +1,5 @@
 package com.ATeam.twoDotFiveD;
 
-import org.junit.Ignore;
-
 import junit.framework.TestCase;
 
 /**
@@ -28,18 +26,8 @@ public class TwoDotFiveDTest extends TestCase {
 	}
 
 	/**
-	 * Launch the test.
-	 *
-	 * @param args String[]
-	 */
-	public static void main(String[] args) {
-		// add code to run tests here
-	}
-
-	/**
 	 * Run the void main(String[]) method test
 	 */
-	@Ignore
 	public void testMain() {
 		//fail("Newly generated method - fix or disable");
 		// add test code here
