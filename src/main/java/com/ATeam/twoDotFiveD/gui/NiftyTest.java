@@ -1,10 +1,9 @@
-package com.ATeam.twoDotFiveD;
+package com.ATeam.twoDotFiveD.gui;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
-import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
+import com.ATeam.twoDotFiveD.debug.Logging;
 
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyMouse;
@@ -17,7 +16,7 @@ import de.niftygui.examples.LwjglInitHelper;
 public class NiftyTest {
 
 	public void start() {
-		if (LwjglInitHelper.initSubSystems("NiftyTest")) {
+		if (LwjglInitHelper.initSubSystems("2.5D")) {
 			LwjglRenderDevice render = new LwjglRenderDevice();
 			Nifty nifty = new Nifty(render, new OpenALSoundDevice(),
 					new LwjglInputSystem(), new AccurateTimeProvider());
@@ -30,7 +29,11 @@ public class NiftyTest {
 
 			// register/load a mouse cursor (this would be done somewhere at the
 			// beginning)
-			//niftyMouse.registerMouseCursor("mouseId","src/main/resources/nifty-cursor.png", 0, 0);
+			try {
+				niftyMouse.registerMouseCursor("mouseId","src/main/resources/nifty-cursor.png", 0, 0);
+			} catch (IOException e) {
+				Logging.log.log(Level.SEVERE, "Failed to load mouse cursor!", e);
+			}
 
 			// change the cursor to the one we've loaded before
 			niftyMouse.enableMouseCursor("mouseId");
