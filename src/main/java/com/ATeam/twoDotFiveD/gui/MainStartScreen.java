@@ -8,6 +8,8 @@ public class MainStartScreen implements ScreenController {
 	private Nifty nifty;
 	private Screen screen;
 
+	//http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:nifty_gui_java_interaction
+	//http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:nifty_gui_java_interaction
 	@Override
 	public void bind(Nifty nifty, Screen screen) {
 		this.nifty = nifty;

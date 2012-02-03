@@ -10,6 +10,7 @@ public class TwoDotFiveD {
 	public static final String homeDir = System.getProperty("user.home") + System.getProperty("file.separator") + ".TwoDotFiveD";
 	//Class variables
 	public static Logging logger = new Logging(TwoDotFiveD.class.getName(), homeDir);
+	public static Config config = new Config(homeDir);
 	private static Debug debug = new Debug();
 	private static Dispatcher dispatcher = new Dispatcher();
 
