@@ -4,6 +4,7 @@ import com.ATeam.twoDotFiveD.debug.Logging;
 import com.ATeam.twoDotFiveD.event.block.BlockCreateEvent;
 import com.ATeam.twoDotFiveD.event.block.BlockDestroyedEvent;
 import com.ATeam.twoDotFiveD.event.block.BlockMoveEvent;
+import com.ATeam.twoDotFiveD.event.block.BlockPhysicsChangeEvent;
 import com.ATeam.twoDotFiveD.event.player.*;
 
 /**
@@ -78,6 +79,10 @@ public abstract class Event<L> {
 		 * Called when a block is moved
 		 */
 		BLOCK_MOVE(Category.BLOCK, BlockMoveEvent.class),
+		/**
+		 * Called when a block's physics has changed
+		 */
+		BLOCK_PHYSICS_CHANGE(Category.BLOCK, BlockPhysicsChangeEvent.class),
 		/**
 		 * Miscellaneous Event
 		 */
