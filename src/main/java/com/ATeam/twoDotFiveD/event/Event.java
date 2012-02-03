@@ -1,6 +1,9 @@
 package com.ATeam.twoDotFiveD.event;
 
 import com.ATeam.twoDotFiveD.debug.Logging;
+import com.ATeam.twoDotFiveD.event.block.BlockCreateEvent;
+import com.ATeam.twoDotFiveD.event.block.BlockDestroyedEvent;
+import com.ATeam.twoDotFiveD.event.block.BlockMoveEvent;
 import com.ATeam.twoDotFiveD.event.player.*;
 
 /**
@@ -49,9 +52,32 @@ public abstract class Event<L> {
 		 * Player Events
 		 */
 		/**
+		 * Called when a player joins
+		 */
+		PLAYER_JOIN(Category.PLAYER, PlayerJoinEvent.class),
+		/**
+		 * Called when a player quits
+		 */
+		PLAYER_QUIT(Category.PLAYER, PlayerQuitEvent.class),
+		/**
 		 * Called when a player moves
 		 */
 		PLAYER_MOVE(Category.PLAYER, PlayerMoveEvent.class),
+		/**
+		 * Block Events
+		 */
+		/**
+		 * Called when a block is created
+		 */
+		BLOCK_CREATE(Category.BLOCK, BlockCreateEvent.class),
+		/**
+		 * Called when a block is destroyed
+		 */
+		BLOCK_DESTROYED(Category.BLOCK, BlockDestroyedEvent.class),
+		/**
+		 * Called when a block is moved
+		 */
+		BLOCK_MOVE(Category.BLOCK, BlockMoveEvent.class),
 		/**
 		 * Miscellaneous Event
 		 */

@@ -16,14 +16,21 @@ import com.ATeam.twoDotFiveD.debug.Logging;
 /**
  * Handles the default config.yml for the program.
  *
- * @author Tokume
+ * @author Mitsugaru
  *
  */
 public class Config {
 	private YamlConfiguration config = null;
 	private static final String fileSeparator = System
 			.getProperty("file.separator");
+	private static boolean vSync = false;
+	private static boolean fullScreen = false;
 
+	/**
+	 * Constructor that loads the config.yml from a given path.
+	 * 
+	 * @param Path to the program folder
+	 */
 	public Config(String path) {
 
 		try {
@@ -48,6 +55,8 @@ public class Config {
 			final Map<String, Object> defaults = new HashMap<String, Object>();
 			// TODO have a central place to put program info, such as version
 			defaults.put("version", "0.01");
+			defaults.put("window.vSync", false);
+			defaults.put("window.fullScreen", false);
 			// Insert defaults into config file if they're not present
 			for (final Entry<String, Object> e : defaults.entrySet()) {
 				if (!config.contains(e.getKey())) {
@@ -56,6 +65,9 @@ public class Config {
 			}
 			// Save
 			config.save(configFile);
+			//Load variables from config
+			Config.vSync = config.getBoolean("window.vSync", false);
+			Config.fullScreen = config.getBoolean("window.fullScreen", false);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -66,7 +78,7 @@ public class Config {
 	 * Reloads config
 	 */
 	public void reload() {
-
+		//TODO implement
 	}
 
 }

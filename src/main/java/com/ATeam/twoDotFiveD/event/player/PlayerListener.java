@@ -17,4 +17,15 @@ public abstract class PlayerListener implements Listener {
 	 */
 	public void onPlayerMove(PlayerMoveEvent playerMoveEvent){}
 
+	/**
+	 * Called when a player joins
+	 * @param Event details
+	 */
+	public void onPlayerJoin(PlayerJoinEvent playerJoinEvent){}
+	
+	/**
+	 * Called when a player quits
+	 * @param Event details
+	 */
+	public void onPlayerQuit(PlayerQuitEvent playerQuitEvent){}
 }

@@ -9,6 +9,7 @@ public class PlayerEvent extends Event<PlayerListener>{
 	/**
 	 * Constructor
 	 *
+	 * @param Event type
 	 * @param Player associated with event
 	 */
 	public PlayerEvent(final Event.Type type, final Player player)
