@@ -20,6 +20,7 @@ public abstract class Event<L> {
 	public abstract void notify(final L listener);
 	private final Type type;
 	private final String name;
+	private boolean cancelled;
 
 	public Event(){
 		this.type = Type.FIXED_EVENT;
@@ -44,6 +45,16 @@ public abstract class Event<L> {
 	public String getName()
 	{
 		return name;
+	}
+	
+	public boolean isCancelled()
+	{
+		return cancelled;
+	}
+	
+	public void setCancelled(boolean c)
+	{
+		cancelled = c;
 	}
 
 	//TODO add more events
@@ -116,6 +127,6 @@ public abstract class Event<L> {
 	//TODO implement prioritized listeners
 	public enum Priority
 	{
-
+		LOWEST, LOW, NORMAL, HIGH, HIGHEST, MONITOR;
 	}
 }
