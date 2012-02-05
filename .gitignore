@@ -5,3 +5,12 @@
 /SQLiteTest
 /log
 /.settings
+/nbproject
+/build
+/bin
+/dist
+/manifest.mf
+*.iml
+*.ipr
+*.iws
+.idea/
