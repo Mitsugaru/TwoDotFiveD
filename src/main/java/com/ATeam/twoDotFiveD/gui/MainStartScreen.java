@@ -27,7 +27,7 @@ public class MainStartScreen implements ScreenController
 	@Override
 	public void onEndScreen()
 	{
-		// TODO clean up / save?
+		// INFO nothing to do since its the main menu screen
 	}
 	
 	/**

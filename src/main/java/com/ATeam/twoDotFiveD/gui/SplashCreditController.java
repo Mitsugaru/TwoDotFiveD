@@ -17,7 +17,6 @@ public class SplashCreditController implements ScreenController,
 		// TODO fix
 		if (inputEvent == NiftyInputEvent.Escape)
 		{
-			nifty.setAlternateKey("exit");
 			nifty.gotoScreen("mainmenu");
 			return true;
 		}

@@ -16,7 +16,6 @@ public class SplashController implements ScreenController, KeyInputHandler
 		// TODO fix
 		if (inputEvent == NiftyInputEvent.Escape)
 		{
-			nifty.setAlternateKey("exit");
 			nifty.gotoScreen("introcredits");
 			return true;
 		}

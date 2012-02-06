@@ -32,8 +32,8 @@
 							length="500" startDelay="1500" post="false" inherit="true" />
 					</effect>
 					<!-- fiter="true" imageMode="resize:3,3,3,3,3,3,3,3,3,3,3,3" -->
-					<image align="center" valign="center"
-						filename="src/main/resources/com/ATeam/twoDotFiveD/images/emblem.png">
+					<image align="center" valign="center" fiter="true" height="200"
+						width="200" filename="src/main/resources/com/ATeam/twoDotFiveD/images/emblem.png">
 						<effect>
 							<onStartScreen name="fade" startColor="#0000"
 								endColor="#000f" length="500" startDelay="1500" post="false" />
@@ -132,12 +132,21 @@
 		</layer>
 	</screen>
 
+	<!-- main menu screen -->
 	<screen id="mainmenu" controller="com.ATeam.twoDotFiveD.gui.MainStartScreen">
 		<layer id="background" backgroundColor="#003f" childLayout="center">
+			<effect>
+				<onStartScreen name="fade" startColor="#0000"
+					endColor="#000f" length="500" startDelay="1500" post="false" />
+			</effect>
 			<!-- TODO find out best imageMode numbers -->
 			<image filename="src/main/resources/com/lovetextures/cubes.jpg"></image>
 		</layer>
 		<layer id="foreground" childLayout="vertical">
+			<effect>
+				<onStartScreen name="fade" startColor="#0000"
+					endColor="#000f" length="500" startDelay="2000" post="false" />
+			</effect>
 			<panel id="panel_top" height="25%" width="75%" align="center"
 				childLayout="center" backgroundColor="#f008">
 				<text text="2.5D" font="src/main/resources/menu.fnt" width="100%"
