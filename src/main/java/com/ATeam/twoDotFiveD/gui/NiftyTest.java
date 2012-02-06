@@ -16,10 +16,10 @@ import de.niftygui.examples.LwjglInitHelper;
 public class NiftyTest
 {
 	// Class variables
-	private static String[]		arguments	= new String[0];
+	private static String[]		arguments		= new String[0];
 	// Resouce links
-	private static final String	XML			= "src/main/resources/com/ATeam/twoDotFiveD/layout/main.xml";
-	private static final String MOUSE_CURSOR = "src/main/resources/nifty-cursor.png";
+	private static final String	XML				= "src/main/resources/com/ATeam/twoDotFiveD/layout/main.xml";
+	private static final String	MOUSE_CURSOR	= "src/main/resources/nifty-cursor.png";
 	
 	public void start()
 	{
@@ -37,8 +37,7 @@ public class NiftyTest
 			// beginning)
 			try
 			{
-				niftyMouse.registerMouseCursor("mouseId",
-						MOUSE_CURSOR, 0, 0);
+				niftyMouse.registerMouseCursor("mouseId", MOUSE_CURSOR, 0, 0);
 			}
 			catch (IOException e)
 			{

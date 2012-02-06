@@ -8,17 +8,19 @@ import de.lessvoid.nifty.screen.ScreenController;
 
 public class SplashController implements ScreenController, KeyInputHandler
 {
-	private Nifty nifty;
+	private Nifty	nifty;
 	
 	@Override
 	public boolean keyEvent(NiftyInputEvent inputEvent)
 	{
-		if (inputEvent == NiftyInputEvent.Escape) {
-		      nifty.setAlternateKey("exit");
-		      nifty.gotoScreen("introcredits");
-		      return true;
-		    }
-		    return false;
+		// TODO fix
+		if (inputEvent == NiftyInputEvent.Escape)
+		{
+			nifty.setAlternateKey("exit");
+			nifty.gotoScreen("introcredits");
+			return true;
+		}
+		return false;
 	}
 	
 	@Override

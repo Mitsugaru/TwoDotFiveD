@@ -14,6 +14,7 @@ public class SplashCreditController implements ScreenController,
 	@Override
 	public boolean keyEvent(NiftyInputEvent inputEvent)
 	{
+		// TODO fix
 		if (inputEvent == NiftyInputEvent.Escape)
 		{
 			nifty.setAlternateKey("exit");
