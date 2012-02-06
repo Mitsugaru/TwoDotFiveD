@@ -13,42 +13,62 @@ import de.lessvoid.nifty.sound.openal.OpenALSoundDevice;
 import de.lessvoid.nifty.spi.time.impl.AccurateTimeProvider;
 import de.niftygui.examples.LwjglInitHelper;
 
-public class NiftyTest {
-
-	public void start() {
-		if (LwjglInitHelper.initSubSystems("2.5D")) {
+public class NiftyTest
+{
+	// Class variables
+	private static String[]		arguments	= new String[0];
+	// Resouce links
+	private static final String	XML			= "src/main/resources/com/ATeam/twoDotFiveD/layout/main.xml";
+	private static final String MOUSE_CURSOR = "src/main/resources/nifty-cursor.png";
+	
+	public void start()
+	{
+		if (LwjglInitHelper.initSubSystems("2.5D"))
+		{
 			LwjglRenderDevice render = new LwjglRenderDevice();
 			Nifty nifty = new Nifty(render, new OpenALSoundDevice(),
 					new LwjglInputSystem(), new AccurateTimeProvider());
-			nifty.fromXml(
-					"src/main/resources/com/ATeam/twoDotFiveD/layout/main.xml",
-					"start");
+			nifty.fromXml(XML, "intro");
 			// get the NiftyMouse interface that gives us access to all mouse
 			// cursor related stuff
 			NiftyMouse niftyMouse = nifty.getNiftyMouse();
-
+			
 			// register/load a mouse cursor (this would be done somewhere at the
 			// beginning)
-			try {
-				niftyMouse.registerMouseCursor("mouseId","src/main/resources/nifty-cursor.png", 0, 0);
-			} catch (IOException e) {
-				Logging.log.log(Level.SEVERE, "Failed to load mouse cursor!", e);
+			try
+			{
+				niftyMouse.registerMouseCursor("mouseId",
+						MOUSE_CURSOR, 0, 0);
 			}
-
+			catch (IOException e)
+			{
+				Logging.log
+						.log(Level.SEVERE, "Failed to load mouse cursor!", e);
+			}
+			
 			// change the cursor to the one we've loaded before
 			niftyMouse.enableMouseCursor("mouseId");
-
+			
 			// we could set the position like so
 			niftyMouse.setMousePosition(20, 20);
-
+			
 			LwjglInitHelper.renderLoop(nifty, null);
 			LwjglInitHelper.destroy();
 		}
+		else
+		{
+			Logging.log
+					.log(Level.SEVERE,
+							"Could not initialize LWJGL helper and subsystems. Nothing to display.");
+		}
 	}
-
-	public static void main(final String[] args) throws IOException {
+	
+	public static void main(final String[] args) throws IOException
+	{
+		// Grab and save arguments, if any
+		arguments = args;
 		NiftyTest test = new NiftyTest();
 		test.start();
-
+		
 	}
 }

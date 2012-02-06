@@ -6,7 +6,133 @@
 	<useStyles filename="nifty-default-styles.xml" />
 	<useControls filename="nifty-default-controls.xml" />
 
-	<screen id="start" controller="com.ATeam.twoDotFiveD.gui.MainStartScreen">
+	<!-- intro screen -->
+	<screen id="intro" controller="com.ATeam.twoDotFiveD.gui.SplashController"
+		inputMapping="de.lessvoid.nifty.input.mapping.DefaultScreenMapping">
+		<layer id="background" childLayout="center" backgroundColor="#000f">
+			<effect>
+				<onEndScreen name="fade" startColor="#ffff" endColor="#0000"
+					length="500" startDelay="1500" post="false" inherit="true"
+					alternateEnable="exit" />
+			</effect>
+			<panel id="panel" childLayout="center"
+				backgroundImage="src/main/resources/com/lovetextures/light-refraction-4.jpg"
+				width="100%" height="100%">
+				<effect>
+					<onStartScreen name="fade" startColor="#fff0"
+						endColor="#ffff" length="1000" post="false" />
+					<onEndScreen name="fade" startColor="#ffff" endColor="#0000"
+						length="500" startDelay="1500" post="false" inherit="true" />
+					<!-- <onStartScreen name="playSound" sound="gong" startDelay="1400" 
+						/> -->
+				</effect>
+				<panel align="center" valign="center" childLayout="vertical">
+					<effect>
+						<onEndScreen name="fade" startColor="#ffff" endColor="#0000"
+							length="500" startDelay="1500" post="false" inherit="true" />
+					</effect>
+					<!-- fiter="true" imageMode="resize:3,3,3,3,3,3,3,3,3,3,3,3" -->
+					<image align="center" valign="center"
+						filename="src/main/resources/com/ATeam/twoDotFiveD/images/emblem.png">
+						<effect>
+							<onStartScreen name="fade" startColor="#0000"
+								endColor="#000f" length="500" startDelay="1500" post="false" />
+						</effect>
+					</image>
+				</panel>
+			</panel>
+		</layer>
+	</screen>
+
+	<!-- intro credit screen -->
+	<screen id="introcredits" controller="com.ATeam.twoDotFiveD.gui.SplashCreditController"
+		inputMapping="de.lessvoid.nifty.input.mapping.DefaultScreenMapping">
+		<layer id="background" childLayout="center" backgroundColor="#000f">
+			<effect>
+				<onEndScreen name="fade" startColor="#ffff" endColor="#0000"
+					length="500" startDelay="1500" post="false" inherit="true"
+					alternateEnable="exit" />
+			</effect>
+			<panel id="panel" childLayout="vertical"
+				backgroundImage="src/main/resources/com/lovetextures/light-refraction-2.jpg"
+				width="100%" height="100%">
+				<effect>
+					<onStartScreen name="fade" startColor="#fff0"
+						endColor="#ffff" length="1000" post="false" />
+					<onEndScreen name="fade" startColor="#ffff" endColor="#0000"
+						length="500" startDelay="1500" post="false" inherit="true" />
+					<!-- <onStartScreen name="playSound" sound="gong" startDelay="1400" 
+						/> -->
+				</effect>
+				<panel id="panel_top" height="20%" width="100%" align="center"
+					childLayout="center" backgroundColor="#f008">
+				</panel>
+				<panel id="middle" height="60%" width="100%" align="center"
+					childLayout="vertical" backgroundColor="#00f8">
+					<panel id="middle_top" height="50%" width="100%" align="center"
+						childLayout="horizontal" backgroundColor="#00f8">
+						<panel id="bullet" align="center" valign="center" height="50%"
+							width="50%" backgroundColor="#44f8" childLayout="vertical">
+							<effect>
+								<onEndScreen name="fade" startColor="#ffff"
+									endColor="#0000" length="500" startDelay="1500" post="false"
+									inherit="true" />
+							</effect>
+							<!-- fiter="true" imageMode="resize:3,3,3,3,3,3,3,3,3,3,3,3" -->
+							<image align="center" valign="center"
+								filename="src/main/resources/cz/advel/jbullet/bullet_logo.png">
+								<effect>
+									<onStartScreen name="fade" startColor="#0000"
+										endColor="#000f" length="500" startDelay="1500" post="false" />
+								</effect>
+							</image>
+						</panel>
+						<panel id="lwjgl" align="center" valign="center" height="50%"
+							width="50%" backgroundColor="#44f8" childLayout="vertical">
+							<effect>
+								<onEndScreen name="fade" startColor="#ffff"
+									endColor="#0000" length="500" startDelay="1500" post="false"
+									inherit="true" />
+							</effect>
+							<!-- fiter="true" imageMode="resize:3,3,3,3,3,3,3,3,3,3,3,3" -->
+							<image align="center" valign="center"
+								filename="src/main/resources/com/lwjgl/lwjgl-logo.png">
+								<effect>
+									<onStartScreen name="fade" startColor="#0000"
+										endColor="#000f" length="500" startDelay="3000" post="false" />
+								</effect>
+							</image>
+						</panel>
+					</panel>
+					<panel id="middle_bottom" height="50%" width="100%" align="center"
+						childLayout="horizontal" backgroundColor="#00f8">
+						<panel id="niftygui" align="center" valign="center" height="100%"
+							width="100%" backgroundColor="#44f8" childLayout="vertical">
+							<effect>
+								<onEndScreen name="fade" startColor="#ffff"
+									endColor="#0000" length="500" startDelay="1500" post="false"
+									inherit="true" />
+							</effect>
+							<!-- fiter="true" imageMode="resize:3,3,3,3,3,3,3,3,3,3,3,3" -->
+							<image align="center" valign="center"
+								filename="src/main/resources/demo-logo.png">
+								<effect>
+									<onStartScreen name="fade" startColor="#0000"
+										endColor="#000f" length="500" startDelay="4500" post="false" />
+								</effect>
+							</image>
+						</panel>
+					</panel>
+				</panel>
+				<panel id="panel_bottom" height="20%" width="100%" align="center"
+					childLayout="center" backgroundColor="#f008">
+
+				</panel>
+			</panel>
+		</layer>
+	</screen>
+
+	<screen id="mainmenu" controller="com.ATeam.twoDotFiveD.gui.MainStartScreen">
 		<layer id="background" backgroundColor="#003f" childLayout="center">
 			<!-- TODO find out best imageMode numbers -->
 			<image filename="src/main/resources/com/lovetextures/cubes.jpg"></image>
