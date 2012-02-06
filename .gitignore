@@ -5,7 +5,6 @@
 # Eclipse
 .classpath
 .project
-/.settings
 # Test folder used by SQLite JUnit test
 /SQLiteTest
 # Netbeans
