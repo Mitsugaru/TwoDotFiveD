@@ -1,15 +1,21 @@
+# Maven
 /target
+# Mac OS X
 .DS_Store
+# Eclipse
 .classpath
 .project
-/SQLiteTest
-/log
 /.settings
+# Test folder used by SQLite JUnit test
+/SQLiteTest
+# Netbeans
 /nbproject
+# Other build files
 /build
 /bin
 /dist
 /manifest.mf
+# Intellij
 *.iml
 *.ipr
 *.iws
