@@ -44,6 +44,13 @@ public class Config
 		init(path);
 	}
 	
+	/**
+	 * Method to initialize variables and generate the config.yml with all
+	 * essential default values, if they are missing.
+	 * 
+	 * @param Path
+	 *            to the program folder
+	 */
 	private void init(String path)
 	{
 		try
@@ -72,7 +79,7 @@ public class Config
 			defaults.put("version", "0.01");
 			defaults.put("window.vSync", false);
 			defaults.put("window.fullScreen", false);
-			//TODO store resolution
+			// TODO store resolution
 			defaults.put("debug.log.enabled", false);
 			defaults.put("debug.log.limit", 20);
 			// Insert defaults into config file if they're not present
@@ -143,13 +150,12 @@ public class Config
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logging.log.log(Level.SEVERE, "[Config] IOException!", e);
 		}
 		catch (InvalidConfigurationException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logging.log.log(Level.SEVERE,
+					"[Config] Config has invalid configuration!", e);
 		}
 	}
 	
