@@ -65,7 +65,7 @@ public class NiftyTest
 	public static void main(final String[] args) throws IOException
 	{
 		// Grab and save arguments, if any
-		arguments = args;
+		arguments = args.clone();
 		NiftyTest test = new NiftyTest();
 		test.start();
 		

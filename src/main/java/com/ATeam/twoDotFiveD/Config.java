@@ -23,8 +23,8 @@ public class Config {
 	private YamlConfiguration config = null;
 	private static final String fileSeparator = System
 			.getProperty("file.separator");
-	private static boolean vSync = false;
-	private static boolean fullScreen = false;
+	private boolean vSync = false;
+	private boolean fullScreen = false;
 
 	/**
 	 * Constructor that loads the config.yml from a given path.
@@ -66,8 +66,8 @@ public class Config {
 			// Save
 			config.save(configFile);
 			//Load variables from config
-			Config.vSync = config.getBoolean("window.vSync", false);
-			Config.fullScreen = config.getBoolean("window.fullScreen", false);
+			this.vSync = config.getBoolean("window.vSync", false);
+			this.fullScreen = config.getBoolean("window.fullScreen", false);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
