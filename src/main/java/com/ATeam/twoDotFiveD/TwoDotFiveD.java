@@ -7,8 +7,8 @@ import com.ATeam.twoDotFiveD.event.Event;
 import com.ATeam.twoDotFiveD.event.player.PlayerMoveEvent;
 
 public class TwoDotFiveD {
-	public static final String homeDir = System.getProperty("user.home") + System.getProperty("file.separator") + ".TwoDotFiveD";
 	//Class variables
+	public static final String homeDir = System.getProperty("user.home") + System.getProperty("file.separator") + ".TwoDotFiveD";
 	public static Logging logger = new Logging(homeDir);
 	public static Config config = new Config(homeDir);
 	private static Debug debug = new Debug();
