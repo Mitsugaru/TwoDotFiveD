@@ -163,7 +163,7 @@
 					childLayout="center" backgroundColor="#44f8">
 					<control name="button" label="Start" id="StartButton"
 						align="center" valign="center">
-						<interact onClick="changeScreen(hud)" />
+						<interact onClick="beginGame()" />
 						<effect>
 							<onStartScreen name="move" mode="in" direction="top"
 								length="300" startDelay="0" inherit="true" />

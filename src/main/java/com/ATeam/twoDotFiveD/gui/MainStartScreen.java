@@ -21,7 +21,8 @@ public class MainStartScreen implements ScreenController
 	public void onStartScreen()
 	{
 		// TODO Auto-generated method stub
-		
+		System.out.println("Start screen");
+		DisplayStuff.setRenderNifty(false);
 	}
 	
 	@Override
@@ -36,6 +37,12 @@ public class MainStartScreen implements ScreenController
 	public void exit()
 	{
 		nifty.exit();
+	}
+	
+	public void beginGame()
+	{
+		System.out.println("Begin game");
+		DisplayStuff.setRenderNifty(false);
 	}
 	
 	public void changeScreen(String nextScreen)

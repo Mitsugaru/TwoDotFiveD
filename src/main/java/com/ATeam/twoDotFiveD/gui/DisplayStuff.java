@@ -1,10 +1,12 @@
-package de.niftygui.examples;
+package com.ATeam.twoDotFiveD.gui;
 
+import java.io.IOException;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.lwjgl.BufferUtils;
@@ -15,23 +17,134 @@ import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
-import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.renderer.lwjgl.input.LwjglInputSystem;
+import com.ATeam.twoDotFiveD.debug.Logging;
 
-/**
- * Helper class shared by all the examples to initialize lwjgl and stuff.
- * 
- * @author void
- */
-public class LwjglInitHelper
+import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.NiftyMouse;
+import de.lessvoid.nifty.render.NiftyRenderEngine;
+import de.lessvoid.nifty.renderer.lwjgl.input.LwjglInputSystem;
+import de.lessvoid.nifty.renderer.lwjgl.render.LwjglRenderDevice;
+import de.lessvoid.nifty.sound.openal.OpenALSoundDevice;
+import de.lessvoid.nifty.spi.render.RenderDevice;
+import de.lessvoid.nifty.spi.time.impl.AccurateTimeProvider;
+import de.lessvoid.nifty.tools.Color;
+import de.niftygui.examples.LoggerShortFormat;
+import de.niftygui.examples.LwjglInitHelper;
+import de.niftygui.examples.LwjglInitHelper.RenderLoopCallback;
+import demo.lwjgl.basic.GLApp;
+
+public class DisplayStuff
 {
+	// private Nifty nifty;
+	// private static final String XML =
+	// "src/main/resources/com/ATeam/twoDotFiveD/layout/main.xml";
+	// private static final String MOUSE_CURSOR =
+	// "src/main/resources/nifty-cursor.png";
+	private static boolean	renderNifty	= true;
 	
-	private static final int		WIDTH	= 1024;
-	private static final int		HEIGHT	= 768;
+	/*
+	 * @Override public void run() { // hold onto application class in case we
+	 * need to load images from jar (see getInputStream()) setRootClass(); try {
+	 * // Init Display, Keyboard, Mouse, OpenGL, load config file init(); //
+	 * Main loop while (!finished) { if (!Display.isVisible()) { // window is
+	 * minimized Thread.sleep(200L); } else if (Display.isCloseRequested()) { //
+	 * window X button clicked finished = true; } else { // yield a little so
+	 * other threads can work Thread.sleep(1); } updateTimer(); // track when
+	 * frame was drawn (see secondsSinceLastFrame) handleEvents(); // call
+	 * key...() and mouse...() functions based on input events update(); // do
+	 * program logic here (subclass may override this) draw(); // redraw the
+	 * screen (subclass overrides this) } } catch (Exception e) {
+	 * err("GLApp.run(): " + e); e.printStackTrace(System.out); } // prepare to
+	 * exit cleanup(); System.exit(0); }
+	 * 
+	 * @Override public void init() { // load settings from config file (display
+	 * size, resolution, etc.) loadSettings(configFilename); initDisplay();
+	 * initInput(); initGL(); setup(); // subclass usually overrides this
+	 * updateTimer(); LwjglRenderDevice render = new LwjglRenderDevice(); nifty
+	 * = new Nifty(render, new OpenALSoundDevice(), new LwjglInputSystem(), new
+	 * AccurateTimeProvider()); nifty.fromXml(XML, "intro"); // get the
+	 * NiftyMouse interface that gives us access to all mouse // cursor related
+	 * stuff NiftyMouse niftyMouse = nifty.getNiftyMouse();
+	 * 
+	 * // register/load a mouse cursor (this would be done somewhere at the //
+	 * beginning) try { niftyMouse.registerMouseCursor("mouseId", MOUSE_CURSOR,
+	 * 0, 0); } catch (IOException e) { Logging.log.log(Level.SEVERE,
+	 * "Failed to load mouse cursor!", e); }
+	 * 
+	 * // change the cursor to the one we've loaded before
+	 * niftyMouse.enableMouseCursor("mouseId");
+	 * 
+	 * // we could set the position like so niftyMouse.setMousePosition(20, 20);
+	 * }
+	 * 
+	 * @Override public void draw() { if (renderNifty) { //nifty.update();
+	 * Display.update(); nifty.render(true); } else { // Clear screen and depth
+	 * buffer GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+	 * // Select The Modelview Matrix (controls model orientation)
+	 * GL11.glMatrixMode(GL11.GL_MODELVIEW); // Reset the coordinate system to
+	 * center of screen GL11.glLoadIdentity(); // Place the viewpoint
+	 * GLU.gluLookAt(0f, 0f, 10f, // eye position (10 units in front of the //
+	 * origin) 0f, 0f, 0f, // target to look at (the origin) 0f, 1f, 0f); //
+	 * which way is up (Y axis) // draw a triangle centered around 0,0,0
+	 * GL11.glBegin(GL11.GL_TRIANGLES); // draw triangles GL11.glVertex3f(0.0f,
+	 * 1.0f, 0.0f); // Top GL11.glVertex3f(-1.0f, -1.0f, 0.0f); // Bottom Left
+	 * GL11.glVertex3f(1.0f, -1.0f, 0.0f); // Bottom Right GL11.glEnd();
+	 * Display.update(); } }
+	 */
 	
-	/** logger. */
-	private static Logger			log		= Logger.getLogger(LwjglInitHelper.class
-													.getName());
+	private static Logger	log			= Logger.getLogger(LwjglInitHelper.class
+												.getName());
+	private static int		WIDTH		= 1024;
+	private static int		HEIGHT		= 768;
+	
+	public static void setRenderNifty(boolean i)
+	{
+		renderNifty = i;
+	}
+	
+	public static void renderLoop(final Nifty nifty,
+			final RenderLoopCallback callback)
+	{
+		boolean done = false;
+		while (!Display.isCloseRequested() && !done)
+		{
+			if (renderNifty)
+			{
+				if (callback != null)
+				{
+					callback.process();
+				}
+				if (nifty.update())
+				{
+					done = true;
+				}
+				nifty.render(true);
+			}
+			else
+			{
+				// Select The Modelview Matrix (controls model orientation)
+				GL11.glMatrixMode(GL11.GL_PROJECTION);
+				// Reset the coordinate system to center of screen
+				GL11.glLoadIdentity();
+				// draw a triangle centered around 0,0,0
+				GL11.glBegin(GL11.GL_TRIANGLES); // draw triangles
+				GL11.glVertex3f(0.0f, 1.0f, 0.0f); // Top
+				GL11.glVertex3f(-1.0f, -1.0f, 0.0f); // Bottom Left
+				GL11.glVertex3f(1.0f, -1.0f, 0.0f); // Bottom Right
+				GL11.glEnd();
+			}
+			Display.update();
+			// check gl error at least ones per frame
+			int error = GL11.glGetError();
+			if (error != GL11.GL_NO_ERROR)
+			{
+				String glerrmsg = GLU.gluErrorString(error);
+				Logging.log
+						.warning("OpenGL Error: (" + error + ") " + glerrmsg);
+			}
+		}
+	}
+	
 	private static LwjglInputSystem	inputSystem;
 	
 	public static LwjglInputSystem getInputSystem()
@@ -62,13 +175,13 @@ public class LwjglInitHelper
 	public static boolean initSubSystems(final String title)
 	{
 		LoggerShortFormat.intialize();
-		if (!LwjglInitHelper.initGraphics(title))
+		if (!DisplayStuff.initGraphics(title))
 		{
 			return false;
 		}
 		
 		// init input system
-		if (!LwjglInitHelper.initInput())
+		if (!DisplayStuff.initInput())
 		{
 			return false;
 		}
@@ -86,8 +199,6 @@ public class LwjglInitHelper
 	@SuppressWarnings("unused")
 	private static boolean initGraphics(final String title)
 	{
-		int width = 1920;
-		int height = 1200;
 		try
 		{
 			DisplayMode currentMode = Display.getDisplayMode();
@@ -96,8 +207,8 @@ public class LwjglInitHelper
 					+ currentMode.getBitsPerPixel() + ", "
 					+ currentMode.getFrequency());
 			
-			width = currentMode.getWidth();
-			height = currentMode.getHeight();
+			// WIDTH = currentMode.getWidth();
+			// HEIGHT = currentMode.getHeight();
 			
 			// get available modes, and print out
 			DisplayMode[] modes = Display.getAvailableDisplayModes();
@@ -169,8 +280,8 @@ public class LwjglInitHelper
 				}
 			}
 			
-			int x = (width - Display.getDisplayMode().getWidth()) / 2;
-			int y = (height - Display.getDisplayMode().getHeight()) / 2;
+			int x = (WIDTH - Display.getDisplayMode().getWidth()) / 2;
+			int y = (HEIGHT - Display.getDisplayMode().getHeight()) / 2;
 			Display.setLocation(x, y);
 			
 			// Create the actual window
@@ -266,44 +377,6 @@ public class LwjglInitHelper
 			e.printStackTrace();
 			log.warning("Unable to create keyboard!, exiting...");
 			return false;
-		}
-	}
-	
-	/**
-	 * @param nifty
-	 *            nifty instance
-	 * @param editor
-	 * @param callback
-	 *            callback
-	 */
-	public static void renderLoop(final Nifty nifty,
-			final RenderLoopCallback callback)
-	{
-		boolean done = false;
-		while (!Display.isCloseRequested() && !done)
-		{
-			if (callback != null)
-			{
-				callback.process();
-			}
-			
-			// show render
-			Display.update();
-			
-			if (nifty.update())
-			{
-				done = true;
-			}
-			
-			nifty.render(true);
-			
-			// check gl error at least ones per frame
-			int error = GL11.glGetError();
-			if (error != GL11.GL_NO_ERROR)
-			{
-				String glerrmsg = GLU.gluErrorString(error);
-				log.warning("OpenGL Error: (" + error + ") " + glerrmsg);
-			}
 		}
 	}
 	
