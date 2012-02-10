@@ -28,8 +28,8 @@ public class TwoDotFiveD
 	public static Config		config			= new Config(homeDir);
 	private static Debug		debug			= new Debug();
 	private static Dispatcher	dispatcher		= new Dispatcher();
-	private static final String	XML				= "src/main/resources/com/ATeam/twoDotFiveD/layout/main.xml";
-	private static final String	MOUSE_CURSOR	= "src/main/resources/nifty-cursor.png";
+	private static final String	XML				= "com/ATeam/twoDotFiveD/layout/main.xml";
+	private static final String	MOUSE_CURSOR	= "nifty-cursor.png";
 	
 	/**
 	 * Main constructor

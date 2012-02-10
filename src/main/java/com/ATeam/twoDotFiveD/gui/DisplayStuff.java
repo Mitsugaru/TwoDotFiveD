@@ -42,56 +42,6 @@ public class DisplayStuff
 	// "src/main/resources/nifty-cursor.png";
 	private static boolean	renderNifty	= true;
 	
-	/*
-	 * @Override public void run() { // hold onto application class in case we
-	 * need to load images from jar (see getInputStream()) setRootClass(); try {
-	 * // Init Display, Keyboard, Mouse, OpenGL, load config file init(); //
-	 * Main loop while (!finished) { if (!Display.isVisible()) { // window is
-	 * minimized Thread.sleep(200L); } else if (Display.isCloseRequested()) { //
-	 * window X button clicked finished = true; } else { // yield a little so
-	 * other threads can work Thread.sleep(1); } updateTimer(); // track when
-	 * frame was drawn (see secondsSinceLastFrame) handleEvents(); // call
-	 * key...() and mouse...() functions based on input events update(); // do
-	 * program logic here (subclass may override this) draw(); // redraw the
-	 * screen (subclass overrides this) } } catch (Exception e) {
-	 * err("GLApp.run(): " + e); e.printStackTrace(System.out); } // prepare to
-	 * exit cleanup(); System.exit(0); }
-	 * 
-	 * @Override public void init() { // load settings from config file (display
-	 * size, resolution, etc.) loadSettings(configFilename); initDisplay();
-	 * initInput(); initGL(); setup(); // subclass usually overrides this
-	 * updateTimer(); LwjglRenderDevice render = new LwjglRenderDevice(); nifty
-	 * = new Nifty(render, new OpenALSoundDevice(), new LwjglInputSystem(), new
-	 * AccurateTimeProvider()); nifty.fromXml(XML, "intro"); // get the
-	 * NiftyMouse interface that gives us access to all mouse // cursor related
-	 * stuff NiftyMouse niftyMouse = nifty.getNiftyMouse();
-	 * 
-	 * // register/load a mouse cursor (this would be done somewhere at the //
-	 * beginning) try { niftyMouse.registerMouseCursor("mouseId", MOUSE_CURSOR,
-	 * 0, 0); } catch (IOException e) { Logging.log.log(Level.SEVERE,
-	 * "Failed to load mouse cursor!", e); }
-	 * 
-	 * // change the cursor to the one we've loaded before
-	 * niftyMouse.enableMouseCursor("mouseId");
-	 * 
-	 * // we could set the position like so niftyMouse.setMousePosition(20, 20);
-	 * }
-	 * 
-	 * @Override public void draw() { if (renderNifty) { //nifty.update();
-	 * Display.update(); nifty.render(true); } else { // Clear screen and depth
-	 * buffer GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-	 * // Select The Modelview Matrix (controls model orientation)
-	 * GL11.glMatrixMode(GL11.GL_MODELVIEW); // Reset the coordinate system to
-	 * center of screen GL11.glLoadIdentity(); // Place the viewpoint
-	 * GLU.gluLookAt(0f, 0f, 10f, // eye position (10 units in front of the //
-	 * origin) 0f, 0f, 0f, // target to look at (the origin) 0f, 1f, 0f); //
-	 * which way is up (Y axis) // draw a triangle centered around 0,0,0
-	 * GL11.glBegin(GL11.GL_TRIANGLES); // draw triangles GL11.glVertex3f(0.0f,
-	 * 1.0f, 0.0f); // Top GL11.glVertex3f(-1.0f, -1.0f, 0.0f); // Bottom Left
-	 * GL11.glVertex3f(1.0f, -1.0f, 0.0f); // Bottom Right GL11.glEnd();
-	 * Display.update(); } }
-	 */
-	
 	private static Logger	log			= Logger.getLogger(LwjglInitHelper.class
 												.getName());
 	private static int		WIDTH		= 1024;
@@ -123,7 +73,7 @@ public class DisplayStuff
 			else
 			{
 				// Select The Modelview Matrix (controls model orientation)
-				GL11.glMatrixMode(GL11.GL_PROJECTION);
+				/*GL11.glMatrixMode(GL11.GL_PROJECTION);
 				// Reset the coordinate system to center of screen
 				GL11.glLoadIdentity();
 				// draw a triangle centered around 0,0,0
@@ -131,7 +81,7 @@ public class DisplayStuff
 				GL11.glVertex3f(0.0f, 1.0f, 0.0f); // Top
 				GL11.glVertex3f(-1.0f, -1.0f, 0.0f); // Bottom Left
 				GL11.glVertex3f(1.0f, -1.0f, 0.0f); // Bottom Right
-				GL11.glEnd();
+				GL11.glEnd();*/
 			}
 			Display.update();
 			// check gl error at least ones per frame
