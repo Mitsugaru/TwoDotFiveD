@@ -21,6 +21,8 @@ public class chatServer
     private JTextArea read;
 
     private JFrame panel;
+    
+    private Room Default;
 
     public void throwup(String text){
         read.setText(text + System.getProperty( "line.separator" ) + read.getText());
@@ -96,15 +98,13 @@ public class chatServer
         try
         {
             ServerSocket server = new ServerSocket( 1337 );
-            Room Default = new Room("Default", "", this);
+            Default = new Room("Default", "", this);
             rooms.add( Default );
             while ( true )
             {
                 Socket socket = server.accept();
                 clientHandler client = new clientHandler( this, socket );
                 clientlist.add( client );
-                client.addRoom( Default );
-                Default.addPlayer( client, "" );
                 client.start();
             }
         }
@@ -159,5 +159,9 @@ public class chatServer
         for (Room r: rooms){
             r.removePlayer( client );
         }
+    }
+    
+    public Room getDefault(){
+        return Default;
     }
 }

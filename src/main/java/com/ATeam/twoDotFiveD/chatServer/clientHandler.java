@@ -3,6 +3,7 @@ package com.ATeam.twoDotFiveD.chatServer;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 
@@ -40,10 +41,14 @@ public class clientHandler extends Thread
     }
 
 
+    @Override
     public void run()
     {
         name = in.nextLine();
+        send("Type /help for commands");
         server.sendToAll( name + " has joined the game." );
+        addRoom( server.getDefault() );
+        server.getDefault().addPlayer( this, "" );
         while ( !stop )
         {
             try
@@ -52,8 +57,9 @@ public class clientHandler extends Thread
                 server.throwup( text );
                 handle( text );
             }
-            catch ( Exception e )
+            catch ( NoSuchElementException e )
             {
+                e.printStackTrace();
                 close();
             }
         }
@@ -69,9 +75,10 @@ public class clientHandler extends Thread
     public void close()
     {
         stop = true;
+        server.sendToAll( name + " has left the game." );
         in.close();
         out.close();
-        server.removePlayer(this);
+        server.removePlayer( this );
     }
 
 
@@ -103,8 +110,26 @@ public class clientHandler extends Thread
                     || command.equals( "/setdefault" )
                     || command.equals( "/whisper" ) || command.equals( "/list" )
                     || command.equals( "/who" ) || command.equals( "/whoall" )
-                    || command.equals( "/listall" ) )
+                    || command.equals( "/listall" ) || command.equals( "/help" )
+                    || command.equals("/////exit"))
                 {
+                    if (command.equals("/////exit")){
+                        close();
+                    }
+                    if (command.equals("/help")){
+                        send("Command list:");
+                        send("/help lists all available commands.");
+                        send("/create <roomname> <password> creates a room with the given name and password. Password is optional.");
+                        send("/join <roomname> <password> Joins a room. Passwords must match. You do not need to enter a password for a room that doesn't have one.");
+                        send("/leave <roomname> Leave a room.");
+                        send("/room <message> Send a message to the players in that room, if you are in that room.");
+                        send("/setdefault <roomname> Sets your default room to a specific room. All messages not preceeded by a command will go to that room.");
+                        send("/whisper <playername> <message> whispers a player");
+                        send("/list lists the rooms that you are in.");
+                        send("/listall lists all of the rooms on the server.");
+                        send("/who lists all of the players in the rooms you are in.");
+                        send("/whoall lists all of the players in the game.");
+                    }
                     if ( command.equals( "/listall" ) )
                     {
                         String[] list = server.getRoomList();

@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -14,7 +16,7 @@ import javax.swing.JTextField;
 
 
 // This class is just a temporary class to create a visual for testing
-public class tempDisplay
+public class tempDisplay implements WindowListener
 {
     private JTextField write;
 
@@ -33,7 +35,8 @@ public class tempDisplay
     {
         // Window for viewing
         JFrame frame = new JFrame( "Client Window" );
-        frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+        frame.setDefaultCloseOperation( JFrame.DO_NOTHING_ON_CLOSE );
+        frame.addWindowListener( this );
         Dimension d = new Dimension( 500, 500 );
         frame.setSize( d );
         frame.setPreferredSize( d );
@@ -86,7 +89,7 @@ public class tempDisplay
         } );
         // Add the panel and look at it
         frame.add( panel );
-        client = new chatClient( this, "localhost", "Clifford" );
+        client = new chatClient( this, "localhost", "Cliff" );
         if ( client.connect() )
         {
             client.start();
@@ -99,5 +102,60 @@ public class tempDisplay
     public void updatetext( String text )
     {
         read.setText(text + System.getProperty( "line.separator" ) + read.getText());
+    }
+
+
+    @Override
+    public void windowActivated( WindowEvent arg0 )
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+
+    @Override
+    public void windowClosed( WindowEvent arg0 )
+    {
+        // TODO Auto-generated method stub
+    }
+
+
+    @Override
+    public void windowClosing( WindowEvent arg0 )
+    {
+        client.send( "/////exit" );
+        System.exit( 0 );        
+    }
+
+
+    @Override
+    public void windowDeactivated( WindowEvent arg0 )
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+
+    @Override
+    public void windowDeiconified( WindowEvent arg0 )
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+
+    @Override
+    public void windowIconified( WindowEvent arg0 )
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+
+    @Override
+    public void windowOpened( WindowEvent arg0 )
+    {
+        // TODO Auto-generated method stub
+        
     }
 }
