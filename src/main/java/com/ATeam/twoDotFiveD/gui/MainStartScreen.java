@@ -41,7 +41,7 @@ public class MainStartScreen implements ScreenController
 	public void beginGame()
 	{
 		System.out.println("Begin game");
-		DisplayStuff.setRenderNifty(false);
+		DisplayStuff.setRenderNifty(true);
 	}
 	
 	public void changeScreen(String nextScreen)

@@ -96,7 +96,7 @@
 							</effect>
 							<!-- fiter="true" imageMode="resize:3,3,3,3,3,3,3,3,3,3,3,3" -->
 							<image align="center" valign="center"
-								filename="com/lwjgl/lwjgl-logo.png">
+								filename="com/lwjgl/lwjgl.png">
 								<effect>
 									<onStartScreen name="fade" startColor="#0000"
 										endColor="#000f" length="500" startDelay="3000" post="false" />

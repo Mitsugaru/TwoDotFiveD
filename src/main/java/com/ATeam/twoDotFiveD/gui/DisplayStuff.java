@@ -40,7 +40,7 @@ public class DisplayStuff
 	// "src/main/resources/com/ATeam/twoDotFiveD/layout/main.xml";
 	// private static final String MOUSE_CURSOR =
 	// "src/main/resources/nifty-cursor.png";
-	private static boolean	renderNifty	= true;
+	private static boolean	renderNifty	= false;
 	
 	private static Logger	log			= Logger.getLogger(LwjglInitHelper.class
 												.getName());
@@ -58,8 +58,6 @@ public class DisplayStuff
 		boolean done = false;
 		while (!Display.isCloseRequested() && !done)
 		{
-			if (renderNifty)
-			{
 				if (callback != null)
 				{
 					callback.process();
@@ -69,19 +67,18 @@ public class DisplayStuff
 					done = true;
 				}
 				nifty.render(true);
-			}
-			else
+			if(renderNifty)
 			{
 				// Select The Modelview Matrix (controls model orientation)
-				/*GL11.glMatrixMode(GL11.GL_PROJECTION);
+				GL11.glMatrixMode(GL11.GL_PROJECTION);
 				// Reset the coordinate system to center of screen
 				GL11.glLoadIdentity();
 				// draw a triangle centered around 0,0,0
 				GL11.glBegin(GL11.GL_TRIANGLES); // draw triangles
-				GL11.glVertex3f(0.0f, 1.0f, 0.0f); // Top
-				GL11.glVertex3f(-1.0f, -1.0f, 0.0f); // Bottom Left
-				GL11.glVertex3f(1.0f, -1.0f, 0.0f); // Bottom Right
-				GL11.glEnd();*/
+				GL11.glVertex3f(0.0f, 0.5f, 0.0f); // Top
+				GL11.glVertex3f(-.5f, -0.5f, 0.0f); // Bottom Left
+				GL11.glVertex3f(0.5f, -0.5f, 0.0f); // Bottom Right
+				GL11.glEnd();
 			}
 			Display.update();
 			// check gl error at least ones per frame
