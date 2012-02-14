@@ -1,10 +1,12 @@
-package de.niftygui.examples;
+package com.ATeam.twoDotFiveD.gui;
 
+import java.io.IOException;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.lwjgl.BufferUtils;
@@ -15,23 +17,84 @@ import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
-import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.renderer.lwjgl.input.LwjglInputSystem;
+import com.ATeam.twoDotFiveD.debug.Logging;
 
-/**
- * Helper class shared by all the examples to initialize lwjgl and stuff.
- * 
- * @author void
- */
-public class LwjglInitHelper
+import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.NiftyMouse;
+import de.lessvoid.nifty.render.NiftyRenderEngine;
+import de.lessvoid.nifty.renderer.lwjgl.input.LwjglInputSystem;
+import de.lessvoid.nifty.renderer.lwjgl.render.LwjglRenderDevice;
+import de.lessvoid.nifty.sound.openal.OpenALSoundDevice;
+import de.lessvoid.nifty.spi.render.RenderDevice;
+import de.lessvoid.nifty.spi.time.impl.AccurateTimeProvider;
+import de.lessvoid.nifty.tools.Color;
+import de.niftygui.examples.LoggerShortFormat;
+import de.niftygui.examples.LwjglInitHelper;
+import de.niftygui.examples.LwjglInitHelper.RenderLoopCallback;
+import demo.lwjgl.basic.GLApp;
+
+public class DisplayStuff
 {
+	// private Nifty nifty;
+	// private static final String XML =
+	// "src/main/resources/com/ATeam/twoDotFiveD/layout/main.xml";
+	// private static final String MOUSE_CURSOR =
+	// "src/main/resources/nifty-cursor.png";
+	private static boolean	renderNifty	= true;
 	
-	private static final int		WIDTH	= 1024;
-	private static final int		HEIGHT	= 768;
+	private static Logger	log			= Logger.getLogger(LwjglInitHelper.class
+												.getName());
+	private static int		WIDTH		= 1024;
+	private static int		HEIGHT		= 768;
 	
-	/** logger. */
-	private static Logger			log		= Logger.getLogger(LwjglInitHelper.class
-													.getName());
+	public static void setRenderNifty(boolean i)
+	{
+		renderNifty = i;
+	}
+	
+	public static void renderLoop(final Nifty nifty,
+			final RenderLoopCallback callback)
+	{
+		boolean done = false;
+		while (!Display.isCloseRequested() && !done)
+		{
+			if (renderNifty)
+			{
+				if (callback != null)
+				{
+					callback.process();
+				}
+				if (nifty.update())
+				{
+					done = true;
+				}
+				nifty.render(true);
+			}
+			else
+			{
+				// Select The Modelview Matrix (controls model orientation)
+				/*GL11.glMatrixMode(GL11.GL_PROJECTION);
+				// Reset the coordinate system to center of screen
+				GL11.glLoadIdentity();
+				// draw a triangle centered around 0,0,0
+				GL11.glBegin(GL11.GL_TRIANGLES); // draw triangles
+				GL11.glVertex3f(0.0f, 1.0f, 0.0f); // Top
+				GL11.glVertex3f(-1.0f, -1.0f, 0.0f); // Bottom Left
+				GL11.glVertex3f(1.0f, -1.0f, 0.0f); // Bottom Right
+				GL11.glEnd();*/
+			}
+			Display.update();
+			// check gl error at least ones per frame
+			int error = GL11.glGetError();
+			if (error != GL11.GL_NO_ERROR)
+			{
+				String glerrmsg = GLU.gluErrorString(error);
+				Logging.log
+						.warning("OpenGL Error: (" + error + ") " + glerrmsg);
+			}
+		}
+	}
+	
 	private static LwjglInputSystem	inputSystem;
 	
 	public static LwjglInputSystem getInputSystem()
@@ -62,13 +125,13 @@ public class LwjglInitHelper
 	public static boolean initSubSystems(final String title)
 	{
 		LoggerShortFormat.intialize();
-		if (!LwjglInitHelper.initGraphics(title))
+		if (!DisplayStuff.initGraphics(title))
 		{
 			return false;
 		}
 		
 		// init input system
-		if (!LwjglInitHelper.initInput())
+		if (!DisplayStuff.initInput())
 		{
 			return false;
 		}
@@ -86,8 +149,6 @@ public class LwjglInitHelper
 	@SuppressWarnings("unused")
 	private static boolean initGraphics(final String title)
 	{
-		int width = 1920;
-		int height = 1200;
 		try
 		{
 			DisplayMode currentMode = Display.getDisplayMode();
@@ -96,8 +157,8 @@ public class LwjglInitHelper
 					+ currentMode.getBitsPerPixel() + ", "
 					+ currentMode.getFrequency());
 			
-			width = currentMode.getWidth();
-			height = currentMode.getHeight();
+			// WIDTH = currentMode.getWidth();
+			// HEIGHT = currentMode.getHeight();
 			
 			// get available modes, and print out
 			DisplayMode[] modes = Display.getAvailableDisplayModes();
@@ -169,8 +230,8 @@ public class LwjglInitHelper
 				}
 			}
 			
-			int x = (width - Display.getDisplayMode().getWidth()) / 2;
-			int y = (height - Display.getDisplayMode().getHeight()) / 2;
+			int x = (WIDTH - Display.getDisplayMode().getWidth()) / 2;
+			int y = (HEIGHT - Display.getDisplayMode().getHeight()) / 2;
 			Display.setLocation(x, y);
 			
 			// Create the actual window
@@ -266,44 +327,6 @@ public class LwjglInitHelper
 			e.printStackTrace();
 			log.warning("Unable to create keyboard!, exiting...");
 			return false;
-		}
-	}
-	
-	/**
-	 * @param nifty
-	 *            nifty instance
-	 * @param editor
-	 * @param callback
-	 *            callback
-	 */
-	public static void renderLoop(final Nifty nifty,
-			final RenderLoopCallback callback)
-	{
-		boolean done = false;
-		while (!Display.isCloseRequested() && !done)
-		{
-			if (callback != null)
-			{
-				callback.process();
-			}
-			
-			// show render
-			Display.update();
-			
-			if (nifty.update())
-			{
-				done = true;
-			}
-			
-			nifty.render(true);
-			
-			// check gl error at least ones per frame
-			int error = GL11.glGetError();
-			if (error != GL11.GL_NO_ERROR)
-			{
-				String glerrmsg = GLU.gluErrorString(error);
-				log.warning("OpenGL Error: (" + error + ") " + glerrmsg);
-			}
 		}
 	}
 	

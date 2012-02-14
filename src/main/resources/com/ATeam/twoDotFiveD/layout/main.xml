@@ -16,7 +16,7 @@
 					alternateEnable="exit" />
 			</effect>
 			<panel id="panel" childLayout="center"
-				backgroundImage="src/main/resources/com/lovetextures/light-refraction-4.jpg"
+				backgroundImage="com/lovetextures/light-refraction-4.jpg"
 				width="100%" height="100%">
 				<effect>
 					<onStartScreen name="fade" startColor="#fff0"
@@ -33,7 +33,7 @@
 					</effect>
 					<!-- fiter="true" imageMode="resize:3,3,3,3,3,3,3,3,3,3,3,3" -->
 					<image align="center" valign="center" fiter="true" height="200"
-						width="200" filename="src/main/resources/com/ATeam/twoDotFiveD/images/emblem.png">
+						width="200" filename="com/ATeam/twoDotFiveD/images/emblem.png">
 						<effect>
 							<onStartScreen name="fade" startColor="#0000"
 								endColor="#000f" length="500" startDelay="1500" post="false" />
@@ -54,7 +54,7 @@
 					alternateEnable="exit" />
 			</effect>
 			<panel id="panel" childLayout="vertical"
-				backgroundImage="src/main/resources/com/lovetextures/light-refraction-2.jpg"
+				backgroundImage="com/lovetextures/light-refraction-2.jpg"
 				width="100%" height="100%">
 				<effect>
 					<onStartScreen name="fade" startColor="#fff0"
@@ -80,7 +80,7 @@
 							</effect>
 							<!-- fiter="true" imageMode="resize:3,3,3,3,3,3,3,3,3,3,3,3" -->
 							<image align="center" valign="center"
-								filename="src/main/resources/cz/advel/jbullet/bullet_logo.png">
+								filename="cz/advel/jbullet/bullet_logo.png">
 								<effect>
 									<onStartScreen name="fade" startColor="#0000"
 										endColor="#000f" length="500" startDelay="1500" post="false" />
@@ -96,7 +96,7 @@
 							</effect>
 							<!-- fiter="true" imageMode="resize:3,3,3,3,3,3,3,3,3,3,3,3" -->
 							<image align="center" valign="center"
-								filename="src/main/resources/com/lwjgl/lwjgl-logo.png">
+								filename="com/lwjgl/lwjgl-logo.png">
 								<effect>
 									<onStartScreen name="fade" startColor="#0000"
 										endColor="#000f" length="500" startDelay="3000" post="false" />
@@ -115,7 +115,7 @@
 							</effect>
 							<!-- fiter="true" imageMode="resize:3,3,3,3,3,3,3,3,3,3,3,3" -->
 							<image align="center" valign="center"
-								filename="src/main/resources/demo-logo.png">
+								filename="demo-logo.png">
 								<effect>
 									<onStartScreen name="fade" startColor="#0000"
 										endColor="#000f" length="500" startDelay="4500" post="false" />
@@ -140,7 +140,7 @@
 					endColor="#000f" length="500" startDelay="1500" post="false" />
 			</effect>
 			<!-- TODO find out best imageMode numbers -->
-			<image filename="src/main/resources/com/lovetextures/cubes.jpg"></image>
+			<image filename="com/lovetextures/cubes.jpg"></image>
 		</layer>
 		<layer id="foreground" childLayout="vertical">
 			<effect>
@@ -149,12 +149,12 @@
 			</effect>
 			<panel id="panel_top" height="25%" width="75%" align="center"
 				childLayout="center" backgroundColor="#f008">
-				<text text="2.5D" font="src/main/resources/menu.fnt" width="100%"
+				<text text="2.5D" font="menu.fnt" width="100%"
 					height="100%" />
 			</panel>
 			<panel id="panel_mid" height="50%" width="75%" align="center"
 				childLayout="center" backgroundColor="#0f08">
-				<text text="text" font="src/main/resources/console.fnt" width="100%"
+				<text text="text" font="console.fnt" width="100%"
 					height="100%" wrap="true" />
 			</panel>
 			<panel id="panel_bottom" height="25%" width="75%" align="center"
@@ -163,7 +163,7 @@
 					childLayout="center" backgroundColor="#44f8">
 					<control name="button" label="Start" id="StartButton"
 						align="center" valign="center">
-						<interact onClick="changeScreen(hud)" />
+						<interact onClick="beginGame()" />
 						<effect>
 							<onStartScreen name="move" mode="in" direction="top"
 								length="300" startDelay="0" inherit="true" />

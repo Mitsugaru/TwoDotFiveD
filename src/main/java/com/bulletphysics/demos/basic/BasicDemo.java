@@ -175,6 +175,7 @@ public class BasicDemo extends DemoApplication {
 			Transform startTransform = new Transform();
 			startTransform.setIdentity();
 
+			//-mass  = phasing
 			float mass = 1f;
 
 			// rigidbody is dynamic if and only if mass is non zero, otherwise static
