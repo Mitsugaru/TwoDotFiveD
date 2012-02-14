@@ -1,4 +1,4 @@
-package com.ATeam.twoDotFiveD.chat;
+package com.ATeam.twoDotFiveD.chatServer;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -23,8 +23,7 @@ public class chatServer
     private JFrame panel;
 
     public void throwup(String text){
-        read.setText( read.getText() + text
-            + System.getProperty( "line.separator" ) );
+        read.setText(text + System.getProperty( "line.separator" ) + read.getText());
     }
 
     public static void main( String[] args )
@@ -125,5 +124,40 @@ public class chatServer
     }
     public void removeRoom(Room r){
         rooms.remove( r );
+    }
+
+    public void sendToAll( String message )
+    {
+        for (clientHandler c : clientlist){
+            c.send( message );
+        }
+    }
+    
+    public String[] getClientList(){
+        String[] list = new String[clientlist.size()];
+        int i = 0;
+        for (clientHandler c: clientlist){
+            list[i] = c.getname();
+            i++;
+        }
+        return list;
+    }
+    
+    public String[] getRoomList(){
+        String[] list = new String[rooms.size()];
+        int i = 0;
+        for (Room r: rooms){
+            list[i] = r.getName();
+            i++;
+        }
+        return list;
+    }
+
+    public void removePlayer( clientHandler client )
+    {
+        clientlist.remove( client );
+        for (Room r: rooms){
+            r.removePlayer( client );
+        }
     }
 }

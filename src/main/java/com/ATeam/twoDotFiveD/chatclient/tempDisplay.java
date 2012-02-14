@@ -1,7 +1,8 @@
-package com.ATeam.twoDotFiveD.chat;
+package com.ATeam.twoDotFiveD.chatclient;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -45,6 +46,8 @@ public class tempDisplay
         read.setEditable( false );
         read.setLineWrap( true );
         read.setWrapStyleWord( true );
+        Font font = read.getFont();
+        read.setFont( new Font(font.getName(), font.getStyle() ,font.getSize() + 2) );
         JScrollPane scroll = new JScrollPane( read );
         scroll.setSize( read.getSize() );
         panel.add( scroll, BorderLayout.CENTER );
@@ -95,7 +98,6 @@ public class tempDisplay
     // this gets called any time you need to put a message on the screen
     public void updatetext( String text )
     {
-        read.setText( read.getText() + text
-            + System.getProperty( "line.separator" ) );
+        read.setText(text + System.getProperty( "line.separator" ) + read.getText());
     }
 }

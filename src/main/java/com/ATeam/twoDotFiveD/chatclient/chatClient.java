@@ -1,4 +1,4 @@
-package com.ATeam.twoDotFiveD.chat;
+package com.ATeam.twoDotFiveD.chatclient;
 
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -82,7 +82,6 @@ public class chatClient extends Thread
             in = new Scanner( socket.getInputStream() );
             out = new PrintWriter( socket.getOutputStream(), true );
             out.println( name );
-            System.out.println("I sent the name!");
             while ( !stop )
             {
                 if ( in.hasNext() )

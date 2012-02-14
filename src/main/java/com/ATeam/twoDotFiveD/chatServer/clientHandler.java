@@ -1,4 +1,4 @@
-package com.ATeam.twoDotFiveD.chat;
+package com.ATeam.twoDotFiveD.chatServer;
 
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -43,11 +43,19 @@ public class clientHandler extends Thread
     public void run()
     {
         name = in.nextLine();
+        server.sendToAll( name + " has joined the game." );
         while ( !stop )
         {
-            String text = in.nextLine();
-            server.throwup( text );
-            handle( text );
+            try
+            {
+                String text = in.nextLine();
+                server.throwup( text );
+                handle( text );
+            }
+            catch ( Exception e )
+            {
+                close();
+            }
         }
     }
 
@@ -63,10 +71,11 @@ public class clientHandler extends Thread
         stop = true;
         in.close();
         out.close();
+        server.removePlayer(this);
     }
 
 
-    public synchronized void handle( String text )
+    public void handle( String text )
     {
         if ( text.length() < 1 )
         {
@@ -88,11 +97,64 @@ public class clientHandler extends Thread
             {
                 Scanner temp = new Scanner( text ).useDelimiter( " " );
                 String command = temp.next();
+                server.throwup( "The command is " + command );
                 if ( command.equals( "/create" ) || command.equals( "/join" )
                     || command.equals( "/leave" ) || command.equals( "/room" )
                     || command.equals( "/setdefault" )
-                    || command.equals( "/whisper" ) || command.equals("/list"))
+                    || command.equals( "/whisper" ) || command.equals( "/list" )
+                    || command.equals( "/who" ) || command.equals( "/whoall" )
+                    || command.equals( "/listall" ) )
                 {
+                    if ( command.equals( "/listall" ) )
+                    {
+                        String[] list = server.getRoomList();
+                        String message ="The players in the game are: ";
+                        for ( int i = 0; i < list.length; i++ )
+                        {
+                            if (i == 0){
+                            message += list[i];}
+                            else{
+                                message += ", " + list[i];
+                            }
+                        }
+                        send( message );
+                    }
+                    if ( command.equals( "/who" ) )
+                    {
+                        String message ="";
+                        for ( Room r : rooms )
+                        {
+                            message += "In [" + r.getName() + "]:";
+                            String[] list = r.getPlayers();
+                            for ( int i = 0; i < list.length; i++ )
+                            {
+                                if (i==0){
+                                    message += list[i];
+                                }
+                                else{
+                                    message += ", " + list[i];
+                                }
+                            }
+                            send( message );
+                            message = "";
+                        }
+                    }
+
+                    if ( command.equals( "/whoall" ) )
+                    {
+                        String[] list = server.getClientList();
+                        String message ="";
+                        for ( int i = 0; i < list.length; i++ )
+                        {
+                            if (i==0){
+                                message += list[i];
+                            }
+                            else {
+                                message += ", " +list[i];
+                            }
+                        }
+                        send(message);
+                    }
                     if ( command.equals( "/create" ) )
                     {
                         if ( temp.hasNext() )
@@ -165,7 +227,7 @@ public class clientHandler extends Thread
                                         this,
                                         args[2] ) )
                                     {
-                                        send( "You are not part of " + args[1] );
+                                        send( "You are now part of " + args[1] );
                                     }
                                     else
                                     {
@@ -236,8 +298,8 @@ public class clientHandler extends Thread
                                         for ( int i = 2; i < args.length; i++ )
                                         {
                                             message = message + " " + args[i];
-                                            r.send( message );
                                         }
+                                        r.send( message );
                                     }
                                 }
                             }
@@ -316,9 +378,11 @@ public class clientHandler extends Thread
                             send( "Invalid command structure6" );
                         }
                     }
-                    if(command.equals( "/list" )){
-                        for (Room r: rooms){
-                            send(r.getName());
+                    if ( command.equals( "/list" ) )
+                    {
+                        for ( Room r : rooms )
+                        {
+                            send( r.getName() );
                         }
                     }
                 }

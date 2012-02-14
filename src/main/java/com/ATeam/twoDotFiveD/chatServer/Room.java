@@ -1,4 +1,4 @@
-package com.ATeam.twoDotFiveD.chat;
+package com.ATeam.twoDotFiveD.chatServer;
 
 import java.util.ArrayList;
 
@@ -47,12 +47,11 @@ public class Room
 
     // Called by chatServer, sends the message to the client. The chatServer
     // needs to append the sending players name!!!!!
-    public void send( String message )
+    public synchronized void send( String message )
     {
         for ( clientHandler c : clientlist )
         {
-            message = name + ": " + message;
-            c.send( message );
+            c.send( "[" + name + "] " + message );
         }
     }
 
@@ -62,17 +61,19 @@ public class Room
         if(clientlist.contains( client )){
             return false;
         }
-        if ( this.password == "" )
+        if ( this.password.equals( "") )
         {
+            send(client.getname() + " has entered [" + name + "]" );
             clientlist.add( client );
             return true;
         }
-        if ( password == "" )
+        if ( password.equals( "") )
         {
             return false;
         }
-        if ( this.password == password )
+        if ( this.password.equals(password) )
         {
+            send(client.getname() + " has entered [" + name + "]" );
             clientlist.add( client );
             return true;
         }
@@ -80,8 +81,18 @@ public class Room
     }
     public void removePlayer(clientHandler client){
         clientlist.remove( client );
-        if(clientlist.isEmpty()){
+        if(clientlist.isEmpty() && name!= "Default"){
             server.removeRoom( this );
         }
+    }
+    
+    public String[] getPlayers(){
+        String[] list = new String[clientlist.size()];
+        int i = 0;
+        for (clientHandler c : clientlist){
+            list[i] = c.getname();
+            i++;
+        }
+        return list;
     }
 }
