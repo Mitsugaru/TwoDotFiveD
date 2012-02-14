@@ -1934,6 +1934,10 @@ public class GLApp {
 	public static double getFramesPerSecond() {
     	return 1d/avgSecsPerFrame;
     }
+	
+	public static double getSecondsSinceLastFrame() {
+		return secondsSinceLastFrame;
+	}
 
     //========================================================================
     // Load images
@@ -2488,7 +2492,73 @@ public class GLApp {
         }
         GL11.glEnd();
     }
+    
+    //added
+    /**
+     * Draw cube of a specific size at the given float corrdinates
+     * @param x float x position
+     * @param y float y position
+     * @param z float z position
+     * @param size float size of cube
+     */
+    public static void renderCubeCoord(float x, float y, float z, float size) {
+    	float hs = size/2.0f;  //half size
+    	GL11.glBegin(GL11.GL_QUADS);
+    	//front face
+    	GL11.glNormal3f( 0.0f, 0.0f, 1.0f);
+        GL11.glTexCoord2f(0.0f, 0.0f); GL11.glVertex3f(x-hs, y-hs, z+hs);	// Bottom Left
+        GL11.glTexCoord2f(1.0f, 0.0f); GL11.glVertex3f( x+hs, y-hs,  z+hs);	// Bottom Right
+        GL11.glTexCoord2f(1.0f, 1.0f); GL11.glVertex3f( x+hs,  y+hs,  z+hs);	// Top Right
+        GL11.glTexCoord2f(0.0f, 1.0f); GL11.glVertex3f(x-hs,  y+hs,  z+hs);	// Top Left
+        // Back Face
+        GL11.glNormal3f( 0.0f, 0.0f, -1.0f);
+        GL11.glTexCoord2f(1.0f, 0.0f); GL11.glVertex3f(x-hs, y-hs, z-hs);	// Bottom Right
+        GL11.glTexCoord2f(1.0f, 1.0f); GL11.glVertex3f(x-hs,  y+hs, z-hs);	// Top Right
+        GL11.glTexCoord2f(0.0f, 1.0f); GL11.glVertex3f( x+hs,  y+hs, z-hs);	// Top Left
+        GL11.glTexCoord2f(0.0f, 0.0f); GL11.glVertex3f( x+hs, y-hs, z-hs);	// Bottom Left
+        // Top Face
+        GL11.glNormal3f( 0.0f, 1.0f, 0.0f);
+        GL11.glTexCoord2f(0.0f, 1.0f); GL11.glVertex3f(x-hs,  y+hs, z-hs);	// Top Left
+        GL11.glTexCoord2f(0.0f, 0.0f); GL11.glVertex3f(x-hs,  y+hs,  z+hs);	// Bottom Left
+        GL11.glTexCoord2f(1.0f, 0.0f); GL11.glVertex3f( x+hs,  y+hs,  z+hs);	// Bottom Right
+        GL11.glTexCoord2f(1.0f, 1.0f); GL11.glVertex3f( x+hs,  y+hs, z-hs);	// Top Right
+        // Bottom Face
+        GL11.glNormal3f( 0.0f, -1.0f, 0.0f);
+        GL11.glTexCoord2f(1.0f, 1.0f); GL11.glVertex3f(x+hs, y-hs, z+hs);	// Top Right
+        GL11.glTexCoord2f(0.0f, 1.0f); GL11.glVertex3f( x-hs, y-hs, z+hs);	// Top Left
+        GL11.glTexCoord2f(0.0f, 0.0f); GL11.glVertex3f( x-hs, y-hs,  z-hs);	// Bottom Left
+        GL11.glTexCoord2f(1.0f, 0.0f); GL11.glVertex3f(x+hs, y-hs,  z-hs);	// Bottom Right
+        // Right face
+        GL11.glNormal3f( 1.0f, 0.0f, 0.0f);
+        GL11.glTexCoord2f(1.0f, 0.0f); GL11.glVertex3f( x+hs, y-hs, z-hs);	// Bottom Right
+        GL11.glTexCoord2f(1.0f, 1.0f); GL11.glVertex3f( x+hs,  y+hs, z-hs);	// Top Right
+        GL11.glTexCoord2f(0.0f, 1.0f); GL11.glVertex3f( x+hs,  y+hs,  z+hs);	// Top Left
+        GL11.glTexCoord2f(0.0f, 0.0f); GL11.glVertex3f( x+hs, y-hs,  z+hs);	// Bottom Left
+        // Left Face
+        GL11.glNormal3f( -1.0f, 0.0f, 0.0f);
+        GL11.glTexCoord2f(0.0f, 0.0f); GL11.glVertex3f(x-hs, y-hs, z-hs);	// Bottom Left
+        GL11.glTexCoord2f(1.0f, 0.0f); GL11.glVertex3f(x-hs, y-hs,  z+hs);	// Bottom Right
+        GL11.glTexCoord2f(1.0f, 1.0f); GL11.glVertex3f(x-hs,  y+hs,  z+hs);	// Top Right
+        GL11.glTexCoord2f(0.0f, 1.0f); GL11.glVertex3f(x-hs,  y+hs, z-hs);	// Top Left
+        GL11.glEnd();
+    }
 
+    
+    //TEST
+    
+    public void drawCube(float extent) {
+		extent = extent * 0.5f;
+		
+	    GL11.glBegin(GL11.GL_QUADS);
+        GL11.glNormal3f( 1f, 0f, 0f); GL11.glVertex3f(+extent,-extent,+extent); GL11.glVertex3f(+extent,-extent,-extent); GL11.glVertex3f(+extent,+extent,-extent); GL11.glVertex3f(+extent,+extent,+extent);
+        GL11.glNormal3f( 0f, 1f, 0f); GL11.glVertex3f(+extent,+extent,+extent); GL11.glVertex3f(+extent,+extent,-extent); GL11.glVertex3f(-extent,+extent,-extent); GL11.glVertex3f(-extent,+extent,+extent);
+        GL11.glNormal3f( 0f, 0f, 1f); GL11.glVertex3f(+extent,+extent,+extent); GL11.glVertex3f(-extent,+extent,+extent); GL11.glVertex3f(-extent,-extent,+extent); GL11.glVertex3f(+extent,-extent,+extent);
+        GL11.glNormal3f(-1f, 0f, 0f); GL11.glVertex3f(-extent,-extent,+extent); GL11.glVertex3f(-extent,+extent,+extent); GL11.glVertex3f(-extent,+extent,-extent); GL11.glVertex3f(-extent,-extent,-extent);
+        GL11.glNormal3f( 0f,-1f, 0f); GL11.glVertex3f(-extent,-extent,+extent); GL11.glVertex3f(-extent,-extent,-extent); GL11.glVertex3f(+extent,-extent,-extent); GL11.glVertex3f(+extent,-extent,+extent);
+        GL11.glNormal3f( 0f, 0f,-1f); GL11.glVertex3f(-extent,-extent,-extent); GL11.glVertex3f(-extent,+extent,-extent); GL11.glVertex3f(+extent,+extent,-extent); GL11.glVertex3f(+extent,-extent,-extent);
+		GL11.glEnd();
+	}
+    
     /**
      * Render a 2 unit cube centered at origin.  Includes texture coordinates
      * and normals.

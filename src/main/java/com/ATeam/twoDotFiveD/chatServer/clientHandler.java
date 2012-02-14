@@ -54,7 +54,7 @@ public class clientHandler extends Thread
             try
             {
                 String text = in.nextLine();
-                server.throwup( text );
+                server.throwup( name + ": " + text );
                 handle( text );
             }
             catch ( NoSuchElementException e )
@@ -104,7 +104,6 @@ public class clientHandler extends Thread
             {
                 Scanner temp = new Scanner( text ).useDelimiter( " " );
                 String command = temp.next();
-                server.throwup( "The command is " + command );
                 if ( command.equals( "/create" ) || command.equals( "/join" )
                     || command.equals( "/leave" ) || command.equals( "/room" )
                     || command.equals( "/setdefault" )
@@ -133,7 +132,7 @@ public class clientHandler extends Thread
                     if ( command.equals( "/listall" ) )
                     {
                         String[] list = server.getRoomList();
-                        String message ="The players in the game are: ";
+                        String message ="The rooms in the game are: ";
                         for ( int i = 0; i < list.length; i++ )
                         {
                             if (i == 0){
@@ -196,7 +195,8 @@ public class clientHandler extends Thread
                                 {
                                     if ( server.createRoom( args[1], this, "" ) )
                                     {
-                                        send( args[1] + " has been created." );
+                                        send( args[1] + " has been created" );
+                                        send("You are now in " + args[1]);
                                     }
                                     else
                                     {
@@ -210,6 +210,7 @@ public class clientHandler extends Thread
                                         args[2] ) )
                                     {
                                         send( args[1] + " has been created." );
+                                        send("You are now in " + args[1]);
                                     }
                                     else
                                     {
