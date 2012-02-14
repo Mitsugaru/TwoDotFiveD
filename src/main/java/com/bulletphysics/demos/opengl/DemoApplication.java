@@ -180,6 +180,7 @@ public abstract class DemoApplication {
 	public void updateCamera() {
 		gl.glMatrixMode(GL_PROJECTION);
 		gl.glLoadIdentity();
+		System.out.println(cameraTargetPosition);
 		float rele = ele * 0.01745329251994329547f; // rads per deg
 		float razi = azi * 0.01745329251994329547f; // rads per deg
 
@@ -220,9 +221,13 @@ public abstract class DemoApplication {
 		
 		gl.glMatrixMode(GL_MODELVIEW);
 		gl.glLoadIdentity();
+		System.out.println("camUP "+cameraUp);
 		gl.gluLookAt(cameraPosition.x, cameraPosition.y, cameraPosition.z,
 				cameraTargetPosition.x, cameraTargetPosition.y, cameraTargetPosition.z,
 				cameraUp.x, cameraUp.y, cameraUp.z);
+		System.out.println(cameraPosition.x+","+ cameraPosition.y+","+ cameraPosition.z+",  "+
+				cameraTargetPosition.x+","+ cameraTargetPosition.y+","+ cameraTargetPosition.z+",  "+
+				cameraUp.x+","+ cameraUp.y+","+ cameraUp.z);
 	}
 	
 	public void stepLeft() {

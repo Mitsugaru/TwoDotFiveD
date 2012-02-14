@@ -380,4 +380,34 @@ public class GL_Vector
 				0,
 				(float)Math.cos(degrees * GLApp.PIOVER180) );
 	}
+	
+	public static GL_Vector rotationVectorX(float degrees) {
+		return new GL_Vector(
+				0,
+				(float)Math.cos(degrees * GLApp.PIOVER180),
+				(float)Math.sin(degrees * GLApp.PIOVER180) );
+	}
+	
+	/**
+     * Transform a Vector by a matrix and return the result in a destination
+     * vector.
+     * @param left The left matrix
+     * @param right The right vector
+     * @param dest The destination vector, or null if a new one is to be created
+     * @return the destination vector
+     */
+    public static GL_Vector transform(GL_Matrix left, GL_Vector right, GL_Vector dest) {
+        if (dest == null)
+            dest = new GL_Vector();
+ 
+        float x = left.m00 * right.x + left.m10 * right.y + left.m20 * right.z;
+        float y = left.m01 * right.x + left.m11 * right.y + left.m21 * right.z;
+        float z = left.m02 * right.x + left.m12 * right.y + left.m22 * right.z;
+ 
+        dest.x = x;
+        dest.y = y;
+        dest.z = z;
+ 
+        return dest;
+    }
 }

@@ -97,6 +97,8 @@ public class GLCamera {
 		RightVector	= GL_Vector.crossProduct(ViewDir, UpVector);
 		RotatedX = RotatedY = RotatedZ = 0.0f;
 	}
+	
+
 
 	/**
 	 * Move camera position in the given direction
@@ -217,10 +219,10 @@ public class GLCamera {
 				ViewPoint.x, ViewPoint.y, ViewPoint.z,
 				UpVector.x, UpVector.y, UpVector.z);
 
-		//System.out.println(Position.x + "," + Position.y + "," + Position.z + "  " +
-		//		ViewDir.x + "," + ViewDir.y + "," + ViewDir.z + "  " +
-		//		UpVector.x + "," + UpVector.y + "," + UpVector.z + "  "
-		//		);
+//		System.out.println(Position.x + "," + Position.y + "," + Position.z + "  " +
+//				ViewDir.x + "," + ViewDir.y + "," + ViewDir.z + "  " +
+//				UpVector.x + "," + UpVector.y + "," + UpVector.z + "  "
+//				);
 	}
 
 	/**
