@@ -2,6 +2,7 @@ package demo.lwjgl.basic;
 
 import java.nio.FloatBuffer;
 
+import org.lwjgl.Sys;
 import org.lwjgl.opengl.*;
 import org.lwjgl.input.*;
 import org.lwjgl.util.glu.*;
@@ -251,20 +252,85 @@ public class GLAppDemoCamera extends GLApp {
 		// apply the billboard matrix
 		GL11.glMultMatrix(bbmatrix);
 	}
+	
+	/**
+     * Called by the run() loop.  Handles animation and input for each frame.
+     */
+    public void handleEvents() {
+        int mouseDX = Mouse.getDX();
+        int mouseDY = Mouse.getDY();
+        int mouseDW = Mouse.getDWheel();
+        // handle mouse motion
+        if (mouseDX != 0 || mouseDY != 0 || mouseDW != 0) {
+            cursorX += mouseDX;
+            cursorY += mouseDY;
+            if (cursorX < 0) {
+                cursorX = 0;
+            }
+            else if (cursorX > displayMode.getWidth()) {
+                cursorX = displayMode.getWidth();
+            }
+            if (cursorY < 0) {
+                cursorY = 0;
+            }
+            else if (cursorY > displayMode.getHeight()) {
+                cursorY = displayMode.getHeight();
+            }
+            mouseMove(mouseDX,mouseDY);
+            //msg("DX=" + mouseDX + " DY=" + mouseDY + " cursorX=" + cursorX);
+        }
+        // handle mouse wheel event
+        if (mouseDW != 0) {
+        	mouseWheel(mouseDW);
+        }
+        // handle mouse clicks
+        while ( Mouse.next() ) {
+        	if(Mouse.getEventButton() == 0 && Mouse.getEventButtonState() == true) {
+        		mouseDown(cursorX, cursorY);
+        	}
+        	if(Mouse.getEventButton() == 0 && Mouse.getEventButtonState() == false) {
+        		mouseUp(cursorX, cursorY);
+        	}
+        	if(Mouse.getEventButton() == 1 && Mouse.getEventButtonState() == true) {
+        		mouseDown(cursorX, cursorY);
+        	}
+        	if(Mouse.getEventButton() == 1 && Mouse.getEventButtonState() == false) {
+        		mouseUp(cursorX, cursorY);
+        	}
+        }
+        // Handle key hits
+        while ( Keyboard.next() )  {
+        	// check for exit key
+            if (Keyboard.getEventKey() == finishedKey) {
+                finished = true;
+            }
+            // pass key event to handler
+            if (Keyboard.getEventKeyState()) {    // key was just pressed, trigger keyDown()
+                keyDown(Keyboard.getEventKey());
+            }
+            else {
+                keyUp(Keyboard.getEventKey());    // key was released
+            }
+        }
+
+        // Count frames
+        frameCount++;
+        if ((Sys.getTime()-lastFrameTime) > ticksPerSecond) {
+            //msg("==============> FramesPerSec=" + (frameCount/1) + " timeinsecs=" + getTimeInSeconds() + " timeinmillis=" + getTimeInMillis());
+            frameCount = 0;
+        }
+    }
 
     public void mouseMove(int x, int y) {
-    	/*System.out.println("x: " + (x) + " y: " + (y));
+    	System.out.println("x: " + (x) + " y: " + (y));
     	if(x != mouseX)
     	{
     		cam.camera.RotateV((mouseX - x) * 0.1f);
     	}
     	if(y != displayHeight/2)
     	{
-    		cam.camera.MoveForward((mouseY - y) * 0.1f);
+    		cam.camera.RotateX((mouseY - y) * 0.1f);
     	}
-    	Mouse.setCursorPosition(displayWidth/2, displayHeight/2);
-    	mouseX = x;
-    	mouseY = y;*/
     }
 
     public void mouseDown(int x, int y) {

@@ -55,7 +55,7 @@ public class FPCameraTest extends GLApp
 		groundTextureHandle = makeTexture("src/main/resources/com/lovetextures/yellowflowers.jpg");
 		
 		// setup perspective
-		setPerspective();
+		//setPerspective();
 		
 		// Create a point light (white)
 		setLight(GL11.GL_LIGHT1, new float[] { 1.0f, 1.0f, 1.0f, 1.0f }, // diffuse
