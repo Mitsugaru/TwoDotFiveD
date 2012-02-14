@@ -43,7 +43,7 @@ public class GLAppDemoLine extends GLApp {
     	L = new GLLine(10f);
     	L.setUVfactor(200);
     	
-    	marble = makeTexture("images/marble.jpg");
+    	marble = makeTexture("src/main/resources/com/lovetextures/cubes.jpg");
 
     	// turn on 2D drawing
     	setOrtho();    	
