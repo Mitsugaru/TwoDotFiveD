@@ -28,7 +28,7 @@ public class TwoDotFiveD
 	public static Config		config			= new Config(homeDir);
 	private static Debug		debug			= new Debug();
 	private static Dispatcher	dispatcher		= new Dispatcher();
-	private static final String	XML				= "com/ATeam/twoDotFiveD/layout/main.xml";
+	private static final String	SPLASH_XML				= "com/ATeam/twoDotFiveD/layout/splash.xml";
 	private static final String	MOUSE_CURSOR	= "nifty-cursor.png";
 	
 	/**
@@ -47,8 +47,8 @@ public class TwoDotFiveD
 		DisplayStuff.initSubSystems("2.5D");
 		LwjglRenderDevice render = new LwjglRenderDevice();
 		Nifty nifty = new Nifty(render, new OpenALSoundDevice(),
-				new LwjglInputSystem(), new AccurateTimeProvider());
-		nifty.fromXml(XML, "intro");
+				DisplayStuff.getInputSystem(), new AccurateTimeProvider());
+		nifty.fromXml(SPLASH_XML, "intro");
 		// get the NiftyMouse interface that gives us access to all mouse
 		// cursor related stuff
 		NiftyMouse niftyMouse = nifty.getNiftyMouse();
