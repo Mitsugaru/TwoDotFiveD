@@ -22,6 +22,8 @@ import com.ATeam.twoDotFiveD.TwoDotFiveD;
  * @author Mitsugaru
  * 
  */
+// TODO unless we can put other kinds of profiling classes into the debug
+// package, may as well merge it into the main package...
 public class Logging
 {
 	// Class variables
@@ -70,8 +72,7 @@ public class Logging
 			log.info("Logging @ " + logFile.getCanonicalPath());
 			// TODO potentially have a SQLite database for logging?
 			// Mark what to save log into config file, as well as enable/disable
-			// log
-			// Need way to auto prune older files
+			// log. Need way to auto prune older files
 		}
 		catch (SecurityException e)
 		{
