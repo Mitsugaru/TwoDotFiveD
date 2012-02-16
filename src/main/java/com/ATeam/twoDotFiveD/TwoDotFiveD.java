@@ -24,7 +24,6 @@ public class TwoDotFiveD
 														+ ".TwoDotFiveD";
 	public static Logging		logger			= new Logging(homeDir);
 	public static Config		config			= new Config(homeDir);
-	private static Debug		debug			= new Debug();
 	private static EventDispatcher	dispatcher		= new EventDispatcher();
 	private static final String	SPLASH_XML				= "com/ATeam/twoDotFiveD/layout/splash.xml";
 	private static final String	MOUSE_CURSOR	= "nifty-cursor.png";
@@ -35,8 +34,8 @@ public class TwoDotFiveD
 	public TwoDotFiveD()
 	{
 		// Log info
-		debug.systemInfo();
-		debug.memoryInfo();
+		Logging.systemInfo();
+		Logging.memoryInfo();
 		// Event test
 		dispatcher.registerListener(Event.Type.PLAYER_MOVE, new ListenerTest());
 		final Player player = new Player();
