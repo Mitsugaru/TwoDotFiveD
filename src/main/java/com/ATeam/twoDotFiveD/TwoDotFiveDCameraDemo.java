@@ -9,6 +9,8 @@ import org.lwjgl.opengl.*;
 import org.lwjgl.input.*;
 import org.lwjgl.util.glu.*;
 
+import com.ATeam.twoDotFiveD.block.Block;
+
 import demo.lwjgl.basic.GLApp;
 import demo.lwjgl.basic.GLCam;
 import demo.lwjgl.basic.GLCamera;
@@ -28,11 +30,37 @@ import lib.lwjgl.glmodel.*;
  * @author - Andrew Tucker
  */
 public class TwoDotFiveDCameraDemo extends GLApp {
+	//added since demo to Dr. Game
+	GL_Vector worldChangeVector;
+	GL_Vector playerPosition;
+	Player player = new Player();
+	
+	
+	//hardcoded blocks
+	//need a method to do this automatically
+	
+	Block ground = new Block();
+	Block groundLeft = new Block(0f, -20f, -1f, 0f, null);
+	Block groundRight = new Block(0f, 20f, -1f, 0f, null);
+	Block groundTop = new Block(0f, 0f,-1f, -20f, null);
+	Block groundTopLeft = new Block(0f, -20f, -1f, -20f, null);
+	Block groundTopRight = new Block(0f, 20f, -1f, -20f, null);
+	Block groundBottom = new Block(0f, 0f, -1f, 20f, null);
+	Block groundBottomLeft = new Block(0f, -20f, -1f, 20f, null);
+	Block groundBottomRight = new Block(0f, 20f, -1f, 20f, null);
+	Block cube1 = new Block(0f, -11f, 0f, -7f, null);
+	Block cube2 = new Block(0f, -9f, 0f, -5f, null);
+	Block cube3 = new Block(0f, -10f, 2f, -6f, null);
+	Block sphere1 = new Block(0f, 15f, 4f, -10f, null);
+	Block sphere2 = new Block(0f, 25f, 7f, -20f, null);
+	Block sphere3 = new Block(0f, -20f, 4f, 10f, null);
+	
     // Handle for texture
     int cubeTextureHandle = 0;
     int sphereTextureHandle = 0;
     int groundTextureHandle = 0;
     int cubeOtherTextureHandle = 0;
+    int skyTextureHandle = 0;
     // Light position: if last value is 0, then this describes light direction.  If 1, then light position.
     float lightPosition[]= { -2f, 2f, 2f, 0f };
     // Camera position
@@ -102,36 +130,37 @@ public class TwoDotFiveDCameraDemo extends GLApp {
         cubeTextureHandle = makeTexture("src/main/resources/com/lovetextures/cube.png");
         sphereTextureHandle = makeTexture("src/main/resources/com/lovetextures/sphere.png");
         cubeOtherTextureHandle = makeTexture("src/main/resources/com/lovetextures/grey.png");
+        skyTextureHandle = makeTexture("src/main/resources/com/lovetextures/sky.png");
         groundTextureHandle = makeTexture("src/main/resources/com/lovetextures/ground.jpg",true,true);
 	    camera1.setCamera(0,0,20, 0,0,0, 0,1,0);
 
-	    cubeTestBottom = beginDisplayList(); {
-       	renderCubeCoord(-11f, -1.0f, -7f, 2.0f);
-	    //	drawCube(10f);
-        }
-        endDisplayList();
-        
-        cubeTestTop = beginDisplayList(); {
-        	renderCubeCoord(-10f, 1.0f, -6f, 2.0f);
-        }
-        endDisplayList();
-        
-        cubeTestRot = beginDisplayList(); {
-        	renderCubeCoord(-9f, -1.0f, -5f, 2.0f);
-        }
-        endDisplayList();
+//	    cubeTestBottom = beginDisplayList(); {
+//       	renderCubeCoord(-11f, -1.0f, -7f, 2.0f);
+//	    //	drawCube(10f);
+//        }
+//        endDisplayList();
+//        
+//        cubeTestTop = beginDisplayList(); {
+//        	renderCubeCoord(-10f, 1.0f, -6f, 2.0f);
+//        }
+//        endDisplayList();
+//        
+//        cubeTestRot = beginDisplayList(); {
+//        	renderCubeCoord(-9f, -1.0f, -5f, 2.0f);
+//        }
+//        endDisplayList();
 
-        // make a cube display list
-        cube = beginDisplayList(); {
-        	renderCube();
-        }
-        endDisplayList();
+//        // make a cube display list
+//        cube = beginDisplayList(); {
+//        	renderCube();
+//        }
+//        endDisplayList();
         
         // make a sphere display list
-        sphere = beginDisplayList(); {
-        	renderSphere();
-        }
-        endDisplayList();
+//        sphere = beginDisplayList(); {
+//        	renderSphere();
+//        }
+//        endDisplayList();
         
         
 
@@ -142,7 +171,7 @@ public class TwoDotFiveDCameraDemo extends GLApp {
         //		the color of the shadow,
         // 		this application,
         // 		the function that draws all objects that cast shadows
-        objectsShadow = new GLShadowOnPlane(lightPosition, new float[] {0f,1f,0f,2f}, null, this, method(this,"drawObjects"));
+        objectsShadow = new GLShadowOnPlane(lightPosition, new float[] {0f,2f,0f,2f}, null, this, method(this,"drawObjects(worldChangeVector)"));
     }
 
     /**
@@ -163,6 +192,15 @@ public class TwoDotFiveDCameraDemo extends GLApp {
      * Render one frame.  Called by GLApp.run().
      */
     public void draw() {
+    	//a bit wonky and obtuse -- may want to find a better way to do this
+    	//ORDER IS IMPORTANT
+    	player.handleMovementKeys(cam.getDirection(), cam.getQuadrant());
+    	player.setWorldChangeVector();
+    	worldChangeVector = player.getWorldChangeVector();
+    	System.out.println("world change vector " + worldChangeVector);
+    	playerPosition = player.getPosition();
+	
+    	
     	degrees += 90f * GLApp.getSecondsPerFrame();
     	spherePos = GL_Vector.rotationVector(degrees).mult(8);
     	
@@ -176,83 +214,148 @@ public class TwoDotFiveDCameraDemo extends GLApp {
         GL11.glLoadIdentity();
         cam.render();
         
-        //ground
-        GL11.glPushMatrix();
-        {
-            GL11.glTranslatef(0f, -2f, 0f); 
-            GL11.glScalef(15f, .01f, 15f);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, groundTextureHandle);
-            renderCube();
-        }
-        GL11.glPopMatrix();
-        
-//        GL11.glPushMatrix();
-//        {
-//        	float x,y,z;
-//        	x=y=z=0.0f;
-//        	y = 13f;
-//        	GL11.glBegin(GL11.GL_QUADS);
-//        	float hs = 30f/2f;
-//        	//front face
-//        	GL11.glNormal3f( 0.0f, 0.0f, 1.0f);
-//            GL11.glTexCoord2f(0.0f, 0.0f); GL11.glVertex3f(x-hs, y-hs, z-hs);	// Bottom Left
-//            GL11.glTexCoord2f(1.0f, 0.0f); GL11.glVertex3f( x+hs, y-hs,  z-hs);	// Bottom Right
-//            GL11.glTexCoord2f(1.0f, 1.0f); GL11.glVertex3f( x+hs,  y+hs,  z-hs);	// Top Right
-//            GL11.glTexCoord2f(0.0f, 1.0f); GL11.glVertex3f(x-hs,  y+hs,  z-hs);	// Top Left
-//            
-//         // Back Face
-//            GL11.glNormal3f( 0.0f, 0.0f, -1.0f);
-//            GL11.glTexCoord2f(1.0f, 0.0f); GL11.glVertex3f(x-hs, y-hs, z+hs);	// Bottom Right
-//            GL11.glTexCoord2f(1.0f, 1.0f); GL11.glVertex3f(x-hs,  y+hs, z+hs);	// Top Right
-//            GL11.glTexCoord2f(0.0f, 1.0f); GL11.glVertex3f( x+hs,  y+hs, z+hs);	// Top Left
-//            GL11.glTexCoord2f(0.0f, 0.0f); GL11.glVertex3f( x+hs, y-hs, z+hs);	// Bottom Left
-//            
-//         // Right face
-//            GL11.glNormal3f( 1.0f, 0.0f, 0.0f);
-//            GL11.glTexCoord2f(1.0f, 0.0f); GL11.glVertex3f( x-hs, y-hs, z-hs);	// Bottom Right
-//            GL11.glTexCoord2f(1.0f, 1.0f); GL11.glVertex3f( x-hs,  y+hs, z-hs);	// Top Right
-//            GL11.glTexCoord2f(0.0f, 1.0f); GL11.glVertex3f( x-hs,  y+hs,  z+hs);	// Top Left
-//            GL11.glTexCoord2f(0.0f, 0.0f); GL11.glVertex3f( x-hs, y-hs,  z+hs);	// Bottom Left
-//            
-//         // Left Face
-//            GL11.glNormal3f( -1.0f, 0.0f, 0.0f);
-//            GL11.glTexCoord2f(0.0f, 0.0f); GL11.glVertex3f(x+hs, y-hs, z-hs);	// Bottom Left
-//            GL11.glTexCoord2f(1.0f, 0.0f); GL11.glVertex3f(x+hs, y-hs,  z+hs);	// Bottom Right
-//            GL11.glTexCoord2f(1.0f, 1.0f); GL11.glVertex3f(x+hs,  y+hs,  z+hs);	// Top Right
-//            GL11.glTexCoord2f(0.0f, 1.0f); GL11.glVertex3f(x+hs,  y+hs, z-hs);	// Top Left
-//            GL11.glEnd();
-//        }
+    	drawWorldPlanes(worldChangeVector);
+    	objectsShadow.drawShadow();
 
-        objectsShadow.drawShadow();
-        drawObjects();
+        drawObjects(worldChangeVector);
 
         setLightPosition(GL11.GL_LIGHT1, lightPosition);
-        //setLightPosition( GL11.GL_LIGHT2, -2f, 2f, 0f);
 
         //display user directions
         print( 30, viewportH- 40, "Left-Right arrows rotate camera during sidescrolling view", 1);
         print( 30, viewportH- 60, "Up arrow to engage top-down view", 1);
         print( 30, viewportH- 80, "Down to return to sidescrolling view", 1);
-        print( 30, viewportH-100, "Running AVG FPS: " + Double.toString(GLApp.getFramesPerSecond()), 1);
+        print( 30, viewportH- 120, "W,A,S,D keys to move cube", 1);
+        print( 30, viewportH- 140, "Space to jump", 1);
+        print( 30, viewportH-180, "Running AVG FPS: " + Double.toString(GLApp.getFramesPerSecond()), 1);
     }
-
-    public void drawObjects() {
-        //sphere
+    
+    public void drawWorldPlanes(GL_Vector change) {
+    	System.out.println("ground position vector " + ground.position);
+  
         GL11.glPushMatrix();
         {
-        	billboardPoint(spherePos, ORIGIN, UP);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, sphereTextureHandle);
-            callDisplayList(sphere);
-            setMaterial( new float[] {.8f, .8f, .7f, 1f}, .4f);
+            GL11.glTranslatef(ground.position.x+= change.x, ground.position.y+=change.y, ground.position.z+=change.z); 
+        	GL11.glScalef(10f, .01f, 10f);
+
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, groundTextureHandle);
+            renderCube();
         }
         GL11.glPopMatrix();
+        
+        GL11.glPushMatrix();
+        {
+            GL11.glTranslatef(groundLeft.position.x+= change.x, groundLeft.position.y+=change.y, groundLeft.position.z+=change.z); 
+        	GL11.glScalef(10f, .01f, 10f);
 
-    	//cube
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, groundTextureHandle);
+            renderCube();
+        }
+        GL11.glPopMatrix();
+        
+        GL11.glPushMatrix();
+        {
+            GL11.glTranslatef(groundRight.position.x+= change.x, groundRight.position.y+=change.y, groundRight.position.z+=change.z); 
+        	GL11.glScalef(10f, .01f, 10f);
+
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, groundTextureHandle);
+            renderCube();
+        }
+        GL11.glPopMatrix();
+        
+        GL11.glPushMatrix();
+        {
+            GL11.glTranslatef(groundTopLeft.position.x+= change.x, groundTopLeft.position.y+=change.y, groundTopLeft.position.z+=change.z); 
+        	GL11.glScalef(10f, .01f, 10f);
+
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, groundTextureHandle);
+            renderCube();
+        }
+        GL11.glPopMatrix();
+        
+        GL11.glPushMatrix();
+        {
+            GL11.glTranslatef(groundTop.position.x+= change.x, groundTop.position.y+=change.y, groundTop.position.z+=change.z); 
+        	GL11.glScalef(10f, .01f, 10f);
+
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, groundTextureHandle);
+            renderCube();
+        }
+        GL11.glPopMatrix();
+        
+        GL11.glPushMatrix();
+        {
+            GL11.glTranslatef(groundTopRight.position.x+= change.x, groundTopRight.position.y+=change.y, groundTopRight.position.z+=change.z); 
+        	GL11.glScalef(10f, .01f, 10f);
+
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, groundTextureHandle);
+            renderCube();
+        }
+        GL11.glPopMatrix();
+        
+        GL11.glPushMatrix();
+        {
+            GL11.glTranslatef(groundBottomLeft.position.x+= change.x, groundBottomLeft.position.y+=change.y, groundBottomLeft.position.z+=change.z); 
+        	GL11.glScalef(10f, .01f, 10f);
+
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, groundTextureHandle);
+            renderCube();
+        }
+        GL11.glPopMatrix();
+        
+        GL11.glPushMatrix();
+        {
+            GL11.glTranslatef(groundBottom.position.x+= change.x, groundBottom.position.y+=change.y, groundBottom.position.z+=change.z); 
+        	GL11.glScalef(10f, .01f, 10f);
+
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, groundTextureHandle);
+            renderCube();
+        }
+        GL11.glPopMatrix();
+        
+        GL11.glPushMatrix();
+        {
+            GL11.glTranslatef(groundBottomRight.position.x+= change.x, groundBottomRight.position.y+=change.y, groundBottomRight.position.z+=change.z); 
+        	GL11.glScalef(10f, .01f, 10f);
+
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, groundTextureHandle);
+            renderCube();
+        }
+        GL11.glPopMatrix();
+        
+       //
+    }
+
+    public void drawObjects(GL_Vector change) {
+        //sphere
+//        GL11.glPushMatrix();
+//        {
+// 
+//        	System.out.println("Sphere position " + spherePos);
+//        	//billboardPoint(spherePos, ORIGIN, UP);
+//            GL11.glBindTexture(GL11.GL_TEXTURE_2D, sphereTextureHandle);
+//            GL11.glTranslatef(spherePos.x += change.x, spherePos.y += change.y, spherePos.z += change.z);
+//            renderSphere();
+//            setMaterial( new float[] {.8f, .8f, .7f, 1f}, .4f);
+//        }
+//        GL11.glPopMatrix();
+//    	GL11.glPushMatrix();
+//    	{
+//    		GL11.glBindTexture(GL11.GL_TEXTURE_2D, sphereTextureHandle);
+//    		//GL11.glTranslatef(x, y, z);
+//    		renderSphere();
+//
+//    	}
+
+    	//draw player
         GL11.glPushMatrix();
         {
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, cubeTextureHandle);
-            GL11.glScalef(2f, 2f, 2f);          
-            callDisplayList(cube);
+            GL11.glTranslatef(playerPosition.x, playerPosition.y, playerPosition.z);
+            //GL11.glScalef(2f, 2f, 2f);          
+            renderCube();
+            setMaterial( new float[] {.8f, .8f, .7f, 1f}, .4f);
+
         }
         GL11.glPopMatrix();
         
@@ -260,8 +363,11 @@ public class TwoDotFiveDCameraDemo extends GLApp {
         GL11.glPushMatrix();
         {
         	GL11.glBindTexture(GL11.GL_TEXTURE_2D, cubeOtherTextureHandle);
-        	//GL11.glScalef(2f, 2f, 2f);
-        	callDisplayList(cubeTestBottom);
+        	GL11.glTranslatef(cube1.position.x+=change.x, cube1.position.y+=change.y, cube1.position.z+=change.z);
+        	//delete
+        	System.out.println("cube position vector " + cube1.position);
+        	//callDisplayList(cubeTestBottom); 
+        	renderCube();
         }
         GL11.glPopMatrix();
         
@@ -270,18 +376,57 @@ public class TwoDotFiveDCameraDemo extends GLApp {
         {
         	GL11.glBindTexture(GL11.GL_TEXTURE_2D, cubeOtherTextureHandle);
         	//GL11.glScalef(2f, 2f, 2f);
-        	callDisplayList(cubeTestTop);
+        	//callDisplayList(cubeTestTop);
+        	GL11.glTranslatef(cube3.position.x+=change.x, cube3.position.y+=change.y, cube3.position.z+=change.z);
+        	renderCube();
         }
         GL11.glPopMatrix();
         
-      //cube test rot
+      //cube test bottom2
         GL11.glPushMatrix();
         {
         	GL11.glBindTexture(GL11.GL_TEXTURE_2D, cubeOtherTextureHandle);
         	//GL11.glScalef(2f, 2f, 2f);
-        	callDisplayList(cubeTestRot);
+        	//callDisplayList(cubeTestRot);
+        	GL11.glTranslatef(cube2.position.x+=change.x, cube2.position.y+=change.y, cube2.position.z+=change.z);
+        	renderCube();
         }
         GL11.glPopMatrix();
+        
+        GL11.glPushMatrix();
+        {
+        	GL11.glBindTexture(GL11.GL_TEXTURE_2D, sphereTextureHandle);
+        	//callDisplayList(cubeTestRot);
+        	GL11.glTranslatef(sphere1.position.x+=change.x, sphere1.position.y+=change.y, sphere1.position.z+=change.z);
+        	GL11.glScalef(5f, 5f, 5f);
+
+        	renderSphere();
+        }
+        GL11.glPopMatrix();
+        
+        GL11.glPushMatrix();
+        {
+        	GL11.glBindTexture(GL11.GL_TEXTURE_2D, sphereTextureHandle);
+        	//callDisplayList(cubeTestRot);
+        	GL11.glTranslatef(sphere2.position.x+=change.x, sphere2.position.y+=change.y, sphere2.position.z+=change.z);
+        	GL11.glScalef(7f, 7f, 7f);
+
+        	renderSphere();
+        }
+        GL11.glPopMatrix();
+        
+        GL11.glPushMatrix();
+        {
+        	GL11.glBindTexture(GL11.GL_TEXTURE_2D, sphereTextureHandle);
+ 
+        	//callDisplayList(cubeTestRot);
+        	GL11.glTranslatef(sphere3.position.x+=change.x, sphere3.position.y+=change.y, sphere3.position.z+=change.z);
+           	GL11.glScalef(5f, 5f, 5f);
+        	renderSphere();
+        }
+        GL11.glPopMatrix();
+        
+       
     }
 
 	/**

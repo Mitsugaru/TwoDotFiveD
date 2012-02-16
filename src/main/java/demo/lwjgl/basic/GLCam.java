@@ -23,8 +23,6 @@ import com.bulletphysics.linearmath.VectorUtil;
  * class moves the camera according to how much time has elapsed, so will
  * produce consistent response to input, regardless of processor speed.
  *
- * napier @ potatoland.org
- * &
  * Andrew Tucker
  * 
  * @see GLCamera.java
@@ -85,6 +83,11 @@ public class GLCam {
 	 */
 	public String getDirection() {
 		return direction;
+	}
+	
+	//added
+	public int getQuadrant() {
+		return quadrant;
 	}
 
 	 //added
@@ -741,6 +744,7 @@ public class GLCam {
 	public void setCamera(GLCamera cam) {
 		camera = cam;
 	}
+	
 
 
 	/**
