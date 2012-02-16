@@ -5,18 +5,16 @@ import java.util.logging.Level;
 
 import com.ATeam.twoDotFiveD.debug.*;
 import com.ATeam.twoDotFiveD.entity.Player;
-import com.ATeam.twoDotFiveD.event.Dispatcher;
+import com.ATeam.twoDotFiveD.event.EventDispatcher;
 import com.ATeam.twoDotFiveD.event.Event;
 import com.ATeam.twoDotFiveD.event.player.PlayerMoveEvent;
 import com.ATeam.twoDotFiveD.gui.DisplayStuff;
 
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyMouse;
-import de.lessvoid.nifty.renderer.lwjgl.input.LwjglInputSystem;
 import de.lessvoid.nifty.renderer.lwjgl.render.LwjglRenderDevice;
 import de.lessvoid.nifty.sound.openal.OpenALSoundDevice;
 import de.lessvoid.nifty.spi.time.impl.AccurateTimeProvider;
-import de.niftygui.examples.LwjglInitHelper;
 
 public class TwoDotFiveD
 {
@@ -27,7 +25,7 @@ public class TwoDotFiveD
 	public static Logging		logger			= new Logging(homeDir);
 	public static Config		config			= new Config(homeDir);
 	private static Debug		debug			= new Debug();
-	private static Dispatcher	dispatcher		= new Dispatcher();
+	private static EventDispatcher	dispatcher		= new EventDispatcher();
 	private static final String	SPLASH_XML				= "com/ATeam/twoDotFiveD/layout/splash.xml";
 	private static final String	MOUSE_CURSOR	= "nifty-cursor.png";
 	
