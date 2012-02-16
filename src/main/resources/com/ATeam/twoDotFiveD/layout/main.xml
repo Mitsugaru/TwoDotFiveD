@@ -6,138 +6,21 @@
 	<useStyles filename="nifty-default-styles.xml" />
 	<useControls filename="nifty-default-controls.xml" />
 
-	<!-- intro screen -->
-	<screen id="intro" controller="com.ATeam.twoDotFiveD.gui.SplashController"
-		inputMapping="de.lessvoid.nifty.input.mapping.DefaultScreenMapping">
-		<layer id="background" childLayout="center" backgroundColor="#000f">
-			<effect>
-				<onEndScreen name="fade" startColor="#ffff" endColor="#0000"
-					length="500" startDelay="1500" post="false" inherit="true"
-					alternateEnable="exit" />
-			</effect>
-			<panel id="panel" childLayout="center"
-				backgroundImage="com/lovetextures/light-refraction-4.jpg"
-				width="100%" height="100%">
-				<effect>
-					<onStartScreen name="fade" startColor="#fff0"
-						endColor="#ffff" length="1000" post="false" />
-					<onEndScreen name="fade" startColor="#ffff" endColor="#0000"
-						length="500" startDelay="1500" post="false" inherit="true" />
-					<!-- <onStartScreen name="playSound" sound="gong" startDelay="1400" 
-						/> -->
-				</effect>
-				<panel align="center" valign="center" childLayout="vertical">
-					<effect>
-						<onEndScreen name="fade" startColor="#ffff" endColor="#0000"
-							length="500" startDelay="1500" post="false" inherit="true" />
-					</effect>
-					<!-- fiter="true" imageMode="resize:3,3,3,3,3,3,3,3,3,3,3,3" -->
-					<image align="center" valign="center" fiter="true" height="200"
-						width="200" filename="com/ATeam/twoDotFiveD/images/emblem.png">
-						<effect>
-							<onStartScreen name="fade" startColor="#0000"
-								endColor="#000f" length="500" startDelay="1500" post="false" />
-						</effect>
-					</image>
-				</panel>
-			</panel>
-		</layer>
-	</screen>
-
-	<!-- intro credit screen -->
-	<screen id="introcredits" controller="com.ATeam.twoDotFiveD.gui.SplashCreditController"
-		inputMapping="de.lessvoid.nifty.input.mapping.DefaultScreenMapping">
-		<layer id="background" childLayout="center" backgroundColor="#000f">
-			<effect>
-				<onEndScreen name="fade" startColor="#ffff" endColor="#0000"
-					length="500" startDelay="1500" post="false" inherit="true"
-					alternateEnable="exit" />
-			</effect>
-			<panel id="panel" childLayout="vertical"
-				backgroundImage="com/lovetextures/light-refraction-2.jpg"
-				width="100%" height="100%">
-				<effect>
-					<onStartScreen name="fade" startColor="#fff0"
-						endColor="#ffff" length="1000" post="false" />
-					<onEndScreen name="fade" startColor="#ffff" endColor="#0000"
-						length="500" startDelay="1500" post="false" inherit="true" />
-					<!-- <onStartScreen name="playSound" sound="gong" startDelay="1400" 
-						/> -->
-				</effect>
-				<panel id="panel_top" height="20%" width="100%" align="center"
-					childLayout="center">
-				</panel>
-				<panel id="middle" height="60%" width="100%" align="center"
-					childLayout="vertical">
-					<panel id="middle_top" height="50%" width="100%" align="center"
-						childLayout="horizontal" backgroundColor="#00f8">
-						<panel id="bullet" align="center" valign="center" height="50%"
-							width="50%" backgroundColor="#44f8" childLayout="vertical">
-							<effect>
-								<onEndScreen name="fade" startColor="#ffff"
-									endColor="#0000" length="500" startDelay="1500" post="false"
-									inherit="true" />
-							</effect>
-							<!-- fiter="true" imageMode="resize:3,3,3,3,3,3,3,3,3,3,3,3" -->
-							<image align="center" valign="center"
-								filename="cz/advel/jbullet/bullet_logo.png">
-								<effect>
-									<onStartScreen name="fade" startColor="#0000"
-										endColor="#000f" length="500" startDelay="1500" post="false" />
-								</effect>
-							</image>
-						</panel>
-						<panel id="lwjgl" align="center" valign="center" height="50%"
-							width="50%" backgroundColor="#44f8" childLayout="vertical">
-							<effect>
-								<onEndScreen name="fade" startColor="#ffff"
-									endColor="#0000" length="500" startDelay="1500" post="false"
-									inherit="true" />
-							</effect>
-							<!-- fiter="true" imageMode="resize:3,3,3,3,3,3,3,3,3,3,3,3" -->
-							<image align="center" valign="center"
-								filename="com/lwjgl/lwjgl.png">
-								<effect>
-									<onStartScreen name="fade" startColor="#0000"
-										endColor="#000f" length="500" startDelay="3000" post="false" />
-								</effect>
-							</image>
-						</panel>
-					</panel>
-					<panel id="middle_bottom" height="50%" width="100%" align="center"
-						childLayout="horizontal" backgroundColor="#00f8">
-						<panel id="niftygui" align="center" valign="center" height="100%"
-							width="100%" backgroundColor="#44f8" childLayout="vertical">
-							<effect>
-								<onEndScreen name="fade" startColor="#ffff"
-									endColor="#0000" length="500" startDelay="1500" post="false"
-									inherit="true" />
-							</effect>
-							<!-- fiter="true" imageMode="resize:3,3,3,3,3,3,3,3,3,3,3,3" -->
-							<image align="center" valign="center"
-								filename="demo-logo.png">
-								<effect>
-									<onStartScreen name="fade" startColor="#0000"
-										endColor="#000f" length="500" startDelay="4500" post="false" />
-								</effect>
-							</image>
-						</panel>
-					</panel>
-				</panel>
-				<panel id="panel_bottom" height="20%" width="100%" align="center"
-					childLayout="center">
-
-				</panel>
-			</panel>
-		</layer>
-	</screen>
-
+	<!-- Sounds -->
+	<registerSound id="ping"
+		filename="org/freesound/42796__digifishmusic__sonar-ping.wav" />
+	<registerSound id="ambient"
+		filename="org/freesound/34012__erh__cinematic-deep-bass-rumble.wav" />
 	<!-- main menu screen -->
 	<screen id="mainmenu" controller="com.ATeam.twoDotFiveD.gui.MainStartScreen">
-		<layer id="background" backgroundColor="#003f" childLayout="center">
+		<layer id="background" childLayout="center">
 			<effect>
 				<onStartScreen name="fade" startColor="#0000"
 					endColor="#000f" length="500" startDelay="1500" post="false" />
+				<onActive name="playSound" sound="ambient" repeat="true" />
+				<onEndScreen name="fade" startColor="#ffff" endColor="#0000"
+					length="500" startDelay="1500" post="false" inherit="true"
+					alternateEnable="exit" />
 			</effect>
 			<!-- TODO find out best imageMode numbers -->
 			<image filename="com/lovetextures/cubes.jpg"></image>
@@ -148,60 +31,119 @@
 					endColor="#000f" length="500" startDelay="2000" post="false" />
 			</effect>
 			<panel id="panel_top" height="25%" width="75%" align="center"
-				childLayout="center" backgroundColor="#f008">
-				<text text="2.5D" font="menu.fnt" width="100%"
-					height="100%" />
+				childLayout="center">
+				<text text="Project 2.5D" font="menu.fnt" width="100%" height="100%" />
 			</panel>
-			<panel id="panel_mid" height="50%" width="75%" align="center"
-				childLayout="center" backgroundColor="#0f08">
-				<text text="text" font="console.fnt" width="100%"
-					height="100%" wrap="true" />
+			<panel id="panel_mid" height="50%" width="75%" align="right"
+				childLayout="vertical">
+				<!-- <text text="text" font="console.fnt" width="100%" height="100%" 
+					wrap="true" /> -->
+				<panel id="panel_mid_right" height="50%" width="75%" align="right"
+					childLayout="vertical">
+					<panel id="panel_mid_right_one" height="50%" width="75%"
+						align="right" childLayout="center">
+						<control name="button" label="Start" id="StartButton"
+							align="center" valign="center">
+							<interact onClick="beginGame()" />
+							<effect>
+								<onClick name="playSound" sound="ping" />
+								<onHover name="pulsate" scaleFactor="0.008" startColor="#f600"
+									endColor="#ffff" post="true" />
+							</effect>
+						</control>
+					</panel>
+					<panel id="panel_mid_right_one" height="50%" width="75%"
+						align="right" childLayout="center">
+						<control name="button" label="Settings" id="SettingsButton"
+							align="center" valign="center">
+							<interact onClick="changeScreen(optionmenu)" />
+							<effect>
+								<onClick name="playSound" sound="ping" />
+								<onHover name="pulsate" scaleFactor="0.008" startColor="#f600"
+									endColor="#ffff" post="true" />
+							</effect>
+						</control>
+					</panel>
+				</panel>
 			</panel>
 			<panel id="panel_bottom" height="25%" width="75%" align="center"
-				childLayout="horizontal" backgroundColor="#00f8">
+				childLayout="horizontal">
 				<panel id="panel_bottom_left" height="50%" width="50%" valign="center"
-					childLayout="center" backgroundColor="#44f8">
-					<control name="button" label="Start" id="StartButton"
+					childLayout="center">
+					<control name="button" label="Credits" id="CreditsButton"
 						align="center" valign="center">
-						<interact onClick="beginGame()" />
+						<interact onClick="changeScreen(Credits)" />
 						<effect>
-							<onStartScreen name="move" mode="in" direction="top"
-								length="300" startDelay="0" inherit="true" />
-							<onEndScreen name="move" mode="out" direction="bottom"
-								length="300" startDelay="0" inherit="true" />
+							<onClick name="playSound" sound="ping" />
 							<onHover name="pulsate" scaleFactor="0.008" startColor="#f600"
 								endColor="#ffff" post="true" />
+							<!-- <onStartScreen name="move" mode="in" direction="top" length="300" 
+								startDelay="0" inherit="true" /> <onEndScreen name="move" mode="out" direction="bottom" 
+								length="300" startDelay="0" inherit="true" /> -->
 						</effect>
 					</control>
 				</panel>
 				<panel id="panel_bottom_right" height="50%" width="50%"
-					valign="center" childLayout="center" backgroundColor="#88f8">
+					valign="center" childLayout="center">
 					<control name="button" label="Quit" id="QuitButton" align="center"
 						valign="center">
 						<interact onClick="exit()" />
+						<effect>
+							<onClick name="playSound" sound="ping" />
+						</effect>
 					</control>
 				</panel>
 			</panel>
 		</layer>
 	</screen>
-	<screen id="hud" controller="com.ATeam.twoDotFiveD.gui.HUDController">
-		<layer id="hud-background" backgroundColor="#000f">
+	<!-- Option menu screen -->
+	<screen id="optionmenu" controller="com.ATeam.twoDotFiveD.gui.MainOptionController">
+		<layer id="background" backgroundColor="#003f" childLayout="center">
 			<effect>
+				<onStartScreen name="fade" startColor="#0000"
+					endColor="#000f" length="500" startDelay="1500" post="false" />
 				<onEndScreen name="fade" startColor="#ffff" endColor="#0000"
 					length="500" startDelay="1500" post="false" inherit="true"
 					alternateEnable="exit" />
 			</effect>
-			<interact onSecondaryClick="showMenu()" />
+			<!-- TODO find out best imageMode numbers -->
+			<image filename="com/lovetextures/light-refraction-1.jpg"></image>
 		</layer>
-		<layer id="hud-foreground" backgroundColor="#0000" childLayout="horizontal">
+		<layer id="foreground" childLayout="horizontal">
 			<effect>
-				<onEndScreen name="fade" startColor="#ffff" endColor="#0000"
-					length="500" startDelay="1500" post="false" inherit="true"
-					alternateEnable="exit" />
+				<onStartScreen name="fade" startColor="#0000"
+					endColor="#000f" length="500" startDelay="2000" post="false" />
 			</effect>
-			<panel id="panel_left" height="100%" width="80%" childLayout="vertical"
-				backgroundColor="#0f08"></panel>
-			<panel id="panel_right" height="100%" width="25%" childLayout="vertical"
+			<panel id="panel_left" height="100%" width="25%" childLayout="vertical"
+				backgroundColor="#0f08">
+				<panel id="panel_left_video" height="15%" width="100%"
+					childLayout="center" backgroundColor="#00f8">
+					<control id="edit_tabs" name="nifty-tabs">
+						<control id="tab_1" name="nifty-tab" caption="Tab #1">
+							<panel childLayout="vertical" valign="center" align="center"
+								backgroundColor="#f004" width="100%" height="100%">
+								<control align="center" valign="center" name="label"
+									text="Content for Tab #1" width="100%" height="100%" />
+							</panel>
+						</control>
+						<control id="tab_2" name="nifty-tab" caption="Tab #2">
+							<panel childLayout="vertical" valign="center" align="center"
+								backgroundColor="#0f04" width="100%" height="100%">
+								<control align="center" valign="center" name="label"
+									text="Content for Tab #2" width="100%" height="100%" />
+							</panel>
+						</control>
+					</control>
+				</panel>
+				<control name="button" label="Back" id="OptionBackButton"
+					align="center" valign="center">
+					<effect>
+						<onClick name="playSound" sound="ping" />
+					</effect>
+					<interact onClick="changeScreen(mainmenu)" />
+				</control>
+			</panel>
+			<panel id="panel_right" height="100%" width="70%" childLayout="vertical"
 				backgroundColor="#00f8">
 				<panel id="panel_top_right1" height="15%" width="100%"
 					childLayout="center" backgroundColor="#00f8">
@@ -215,4 +157,60 @@
 			</panel>
 		</layer>
 	</screen>
+	<!-- Exit popup -->
+	<popup id="popupExit" childLayout="center" backgroundColor="#000a">
+		<effect>
+			<onStartScreen name="fade" startColor="#0000" endColor="#000a"
+				length="250" />
+			<!-- <onStartScreen name="playSound" sound="popup" startDelay="250" /> -->
+			<onEndScreen name="fade" startColor="#000a" endColor="#0000"
+				length="250" startDelay="250" />
+		</effect>
+		<panel style="nifty-panel" childLayout="center" padding="18px,28px,40px,16px"
+			width="30%" height="20%" align="center" valign="center">
+			<effect>
+				<onStartScreen name="fade" start="#0" end="#f" length="150"
+					startDelay="250" />
+				<onStartScreen name="imageSize" timeType="exp" factor="3.5"
+					startSize="1.5" endSize="1.0" inherit="true" length="150"
+					startDelay="250" />
+				<onEndScreen name="fade" start="#f" end="#0" length="150"
+					startDelay="0" />
+				<onEndScreen name="imageSize" timeType="exp" factor="3.5"
+					startSize="1.0" endSize="1.5" inherit="true" length="150"
+					startDelay="0" />
+			</effect>
+			<panel childLayout="vertical" align="center" valign="center">
+				<effect>
+					<onStartScreen name="alphaHide" length="500" inherit="true" />
+					<onEndScreen name="fade" length="10" start="#f" end="#0"
+						inherit="true" />
+				</effect>
+				<panel childLayout="center" height="70%" width="100%">
+					<text text="Really want to Exit?" style="base-font" align="center"
+						valign="center" color="#000f" />
+				</panel>
+				<panel childLayout="horizontal" align="center" height="30%">
+					<panel childLayout="center" width="50%">
+						<control id="yesButton" name="button" label="Yes" width="100px"
+							align="center">
+							<interact onClick="popupExit(yes)" />
+							<effect>
+								<onClick name="playSound" sound="ping" />
+							</effect>
+						</control>
+					</panel>
+					<panel childLayout="center" width="50%">
+						<control id="noButton" name="button" label="No" width="100px"
+							align="center">
+							<interact onClick="popupExit(no)" />
+							<effect>
+								<onClick name="playSound" sound="ping" />
+							</effect>
+						</control>
+					</panel>
+				</panel>
+			</panel>
+		</panel>
+	</popup>
 </nifty>

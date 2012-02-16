@@ -12,7 +12,7 @@ import com.ATeam.twoDotFiveD.debug.Logging;
  * @author Tokume
  *
  */
-public class Dispatcher {
+public class EventDispatcher {
 	@SuppressWarnings("rawtypes")
 	private final HashMap<Class, ArrayList> map = new HashMap<Class, ArrayList>(
 			10);

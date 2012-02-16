@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty xmlns="http://nifty-gui.sourceforge.net/nifty-1.4.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.4.xsd http://nifty-gui.sourceforge.net/nifty-1.4.xsd">
+
+	<useStyles filename="nifty-default-styles.xml" />
+	<useControls filename="nifty-default-controls.xml" />
+	<screen id="hud" controller="com.ATeam.twoDotFiveD.gui.HUDController">
+		<layer id="hud-background" backgroundColor="#000f">
+			<effect>
+				<onEndScreen name="fade" startColor="#ffff" endColor="#0000"
+					length="500" startDelay="1500" post="false" inherit="true"
+					alternateEnable="exit" />
+			</effect>
+			<interact onSecondaryClick="showMenu()" />
+		</layer>
+		<layer id="hud-foreground" backgroundColor="#0000" childLayout="horizontal">
+			<effect>
+				<onEndScreen name="fade" startColor="#ffff" endColor="#0000"
+					length="500" startDelay="1500" post="false" inherit="true"
+					alternateEnable="exit" />
+			</effect>
+			<panel id="panel_left" height="100%" width="80%" childLayout="vertical"
+				backgroundColor="#0f08"></panel>
+			<panel id="panel_right" height="100%" width="25%" childLayout="vertical"
+				backgroundColor="#00f8">
+				<panel id="panel_top_right1" height="15%" width="100%"
+					childLayout="center" backgroundColor="#00f8">
+					<control name="label" color="#000" text="123" width="100%"
+						height="100%" />
+				</panel>
+				<panel id="panel_top_right2" height="15%" width="100%"
+					childLayout="center" backgroundColor="#44f8"></panel>
+				<panel id="panel_top_right" height="70%" width="100%"
+					childLayout="center" backgroundColor="#88f8"></panel>
+			</panel>
+		</layer>
+	</screen>
+</nifty>
