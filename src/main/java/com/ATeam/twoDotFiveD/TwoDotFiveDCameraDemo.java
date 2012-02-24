@@ -2,14 +2,52 @@ package com.ATeam.twoDotFiveD;
 
 
 
+import static com.bulletphysics.demos.opengl.IGL.GL_LIGHTING;
+
 import java.awt.Color;
 import java.nio.FloatBuffer;
+
+import javax.media.j3d.Transform3D;
+import javax.media.j3d.TransformGroup;
+import javax.vecmath.Color3f;
+import javax.vecmath.Vector3f;
 
 import org.lwjgl.opengl.*;
 import org.lwjgl.input.*;
 import org.lwjgl.util.glu.*;
 
 import com.ATeam.twoDotFiveD.block.Block;
+import com.bulletphysics.BulletStats;
+import com.bulletphysics.collision.broadphase.AxisSweep3;
+import com.bulletphysics.collision.broadphase.BroadphaseInterface;
+import com.bulletphysics.collision.broadphase.BroadphaseNativeType;
+import com.bulletphysics.collision.broadphase.DbvtBroadphase;
+import com.bulletphysics.collision.dispatch.CollisionDispatcher;
+import com.bulletphysics.collision.dispatch.CollisionObject;
+import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
+import com.bulletphysics.collision.dispatch.PairCachingGhostObject;
+import com.bulletphysics.collision.shapes.BoxShape;
+import com.bulletphysics.collision.shapes.CollisionShape;
+import com.bulletphysics.collision.shapes.StaticPlaneShape;
+import com.bulletphysics.demos.opengl.FastFormat;
+import com.bulletphysics.demos.opengl.GLShapeDrawer;
+import com.bulletphysics.demos.opengl.IGL;
+import com.bulletphysics.demos.opengl.LwjglGL;
+import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
+import com.bulletphysics.dynamics.DynamicsWorld;
+import com.bulletphysics.dynamics.RigidBody;
+import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
+import com.bulletphysics.dynamics.character.KinematicCharacterController;
+import com.bulletphysics.dynamics.constraintsolver.ConstraintSolver;
+import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
+import com.bulletphysics.linearmath.Clock;
+import com.bulletphysics.linearmath.DebugDrawModes;
+import com.bulletphysics.linearmath.DefaultMotionState;
+import com.bulletphysics.linearmath.MotionState;
+import com.bulletphysics.linearmath.Transform;
+import com.bulletphysics.util.ObjectArrayList;
+import com.bulletphysics.util.ObjectPool;
+import com.sun.j3d.utils.geometry.Box;
 
 import demo.lwjgl.basic.GLApp;
 import demo.lwjgl.basic.GLCam;
@@ -29,60 +67,31 @@ import lib.lwjgl.glmodel.*;
  * <P>
  * @author - Andrew Tucker
  */
-public class TwoDotFiveDCameraDemo extends GLApp {
-	//added since demo to Dr. Game
+public class TwoDotFiveDCameraDemo extends GLApp{
 	GL_Vector worldChangeVector;
 	GL_Vector playerPosition;
 	Player player = new Player();
 	
+	private ObjectArrayList<CollisionShape> collisionShapes = new ObjectArrayList<CollisionShape>();
+    protected DynamicsWorld dynamicsWorld = null;
+   	protected Clock clock = new Clock();
+    private static final float BOX_DIM = 0.3f;
+    private Transform m = new Transform();
 	
-	//hardcoded blocks
-	//need a method to do this automatically
 	
-	Block ground = new Block();
-	Block groundLeft = new Block(0f, -20f, -1f, 0f, null);
-	Block groundRight = new Block(0f, 20f, -1f, 0f, null);
-	Block groundTop = new Block(0f, 0f,-1f, -20f, null);
-	Block groundTopLeft = new Block(0f, -20f, -1f, -20f, null);
-	Block groundTopRight = new Block(0f, 20f, -1f, -20f, null);
-	Block groundBottom = new Block(0f, 0f, -1f, 20f, null);
-	Block groundBottomLeft = new Block(0f, -20f, -1f, 20f, null);
-	Block groundBottomRight = new Block(0f, 20f, -1f, 20f, null);
-	Block cube1 = new Block(0f, -11f, 0f, -7f, null);
-	Block cube2 = new Block(0f, -9f, 0f, -5f, null);
-	Block cube3 = new Block(0f, -10f, 2f, -6f, null);
-	Block sphere1 = new Block(0f, 15f, 4f, -10f, null);
-	Block sphere2 = new Block(0f, 25f, 7f, -20f, null);
-	Block sphere3 = new Block(0f, -20f, 4f, 10f, null);
+	//not used
+	Block ground = new Block(0f, 0f, -1.01f, 0f, null);
+
 	
     // Handle for texture
-    int cubeTextureHandle = 0;
-    int sphereTextureHandle = 0;
     int groundTextureHandle = 0;
-    int cubeOtherTextureHandle = 0;
-    int skyTextureHandle = 0;
     // Light position: if last value is 0, then this describes light direction.  If 1, then light position.
     float lightPosition[]= { -2f, 2f, 2f, 0f };
     // Camera position
-    float[] cameraPos = {0f,3f,20f};
+    float[] cameraPos = {0f,3f,15f};
 
     GLCamera camera1 = new GLCamera();
     GLCam cam = new GLCam(camera1);
-
-    // vectors used to orient sphere
-    GL_Vector UP = new GL_Vector(0,1,0);
-    GL_Vector ORIGIN = new GL_Vector(0,0,0);
-
-    // for sphere rotation
-    float degrees = 0;
-    int cube;
-    int sphere;
-    int cubeTestBottom;
-    int cubeTestTop;
-    int cubeTestRot;
-    GLShadowOnPlane objectsShadow;
-
-    public GL_Vector spherePos;
 
 	FloatBuffer bbmatrix = GLApp.allocFloats(16);
 
@@ -103,6 +112,8 @@ public class TwoDotFiveDCameraDemo extends GLApp {
      */
     public void setup()
     {
+         
+    	initializePhysics();
         setPerspective();
 
         // Create a light (diffuse light, ambient light, position)
@@ -127,42 +138,9 @@ public class TwoDotFiveDCameraDemo extends GLApp {
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-        cubeTextureHandle = makeTexture("src/main/resources/com/lovetextures/cube.png");
-        sphereTextureHandle = makeTexture("src/main/resources/com/lovetextures/sphere.png");
-        cubeOtherTextureHandle = makeTexture("src/main/resources/com/lovetextures/grey.png");
-        skyTextureHandle = makeTexture("src/main/resources/com/lovetextures/sky.png");
         groundTextureHandle = makeTexture("src/main/resources/com/lovetextures/ground.jpg",true,true);
-	    camera1.setCamera(0,0,20, 0,0,0, 0,1,0);
-
-//	    cubeTestBottom = beginDisplayList(); {
-//       	renderCubeCoord(-11f, -1.0f, -7f, 2.0f);
-//	    //	drawCube(10f);
-//        }
-//        endDisplayList();
-//        
-//        cubeTestTop = beginDisplayList(); {
-//        	renderCubeCoord(-10f, 1.0f, -6f, 2.0f);
-//        }
-//        endDisplayList();
-//        
-//        cubeTestRot = beginDisplayList(); {
-//        	renderCubeCoord(-9f, -1.0f, -5f, 2.0f);
-//        }
-//        endDisplayList();
-
-//        // make a cube display list
-//        cube = beginDisplayList(); {
-//        	renderCube();
-//        }
-//        endDisplayList();
-        
-        // make a sphere display list
-//        sphere = beginDisplayList(); {
-//        	renderSphere();
-//        }
-//        endDisplayList();
-        
-        
+	    camera1.setCamera(0,0,15, 0,0,-1, 0,1,0);
+      
 
         // make a shadow handler
         // params:
@@ -171,8 +149,97 @@ public class TwoDotFiveDCameraDemo extends GLApp {
         //		the color of the shadow,
         // 		this application,
         // 		the function that draws all objects that cast shadows
-        objectsShadow = new GLShadowOnPlane(lightPosition, new float[] {0f,2f,0f,2f}, null, this, method(this,"drawObjects(worldChangeVector)"));
+        //objectsShadow = new GLShadowOnPlane(lightPosition, new float[] {0f,1f,0f,0f}, null, this, method(this, "drawObjects()"));
     }
+    
+    public void initializePhysics() {
+		
+        dynamicsWorld = createDynamicsWorld();
+        dynamicsWorld.setGravity(new Vector3f(0f, -10f, 0f));
+        
+		CollisionShape groundShape = new BoxShape(new Vector3f(5f, 5f, 5f));
+		collisionShapes.add(groundShape);
+		Transform groundTransform = new Transform();
+		groundTransform.setIdentity();
+		groundTransform.origin.set(0, -5, 0);
+
+		{
+			float mass = 0f;
+
+			// rigidbody is dynamic if and only if mass is non zero, otherwise static
+			boolean isDynamic = (mass != 0f);
+
+			Vector3f localInertia = new Vector3f(0, 0, 0);
+			if (isDynamic) {
+				groundShape.calculateLocalInertia(mass, localInertia);
+			}
+
+			// using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
+			DefaultMotionState myMotionState = new DefaultMotionState(groundTransform);
+			RigidBodyConstructionInfo rbInfo = new RigidBodyConstructionInfo(mass, myMotionState, groundShape, localInertia);
+			RigidBody body = new RigidBody(rbInfo);
+
+			// add the body to the dynamics world
+			dynamicsWorld.addRigidBody(body);
+		}
+		
+		{
+			// create a few dynamic rigidbodies
+			// Re-using the same collision is better for memory usage and performance
+
+			CollisionShape colShape = new BoxShape(new Vector3f(1, 1, 1));
+			//CollisionShape colShape = new SphereShape(1f);
+			collisionShapes.add(colShape);
+
+			// Create Dynamic Objects
+			Transform startTransform = new Transform();
+			startTransform.setIdentity();
+
+			//-mass  = phasing
+			float mass = 1f;
+
+			// rigidbody is dynamic if and only if mass is non zero, otherwise static
+			boolean isDynamic = (mass != 0f);
+
+			Vector3f localInertia = new Vector3f(0, -1, 0);
+			if (isDynamic) {
+				colShape.calculateLocalInertia(mass, localInertia);
+			}
+
+
+			startTransform.origin.set(0,5,0);
+
+			// using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
+			DefaultMotionState myMotionState = new DefaultMotionState(startTransform);
+			RigidBodyConstructionInfo rbInfo = new RigidBodyConstructionInfo(mass, myMotionState, colShape, localInertia);
+			RigidBody body = new RigidBody(rbInfo);
+			body.setActivationState(RigidBody.ISLAND_SLEEPING);
+
+			dynamicsWorld.addRigidBody(body);
+			body.setActivationState(RigidBody.ISLAND_SLEEPING);
+		}
+    }
+
+
+    private DynamicsWorld createDynamicsWorld() {
+        DefaultCollisionConfiguration collisionConfiguration
+                = new DefaultCollisionConfiguration();
+        CollisionDispatcher dispatcher = new CollisionDispatcher(collisionConfiguration);
+
+        Vector3f worldAabbMin = new Vector3f(-1000, -1000, -1000);
+        Vector3f worldAabbMax = new Vector3f( 1000,  1000,  1000);
+        final int maxProxies = 1024;
+        BroadphaseInterface broadphase = new AxisSweep3(
+                worldAabbMin, worldAabbMax, maxProxies);
+
+        ConstraintSolver solver = new SequentialImpulseConstraintSolver();
+
+        return new DiscreteDynamicsWorld(
+                dispatcher, broadphase, solver, collisionConfiguration);
+    }
+    
+
+   
 
     /**
      * set the field of view and view depth.
@@ -194,15 +261,14 @@ public class TwoDotFiveDCameraDemo extends GLApp {
     public void draw() {
     	//a bit wonky and obtuse -- may want to find a better way to do this
     	//ORDER IS IMPORTANT
-    	player.handleMovementKeys(cam.getDirection(), cam.getQuadrant());
-    	player.setWorldChangeVector();
-    	worldChangeVector = player.getWorldChangeVector();
-    	System.out.println("world change vector " + worldChangeVector);
-    	playerPosition = player.getPosition();
-	
     	
-    	degrees += 90f * GLApp.getSecondsPerFrame();
-    	spherePos = GL_Vector.rotationVector(degrees).mult(8);
+//    	player.handleMovementKeys(cam.getDirection(), cam.getQuadrant());
+//    	player.setWorldChangeVector();
+//    	worldChangeVector = player.getWorldChangeVector();
+//    	System.out.println("world worldChangeVector vector " + worldChangeVector);
+//    	playerPosition = player.getPosition();
+    	
+
     	
     	//update the camera pan based on direction
     	cam.updatePan(cam.getDirection());
@@ -213,12 +279,38 @@ public class TwoDotFiveDCameraDemo extends GLApp {
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GL11.glLoadIdentity();
         cam.render();
+		float ms = getDeltaTimeMicroseconds();
+
+        if (dynamicsWorld != null) {
+			dynamicsWorld.stepSimulation(ms / 1000000f);
+			// optional but useful: debug drawing
+		}
+    	
+    	if(dynamicsWorld != null) {
+    		int numObjects = dynamicsWorld.getNumCollisionObjects();
+    		for (int i = 0; i < numObjects; i++) {
+    			CollisionObject colObj = dynamicsWorld.getCollisionObjectArray().getQuick(i);
+    			RigidBody body = RigidBody.upcast(colObj);
+    			System.out.println(body.isActive());
+    			if (body != null && body.getMotionState() != null) {
+    				DefaultMotionState myMotionState = (DefaultMotionState) body.getMotionState();
+    				m.set(myMotionState.graphicsWorldTrans);
+    			}
+    			else {
+					colObj.getWorldTransform(m);
+				}
+    			
+    			Vector3f trans = m.origin;
+    			GL11.glPushMatrix();
+    			GL11.glTranslatef(trans.x, trans.y, trans.z);
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, groundTextureHandle);
+                renderCube();
+                GL11.glPopMatrix();
+    		    
+    		}
+    	}
+      
         
-    	drawWorldPlanes(worldChangeVector);
-    	objectsShadow.drawShadow();
-
-        drawObjects(worldChangeVector);
-
         setLightPosition(GL11.GL_LIGHT1, lightPosition);
 
         //display user directions
@@ -230,205 +322,18 @@ public class TwoDotFiveDCameraDemo extends GLApp {
         print( 30, viewportH-180, "Running AVG FPS: " + Double.toString(GLApp.getFramesPerSecond()), 1);
     }
     
-    public void drawWorldPlanes(GL_Vector change) {
-    	System.out.println("ground position vector " + ground.position);
+    
   
-        GL11.glPushMatrix();
-        {
-            GL11.glTranslatef(ground.position.x+= change.x, ground.position.y+=change.y, ground.position.z+=change.z); 
-        	GL11.glScalef(10f, .01f, 10f);
-
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, groundTextureHandle);
-            renderCube();
-        }
-        GL11.glPopMatrix();
-        
-        GL11.glPushMatrix();
-        {
-            GL11.glTranslatef(groundLeft.position.x+= change.x, groundLeft.position.y+=change.y, groundLeft.position.z+=change.z); 
-        	GL11.glScalef(10f, .01f, 10f);
-
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, groundTextureHandle);
-            renderCube();
-        }
-        GL11.glPopMatrix();
-        
-        GL11.glPushMatrix();
-        {
-            GL11.glTranslatef(groundRight.position.x+= change.x, groundRight.position.y+=change.y, groundRight.position.z+=change.z); 
-        	GL11.glScalef(10f, .01f, 10f);
-
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, groundTextureHandle);
-            renderCube();
-        }
-        GL11.glPopMatrix();
-        
-        GL11.glPushMatrix();
-        {
-            GL11.glTranslatef(groundTopLeft.position.x+= change.x, groundTopLeft.position.y+=change.y, groundTopLeft.position.z+=change.z); 
-        	GL11.glScalef(10f, .01f, 10f);
-
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, groundTextureHandle);
-            renderCube();
-        }
-        GL11.glPopMatrix();
-        
-        GL11.glPushMatrix();
-        {
-            GL11.glTranslatef(groundTop.position.x+= change.x, groundTop.position.y+=change.y, groundTop.position.z+=change.z); 
-        	GL11.glScalef(10f, .01f, 10f);
-
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, groundTextureHandle);
-            renderCube();
-        }
-        GL11.glPopMatrix();
-        
-        GL11.glPushMatrix();
-        {
-            GL11.glTranslatef(groundTopRight.position.x+= change.x, groundTopRight.position.y+=change.y, groundTopRight.position.z+=change.z); 
-        	GL11.glScalef(10f, .01f, 10f);
-
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, groundTextureHandle);
-            renderCube();
-        }
-        GL11.glPopMatrix();
-        
-        GL11.glPushMatrix();
-        {
-            GL11.glTranslatef(groundBottomLeft.position.x+= change.x, groundBottomLeft.position.y+=change.y, groundBottomLeft.position.z+=change.z); 
-        	GL11.glScalef(10f, .01f, 10f);
-
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, groundTextureHandle);
-            renderCube();
-        }
-        GL11.glPopMatrix();
-        
-        GL11.glPushMatrix();
-        {
-            GL11.glTranslatef(groundBottom.position.x+= change.x, groundBottom.position.y+=change.y, groundBottom.position.z+=change.z); 
-        	GL11.glScalef(10f, .01f, 10f);
-
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, groundTextureHandle);
-            renderCube();
-        }
-        GL11.glPopMatrix();
-        
-        GL11.glPushMatrix();
-        {
-            GL11.glTranslatef(groundBottomRight.position.x+= change.x, groundBottomRight.position.y+=change.y, groundBottomRight.position.z+=change.z); 
-        	GL11.glScalef(10f, .01f, 10f);
-
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, groundTextureHandle);
-            renderCube();
-        }
-        GL11.glPopMatrix();
-        
-       //
-    }
-
-    public void drawObjects(GL_Vector change) {
-        //sphere
-//        GL11.glPushMatrix();
-//        {
-// 
-//        	System.out.println("Sphere position " + spherePos);
-//        	//billboardPoint(spherePos, ORIGIN, UP);
-//            GL11.glBindTexture(GL11.GL_TEXTURE_2D, sphereTextureHandle);
-//            GL11.glTranslatef(spherePos.x += change.x, spherePos.y += change.y, spherePos.z += change.z);
-//            renderSphere();
-//            setMaterial( new float[] {.8f, .8f, .7f, 1f}, .4f);
-//        }
-//        GL11.glPopMatrix();
-//    	GL11.glPushMatrix();
-//    	{
-//    		GL11.glBindTexture(GL11.GL_TEXTURE_2D, sphereTextureHandle);
-//    		//GL11.glTranslatef(x, y, z);
-//    		renderSphere();
-//
-//    	}
-
-    	//draw player
-        GL11.glPushMatrix();
-        {
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, cubeTextureHandle);
-            GL11.glTranslatef(playerPosition.x, playerPosition.y, playerPosition.z);
-            //GL11.glScalef(2f, 2f, 2f);          
-            renderCube();
-            setMaterial( new float[] {.8f, .8f, .7f, 1f}, .4f);
-
-        }
-        GL11.glPopMatrix();
-        
-        //cube test bottom
-        GL11.glPushMatrix();
-        {
-        	GL11.glBindTexture(GL11.GL_TEXTURE_2D, cubeOtherTextureHandle);
-        	GL11.glTranslatef(cube1.position.x+=change.x, cube1.position.y+=change.y, cube1.position.z+=change.z);
-        	//delete
-        	System.out.println("cube position vector " + cube1.position);
-        	//callDisplayList(cubeTestBottom); 
-        	renderCube();
-        }
-        GL11.glPopMatrix();
-        
-        //cube test top
-        GL11.glPushMatrix();
-        {
-        	GL11.glBindTexture(GL11.GL_TEXTURE_2D, cubeOtherTextureHandle);
-        	//GL11.glScalef(2f, 2f, 2f);
-        	//callDisplayList(cubeTestTop);
-        	GL11.glTranslatef(cube3.position.x+=change.x, cube3.position.y+=change.y, cube3.position.z+=change.z);
-        	renderCube();
-        }
-        GL11.glPopMatrix();
-        
-      //cube test bottom2
-        GL11.glPushMatrix();
-        {
-        	GL11.glBindTexture(GL11.GL_TEXTURE_2D, cubeOtherTextureHandle);
-        	//GL11.glScalef(2f, 2f, 2f);
-        	//callDisplayList(cubeTestRot);
-        	GL11.glTranslatef(cube2.position.x+=change.x, cube2.position.y+=change.y, cube2.position.z+=change.z);
-        	renderCube();
-        }
-        GL11.glPopMatrix();
-        
-        GL11.glPushMatrix();
-        {
-        	GL11.glBindTexture(GL11.GL_TEXTURE_2D, sphereTextureHandle);
-        	//callDisplayList(cubeTestRot);
-        	GL11.glTranslatef(sphere1.position.x+=change.x, sphere1.position.y+=change.y, sphere1.position.z+=change.z);
-        	GL11.glScalef(5f, 5f, 5f);
-
-        	renderSphere();
-        }
-        GL11.glPopMatrix();
-        
-        GL11.glPushMatrix();
-        {
-        	GL11.glBindTexture(GL11.GL_TEXTURE_2D, sphereTextureHandle);
-        	//callDisplayList(cubeTestRot);
-        	GL11.glTranslatef(sphere2.position.x+=change.x, sphere2.position.y+=change.y, sphere2.position.z+=change.z);
-        	GL11.glScalef(7f, 7f, 7f);
-
-        	renderSphere();
-        }
-        GL11.glPopMatrix();
-        
-        GL11.glPushMatrix();
-        {
-        	GL11.glBindTexture(GL11.GL_TEXTURE_2D, sphereTextureHandle);
- 
-        	//callDisplayList(cubeTestRot);
-        	GL11.glTranslatef(sphere3.position.x+=change.x, sphere3.position.y+=change.y, sphere3.position.z+=change.z);
-           	GL11.glScalef(5f, 5f, 5f);
-        	renderSphere();
-        }
-        GL11.glPopMatrix();
-        
-       
-    }
-
+    
+	public float getDeltaTimeMicroseconds() {
+		//#ifdef USE_BT_CLOCK
+		float dt = clock.getTimeMicroseconds();
+		clock.reset();
+		return dt;
+		//#else
+		//return btScalar(16666.);
+		//#endif
+	}
 	/**
 	 * Given position of object and target, create matrix to
 	 * orient object so it faces target.
