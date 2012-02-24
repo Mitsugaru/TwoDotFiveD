@@ -17,7 +17,7 @@ public class Block {
 	 * @param x			xyz world coordinates
 	 * @param y
 	 * @param z
-	 * @param image		image path string
+	 * @param image		String -- image path
 	 */
 	public Block(float ID, float x, float y, float z, String image) {
 		this.ID = ID;
