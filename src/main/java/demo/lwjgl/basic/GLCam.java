@@ -43,9 +43,9 @@ public class GLCam {
 	private float runningDegrees = 0f;	//current degrees from origin while panning camera is running
 	private float prevRotation = 0f;		//previous rotation from origin as of last camera button input
 	private float currRotation = 0f;		//current rotation from origin
-	private float camDist = 20f;			//distance from target (used for rotation)
-	private float currCamDist = 20f;		//the camera's current distance from target
-	private float zoomDist = 25f;		//distance to zoom out to when panning
+	private float camDist = 15f;			//distance from target (used for rotation)
+	private float currCamDist = 15f;		//the camera's current distance from target
+	private float zoomDist = 20f;		//distance to zoom out to when panning
 
 	//not used for panning camera
 	public long prevTime = Sys.getTime();//previous time used to halt constant camera change if button is held down
@@ -179,21 +179,14 @@ public class GLCam {
 				 if(!zoomOut && !zoomIn) {
 					 runningDegrees = ((float) (-rotationSpeed * GLApp.getSecondsSinceLastFrame())) + currRotation;
 
-					 //delete
-					 System.out.println(runningDegrees);
-
 					 //has the degree of rotation met, or surpassed, its goal of 90 degrees?
 					 if(runningDegrees <= prevRotation - 90.0f) {
 						 runningDegrees = prevRotation - 90.0f;
 						 prevRotation = runningDegrees;
 						 zoomIn = true;
 
-						 //delete
-						 System.out.println("quad" + quadrant);
 
 					 }
-					 //delete
-					 System.out.println(runningDegrees);
 
 					 //update the camera's current degree of rotation
 					 currRotation = runningDegrees;
@@ -252,19 +245,13 @@ public class GLCam {
 				 //rotate camera after zoom out
 				 if(!zoomOut && !zoomIn){
 					 runningDegrees = ((float) (rotationSpeed * GLApp.getSecondsSinceLastFrame())) + currRotation;
-					 //delete
-					 System.out.println(runningDegrees);
 
 					 //has the degree of rotation met, or surpassed, its goal of 90 degrees?
 					 if(runningDegrees >= prevRotation + 90.0f) {
 						 runningDegrees = prevRotation + 90.0f;
 						 prevRotation = runningDegrees;
 						 zoomIn = true;
-						 //delete
-						 System.out.println("quad" + quadrant);
 					 }
-					 //delete
-					 System.out.println(runningDegrees);
 
 					 //update the camera's current position and apply to all applicable camera vectors
 					 currRotation = runningDegrees;
@@ -336,8 +323,6 @@ public class GLCam {
 								 currRotation = runningDegrees;
 								 quadrant = 1;
 
-								 //delete
-								 System.out.println("quad: " +quadrant);
 							 }
 						 }
 
@@ -351,17 +336,11 @@ public class GLCam {
 								 currRotation = runningDegrees;
 								 quadrant = 1;
 
-								 //delete
-								 System.out.println("quad: " +quadrant);
 							 }
 						 }
 						 
 						 //update the camera's current position and apply to all applicable camera vectors
 						 currRotation = runningDegrees;
-
-						 //delete
-						 System.out.println("currRotation post:" +currRotation);
-						 System.out.println("runningDegress post:" +runningDegrees);
 
 						 GL_Vector cameraPos = GL_Vector.rotationVector(runningDegrees).mult(zoomDist);
 						 camera.MoveTo(cameraPos.x, cameraPos.y, cameraPos.z);
@@ -374,9 +353,7 @@ public class GLCam {
 
 				 //has the camera returned to the camera's origin?
 				 if(currRotation%360.0f == 0.0f) {
-					 //delete
-					 System.out.println("ROTATION UP");
-
+					
 					 //zoom out if up rotation was called from camera origin
 					 if(zoomOut && !zoomIn) {
 						 float currZoom = (float) (((zoomDist*2) * GLApp.getSecondsSinceLastFrame()) + currCamDist);
@@ -408,9 +385,7 @@ public class GLCam {
 
 						 //update the current elevation and apply to all applicable camera vectors/matrices
 						 elevation = runningElevation;
-						 //delete
-						 System.out.println("RUNELE "+runningElevation);
-
+						
 						 float radianElevation = elevation * 0.01745329251994329547f; // radians per degree for elevation
 						 float radianCurrRotation = 0f; //always zero, camera has returned to its position of origin any time top-down is activated
 						 int forwardAxis = 2;  //always 2 for x axis rotation from camera origin -- will need to be changed if we want to change how
@@ -419,18 +394,12 @@ public class GLCam {
 						 Quat4f rot = new Quat4f();
 						 GL_Vector cameraUp = camera.UpVector;
 						 setRotationVector(rot, cameraUp, radianCurrRotation);
-						 //delete
-						 System.out.println("CAMUP " + cameraUp);
-
+				
 						 GL_Vector eyePos = new GL_Vector(0f,0f,0f);
-						 //delete
-						 System.out.println("EYEPOS " +eyePos);
-
+						
 						 //changed
 						 setCoord(eyePos, forwardAxis, zoomDist);
-						 //delete
-						 System.out.println("EYEPOS POST " + eyePos);
-
+						
 						 GL_Vector forward = new GL_Vector(eyePos.x, eyePos.y, eyePos.z);
 						 //				if (forward.lengthSquared() < BulletGlobals.FLT_EPSILON) {
 						 //					forward.set(1f, 0f, 0f);
@@ -440,9 +409,7 @@ public class GLCam {
 						 Vector3f camUp3f = new Vector3f(cameraUp.x, cameraUp.y, cameraUp.z);
 						 Vector3f for3f = new Vector3f(forward.x, forward.y, forward.z);
 						 right.cross(camUp3f, for3f);
-						 //delete
-						 System.out.println("RIGHT" + right);
-
+						
 						 Quat4f roll = new Quat4f();
 						 GL_Vector rightVector = new GL_Vector(right.x, right.y, right.z);
 						 setRotationVector(roll, rightVector, -radianElevation);
@@ -457,18 +424,10 @@ public class GLCam {
 						 tmpMat1.transform(tmpVector);
 						 GL_Vector finalEye = new GL_Vector(tmpVector.x, tmpVector.y, tmpVector.z);
 
-						 //delete
-						 System.out.println("FINALEYE " +finalEye);
-
 						 camera.Position = finalEye;
 						 camera.UpVector = cameraUp;
 						 GL_Vector view = new GL_Vector(-finalEye.x, -finalEye.y, -finalEye.z);
 						 camera.ViewDir = view;
-
-						 //delete
-						 System.out.println(camera.Position);
-						 System.out.println(camera.UpVector);
-						 System.out.println(camera.ViewDir);
 
 					 }
 
@@ -493,9 +452,6 @@ public class GLCam {
 
 			 //rotate the camera -90 degrees about the x-axis 
 			 if(s.equals("DOWN")){
-				 //delete
-				 System.out.println("ROTATION DOWN");
-
 				 //zoom out prior to rotation
 				 if(zoomOut && !zoomIn) {
 					 float currZoom = (float) (((zoomDist*2) * GLApp.getSecondsSinceLastFrame()) + currCamDist);
@@ -522,9 +478,6 @@ public class GLCam {
 
 					 //update the camera's elevation and apply to all applicable vectors/matrices
 					 elevation = runningElevation;
-					 //delete
-					 System.out.println("RUNELE "+runningElevation);
-
 					 float radianElevation = elevation * 0.01745329251994329547f; // radians per degree for elevation
 					 float radianCurrRotation = 0f; //always zero, camera has returned to its position of origin any time top-down is activated
 					 int forwardAxis = 2;  //always 2 for x axis rotation from camera origin -- will need to be changed if we want to change how
@@ -533,17 +486,8 @@ public class GLCam {
 					 Quat4f rot = new Quat4f();
 					 GL_Vector cameraUp = camera.UpVector;
 					 setRotationVector(rot, cameraUp, radianCurrRotation);
-					 //delete
-					 System.out.println("CAMUP " + cameraUp);
-
 					 GL_Vector eyePos = new GL_Vector(0f,0f,0f);
-					 //delete
-					 System.out.println("EYEPOS " +eyePos);
-
 					 setCoord(eyePos, forwardAxis, zoomDist);
-					 //delete
-					 System.out.println("EYEPOS POST " + eyePos);
-
 					 GL_Vector forward = new GL_Vector(eyePos.x, eyePos.y, eyePos.z);
 					 //				if (forward.lengthSquared() < BulletGlobals.FLT_EPSILON) {
 					 //					forward.set(1f, 0f, 0f);
@@ -553,9 +497,6 @@ public class GLCam {
 					 Vector3f camUp3f = new Vector3f(cameraUp.x, cameraUp.y, cameraUp.z);
 					 Vector3f for3f = new Vector3f(forward.x, forward.y, forward.z);
 					 right.cross(camUp3f, for3f);
-					 //delete
-					 System.out.println("RIGHT" + right);
-
 					 Quat4f roll = new Quat4f();
 					 GL_Vector rightVector = new GL_Vector(right.x, right.y, right.z);
 					 setRotationVector(roll, rightVector, -radianElevation);
@@ -569,18 +510,11 @@ public class GLCam {
 					 tmpVector.set(eyePos.x, eyePos.y, eyePos.z);
 					 tmpMat1.transform(tmpVector);
 					 GL_Vector finalEye = new GL_Vector(tmpVector.x, tmpVector.y, tmpVector.z);
-					 //delete
-					 System.out.println("FINALEYE " +finalEye);
-
 					 camera.Position = finalEye;
 					 camera.UpVector = cameraUp;
 					 GL_Vector view = new GL_Vector(-finalEye.x, -finalEye.y, -finalEye.z);
 					 camera.ViewDir = view;
 
-					 //delete
-					 System.out.println(camera.Position);
-					 System.out.println(camera.UpVector);
-					 System.out.println(camera.ViewDir);
 				 }
 				 
 				 //zoom in after x-axis rotation
@@ -663,77 +597,6 @@ public class GLCam {
 			 }
 		 }
 
-	 }
-
-	 /**
-	  * Rotation keys that "jump" directly to destination - dis-orienting 
-	  * no longer developing
-	  * 
-	  * NOTE:"UP" & "DOWN" not fully implemented 
-	  */
-	 public void handleRotKeys() {
-		 if((Sys.getTime()-prevTime) > 100 && !up){
-			 if(Keyboard.isKeyDown(Keyboard.KEY_LEFT)){
-				 prevTime = Sys.getTime();
-				 System.out.println(Sys.getTime());
-				 currRotation -= 90.0;
-				 if(currRotation < -360) {
-					 currRotation = 0;
-					 prevRotation = 0;
-				 }
-				 GL_Vector cameraPos = GL_Vector.rotationVector(currRotation).mult(camDist);
-				 camera.MoveTo(cameraPos.x, cameraPos.y+.53f, cameraPos.z);
-				 GL_Vector camDir = GL_Vector.crossProduct(new GL_Vector(0f,1f,0f),cameraPos);
-				 camera.viewDir( camDir );
-				 float apRot = (float) 90.0;             
-				 camera.RotateY(apRot);
-
-			 }
-
-		 }
-
-		 if(Keyboard.isKeyDown(Keyboard.KEY_RIGHT)){
-			 if((Sys.getTime()-prevTime) > 100 && !up){
-				 prevTime = Sys.getTime();
-				 currRotation += 90.0;
-				 if(currRotation > 360) {
-					 currRotation = 0;
-				 }
-				 GL_Vector cameraPos = GL_Vector.rotationVector(currRotation).mult(camDist);
-				 camera.MoveTo(cameraPos.x, cameraPos.y+.53f, cameraPos.z);
-				 GL_Vector camDir = GL_Vector.crossProduct(new GL_Vector(0f,1f,0f),cameraPos);
-				 camera.viewDir( camDir );
-				 float apRot = (float) 90.0;             
-				 camera.RotateY(apRot);
-			 }
-		 }
-
-		 if(Keyboard.isKeyDown(Keyboard.KEY_UP)){
-			 if(!up) {
-
-				 GL_Vector cameraPos = GL_Vector.rotationVectorX(90f).mult(30f);
-				 camera.MoveTo(cameraPos.x, cameraPos.y+.53f, cameraPos.z);
-				 GL_Vector camDir = GL_Vector.crossProduct(new GL_Vector(-1f,0f,0f),cameraPos);
-				 camera.viewDir( camDir );
-				 float apRot = (float) -90.0;             
-				 camera.RotateX(apRot);
-				 up = true;
-			 }
-		 }
-
-
-		 if(Keyboard.isKeyDown(Keyboard.KEY_DOWN)){
-			 if(up){
-				 GL_Vector cameraPos = GL_Vector.rotationVectorX(-90f).mult(30f);
-				 camera.MoveTo(cameraPos.x, cameraPos.y+.53f, cameraPos.z);
-				 GL_Vector camDir = GL_Vector.crossProduct(new GL_Vector(0f,1f,0f),cameraPos);
-				 camera.viewDir( camDir );
-				 float apRot = (float) -90.0;             
-				 camera.RotateX(apRot);
-				 up = false;
-			 }
-
-		 }
 	 }
 
 	/**

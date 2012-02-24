@@ -773,6 +773,8 @@ public abstract class DemoApplication {
 		//#endif//
 		
 		dynamicsWorld.addRigidBody(body);
+		
+		//body.setGravity(new Vector3f(0f, 0f, 10f));
 
 		return body;
 	}

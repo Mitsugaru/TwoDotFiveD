@@ -8,7 +8,7 @@ import lib.lwjgl.glmodel.GL_Vector;
 
 public class Player {
 	public Player player;
-	private float cameraBoundary = 5.0f;
+	private float cameraBoundary = 2.5f;
 	private float speed = 20f;
 	private float size = 2f;
 	private float jumpHeight = size*1.8f;
@@ -115,13 +115,13 @@ public class Player {
 		//NOTE------------------------
 		
 		//need to fix
-//		if(position.y-(cameraBoundary*0.5f) > 0.0f) {
-//			y = position.y-(cameraBoundary*0.5f);
-//			position.y = (cameraBoundary*0.5f);
+//		if(position.y > 0.0f) {
+//			y = position.y;
+//			position.y = 0f;
 //		}
-//		if(position.y+(cameraBoundary*0.5) < 0.0f) {
-//			y = position.y+(cameraBoundary*0.5f);
-//			position.y = -cameraBoundary*0.5f;
+//		if(position.y< 0.0f) {
+//			y -= position.y;
+//			position.y = 0f;
 //		}
 		
 		if(position.z-cameraBoundary > 0.0f) {
