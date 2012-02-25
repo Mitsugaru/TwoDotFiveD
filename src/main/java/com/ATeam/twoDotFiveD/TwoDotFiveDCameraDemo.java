@@ -218,8 +218,52 @@ public class TwoDotFiveDCameraDemo extends GLApp{
 			dynamicsWorld.addRigidBody(body);
 			body.setActivationState(RigidBody.ISLAND_SLEEPING);
 		}
+		
+		resetScene();
     }
 
+    public void resetScene() {
+    	BulletStats.gNumDeepPenetrationChecks = 0;
+		BulletStats.gNumGjkChecks = 0;
+		//#endif //SHOW_NUM_DEEP_PENETRATIONS
+
+		int numObjects = 0;
+		if (dynamicsWorld != null) {
+			dynamicsWorld.stepSimulation(1f / 60f, 0);
+			numObjects = dynamicsWorld.getNumCollisionObjects();
+		}
+
+		for (int i = 0; i < numObjects; i++) {
+			CollisionObject colObj = dynamicsWorld.getCollisionObjectArray().getQuick(i);
+			RigidBody body = RigidBody.upcast(colObj);
+			if (body != null) {
+				if (body.getMotionState() != null) {
+					DefaultMotionState myMotionState = (DefaultMotionState) body.getMotionState();
+					myMotionState.graphicsWorldTrans.set(myMotionState.startWorldTrans);
+					colObj.setWorldTransform(myMotionState.graphicsWorldTrans);
+					colObj.setInterpolationWorldTransform(myMotionState.startWorldTrans);
+					colObj.activate();
+				}
+				// removed cached contact points
+				dynamicsWorld.getBroadphase().getOverlappingPairCache().cleanProxyFromPairs(colObj.getBroadphaseHandle(), dynamicsWorld.getDispatcher());
+
+				body = RigidBody.upcast(colObj);
+				if (body != null && !body.isStaticObject()) {
+					RigidBody.upcast(colObj).setLinearVelocity(new Vector3f(0f, 0f, 0f));
+					RigidBody.upcast(colObj).setAngularVelocity(new Vector3f(0f, 0f, 0f));
+				}
+			}
+
+			/*
+			//quickly search some issue at a certain simulation frame, pressing space to reset
+			int fixed=18;
+			for (int i=0;i<fixed;i++)
+			{
+			getDynamicsWorld()->stepSimulation(1./60.f,1);
+			}
+			*/
+		}
+    }
 
     private DynamicsWorld createDynamicsWorld() {
         DefaultCollisionConfiguration collisionConfiguration
