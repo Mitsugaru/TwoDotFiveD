@@ -110,6 +110,7 @@ public abstract class DemoApplication {
 	protected boolean singleStep = false;
 	protected boolean idle = false;
 	protected int lastKey;
+	protected String bodyGravityType = "NORMAL";
 	
 	private CProfileIterator profileIterator;
 
@@ -180,7 +181,7 @@ public abstract class DemoApplication {
 	public void updateCamera() {
 		gl.glMatrixMode(GL_PROJECTION);
 		gl.glLoadIdentity();
-		System.out.println(cameraTargetPosition);
+		//System.out.println(cameraTargetPosition);
 		float rele = ele * 0.01745329251994329547f; // rads per deg
 		float razi = azi * 0.01745329251994329547f; // rads per deg
 
@@ -221,13 +222,13 @@ public abstract class DemoApplication {
 		
 		gl.glMatrixMode(GL_MODELVIEW);
 		gl.glLoadIdentity();
-		System.out.println("camUP "+cameraUp);
+		//System.out.println("camUP "+cameraUp);
 		gl.gluLookAt(cameraPosition.x, cameraPosition.y, cameraPosition.z,
 				cameraTargetPosition.x, cameraTargetPosition.y, cameraTargetPosition.z,
 				cameraUp.x, cameraUp.y, cameraUp.z);
-		System.out.println(cameraPosition.x+","+ cameraPosition.y+","+ cameraPosition.z+",  "+
-				cameraTargetPosition.x+","+ cameraTargetPosition.y+","+ cameraTargetPosition.z+",  "+
-				cameraUp.x+","+ cameraUp.y+","+ cameraUp.z);
+		//System.out.println(cameraPosition.x+","+ cameraPosition.y+","+ cameraPosition.z+",  "+
+		//		cameraTargetPosition.x+","+ cameraTargetPosition.y+","+ cameraTargetPosition.z+",  "+
+		//		cameraUp.x+","+ cameraUp.y+","+ cameraUp.z);
 	}
 	
 	public void stepLeft() {
@@ -443,6 +444,24 @@ public abstract class DemoApplication {
 				ShootBoxInitialSpeed -= 10f;
 				break;
 			}
+			case '2':
+			{
+				bodyGravityType = "NORMAL";
+				System.out.println("Normal gravity");
+				break;
+			}
+			case '3':
+			{
+				bodyGravityType = "ANTIGRAVITY";
+				System.out.println("Anti-gravity");
+				break;
+			}
+			case '4':
+			{
+				bodyGravityType = "STASIS";
+				System.out.println("Stasis");
+				break;
+			}
 
 			default:
 				// std::cout << "unused key : " << key << std::endl;
@@ -533,7 +552,7 @@ public abstract class DemoApplication {
 
 	public void shootBox(Vector3f destination) {
 		if (dynamicsWorld != null) {
-			float mass = 10f;
+			float mass = 30f;
 			Transform startTransform = new Transform();
 			startTransform.setIdentity();
 			Vector3f camPos = new Vector3f(getCameraPosition());
@@ -774,7 +793,18 @@ public abstract class DemoApplication {
 		
 		dynamicsWorld.addRigidBody(body);
 		
-		body.setGravity(new Vector3f(0f, 0f, 0f));
+		//Dynamic gravity for object
+		if(!bodyGravityType.equals("NORMAL"))
+		{
+			if(bodyGravityType.equals("ANTIGRAVITY"))
+			{
+				body.setGravity(new Vector3f(0f, 0f, 30f));
+			}
+			else if(bodyGravityType.equals("STASIS"))
+			{
+				body.setGravity(new Vector3f(0f, 0f, 0f));
+			}
+		}
 
 		return body;
 	}
