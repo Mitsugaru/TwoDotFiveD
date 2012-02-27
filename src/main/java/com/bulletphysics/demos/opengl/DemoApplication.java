@@ -470,7 +470,7 @@ public abstract class DemoApplication {
 					if(o instanceof RigidBody)
 					{
 						final RigidBody rb = (RigidBody) o;
-						rb.setGravity(new Vector3f(0f, 0f, -15f));
+						rb.setGravity(new Vector3f(0f, 0f, -30f));
 						//Don't call activate if you do not want non-activated objects
 						//via the setGravity call
 						rb.activate();
@@ -485,7 +485,7 @@ public abstract class DemoApplication {
 					if(o instanceof RigidBody)
 					{
 						final RigidBody rb = (RigidBody) o;
-						rb.setGravity(new Vector3f(0f, 0f, 15f));
+						rb.setGravity(new Vector3f(0f, 0f, 30f));
 						rb.activate();
 					}
 				}
@@ -511,7 +511,7 @@ public abstract class DemoApplication {
 					if(o instanceof RigidBody)
 					{
 						final RigidBody rb = (RigidBody) o;
-						rb.setGravity(new Vector3f(15f, 0f, 0f));
+						rb.setGravity(new Vector3f(30f, 0f, 0f));
 						rb.activate();
 					}
 				}
