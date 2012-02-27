@@ -29,6 +29,9 @@ import com.bulletphysics.collision.dispatch.CollisionObject;
 import com.bulletphysics.collision.dispatch.CollisionWorld;
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.collision.shapes.CollisionShape;
+import com.bulletphysics.collision.shapes.CylinderShape;
+import com.bulletphysics.collision.shapes.SphereShape;
+import com.bulletphysics.collision.shapes.TriangleShape;
 import com.bulletphysics.dynamics.DynamicsWorld;
 import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
@@ -111,6 +114,7 @@ public abstract class DemoApplication {
 	protected boolean idle = false;
 	protected int lastKey;
 	protected String bodyGravityType = "NORMAL";
+	protected String shapeType = "BOX";
 	
 	private CProfileIterator profileIterator;
 
@@ -461,11 +465,11 @@ public abstract class DemoApplication {
 			}
 			case '5':
 			{
-				for(CollisionObject o : dynamicsWorld.getCollisionObjectArray())
+				for(final CollisionObject o : dynamicsWorld.getCollisionObjectArray())
 				{
 					if(o instanceof RigidBody)
 					{
-						RigidBody rb = (RigidBody) o;
+						final RigidBody rb = (RigidBody) o;
 						rb.setGravity(new Vector3f(0f, 0f, -15f));
 						//Don't call activate if you do not want non-activated objects
 						//via the setGravity call
@@ -476,11 +480,11 @@ public abstract class DemoApplication {
 			}
 			case '6':
 			{
-				for(CollisionObject o : dynamicsWorld.getCollisionObjectArray())
+				for(final CollisionObject o : dynamicsWorld.getCollisionObjectArray())
 				{
 					if(o instanceof RigidBody)
 					{
-						RigidBody rb = (RigidBody) o;
+						final RigidBody rb = (RigidBody) o;
 						rb.setGravity(new Vector3f(0f, 0f, 15f));
 						rb.activate();
 					}
@@ -489,15 +493,65 @@ public abstract class DemoApplication {
 			}
 			case '7':
 			{
-				for(CollisionObject o : dynamicsWorld.getCollisionObjectArray())
+				for(final CollisionObject o : dynamicsWorld.getCollisionObjectArray())
 				{
 					if(o instanceof RigidBody)
 					{
-						RigidBody rb = (RigidBody) o;
+						final RigidBody rb = (RigidBody) o;
 						rb.setGravity(new Vector3f(0f, 0f, 0f));
 						rb.activate();
 					}
 				}
+				break;
+			}
+			case '8':
+			{
+				for(final CollisionObject o : dynamicsWorld.getCollisionObjectArray())
+				{
+					if(o instanceof RigidBody)
+					{
+						final RigidBody rb = (RigidBody) o;
+						rb.setGravity(new Vector3f(15f, 0f, 0f));
+						rb.activate();
+					}
+				}
+				break;
+			}
+			case '9':
+			{
+				for(final CollisionObject o : dynamicsWorld.getCollisionObjectArray())
+				{
+					if(o instanceof RigidBody)
+					{
+						final RigidBody rb = (RigidBody) o;
+						if(rb.isActive())
+						{
+							//TODO Figure out how to remove last object without crashing
+							//TODO Figure out why it doesn't remove all objects at once
+							//dynamicsWorld.removeRigidBody(rb);
+						}
+					}
+				}
+				break;
+			}
+			case 'j':
+			{
+				shapeType = "SPHERE";
+				break;
+			}
+			case ';':
+			{
+				shapeType = "TRIANGLE";
+				break;
+			}
+			case 'u':
+			{
+				shapeType = "BOX";
+				break;
+			}
+			case 'k':
+			{
+				shapeType = "CYLINDER";
 				break;
 			}
 
@@ -596,7 +650,7 @@ public abstract class DemoApplication {
 			Vector3f camPos = new Vector3f(getCameraPosition());
 			startTransform.origin.set(camPos);
 
-			if (shootBoxShape == null) {
+			if (shapeType.equals("BOX")) {
 				//#define TEST_UNIFORM_SCALING_SHAPE 1
 				//#ifdef TEST_UNIFORM_SCALING_SHAPE
 				//btConvexShape* childShape = new btBoxShape(btVector3(1.f,1.f,1.f));
@@ -605,6 +659,20 @@ public abstract class DemoApplication {
 				shootBoxShape = new BoxShape(new Vector3f(1f, 1f, 1f));
 				//#endif//
 			}
+			else if(shapeType.equals("SPHERE"))
+			{
+				shootBoxShape = new SphereShape(1f);
+			}
+			else if(shapeType.equals("TRIANGLE"))
+			{
+				//TODO implement a pyramid
+				//shootBoxShape = new TriangleShape(new Vector3f(1f, 1f, 1f), new Vector3f(1f, 0f, 0f), new Vector3f(0f, -1f, 0f));
+			}
+			else if(shapeType.equals("CYLINDER"))
+			{
+				shootBoxShape = new CylinderShape(new Vector3f(1f, 1f, 1f));
+			}
+			
 
 			RigidBody body = this.localCreateRigidBody(mass, startTransform, shootBoxShape);
 
