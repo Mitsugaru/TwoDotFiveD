@@ -447,19 +447,16 @@ public abstract class DemoApplication {
 			case '2':
 			{
 				bodyGravityType = "NORMAL";
-				System.out.println("Normal gravity");
 				break;
 			}
 			case '3':
 			{
 				bodyGravityType = "ANTIGRAVITY";
-				System.out.println("Anti-gravity");
 				break;
 			}
 			case '4':
 			{
 				bodyGravityType = "STASIS";
-				System.out.println("Stasis");
 				break;
 			}
 

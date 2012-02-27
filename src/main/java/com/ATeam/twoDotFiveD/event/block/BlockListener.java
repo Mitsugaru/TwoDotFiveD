@@ -13,4 +13,6 @@ public class BlockListener implements Listener{
 	public void onBlockMove(BlockMoveEvent blockMoveEvent){}
 	
 	public void onBlockPhysicsChange(BlockPhysicsChangeEvent blockPhysicsChangeEvent){}
+	
+	public void onBlockCollision(BlockCollisionEvent blockCollisionEvent){}
 }
