@@ -9,50 +9,67 @@ import com.bulletphysics.dynamics.RigidBody;
 
 public class BlockCollisionEvent extends BlockEvent
 {
-	private PersistentManifold persistentManifold;
+	private PersistentManifold	persistentManifold;
+	private int					objectAActivationState;
+	private int					objectBActivationState;
 	
 	public BlockCollisionEvent(PersistentManifold persistentManifold)
 	{
-		//TODO grab main block?
+		// TODO grab main block?
 		super(Type.BLOCK_COLLISION, null);
+		//Set PersistentManifold
 		this.persistentManifold = persistentManifold;
-		// TODO Auto-generated constructor stub
-		System.out.println("Collsion of " + persistentManifold.getBody0().toString() + " and " + persistentManifold.getBody1().toString());
+		//Check object types
 		if (persistentManifold.getBody0() instanceof RigidBody
 				&& persistentManifold.getBody1() instanceof RigidBody)
 		{
-			RigidBody objA = (RigidBody) persistentManifold
-					.getBody0();
-			RigidBody objB = (RigidBody) persistentManifold
-					.getBody1();
-			
-			System.out.println("Collision with: " + objA.toString()
-					+ " and " + objB.toString());
-			System.out.println("ObjectA state: " + objA.getActivationState());
-			System.out.println("ObjectB state: " + objB.getActivationState());
-			int numContacts = persistentManifold.getNumContacts();
-			for (int j = 0; j < numContacts; j++)
+			RigidBody objA = (RigidBody) persistentManifold.getBody0();
+			RigidBody objB = (RigidBody) persistentManifold.getBody1();
+			//Grab object activation state
+			objectAActivationState = objA.getActivationState();
+			objectBActivationState = objB.getActivationState();
+			// If both object states are 2, then they are both deactivated... so
+			// we shouldn't care? Maybe we might care, but probably not?
+			if (objectAActivationState == 2 && objectBActivationState == 2)
 			{
-				ManifoldPoint point = persistentManifold.getContactPoint(j);
-				if (point.getDistance() < 0f)
+				// More than likely duplicate / spam event. Ignore?
+			}
+			else
+			{
+				System.out.println("Collision with: " + objA.toString() + " and "
+						+ objB.toString());
+				int numContacts = persistentManifold.getNumContacts();
+				for (int j = 0; j < numContacts; j++)
 				{
-					final Vector3f pointA = point.positionWorldOnA;
-					final Vector3f pointB = point.positionWorldOnB;
-					final Vector3f normal = point.normalWorldOnB;
-					System.out.println("Contact at: "
-							+ pointA.toString().toString() + ","
-							+ pointB.toString().toString() + " Normal:"
-							+ normal.toString().toString());
+					ManifoldPoint point = persistentManifold.getContactPoint(j);
+					if (point.getDistance() < 0f)
+					{
+						final Vector3f pointA = point.positionWorldOnA;
+						final Vector3f pointB = point.positionWorldOnB;
+						final Vector3f normal = point.normalWorldOnB;
+						System.out.println("Contact at: "
+								+ pointA.toString().toString() + ","
+								+ pointB.toString().toString() + " Normal:"
+								+ normal.toString().toString());
+					}
 				}
 			}
+			
 		}
 		else
 		{
-			System.out.println("Body 0 class: " + persistentManifold.getBody0().getClass().toString());
-			System.out.println("Body 1 class: " + persistentManifold.getBody1().getClass().toString());
+			//Some other type of class. Need appropriate way to deal with them.
+			//Other type of physics object other than RigidBody
+			System.out.println("Body 0 class: "
+					+ persistentManifold.getBody0().getClass().toString());
+			System.out.println("Body 1 class: "
+					+ persistentManifold.getBody1().getClass().toString());
 		}
 	}
-
 	
+	public PersistentManifold getPersistentManifold()
+	{
+		return persistentManifold;
+	}
 	
 }
