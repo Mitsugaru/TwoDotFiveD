@@ -459,6 +459,47 @@ public abstract class DemoApplication {
 				bodyGravityType = "STASIS";
 				break;
 			}
+			case '5':
+			{
+				for(CollisionObject o : dynamicsWorld.getCollisionObjectArray())
+				{
+					if(o instanceof RigidBody)
+					{
+						RigidBody rb = (RigidBody) o;
+						rb.setGravity(new Vector3f(0f, 0f, -15f));
+						//Don't call activate if you do not want non-activated objects
+						//via the setGravity call
+						rb.activate();
+					}
+				}
+				break;
+			}
+			case '6':
+			{
+				for(CollisionObject o : dynamicsWorld.getCollisionObjectArray())
+				{
+					if(o instanceof RigidBody)
+					{
+						RigidBody rb = (RigidBody) o;
+						rb.setGravity(new Vector3f(0f, 0f, 15f));
+						rb.activate();
+					}
+				}
+				break;
+			}
+			case '7':
+			{
+				for(CollisionObject o : dynamicsWorld.getCollisionObjectArray())
+				{
+					if(o instanceof RigidBody)
+					{
+						RigidBody rb = (RigidBody) o;
+						rb.setGravity(new Vector3f(0f, 0f, 0f));
+						rb.activate();
+					}
+				}
+				break;
+			}
 
 			default:
 				// std::cout << "unused key : " << key << std::endl;
