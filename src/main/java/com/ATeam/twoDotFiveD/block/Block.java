@@ -2,6 +2,7 @@ package com.ATeam.twoDotFiveD.block;
 
 import lib.lwjgl.glmodel.GL_Vector;
 
+//TODO have it extend RigidBody?
 public class Block {
 	public float ID = 000;
 	public GL_Vector position = new GL_Vector (0f, -1f, 0f);
