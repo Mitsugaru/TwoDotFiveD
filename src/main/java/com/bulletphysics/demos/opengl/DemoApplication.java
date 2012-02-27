@@ -644,7 +644,7 @@ public abstract class DemoApplication {
 
 	public void shootBox(Vector3f destination) {
 		if (dynamicsWorld != null) {
-			float mass = 30f;
+			float mass = 50f;
 			Transform startTransform = new Transform();
 			startTransform.setIdentity();
 			Vector3f camPos = new Vector3f(getCameraPosition());
