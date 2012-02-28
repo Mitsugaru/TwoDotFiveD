@@ -65,7 +65,7 @@ public class TwoDotFiveD
 		niftyMouse.enableMouseCursor("mouseId");
 		
 		// we could set the position like so
-		niftyMouse.setMousePosition(20, 20);
+		//niftyMouse.setMousePosition(20, 20);
 		//Set logger of Nifty to only important stuff
 		java.util.logging.Logger.getAnonymousLogger().getParent().setLevel(java.util.logging.Level.SEVERE);
 		java.util.logging.Logger.getLogger("de.lessvoid.nifty.*").setLevel(java.util.logging.Level.SEVERE);
