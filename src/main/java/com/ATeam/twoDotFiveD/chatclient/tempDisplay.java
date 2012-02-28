@@ -89,7 +89,7 @@ public class tempDisplay implements WindowListener
         } );
         // Add the panel and look at it
         frame.add( panel );
-        client = new chatClient( this, "169.254.84.100", "Andrew" );
+        //client = new chatClient( this, "localhost", "Clifford" );
         if ( client.connect() )
         {
             client.start();
