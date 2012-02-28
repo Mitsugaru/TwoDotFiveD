@@ -19,6 +19,7 @@ public class MainStartScreen implements ScreenController
 	private Screen				screen;
 	private static final String	HUD_XML	= "com/ATeam/twoDotFiveD/layout/hud.xml";
 	private chatClient client;
+	private NiftyImage temp;
 	
 	// http://jmonkeyengine.org/wiki/doku.php/jme3:advanced:nifty_gui_java_interaction
 	@Override
@@ -26,6 +27,7 @@ public class MainStartScreen implements ScreenController
 	{
 		this.nifty = nifty;
 		this.screen = screen;
+	    temp = nifty.getRenderEngine().createImage("chat-icon-user.png", false);
 	}
 	
 	@Override
@@ -34,6 +36,9 @@ public class MainStartScreen implements ScreenController
 		// TODO Auto-generated method stub
 	    // This will need to be changed later
 	    // Initialization of client. Hard coded.
+	    // WHY IS THIS LINE REQUIRED?! DO NOT DELETE OR THE CHAT WILL CRASH!
+	    updatetext("You have joined the game.");
+	    // TODO you're going to need to ask for a client to connect to and a name.
 	    client = new chatClient(this, "localhost", "Clifford");
 	    if (client.connect()){
 	        client.start();
@@ -78,8 +83,7 @@ public class MainStartScreen implements ScreenController
     @NiftyEventSubscriber(id="chatId")
     public final void onSendText(final String id, final ChatTextSendEvent event) {
     	//TODO RESOURCE: http://jmonkeyengine.org/groups/gui/forum/topic/nifty-chat-box/
-    	//TODO this is an event when a player enters a message
-    	//TODO CLIFF CLIFF CLIFF CLIFF OMGWTFBBQ
+    	// this is an event when a player enters a message
             String text = event.getText();
             System.out.println("chat event received: " + text);
             client.send( text );
@@ -90,24 +94,9 @@ public class MainStartScreen implements ScreenController
      * @param message
      */
     public void updatetext(String message){
-
-        final Element chatPanel = nifty.getCurrentScreen().findElementByName("chatId");
-        if(chatPanel == null)
-        {
-            System.out.println("CHAT PANEL IS NULL");
-        }
-        final Chat chatController = chatPanel.findNiftyControl("chatId", Chat.class);
-        if(chatController == null)
-        {
-            System.out.println("CHAT CONTROLLER IS NULL");
-        }
-        NiftyImage temp = nifty.getRenderEngine().createImage("chat-icon-user.png", false);
-        if(temp == null)
-        {
-            System.out.println("TEMP CAME UP NULL");
-        }
-        // Change this
-        chatController.receivedChatLine(message, temp);
+        final Element chatPanel = nifty.getCurrentScreen().findElementByName( "chatId" );
+        final Chat chatController = chatPanel.findNiftyControl( "chatId", Chat.class );
+        chatController.receivedChatLine(message, temp, null);
     }
 	
 	/**
