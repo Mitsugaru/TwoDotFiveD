@@ -20,7 +20,7 @@ import junit.framework.TestCase;
  */
 public class PlayerListenerTest extends TestCase {
 	private boolean caught;
-	private Dispatcher dispatcher;
+	private EventDispatcher dispatcher;
 	private PlayerListener fixture;
 
 	/**
@@ -32,7 +32,7 @@ public class PlayerListenerTest extends TestCase {
 	public PlayerListenerTest(String name) {
 		super(name);
 		//Initialize variables
-		dispatcher = new Dispatcher();
+		dispatcher = new EventDispatcher();
 		caught = false;
 		fixture = new PlayerListener() {
 			public void onPlayerMove(PlayerMoveEvent event) {

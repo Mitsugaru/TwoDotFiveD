@@ -10,6 +10,7 @@ public class SplashCreditController implements ScreenController,
 		KeyInputHandler
 {
 	private Nifty	nifty;
+	private static final String	MAIN_XML		= "com/ATeam/twoDotFiveD/layout/main.xml";
 	
 	@Override
 	public boolean keyEvent(NiftyInputEvent inputEvent)
@@ -39,6 +40,7 @@ public class SplashCreditController implements ScreenController,
 	@Override
 	public void onStartScreen()
 	{
-		nifty.gotoScreen("mainmenu");
+		nifty.setAlternateKeyForNextLoadXml("fade");
+	    nifty.fromXml(MAIN_XML, "mainmenu");
 	}
 }

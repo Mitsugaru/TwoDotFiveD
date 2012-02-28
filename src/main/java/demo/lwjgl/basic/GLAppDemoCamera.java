@@ -21,16 +21,13 @@ import lib.lwjgl.glmodel.*;
  */
 public class GLAppDemoCamera extends GLApp {
     // Handle for texture
-    int sphereTextureHandle = 0;
+    int cubeTextureHandle = 0;
     int groundTextureHandle = 0;
     // Light position: if last value is 0, then this describes light direction.  If 1, then light position.
     float lightPosition[]= { -2f, 2f, 2f, 0f };
-    // Camera position
-    float[] cameraPos = {0f,3f,20f};
 
-    // two cameras and a cam to move them around scene
+    // camera and a cam to move them around scene
     GLCamera camera1 = new GLCamera();
-    GLCamera camera2 = new GLCamera();
     GLCam cam = new GLCam(camera1);
 
     // vectors used to orient airplane motion
@@ -42,14 +39,13 @@ public class GLAppDemoCamera extends GLApp {
 
     // model of airplane and sphere displaylist for earth
     GLModel airplane;
-    int earth;
-    int mouseX = displayWidth/2;
-    int mouseY = displayHeight/2;
+    int cube;
+    int sphere;
 
     // shadow handler will draw a shadow on floor plane
     GLShadowOnPlane airplaneShadow;
 
-    public GL_Vector airplanePos;
+    public GL_Vector spherePos;
 
 	FloatBuffer bbmatrix = GLApp.allocFloats(16);
 
@@ -82,7 +78,7 @@ public class GLAppDemoCamera extends GLApp {
 
         // Create a directional light (light green, to simulate reflection off grass)
         setLight( GL11.GL_LIGHT2,
-        		new float[] { 0.15f, 0.4f, 0.1f, 1.0f },  // diffuse color
+        		new float[] { 0.15f, 0f, 0f, 1.0f },  // diffuse color
         		new float[] { 0.0f, 0.0f, 0.0f, 1.0f },   // ambient
         		new float[] { 0.0f, 0.0f, 0.0f, 1.0f },   // specular
         		new float[] { 0.0f, -10f, 0.0f, 0f } );   // direction (pointing up)
@@ -95,23 +91,23 @@ public class GLAppDemoCamera extends GLApp {
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-        // Create texture for spere
-        sphereTextureHandle = makeTexture("src/main/resources/com/lovetextures/cloud.jpg");
+        // Create texture for cube
+        cubeTextureHandle = makeTexture("src/main/resources/com/lovetextures/cube.png");
 
         // Create texture for ground plane
-        groundTextureHandle = makeTexture("src/main/resources/com/lovetextures/hedge.jpg",true,true);
+        groundTextureHandle = makeTexture("src/main/resources/com/lovetextures/ground.jpg",true,true);
 
         // set camera 1 position
-        camera1.setCamera(0,4,15, 0,-.3f,-1, 0,1,0);
+	     camera1.setCamera(0,0,20, 0,0,0, 0,1,0);
 
         // load the airplane model and make it a display list
-        airplane = new GLModel("src/main/resources/com/oyonale/toyplane.obj");
-        airplane.mesh.regenerateNormals();
-        airplane.makeDisplayList();
+        //airplane = new GLModel("src/main/resources/com/oyonale/toyplane.obj");
+        //airplane.mesh.regenerateNormals();
+        //airplane.makeDisplayList();
 
-        // make a sphere display list
-        earth = beginDisplayList(); {
-        	renderSphere();
+        // make a cube display list
+        cube = beginDisplayList(); {
+        	renderCube();
         }
         endDisplayList();
 
@@ -122,7 +118,7 @@ public class GLAppDemoCamera extends GLApp {
         //		the color of the shadow,
         // 		this application,
         // 		the function that draws all objects that cast shadows
-        airplaneShadow = new GLShadowOnPlane(lightPosition, new float[] {0f,1f,0f,3f}, null, this, method(this,"drawObjects"));
+        airplaneShadow = new GLShadowOnPlane(lightPosition, new float[] {0f,1f,0f,3f}, new float[] {0f, 0f, 0f, 0f}, this, method(this,"drawObjects"));
     }
 
     /**
@@ -146,24 +142,28 @@ public class GLAppDemoCamera extends GLApp {
      * Render one frame.  Called by GLApp.run().
      */
     public void draw() {
-    	degrees += 30f * GLApp.getSecondsPerFrame();
+    	degrees += 90f * GLApp.getSecondsPerFrame();
 
         // place airplane in orbit around ball, and place camera slightly above airplane
-    	airplanePos = GL_Vector.rotationVector(degrees).mult(8);
-    	camera2.MoveTo(airplanePos.x, airplanePos.y+.53f, airplanePos.z);
+    	spherePos = GL_Vector.rotationVector(degrees).mult(8);
 
-    	// align airplane and camera2 (perpendicular to the radius and up vector)
-        GL_Vector airplaneDirection = GL_Vector.crossProduct(UP,airplanePos);
-    	camera2.viewDir( airplaneDirection );  // point camera in direction of airplane motion
+    
 
         // user keystrokes adjust camera position
-        cam.handleNavKeys((float)GLApp.getSecondsPerFrame());
+        //cam.handleRotKeys();
+    	/*String direction = cam.direction;
+    	
+    	if(cam.isRunning){
+    		cam.updatePan(direction);
+    	}
+    	else if (!cam.isRunning) {
+    		cam.handleRotKeysPan();
+  
+    	}*/
+    	
+        
 
-        // combine user camera motion with current camera position (so user can look around while on the airplane)
-        float apRot = camera2.RotatedY;  // how much is camera rotated?
-    	camera2.RotatedY = 0;            // zero out rotation
-    	camera2.RotateY(apRot);          // set rotation again (camera will add rotation to its current view direction)
-
+       
         // clear depth buffer and color
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
@@ -195,13 +195,14 @@ public class GLAppDemoCamera extends GLApp {
 
         // Place the light.  Light will move with the rest of the scene
         setLightPosition(GL11.GL_LIGHT1, lightPosition);
+        
 
 		// render some text using texture-mapped font
-		print( 30, viewportH- 45, "Use arrow keys to navigate:");
+        print( 30, viewportH- 40, "Up arrow to return to origin for overhead", 1);
+        print( 30, viewportH- 60, "Down to return to sidescrolling view", 1);
+
         print( 30, viewportH- 80, "Left-Right arrows rotate camera", 1);
-        print( 30, viewportH-100, "Up-Down arrows move camera forward and back", 1);
-        print( 30, viewportH-120, "PageUp-PageDown move vertically", 1);
-        print( 30, viewportH-140, "SPACE key switches cameras", 1);
+        print( 30, viewportH-100, Double.toString(GLApp.getFramesPerSecond()), 1);
     }
 
     public void drawObjects() {
@@ -209,24 +210,25 @@ public class GLAppDemoCamera extends GLApp {
         GL11.glPushMatrix();
         {
         	// place plane at orbit point, and orient it toward origin
-        	billboardPoint(airplanePos, ORIGIN, UP);
+        	billboardPoint(spherePos, ORIGIN, UP);
         	// turn plane toward direction of motion
             GL11.glRotatef(180, 0, 1, 0);
             // Make it smaller
-            GL11.glScalef(0.05f, 0.05f, 0.05f);
-        	airplane.render();
+            //GL11.glScalef(0.05f, 0.05f, 0.05f);
+        	renderSphere();
         	// reset material, since model.render() will alter current material settings
             setMaterial( new float[] {.8f, .8f, .7f, 1f}, .4f);
         }
         GL11.glPopMatrix();
 
-    	// draw the earth
+    	// draw the cube
         GL11.glPushMatrix();
         {
-            GL11.glRotatef(rotation, 0, 1, 0);  // rotate around Y axis
-            GL11.glScalef(2f, 2f, 2f);          // scale up
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, sphereTextureHandle);
-            callDisplayList(earth);
+           	GL11.glColor4f(0f, .5f, 1f, 1f);
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, cubeTextureHandle);
+            GL11.glScalef(2f, 2f, 2f);
+           	renderCube();
+            callDisplayList(cube);
         }
         GL11.glPopMatrix();
     }
@@ -321,7 +323,7 @@ public class GLAppDemoCamera extends GLApp {
         }
     }
 
-    public void mouseMove(int x, int y) {
+    /*public void mouseMove(int x, int y) {
     	System.out.println("x: " + (x) + " y: " + (y));
     	if(x != mouseX)
     	{
@@ -346,5 +348,5 @@ public class GLAppDemoCamera extends GLApp {
     }
 
     public void keyUp(int keycode) {
-    }
+    }*/
 }

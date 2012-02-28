@@ -21,14 +21,21 @@ import com.ATeam.twoDotFiveD.debug.Logging;
  */
 public class Config
 {
-	private File				configFile		= new File(
-														System.getProperty("user.dir"));
-	private YamlConfiguration	config			= null;
-	private static final String	fileSeparator	= System.getProperty("file.separator");
-	private boolean				vSync			= false;
-	private boolean				fullScreen		= false;
-	private boolean				logEnabled		= false;
-	private int					logLimit		= 20;
+	//Class variables
+	private File				configFile			= new File(
+															System.getProperty("user.dir"));
+	private YamlConfiguration	config				= null;
+	private static final String	fileSeparator		= System.getProperty("file.separator");
+	private boolean				logEnabled			= false;
+	private int					logLimit			= 20;
+	//Display settings
+	private boolean				vSync				= false;
+	private boolean				fullScreen			= false;
+	private int					displayWidth		= -1;
+	private int					displayHeight		= -1;
+	private int					displayColorBits	= -1;
+	private int					displayFrequency	= -1;
+	private int					depthBufferBits		= 24;
 	
 	/**
 	 * Constructor that loads the config.yml from a given path.
@@ -40,7 +47,7 @@ public class Config
 	{
 		init(path);
 	}
-	
+
 	/**
 	 * Method to initialize variables and generate the config.yml with all
 	 * essential default values, if they are missing.
@@ -76,7 +83,11 @@ public class Config
 			defaults.put("version", "0.01");
 			defaults.put("window.vSync", false);
 			defaults.put("window.fullScreen", false);
-			// TODO store resolution
+			defaults.put("window.displayWidth", -1);
+			defaults.put("window.displayHeight", -1);
+			defaults.put("window.displayColorBits", -1);
+			defaults.put("window.displayFrequency", -1);
+			defaults.put("window.depthBufferBits", 24);
 			defaults.put("debug.log.enabled", false);
 			defaults.put("debug.log.limit", 20);
 			// Insert defaults into config file if they're not present
@@ -92,6 +103,11 @@ public class Config
 			// Load variables from config
 			this.vSync = config.getBoolean("window.vSync", false);
 			this.fullScreen = config.getBoolean("window.fullScreen", false);
+			this.displayWidth = config.getInt("window.displayWidth", -1);
+			this.displayHeight = config.getInt("window.displayHeight", -1);
+			this.displayColorBits = config.getInt("window.displayColorBits", -1);
+			this.displayFrequency = config.getInt("window.displayFrequency", -1);
+			this.depthBufferBits = config.getInt("window.depthBufferBits", 24);
 			// Check bounds
 			checkBounds();
 		}
@@ -179,5 +195,30 @@ public class Config
 	public boolean getLogEnabled()
 	{
 		return logEnabled;
+	}
+
+	public int getDisplayWidth()
+	{
+		return displayWidth;
+	}
+	
+	public int getDisplayHeight()
+	{
+		return displayHeight;
+	}
+
+	public int getDisplayColorBits()
+	{
+		return displayColorBits;
+	}
+
+	public int getDisplayFrequency()
+	{
+		return displayFrequency;
+	}
+
+	public int getDepthBufferBits()
+	{
+		return depthBufferBits;
 	}
 }

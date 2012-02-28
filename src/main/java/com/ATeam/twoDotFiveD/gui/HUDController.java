@@ -22,13 +22,6 @@ public class HUDController implements ScreenController, KeyInputHandler
 	private Element rightClickMenu;
 	
 	@Override
-	public boolean keyEvent(NiftyInputEvent inputEvent)
-	{
-		// TODO handle key events
-		return false;
-	}
-	
-	@Override
 	public void bind(Nifty nifty, Screen screen)
 	{
 		this.nifty = nifty;
@@ -42,8 +35,8 @@ public class HUDController implements ScreenController, KeyInputHandler
 	    Menu<RightClickMenu> popupMenu = rightClickMenu.findNiftyControl("#menu", Menu.class);
 	  
 	    popupMenu.setWidth(new SizeValue("250px"));
-	    popupMenu.addMenuItem("MenuItem 1", "src/main/resources/button-red.png", new RightClickMenu("SomeId1", "You've clicked MenuItem 1"));
-	    popupMenu.addMenuItem("MenuItem 4000000000000000000", "menu/stop.png", new RightClickMenu("SomeId2", "You've clicked a very odd MenuItem"));
+	    popupMenu.addMenuItem("MenuItem 1", "button-red.png", new RightClickMenu("SomeId1", "You've clicked MenuItem 1"));
+	    popupMenu.addMenuItem("MenuItem 4000000000000000000", "stop.png", new RightClickMenu("SomeId2", "You've clicked a very odd MenuItem"));
 	    popupMenu.addMenuItemSeparator();
 	    popupMenu.addMenuItem("MenuItem 5", new RightClickMenu("SomeId5", "You've clicked MenuItem 5 (Where is 3?)"));
 	    popupMenu.addMenuItem("MenuItem 6", new RightClickMenu("SomeId6", "You've clicked MenuItem 6"));
@@ -99,5 +92,12 @@ public class HUDController implements ScreenController, KeyInputHandler
 			this.key = key;
 			this.text = text;
 		}
+	}
+
+	@Override
+	public boolean keyEvent(NiftyInputEvent inputEvent)
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 }
