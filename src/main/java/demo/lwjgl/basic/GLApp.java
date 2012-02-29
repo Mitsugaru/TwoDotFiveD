@@ -120,6 +120,9 @@ public class GLApp {
 	static Hashtable OpenGLextensions;       // will be populated by extensionExists()
 	static double avgSecsPerFrame=.01;       // to smooth out motion, keep a moving average of frame render times
 
+	
+	
+	
     //========================================================================
     // Run main loop of application.  Handle mouse and keyboard input.
     //
@@ -2492,6 +2495,54 @@ public class GLApp {
         }
         GL11.glEnd();
     }
+    //extent implementation from jBullet, added texture coordinates
+    public void renderCube(float extent) {
+		extent = extent * 0.5f;
+		
+	    GL11.glBegin(GL11.GL_QUADS);
+	    //right
+        GL11.glNormal3f( 1f, 0f, 0f); 
+        GL11.glTexCoord2f(0f, 0f);     GL11.glVertex3f(+extent,-extent,+extent); 
+        GL11.glTexCoord2f(1f, 0f);     GL11.glVertex3f(+extent,-extent,-extent); 
+        GL11.glTexCoord2f(1f, 1f);	   GL11.glVertex3f(+extent,+extent,-extent); 
+        GL11.glTexCoord2f(0f, 1f);     GL11.glVertex3f(+extent,+extent,+extent);
+        
+        //top
+        GL11.glNormal3f( 0f, 1f, 0f); 
+        GL11.glTexCoord2f(1f, 0f);     GL11.glVertex3f(+extent,+extent,+extent); 
+        GL11.glTexCoord2f(1f, 1f);     GL11.glVertex3f(+extent,+extent,-extent); 
+        GL11.glTexCoord2f(0f, 1f);     GL11.glVertex3f(-extent,+extent,-extent);
+        GL11.glTexCoord2f(0f, 0f);     GL11.glVertex3f(-extent,+extent,+extent);
+        
+        //front
+        GL11.glNormal3f( 0f, 0f, 1f); 
+        GL11.glTexCoord2f(1f, 1f);     GL11.glVertex3f(+extent,+extent,+extent); 
+        GL11.glTexCoord2f(0f, 1f);     GL11.glVertex3f(-extent,+extent,+extent); 
+        GL11.glTexCoord2f(0f, 0f);     GL11.glVertex3f(-extent,-extent,+extent); 
+        GL11.glTexCoord2f(1f, 0f);     GL11.glVertex3f(+extent,-extent,+extent);
+        
+        //left
+        GL11.glNormal3f(-1f, 0f, 0f); 
+        GL11.glTexCoord2f(1f, 0f);     GL11.glVertex3f(-extent,-extent,+extent); 
+        GL11.glTexCoord2f(1f, 1f);     GL11.glVertex3f(-extent,+extent,+extent); 
+        GL11.glTexCoord2f(0f, 1f);     GL11.glVertex3f(-extent,+extent,-extent); 
+        GL11.glTexCoord2f(0f, 0f);     GL11.glVertex3f(-extent,-extent,-extent);
+        
+        //bottom
+        GL11.glNormal3f( 0f,-1f, 0f); 
+        GL11.glTexCoord2f(0f, 1f);     GL11.glVertex3f(-extent,-extent,+extent); 
+        GL11.glTexCoord2f(0f, 0f);     GL11.glVertex3f(-extent,-extent,-extent); 
+        GL11.glTexCoord2f(1f, 0f);     GL11.glVertex3f(+extent,-extent,-extent); 
+        GL11.glTexCoord2f(1f, 1f);     GL11.glVertex3f(+extent,-extent,+extent);
+        
+        //back
+        GL11.glNormal3f( 0f, 0f,-1f); 
+        GL11.glTexCoord2f(1f, 0f);     GL11.glVertex3f(-extent,-extent,-extent); 
+        GL11.glTexCoord2f(1f, 1f);     GL11.glVertex3f(-extent,+extent,-extent); 
+        GL11.glTexCoord2f(0f, 1f);     GL11.glVertex3f(+extent,+extent,-extent); 
+        GL11.glTexCoord2f(0f, 0f);GL11.glVertex3f(+extent,-extent,-extent);
+		GL11.glEnd();
+	}
     
     //added
     /**

@@ -1,4 +1,4 @@
-package com.ATeam.twoDotFiveD.chatServer;
+package com.ATeam.twoDotFiveD.server;
 
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -7,24 +7,23 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 
-public class clientHandler extends Thread
+public class chatClientHandler extends Thread
 {
+	public static final String HANDSHAKE="HI U WANT TO PLAY?";
+	public static final String HANDSHAKER="Yes please";
+	public static final String HANDSHAKENAME="CAN HAS NAME?";
+	
+	
     private String name;
-
     private Scanner in;
-
     private PrintWriter out;
-
     private boolean stop;
-
     private String defaultroom;
-
     private chatServer server;
+    private ArrayList<chatRoom> rooms = new ArrayList<chatRoom>();
+    private int ID;
 
-    private ArrayList<Room> rooms = new ArrayList<Room>();
-
-
-    public clientHandler( chatServer server, Socket socket )
+    public chatClientHandler( chatServer server, Socket socket )
     {
         stop = false;
         this.server = server;
@@ -36,8 +35,16 @@ public class clientHandler extends Thread
         }
         catch ( Exception e )
         {
-
+        	//why have a catch without anything in it?
         }
+    }
+    public boolean init(){
+    	out.println(HANDSHAKE);
+    	if(in.nextLine().equals(HANDSHAKER)){
+    		out.println(HANDSHAKENAME);
+    		name=in.nextLine();
+    	}
+    	return true;
     }
 
 
@@ -69,7 +76,6 @@ public class clientHandler extends Thread
             try
             {
                 String text = in.nextLine();
-                server.throwup( name + ": " + text );
                 handle( text );
             }
             catch ( NoSuchElementException e )
@@ -84,6 +90,9 @@ public class clientHandler extends Thread
     public String getname()
     {
         return name;
+    }
+    public int getID(){
+    	return ID;
     }
 
 
@@ -107,7 +116,7 @@ public class clientHandler extends Thread
         {
             if ( text.charAt( 0 ) != '/' )
             {
-                for ( Room r : rooms )
+                for ( chatRoom r : rooms )
                 {
                     if ( r.getName().equals( defaultroom ) )
                     {
@@ -166,7 +175,7 @@ public class clientHandler extends Thread
                     if ( command.equals( "/who" ) )
                     {
                         String message = "";
-                        for ( Room r : rooms )
+                        for ( chatRoom r : rooms )
                         {
                             message += "In [" + r.getName() + "]:";
                             String[] list = r.getPlayers();
@@ -303,7 +312,7 @@ public class clientHandler extends Thread
                             }
                             else
                             {
-                                for ( Room r : rooms )
+                                for ( chatRoom r : rooms )
                                 {
                                     if ( r.getName().equals( args[1] ) )
                                     {
@@ -340,7 +349,7 @@ public class clientHandler extends Thread
                             }
                             else
                             {
-                                for ( Room r : rooms )
+                                for ( chatRoom r : rooms )
                                 {
                                     if ( r.getName().equals( args[1] ) )
                                     {
@@ -372,7 +381,7 @@ public class clientHandler extends Thread
                             else
                             {
                                 boolean found = false;
-                                for ( Room r : rooms )
+                                for ( chatRoom r : rooms )
                                 {
                                     if ( r.getName().equals( args[1] ) )
                                     {
@@ -430,7 +439,7 @@ public class clientHandler extends Thread
                     }
                     if ( command.equals( "/list" ) )
                     {
-                        for ( Room r : rooms )
+                        for ( chatRoom r : rooms )
                         {
                             send( r.getName() );
                         }
@@ -451,13 +460,13 @@ public class clientHandler extends Thread
     }
 
 
-    public void addRoom( Room room )
+    public void addRoom( chatRoom room )
     {
         this.rooms.add( room );
     }
 
 
-    public void removeRoom( Room room )
+    public void removeRoom( chatRoom room )
     {
         this.rooms.remove( room );
     }
@@ -465,9 +474,9 @@ public class clientHandler extends Thread
 
     public boolean equals( Object o )
     {
-        if ( o instanceof clientHandler )
+        if ( o instanceof chatClientHandler )
         {
-            clientHandler temp = (clientHandler)o;
+            chatClientHandler temp = (chatClientHandler)o;
             if ( temp.name.equals( this.name ) )
             {
                 return true;

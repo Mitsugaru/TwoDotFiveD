@@ -219,10 +219,10 @@ public class GLCamera {
 				ViewPoint.x, ViewPoint.y, ViewPoint.z,
 				UpVector.x, UpVector.y, UpVector.z);
 
-//		System.out.println(Position.x + "," + Position.y + "," + Position.z + "  " +
-//				ViewDir.x + "," + ViewDir.y + "," + ViewDir.z + "  " +
-//				UpVector.x + "," + UpVector.y + "," + UpVector.z + "  "
-//				);
+		System.out.println(Position.x + "," + Position.y + "," + Position.z + "  " +
+				ViewDir.x + "," + ViewDir.y + "," + ViewDir.z + "  " +
+				UpVector.x + "," + UpVector.y + "," + UpVector.z + "  "
+				);
 	}
 
 	/**

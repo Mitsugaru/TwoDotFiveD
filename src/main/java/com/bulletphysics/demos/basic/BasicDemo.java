@@ -94,7 +94,6 @@ public class BasicDemo extends DemoApplication {
 		//glFlush();
 		//glutSwapBuffers();
 	}
-
 	@Override
 	public void displayCallback() {
 		gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
