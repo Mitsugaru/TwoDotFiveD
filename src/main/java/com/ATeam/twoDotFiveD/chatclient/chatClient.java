@@ -4,11 +4,13 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
+import com.ATeam.twoDotFiveD.gui.MainStartScreen;
+
 
 public class chatClient extends Thread
 {
     // This is going to have to be adjusted for the game
-    private tempDisplay display;
+    private MainStartScreen display;
 
     private String ip;
 
@@ -25,7 +27,7 @@ public class chatClient extends Thread
 
     // Tells the client where to connect, and what it's name is. The name must
     // be decided by the game before the chat client connects
-    public chatClient( tempDisplay whatIDisplay, String ip, String name )
+    public chatClient( MainStartScreen whatIDisplay, String ip, String name )
     {
         display = whatIDisplay;
         this.ip = ip;
@@ -86,7 +88,7 @@ public class chatClient extends Thread
             {
                 if ( in.hasNext() )
                 {
-                    display.updatetext( in.nextLine() );
+                    display.processText( in.nextLine() );
                 }
             }
         }
