@@ -1,7 +1,7 @@
 package com.ATeam.twoDotFiveD.event.block;
 
 import javax.vecmath.Vector3f;
-
+import com.ATeam.twoDotFiveD.music.*;
 import com.ATeam.twoDotFiveD.block.Block;
 import com.bulletphysics.collision.narrowphase.ManifoldPoint;
 import com.bulletphysics.collision.narrowphase.PersistentManifold;
@@ -12,6 +12,7 @@ public class BlockCollisionEvent extends BlockEvent
 	private PersistentManifold	persistentManifold;
 	private int					objectAActivationState;
 	private int					objectBActivationState;
+	private MusicPlayer mp=new MusicPlayer();
 	
 	public BlockCollisionEvent(PersistentManifold persistentManifold)
 	{
@@ -28,6 +29,10 @@ public class BlockCollisionEvent extends BlockEvent
 			//Grab object activation state
 			objectAActivationState = objA.getActivationState();
 			objectBActivationState = objB.getActivationState();
+			
+			
+			mp.createThread(3);//number in array, this case Explosion.wav 
+			
 			// If both object states are 2, then they are both deactivated... so
 			// we shouldn't care? Maybe we might care, but probably not?
 			if (objectAActivationState == 2 && objectBActivationState == 2)
