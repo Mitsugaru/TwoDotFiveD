@@ -88,7 +88,7 @@ public class chatClient extends Thread
             {
                 if ( in.hasNext() )
                 {
-                    display.updatetext( in.nextLine() );
+                    display.processText( in.nextLine() );
                 }
             }
         }

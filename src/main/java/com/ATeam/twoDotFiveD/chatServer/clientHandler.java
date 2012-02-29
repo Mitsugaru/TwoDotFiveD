@@ -44,9 +44,24 @@ public class clientHandler extends Thread
     @Override
     public void run()
     {
+        String[] playerList = server.getClientList();
+        if ( playerList != null )
+        {
+            for ( int i = 0; i < playerList.length; i++ )
+            {
+                out.println( "[[Servermessage]] add " + playerList[i] );
+            }
+        }
         name = in.nextLine();
-        send("Type /help for commands");
-        server.sendToAll( name + " has joined the game." );
+        server.addClient( this );
+        String[] roomList = server.getRoomList();
+        if (roomList != null){
+            for (int i = 0; i< roomList.length;i++){
+                out.println("[[Servermessage]] roomadd [" + roomList[i] + "]");
+            }
+        }
+        send( "Type /help for commands" );
+        server.sendToAll( "[[Servermessage]] add " + name );
         addRoom( server.getDefault() );
         server.getDefault().addPlayer( this, "" );
         while ( !stop )
@@ -75,7 +90,7 @@ public class clientHandler extends Thread
     public void close()
     {
         stop = true;
-        server.sendToAll( name + " has left the game." );
+        server.sendToAll( "[[Servermessage]] remove " + name );
         in.close();
         out.close();
         server.removePlayer( this );
@@ -110,34 +125,39 @@ public class clientHandler extends Thread
                     || command.equals( "/whisper" ) || command.equals( "/list" )
                     || command.equals( "/who" ) || command.equals( "/whoall" )
                     || command.equals( "/listall" ) || command.equals( "/help" )
-                    || command.equals("/////exit"))
+                    || command.equals( "/////exit" ) )
                 {
-                    if (command.equals("/////exit")){
+                    if ( command.equals( "/////exit" ) )
+                    {
                         close();
                     }
-                    if (command.equals("/help")){
-                        send("Command list:");
-                        send("/help lists all available commands.");
-                        send("/create <roomname> <password> creates a room with the given name and password. Password is optional.");
-                        send("/join <roomname> <password> Joins a room. Passwords must match. You do not need to enter a password for a room that doesn't have one.");
-                        send("/leave <roomname> Leave a room.");
-                        send("/room <message> Send a message to the players in that room, if you are in that room.");
-                        send("/setdefault <roomname> Sets your default room to a specific room. All messages not preceeded by a command will go to that room.");
-                        send("/whisper <playername> <message> whispers a player");
-                        send("/list lists the rooms that you are in.");
-                        send("/listall lists all of the rooms on the server.");
-                        send("/who lists all of the players in the rooms you are in.");
-                        send("/whoall lists all of the players in the game.");
+                    if ( command.equals( "/help" ) )
+                    {
+                        send( "Command list:" );
+                        send( "/help lists all available commands." );
+                        send( "/create <roomname> <password> creates a room with the given name and password. Password is optional." );
+                        send( "/join <roomname> <password> Joins a room. Passwords must match. You do not need to enter a password for a room that doesn't have one." );
+                        send( "/leave <roomname> Leave a room." );
+                        send( "/room <message> Send a message to the players in that room, if you are in that room." );
+                        send( "/setdefault <roomname> Sets your default room to a specific room. All messages not preceeded by a command will go to that room." );
+                        send( "/whisper <playername> <message> whispers a player" );
+                        send( "/list lists the rooms that you are in." );
+                        send( "/listall lists all of the rooms on the server." );
+                        send( "/who lists all of the players in the rooms you are in." );
+                        send( "/whoall lists all of the players in the game." );
                     }
                     if ( command.equals( "/listall" ) )
                     {
                         String[] list = server.getRoomList();
-                        String message ="The rooms in the game are: ";
+                        String message = "The rooms in the game are: ";
                         for ( int i = 0; i < list.length; i++ )
                         {
-                            if (i == 0){
-                            message += list[i];}
-                            else{
+                            if ( i == 0 )
+                            {
+                                message += list[i];
+                            }
+                            else
+                            {
                                 message += ", " + list[i];
                             }
                         }
@@ -145,17 +165,19 @@ public class clientHandler extends Thread
                     }
                     if ( command.equals( "/who" ) )
                     {
-                        String message ="";
+                        String message = "";
                         for ( Room r : rooms )
                         {
                             message += "In [" + r.getName() + "]:";
                             String[] list = r.getPlayers();
                             for ( int i = 0; i < list.length; i++ )
                             {
-                                if (i==0){
+                                if ( i == 0 )
+                                {
                                     message += list[i];
                                 }
-                                else{
+                                else
+                                {
                                     message += ", " + list[i];
                                 }
                             }
@@ -167,17 +189,19 @@ public class clientHandler extends Thread
                     if ( command.equals( "/whoall" ) )
                     {
                         String[] list = server.getClientList();
-                        String message ="";
+                        String message = "";
                         for ( int i = 0; i < list.length; i++ )
                         {
-                            if (i==0){
+                            if ( i == 0 )
+                            {
                                 message += list[i];
                             }
-                            else {
-                                message += ", " +list[i];
+                            else
+                            {
+                                message += ", " + list[i];
                             }
                         }
-                        send(message);
+                        send( message );
                     }
                     if ( command.equals( "/create" ) )
                     {
@@ -196,7 +220,7 @@ public class clientHandler extends Thread
                                     if ( server.createRoom( args[1], this, "" ) )
                                     {
                                         send( args[1] + " has been created" );
-                                        send("You are now in " + args[1]);
+                                        send( "You are now in " + args[1] );
                                     }
                                     else
                                     {
@@ -210,7 +234,7 @@ public class clientHandler extends Thread
                                         args[2] ) )
                                     {
                                         send( args[1] + " has been created." );
-                                        send("You are now in " + args[1]);
+                                        send( "You are now in " + args[1] );
                                     }
                                     else
                                     {
