@@ -29,6 +29,9 @@ import com.bulletphysics.collision.dispatch.CollisionObject;
 import com.bulletphysics.collision.dispatch.CollisionWorld;
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.collision.shapes.CollisionShape;
+import com.bulletphysics.collision.shapes.CylinderShape;
+import com.bulletphysics.collision.shapes.SphereShape;
+import com.bulletphysics.collision.shapes.TriangleShape;
 import com.bulletphysics.dynamics.DynamicsWorld;
 import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
@@ -56,25 +59,25 @@ import static com.bulletphysics.demos.opengl.IGL.*;
 public abstract class DemoApplication {
 
 	//protected final BulletStack stack = BulletStack.get();
-	
+
 	private static final float STEPSIZE = 5;
-	
+
 	public static int numObjects = 0;
 	public static final int maxNumObjects = 16384;
 	public static Transform[] startTransforms = new Transform[maxNumObjects];
 	public static CollisionShape[] gShapePtr = new CollisionShape[maxNumObjects]; //1 rigidbody has 1 shape (no re-use of shapes)
-	
+
 	public static RigidBody pickedBody = null; // for deactivation state
 
 	private static float mousePickClamping = 3f;
-	
+
 	static {
 		for (int i=0; i<startTransforms.length; i++) {
 			startTransforms[i] = new Transform();
 		}
 	}
 	// TODO: class CProfileIterator* m_profileIterator;
-	
+
 	// JAVA NOTE: added
 	protected IGL gl;
 
@@ -90,7 +93,7 @@ public abstract class DemoApplication {
 
 	protected float cameraDistance = 15f;
 	protected int debugMode = 0;
-	
+
 	protected float ele = 20f;
 	protected float azi = 0f;
 	protected final Vector3f cameraPosition = new Vector3f(0f, 0f, 0f);
@@ -105,23 +108,25 @@ public abstract class DemoApplication {
 	protected int glutScreenHeight = 0;
 
 	protected float ShootBoxInitialSpeed = 40f;
-	
+
 	protected boolean stepping = true;
 	protected boolean singleStep = false;
 	protected boolean idle = false;
 	protected int lastKey;
-	
+	protected String bodyGravityType = "NORMAL";
+	protected String shapeType = "BOX";
+
 	private CProfileIterator profileIterator;
 
 	public DemoApplication(IGL gl) {
 		this.gl = gl;
-		
+
 		BulletStats.setProfileEnabled(true);
 		profileIterator = CProfileManager.getIterator();
 	}
-	
+
 	public abstract void initPhysics() throws Exception;
-	
+
 	public void destroy() {
 		// TODO: CProfileManager::Release_Iterator(m_profileIterator);
 		//if (m_shootBoxShape)
@@ -176,11 +181,11 @@ public abstract class DemoApplication {
 			idle = true;
 		}
 	}
-	
+
 	public void updateCamera() {
 		gl.glMatrixMode(GL_PROJECTION);
 		gl.glLoadIdentity();
-		System.out.println(cameraTargetPosition);
+		//System.out.println(cameraTargetPosition);
 		float rele = ele * 0.01745329251994329547f; // rads per deg
 		float razi = azi * 0.01745329251994329547f; // rads per deg
 
@@ -218,18 +223,18 @@ public abstract class DemoApplication {
 			float aspect = glutScreenHeight / (float) glutScreenWidth;
 			gl.glFrustum(-1.0, 1.0, -aspect, aspect, 1.0, 10000.0);
 		}
-		
+
 		gl.glMatrixMode(GL_MODELVIEW);
 		gl.glLoadIdentity();
-		System.out.println("camUP "+cameraUp);
+		//System.out.println("camUP "+cameraUp);
 		gl.gluLookAt(cameraPosition.x, cameraPosition.y, cameraPosition.z,
 				cameraTargetPosition.x, cameraTargetPosition.y, cameraTargetPosition.z,
 				cameraUp.x, cameraUp.y, cameraUp.z);
-		System.out.println(cameraPosition.x+","+ cameraPosition.y+","+ cameraPosition.z+",  "+
-				cameraTargetPosition.x+","+ cameraTargetPosition.y+","+ cameraTargetPosition.z+",  "+
-				cameraUp.x+","+ cameraUp.y+","+ cameraUp.z);
+		//System.out.println(cameraPosition.x+","+ cameraPosition.y+","+ cameraPosition.z+",  "+
+		//		cameraTargetPosition.x+","+ cameraTargetPosition.y+","+ cameraTargetPosition.z+",  "+
+		//		cameraUp.x+","+ cameraUp.y+","+ cameraUp.z);
 	}
-	
+
 	public void stepLeft() {
 		azi -= STEPSIZE;
 		if (azi < 0) {
@@ -325,14 +330,14 @@ public abstract class DemoApplication {
 				}
 				break;
 
-			case 'w':
-				if ((debugMode & DebugDrawModes.DRAW_WIREFRAME) != 0) {
-					debugMode = debugMode & (~DebugDrawModes.DRAW_WIREFRAME);
-				}
-				else {
-					debugMode |= DebugDrawModes.DRAW_WIREFRAME;
-				}
-				break;
+//			case 'w':
+//				if ((debugMode & DebugDrawModes.DRAW_WIREFRAME) != 0) {
+//					debugMode = debugMode & (~DebugDrawModes.DRAW_WIREFRAME);
+//				}
+//				else {
+//					debugMode |= DebugDrawModes.DRAW_WIREFRAME;
+//				}
+//				break;
 
 			case 'p':
 				if ((debugMode & DebugDrawModes.PROFILE_TIMINGS) != 0) {
@@ -377,14 +382,14 @@ public abstract class DemoApplication {
 					debugMode |= DebugDrawModes.DRAW_FEATURES_TEXT;
 				}
 				break;
-			case 'a':
-				if ((debugMode & DebugDrawModes.DRAW_AABB) != 0) {
-					debugMode = debugMode & (~DebugDrawModes.DRAW_AABB);
-				}
-				else {
-					debugMode |= DebugDrawModes.DRAW_AABB;
-				}
-				break;
+//			case 'a':
+//				if ((debugMode & DebugDrawModes.DRAW_AABB) != 0) {
+//					debugMode = debugMode & (~DebugDrawModes.DRAW_AABB);
+//				}
+//				else {
+//					debugMode |= DebugDrawModes.DRAW_AABB;
+//				}
+//				break;
 			case 'c':
 				if ((debugMode & DebugDrawModes.DRAW_CONTACT_POINTS) != 0) {
 					debugMode = debugMode & (~DebugDrawModes.DRAW_CONTACT_POINTS);
@@ -394,29 +399,29 @@ public abstract class DemoApplication {
 				}
 				break;
 
-			case 'd':
-				if ((debugMode & DebugDrawModes.NO_DEACTIVATION) != 0) {
-					debugMode = debugMode & (~DebugDrawModes.NO_DEACTIVATION);
-				}
-				else {
-					debugMode |= DebugDrawModes.NO_DEACTIVATION;
-				}
-				if ((debugMode & DebugDrawModes.NO_DEACTIVATION) != 0) {
-					BulletGlobals.setDeactivationDisabled(true);
-				}
-				else {
-					BulletGlobals.setDeactivationDisabled(false);
-				}
-				break;
+//			case 'd':
+//				if ((debugMode & DebugDrawModes.NO_DEACTIVATION) != 0) {
+//					debugMode = debugMode & (~DebugDrawModes.NO_DEACTIVATION);
+//				}
+//				else {
+//					debugMode |= DebugDrawModes.NO_DEACTIVATION;
+//				}
+//				if ((debugMode & DebugDrawModes.NO_DEACTIVATION) != 0) {
+//					BulletGlobals.setDeactivationDisabled(true);
+//				}
+//				else {
+//					BulletGlobals.setDeactivationDisabled(false);
+//				}
+//				break;
 
 			case 'o': {
 				stepping = !stepping;
 				break;
 			}
-			case 's':
-				clientMoveAndDisplay();
-				break;
-			//    case ' ' : newRandom(); break;
+//			case 's':
+//				clientMoveAndDisplay();
+//				break;
+//			//    case ' ' : newRandom(); break;
 			case ' ':
 				clientResetScene();
 				break;
@@ -443,6 +448,112 @@ public abstract class DemoApplication {
 				ShootBoxInitialSpeed -= 10f;
 				break;
 			}
+			case '2':
+			{
+				bodyGravityType = "NORMAL";
+				break;
+			}
+			case '3':
+			{
+				bodyGravityType = "ANTIGRAVITY";
+				break;
+			}
+			case '4':
+			{
+				bodyGravityType = "STASIS";
+				break;
+			}
+			case '5':
+			{
+				for(final CollisionObject o : dynamicsWorld.getCollisionObjectArray())
+				{
+					if(o instanceof RigidBody)
+					{
+						final RigidBody rb = (RigidBody) o;
+						rb.setGravity(new Vector3f(0f, 0f, -30f));
+						//Don't call activate if you do not want non-activated objects
+						//via the setGravity call
+						rb.activate();
+					}
+				}
+				break;
+			}
+			case '6':
+			{
+				for(final CollisionObject o : dynamicsWorld.getCollisionObjectArray())
+				{
+					if(o instanceof RigidBody)
+					{
+						final RigidBody rb = (RigidBody) o;
+						rb.setGravity(new Vector3f(0f, 0f, 30f));
+						rb.activate();
+					}
+				}
+				break;
+			}
+			case '7':
+			{
+				for(final CollisionObject o : dynamicsWorld.getCollisionObjectArray())
+				{
+					if(o instanceof RigidBody)
+					{
+						final RigidBody rb = (RigidBody) o;
+						rb.setGravity(new Vector3f(0f, 0f, 0f));
+						rb.activate();
+					}
+				}
+				break;
+			}
+			case '8':
+			{
+				for(final CollisionObject o : dynamicsWorld.getCollisionObjectArray())
+				{
+					if(o instanceof RigidBody)
+					{
+						final RigidBody rb = (RigidBody) o;
+						rb.setGravity(new Vector3f(30f, 0f, 0f));
+						rb.activate();
+					}
+				}
+				break;
+			}
+			case '9':
+			{
+				for(final CollisionObject o : dynamicsWorld.getCollisionObjectArray())
+				{
+					if(o instanceof RigidBody)
+					{
+						final RigidBody rb = (RigidBody) o;
+						if(rb.isActive())
+						{
+							//TODO Figure out how to remove last object without crashing
+							//TODO Figure out why it doesn't remove all objects at once
+							//dynamicsWorld.removeRigidBody(rb);
+						}
+					}
+				}
+				break;
+			}
+			case 'j':
+			{
+				shapeType = "SPHERE";
+				break;
+			}
+			case ';':
+			{
+				shapeType = "TRIANGLE";
+				break;
+			}
+			case 'u':
+			{
+				shapeType = "BOX";
+				break;
+			}
+			case 'k':
+			{
+				shapeType = "CYLINDER";
+				break;
+			}
 
 			default:
 				// std::cout << "unused key : " << key << std::endl;
@@ -459,14 +570,14 @@ public abstract class DemoApplication {
 	public int getDebugMode() {
 		return debugMode;
 	}
-	
+
 	public void setDebugMode(int mode) {
 		debugMode = mode;
 		if (getDynamicsWorld() != null && getDynamicsWorld().getDebugDrawer() != null) {
 			getDynamicsWorld().getDebugDrawer().setDebugMode(mode);
 		}
 	}
-	
+
 	public void specialKeyboardUp(int key, int x, int y, int modifiers) {
 		//LWJGL.postRedisplay();
 	}
@@ -521,25 +632,25 @@ public abstract class DemoApplication {
 
 		//LWJGL.postRedisplay();
 	}
-	
+
 	public void moveAndDisplay() {
 		if (!idle) {
 			clientMoveAndDisplay();
 		}
 	}
-	
+
 	public void displayCallback() {
 	}
 
 	public void shootBox(Vector3f destination) {
 		if (dynamicsWorld != null) {
-			float mass = 10f;
+			float mass = 50f;
 			Transform startTransform = new Transform();
 			startTransform.setIdentity();
 			Vector3f camPos = new Vector3f(getCameraPosition());
 			startTransform.origin.set(camPos);
 
-			if (shootBoxShape == null) {
+			if (shapeType.equals("BOX")) {
 				//#define TEST_UNIFORM_SCALING_SHAPE 1
 				//#ifdef TEST_UNIFORM_SCALING_SHAPE
 				//btConvexShape* childShape = new btBoxShape(btVector3(1.f,1.f,1.f));
@@ -548,6 +659,20 @@ public abstract class DemoApplication {
 				shootBoxShape = new BoxShape(new Vector3f(1f, 1f, 1f));
 				//#endif//
 			}
+			else if(shapeType.equals("SPHERE"))
+			{
+				shootBoxShape = new SphereShape(1f);
+			}
+			else if(shapeType.equals("TRIANGLE"))
+			{
+				//TODO implement a pyramid
+				//shootBoxShape = new TriangleShape(new Vector3f(1f, 1f, 1f), new Vector3f(1f, 0f, 0f), new Vector3f(0f, -1f, 0f));
+			}
+			else if(shapeType.equals("CYLINDER"))
+			{
+				shootBoxShape = new CylinderShape(new Vector3f(1f, 1f, 1f));
+			}
+
 
 			RigidBody body = this.localCreateRigidBody(mass, startTransform, shootBoxShape);
 
@@ -559,7 +684,7 @@ public abstract class DemoApplication {
 			worldTrans.origin.set(camPos);
 			worldTrans.setRotation(new Quat4f(0f, 0f, 0f, 1f));
 			body.setWorldTransform(worldTrans);
-			
+
 			body.setLinearVelocity(linVel);
 			body.setAngularVelocity(new Vector3f(0f, 0f, 0f));
 
@@ -567,7 +692,7 @@ public abstract class DemoApplication {
 			body.setCcdSweptSphereRadius(0.2f);
 		}
 	}
-	
+
 	public Vector3f getRayTo(int x, int y) {
 		float top = 1f;
 		float bottom = -1f;
@@ -594,19 +719,19 @@ public abstract class DemoApplication {
 		vertical.normalize();
 
 		float tanfov = (float) Math.tan(0.5f * fov);
-		
+
 		float aspect = glutScreenHeight / (float)glutScreenWidth;
-		
+
 		hor.scale(2f * farPlane * tanfov);
 		vertical.scale(2f * farPlane * tanfov);
-		
+
 		if (aspect < 1f) {
 			hor.scale(1f / aspect);
 		}
 		else {
 			vertical.scale(aspect);
 		}
-		
+
 		Vector3f rayToCenter = new Vector3f();
 		rayToCenter.add(rayFrom, rayForward);
 		Vector3f dHor = new Vector3f(hor);
@@ -630,7 +755,7 @@ public abstract class DemoApplication {
 		rayTo.sub(tmp2);
 		return rayTo;
 	}
-	
+
 	public void mouseFunc(int button, int state, int x, int y) {
 		//printf("button %i, state %i, x=%i,y=%i\n",button,state,x,y);
 		//button 0, state 0 means left mouse down
@@ -727,7 +852,7 @@ public abstract class DemoApplication {
 			}
 		}
 	}
-	
+
 	public void mouseMotionFunc(int x, int y) {
 		if (pickConstraint != null) {
 			// move the constraint pivot
@@ -763,18 +888,29 @@ public abstract class DemoApplication {
 		//#define USE_MOTIONSTATE 1
 		//#ifdef USE_MOTIONSTATE
 		DefaultMotionState myMotionState = new DefaultMotionState(startTransform);
-		
+
 		RigidBodyConstructionInfo cInfo = new RigidBodyConstructionInfo(mass, myMotionState, shape, localInertia);
-		
+
 		RigidBody body = new RigidBody(cInfo);
 		//#else
 		//btRigidBody* body = new btRigidBody(mass,0,shape,localInertia);	
 		//body->setWorldTransform(startTransform);
 		//#endif//
-		
+
 		dynamicsWorld.addRigidBody(body);
-		
-		//body.setGravity(new Vector3f(0f, 0f, 10f));
+
+		//Dynamic gravity for object
+		if(!bodyGravityType.equals("NORMAL"))
+		{
+			if(bodyGravityType.equals("ANTIGRAVITY"))
+			{
+				body.setGravity(new Vector3f(0f, 0f, 30f));
+			}
+			else if(bodyGravityType.equals("STASIS"))
+			{
+				body.setGravity(new Vector3f(0f, 0f, 0f));
+			}
+		}
 
 		return body;
 	}
@@ -783,7 +919,7 @@ public abstract class DemoApplication {
 	public void setOrthographicProjection() {
 		// switch to projection mode
 		gl.glMatrixMode(GL_PROJECTION);
-		
+
 		// save previous matrix which contains the 
 		//settings for the perspective projection
 		gl.glPushMatrix();
@@ -793,27 +929,27 @@ public abstract class DemoApplication {
 		gl.gluOrtho2D(0f, glutScreenWidth, 0f, glutScreenHeight);
 		gl.glMatrixMode(GL_MODELVIEW);
 		gl.glLoadIdentity();
-		
+
 		// invert the y axis, down is positive
 		gl.glScalef(1f, -1f, 1f);
 		// mover the origin from the bottom left corner
 		// to the upper left corner
 		gl.glTranslatef(0f, -glutScreenHeight, 0f);
 	}
-	
+
 	public void resetPerspectiveProjection() {
 		gl.glMatrixMode(GL_PROJECTION);
 		gl.glPopMatrix();
 		gl.glMatrixMode(GL_MODELVIEW);
 		updateCamera();
 	}
-	
+
 	private void displayProfileString(float xOffset, float yStart, CharSequence message) {
 		drawString(message, Math.round(xOffset), Math.round(yStart), TEXT_COLOR);
 	}	
 
 	private static double time_since_reset = 0f;
-	
+
 	protected float showProfileInfo(float xOffset, float yStart, float yIncr) {
 		if (!idle) {
 			time_since_reset = CProfileManager.getTimeSinceReset();
@@ -981,7 +1117,7 @@ public abstract class DemoApplication {
 				s = "LMB=drag, RMB=shoot box, MIDDLE=apply impulse";
 				drawString(s, Math.round(xOffset), Math.round(yStart), TEXT_COLOR);
 				yStart += yIncr;
-				
+
 				s = "space to reset";
 				drawString(s, Math.round(xOffset), Math.round(yStart), TEXT_COLOR);
 				yStart += yIncr;
@@ -1058,7 +1194,7 @@ public abstract class DemoApplication {
 				FastFormat.append(buf, BulletStats.gNumSplitImpulseRecoveries);
 				drawString(buf, Math.round(xOffset), Math.round(yStart), TEXT_COLOR);
 				yStart += yIncr;
-				
+
 				//buf = String.format("gNumAlignedAllocs = %d", BulletGlobals.gNumAlignedAllocs);
 				// TODO: BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
 				//yStart += yIncr;
@@ -1085,7 +1221,7 @@ public abstract class DemoApplication {
 					FastFormat.append(buf, getDynamicsWorld().getNumCollisionObjects());
 					drawString(buf, Math.round(xOffset), Math.round(yStart), TEXT_COLOR);
 					yStart += yIncr;
-					
+
 					buf.setLength(0);
 					buf.append("# pairs = ");
 					FastFormat.append(buf, getDynamicsWorld().getBroadphase().getOverlappingPairCache().getNumOverlappingPairs());
@@ -1106,16 +1242,16 @@ public abstract class DemoApplication {
 				buf.append(" MB");
 				drawString(buf, Math.round(xOffset), Math.round(yStart), TEXT_COLOR);
 				yStart += yIncr;
-				
+
 				resetPerspectiveProjection();
 			}
 
 			gl.glEnable(GL_LIGHTING);
 		}
-		
+
 		updateCamera();
 	}
-	
+
 	public void clientResetScene() {
 		//#ifdef SHOW_NUM_DEEP_PENETRATIONS
 		BulletStats.gNumDeepPenetrationChecks = 0;
@@ -1159,7 +1295,7 @@ public abstract class DemoApplication {
 			*/
 		}
 	}
-	
+
 	public DynamicsWorld getDynamicsWorld() {
 		return dynamicsWorld;
 	}
@@ -1189,7 +1325,7 @@ public abstract class DemoApplication {
 		//return btScalar(16666.);
 		//#endif
 	}
-	
+
 	public abstract void clientMoveAndDisplay();
 
 	public boolean isIdle() {
@@ -1199,9 +1335,9 @@ public abstract class DemoApplication {
 	public void setIdle(boolean idle) {
 		this.idle = idle;
 	}
-	
+
 	public void drawString(CharSequence s, int x, int y, Color3f color) {
 		gl.drawString(s, x, y, color.x, color.y, color.z);
 	}
-	
+
 }

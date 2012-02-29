@@ -237,6 +237,8 @@ public class CharacterDemo extends DemoApplication {
 				break;
 		}
 	}
+	
+	
 
 	@Override
 	public void specialKeyboard(int key, int x, int y, int modifiers) {
