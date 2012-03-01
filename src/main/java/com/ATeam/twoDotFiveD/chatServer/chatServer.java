@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import com.ATeam.twoDotFiveD.server.gameServer;
+import com.Ateam.twoDotFived.udp.server.UDPServer;
 
 
 public class chatServer
@@ -26,7 +26,7 @@ public class chatServer
 
     private Room Default;
     
-    private gameServer UDPServer;
+    private UDPServer UDPServer;
 
 
     public void throwup( String text )
@@ -93,7 +93,7 @@ public class chatServer
     public chatServer()
     {
         // TODO all this is optional
-        UPDServer = new gameServer(clientlist);
+        UPDServer = new UDPServer(clientlist);
         new Thread(UDPServer).run();
         JFrame frame = new JFrame( "Server Window" );
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );

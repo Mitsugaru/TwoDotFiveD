@@ -28,27 +28,44 @@ public class clientHandler extends Thread
     private InetAddress address;
 
     private int port;
+    
+    private int ID;
+    
+	private long ping;
+	
+	private long pingInitial;
+	
+	private long lastMessageTime;
 
-
-    public void set( InetAddress anAddress, int aPort )
+	public int getID(){
+		return ID;
+	}
+    public void init( InetAddress anAddress, int aPort )
     {
         address = anAddress;
         port = aPort;
     }
-
-
     public DatagramPacket message( byte[] data )
     {
         return new DatagramPacket( data, data.length, address, port );
     }
 
-
-    public boolean active()
+    public boolean active1()
     {
         return address != null;
     }
-
-
+	public void updateAliveTime(){
+		lastMessageTime=System.currentTimeMillis()/1000L;
+	}
+	public void pinginit(){
+		pingInitial=System.currentTimeMillis()/1000L;
+	}
+	public void updateLatency(){
+		ping=pingInitial-System.currentTimeMillis()/1000L;
+	}
+	public Long getLatency(){
+		return ping;
+	}
     public clientHandler( chatServer server, Socket socket )
     {
         stop = false;
@@ -490,8 +507,6 @@ public class clientHandler extends Thread
     {
         this.rooms.remove( room );
     }
-
-
     public boolean equals( Object o )
     {
         if ( o instanceof clientHandler )
@@ -504,5 +519,4 @@ public class clientHandler extends Thread
         }
         return false;
     }
-
 }

@@ -7,13 +7,14 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import com.ATeam.twoDotFiveD.Player;
+import com.ATeam.twoDotFiveD.chatServer.clientHandler;
 
 
 public class chatServer implements Runnable
 {
 	public final static int DEFAULTCHATPORT=1337;
 	private ArrayList<client> players;
-	private ArrayList<chatClientHandler> clientlist = new ArrayList<chatClientHandler>();
+	//private ArrayList<chatClientHandler> clientlist = new ArrayList<chatClientHandler>();
 	private ArrayList<chatRoom> rooms = new ArrayList<chatRoom>();
 	private chatRoom Default;
 	private int port;
@@ -100,18 +101,13 @@ public class chatServer implements Runnable
 	}
 
 
-	public void addClient( chatClientHandler client )
-	{
-		clientlist.add( client );
-	}
-
 
 
 
 
 	public boolean sendToPlayer( String playername, String message )
 	{
-		for ( chatClientHandler c : clientlist )
+		for ( clientHandler c : clientlist )
 		{
 			if ( c.getname().equals( playername ) )
 			{

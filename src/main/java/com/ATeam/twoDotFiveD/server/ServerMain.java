@@ -3,13 +3,15 @@ package com.ATeam.twoDotFiveD.server;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import com.Ateam.twoDotFived.udp.server.UDPServer;
+
 public class ServerMain implements Runnable{
 	private ArrayList<client> players=new ArrayList<client>();
 	private boolean run=false;
 	private String name;
 	private int chatport;
 	private int gamestateport;
-	private gameServer gs;
+	private UDPServer gs;
 	private chatServer cs;
 	public static void main(String[] a){
 		new Thread(new ServerMain()).run();
@@ -32,7 +34,7 @@ public class ServerMain implements Runnable{
 	@Override
 	public void run() {
 		cs=new chatServer(players);
-		gs=new gameServer(players);
+		gs=new UDPServer(players);
 		new Thread(cs).run();
 		new Thread(gs).run();
 		try {
