@@ -23,6 +23,7 @@
 package com.bulletphysics.demos.bsp;
 
 import com.ATeam.twoDotFiveD.event.block.BlockCollisionEvent;
+import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.util.ObjectArrayList;
 import com.bulletphysics.collision.broadphase.BroadphaseInterface;
 import com.bulletphysics.collision.broadphase.DbvtBroadphase;
@@ -98,7 +99,7 @@ public class BspDemo extends DemoApplication
 		
 		new BspToBulletConverter().convertBsp(getClass().getResourceAsStream(
 				"exported.bsp.txt"));
-		
+		BulletGlobals.setDeactivationTime(0.1f);
 		clientResetScene();
 		
 	}
@@ -113,6 +114,7 @@ public class BspDemo extends DemoApplication
 		
 		// optional but useful: debug drawing
 		dynamicsWorld.debugDrawWorld();
+		//TODO look at http://jbullet.advel.cz/javadoc/com/bulletphysics/ContactAddedCallback.html
 		int numManifolds = dispatcher.getNumManifolds();
 		for (int i = 0; i < numManifolds; i++)
 		{

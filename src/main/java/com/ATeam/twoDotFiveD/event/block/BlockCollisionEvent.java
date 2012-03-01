@@ -36,8 +36,8 @@ public class BlockCollisionEvent extends BlockEvent
 			}
 			else
 			{
-				//System.out.println("Collision with: " + objA.toString() + " and "
-				//		+ objB.toString());
+				System.out.println("Collision with: " + objA.toString() + " and "
+						+ objB.toString());
 				/*int numContacts = persistentManifold.getNumContacts();
 				for (int j = 0; j < numContacts; j++)
 				{

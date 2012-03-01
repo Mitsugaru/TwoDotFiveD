@@ -29,6 +29,7 @@ import com.bulletphysics.collision.dispatch.CollisionObject;
 import com.bulletphysics.collision.dispatch.CollisionWorld;
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.collision.shapes.CollisionShape;
+import com.bulletphysics.collision.shapes.ConeShape;
 import com.bulletphysics.collision.shapes.CylinderShape;
 import com.bulletphysics.collision.shapes.SphereShape;
 import com.bulletphysics.collision.shapes.TriangleShape;
@@ -519,7 +520,7 @@ public abstract class DemoApplication {
 			}
 			case '9':
 			{
-				for(final CollisionObject o : dynamicsWorld.getCollisionObjectArray())
+				/*for(final CollisionObject o : dynamicsWorld.getCollisionObjectArray())
 				{
 					if(o instanceof RigidBody)
 					{
@@ -531,7 +532,8 @@ public abstract class DemoApplication {
 							//dynamicsWorld.removeRigidBody(rb);
 						}
 					}
-				}
+				}*/
+				System.out.println(BulletGlobals.getDeactivationTime());
 				break;
 			}
 			case 'j':
@@ -666,6 +668,7 @@ public abstract class DemoApplication {
 			else if(shapeType.equals("TRIANGLE"))
 			{
 				//TODO implement a pyramid
+				shootBoxShape = new ConeShape(1f, 3f);
 				//shootBoxShape = new TriangleShape(new Vector3f(1f, 1f, 1f), new Vector3f(1f, 0f, 0f), new Vector3f(0f, -1f, 0f));
 			}
 			else if(shapeType.equals("CYLINDER"))
