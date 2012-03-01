@@ -84,6 +84,9 @@ public class chatClient extends Thread
             in = new Scanner( socket.getInputStream() );
             out = new PrintWriter( socket.getOutputStream(), true );
             out.println( name );
+            int ID;
+            //TODO get ID
+            new Thread(new UPDClient(ID)).run();
             while ( !stop )
             {
                 if ( in.hasNext() )

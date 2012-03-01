@@ -5,6 +5,18 @@ import lib.lwjgl.glmodel.GL_Vector;
 
 public class dynamicEntity extends Entity
 {
+
+    // Is a GL_Vector good for direction, or should something else be used?
+    private GL_Vector direction;
+    
+    /**
+     * Create Identity
+     * 
+     * @param position
+     * @param size
+     * @param ID
+     * @param image
+     */
     public dynamicEntity(
         GL_Vector position,
         GL_Vector size,
@@ -13,17 +25,28 @@ public class dynamicEntity extends Entity
     {
         super( position, size, ID, image );
     }
+    //this can be removed later
+    public dynamicEntity(){
+        super();
+    }
 
+        /**
+         * Gives direction
+         * @return
+         */
     public GL_Vector getDirection()
     {
         return direction;
     }
 
+
+    /**
+     * 
+     * @param direction
+     */
     public void setDirection( GL_Vector direction )
     {
         this.direction = direction;
     }
 
-    // Is a GL_Vector good for direction, or should something else be used?
-    private GL_Vector direction;
 }
