@@ -33,8 +33,8 @@ public class ServerMain implements Runnable{
 	}
 	@Override
 	public void run() {
-		cs=new chatServer(players);
-		gs=new UDPServer(players);
+//		cs=new chatServer(players);
+//		gs=new UDPServer(players);
 		new Thread(cs).run();
 		new Thread(gs).run();
 		try {

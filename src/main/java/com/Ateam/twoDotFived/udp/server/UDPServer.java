@@ -7,7 +7,6 @@ import java.net.SocketException;
 import java.util.ArrayList;
 
 import com.ATeam.twoDotFiveD.chatServer.clientHandler;
-import com.ATeam.twoDotFiveD.server.client;
 
 public class UDPServer implements Runnable {
 	//NEW ID included as second hex
@@ -64,7 +63,7 @@ public class UDPServer implements Runnable {
 				case NEW:
 					if(pntr!=null){
 						pntr.init(receivePacket.getAddress(), receivePacket.getPort());
-						socket.send(pntr.send(new byte[] {(byte) ( INIT|id)}));
+						socket.send(pntr.message(new byte[] {(byte) ( INIT|id)}));
 						pntr.updateAliveTime();
 					}
 					break;
@@ -79,7 +78,7 @@ public class UDPServer implements Runnable {
 						pntr.updateAliveTime();
 						for(clientHandler c: clients)
 							if(c.getID()!=id)
-								socket.send(pntr.send(receivePacket.getData()));
+								socket.send(pntr.message(receivePacket.getData()));
 				}
 			}
 		} catch (IOException e) {e.printStackTrace();}

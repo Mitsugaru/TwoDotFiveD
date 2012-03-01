@@ -60,7 +60,7 @@ public class chatClientHandler extends Thread
             }
         }
         name = in.nextLine();
-        server.addClient( this );
+        //server.addClient( this );
         String[] roomList = server.getRoomList();
         if (roomList != null){
             for (int i = 0; i< roomList.length;i++){

@@ -93,7 +93,7 @@ public class chatServer
     public chatServer()
     {
         // TODO all this is optional
-        UPDServer = new UDPServer(clientlist);
+    	UDPServer = new UDPServer(clientlist);
         new Thread(UDPServer).run();
         JFrame frame = new JFrame( "Server Window" );
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );

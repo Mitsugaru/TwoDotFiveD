@@ -49,8 +49,7 @@ public class clientHandler extends Thread
     {
         return new DatagramPacket( data, data.length, address, port );
     }
-
-    public boolean active1()
+    public boolean active()
     {
         return address != null;
     }
@@ -519,4 +518,5 @@ public class clientHandler extends Thread
         }
         return false;
     }
+
 }
