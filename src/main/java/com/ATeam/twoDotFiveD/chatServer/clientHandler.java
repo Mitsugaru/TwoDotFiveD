@@ -1,6 +1,8 @@
 package com.ATeam.twoDotFiveD.chatServer;
 
 import java.io.PrintWriter;
+import java.net.DatagramPacket;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
@@ -22,6 +24,29 @@ public class clientHandler extends Thread
     private chatServer server;
 
     private ArrayList<Room> rooms = new ArrayList<Room>();
+
+    private InetAddress address;
+
+    private int port;
+
+
+    public void set( InetAddress anAddress, int aPort )
+    {
+        address = anAddress;
+        port = aPort;
+    }
+
+
+    public DatagramPacket message( byte[] data )
+    {
+        return new DatagramPacket( data, data.length, address, port );
+    }
+
+
+    public boolean active()
+    {
+        return address != null;
+    }
 
 
     public clientHandler( chatServer server, Socket socket )
@@ -54,10 +79,14 @@ public class clientHandler extends Thread
         }
         name = in.nextLine();
         server.addClient( this );
+        // TODO send ID
+        // TODO something UDP
         String[] roomList = server.getRoomList();
-        if (roomList != null){
-            for (int i = 0; i< roomList.length;i++){
-                out.println("[[Servermessage]] roomadd [" + roomList[i] + "]");
+        if ( roomList != null )
+        {
+            for ( int i = 0; i < roomList.length; i++ )
+            {
+                out.println( "[[Servermessage]] roomadd [" + roomList[i] + "]" );
             }
         }
         send( "Type /help for commands" );
