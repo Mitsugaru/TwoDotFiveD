@@ -15,14 +15,18 @@ public class UDPclient implements Runnable{
 	DatagramSocket socket;
 	boolean run;
 	MainStartScreen pntr;
-	public UDPclient(InetAddress anAddress,int aPort,MainStartScreen dur){
+	int ID;
+	public UDPclient(InetAddress anAddress,int aPort,MainStartScreen dur,int ID){
 		serverAddress=anAddress;
 		serverPort=aPort;
 		pntr=dur;
+		this.ID=ID;
+		run=true;
 		try {
 			socket=new DatagramSocket();
 		} catch (SocketException e) {e.printStackTrace();}
 	}
+
 
 	public DatagramPacket makeMessage(byte[] message){
 		return new DatagramPacket(message,message.length,serverAddress,serverPort);
@@ -49,6 +53,14 @@ public class UDPclient implements Runnable{
 	}
 	@Override
 	public void run() {
+		System.out.println("hi");
+		try {
+			Thread.sleep(20000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("hi2");
 		DatagramPacket receivePacket;
 		byte[] receiveData = new byte[10];
 		//this line for demo purposes, it simulates the program sending data
@@ -56,7 +68,8 @@ public class UDPclient implements Runnable{
 		while(run){
 			//this is where data will be received need to know where to send it
 			receivePacket = new DatagramPacket(receiveData, receiveData.length);
-			pntr.updateText("UDP-recieved: "+(char) receiveData[0]);
+			pntr.updateText(String.format("UDP-recieved from: %c:%c",(char) receiveData[0],(char) receiveData[1]));
+			System.out.println("revcieved");
 		}
 		socket.close();
 	}

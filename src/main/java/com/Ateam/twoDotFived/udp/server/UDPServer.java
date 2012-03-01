@@ -31,7 +31,7 @@ public class UDPServer implements Runnable {
 		init(players,port);
 	}
 	private void init(ArrayList<clientHandler> players,  int aPort){
-		aPort=port;
+		port=aPort;
 		clients=players;
 		try {
 			socket=new DatagramSocket(port);
@@ -46,40 +46,50 @@ public class UDPServer implements Runnable {
 	@Override
 	public void run() {
 		byte[] receiveData = new byte[512];
+		System.out.println("UDP PORT"+port);
 		DatagramPacket receivePacket;
 		byte id;
 		clientHandler pntr;
 		try {
+			System.out.println("Server Ready");
 			while(run)
 			{
 				receivePacket = new DatagramPacket(receiveData, receiveData.length);
 				socket.receive(receivePacket);
+				System.out.println("Server Recieve");
 				id=(byte) (receiveData[0]&0x0F);
 				pntr = getByID(id);
-				switch((byte) (receiveData[0]&0xC0)){
-
-				default: System.out.println("default");
-
-				case NEW:
-					if(pntr!=null){
-						pntr.init(receivePacket.getAddress(), receivePacket.getPort());
-						socket.send(pntr.message(new byte[] {(byte) ( INIT|id)}));
-						pntr.updateAliveTime();
+				for(clientHandler c :clients){
+					if(c.getID()!=id){
+						if(c.getID()!=-1){
+							socket.send(c.message(new byte[] {receiveData[0]}));
+						}
 					}
-					break;
-				case INIT:break;
-				case PING:
-					if(pntr!=null){
-						pntr.updateLatency();
-						pntr.updateAliveTime();
-					}
-				case DATA:
-					if(pntr!=null)
-						pntr.updateAliveTime();
-						for(clientHandler c: clients)
-							if(c.getID()!=id)
-								socket.send(pntr.message(receivePacket.getData()));
 				}
+				//				switch((byte) (receiveData[0]&0xC0)){
+				//
+				//				default: System.out.println("default");
+				//
+				//				case NEW:
+				//					if(pntr!=null){
+				//						pntr.init(receivePacket.getAddress(), receivePacket.getPort());
+				//						socket.send(pntr.message(new byte[] {(byte) ( INIT|id)}));
+				//						pntr.updateAliveTime();
+				//					}
+				//					break;
+				//				case INIT:break;
+				//				case PING:
+				//					if(pntr!=null){
+				//						pntr.updateLatency();
+				//						pntr.updateAliveTime();
+				//					}
+				//				case DATA:
+				//					if(pntr!=null)
+				//						pntr.updateAliveTime();
+				//						for(clientHandler c: clients)
+				//							if(c.getID()!=id)
+				//								socket.send(pntr.message(receivePacket.getData()));
+				//				}
 			}
 		} catch (IOException e) {e.printStackTrace();}
 	}

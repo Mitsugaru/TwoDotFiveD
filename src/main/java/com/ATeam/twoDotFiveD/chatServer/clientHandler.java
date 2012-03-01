@@ -5,11 +5,12 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 
-public class clientHandler extends Thread
+public class clientHandler extends Thread implements Comparable
 {
     private String name;
 
@@ -36,6 +37,7 @@ public class clientHandler extends Thread
 	private long pingInitial;
 	
 	private long lastMessageTime;
+	
 
 	public int getID(){
 		return ID;
@@ -95,6 +97,11 @@ public class clientHandler extends Thread
         }
         name = in.nextLine();
         server.addClient( this );
+        ID=server.getNewID();
+        //out.println(ID);
+        //server.sort();
+        //send ID
+        out.println(ID);
         // TODO send ID
         // TODO something UDP
         String[] roomList = server.getRoomList();
@@ -518,5 +525,12 @@ public class clientHandler extends Thread
         }
         return false;
     }
+	@Override
+	public int compareTo(Object arg0) {
+		if(arg0 instanceof clientHandler){
+			return ID-((clientHandler) arg0).getID();
+		}
+		return 0;
+	}
 
 }

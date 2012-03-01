@@ -5,6 +5,8 @@ import java.net.Socket;
 import java.util.Scanner;
 
 import com.ATeam.twoDotFiveD.gui.MainStartScreen;
+import com.ATeam.twoDotFiveD.udp.Client.UDPclient;
+import com.Ateam.twoDotFived.udp.server.UDPServer;
 
 
 public class chatClient extends Thread
@@ -23,6 +25,8 @@ public class chatClient extends Thread
     private boolean stop;
 
     private String name;
+    
+    private int ID;
 
 
     // Tells the client where to connect, and what it's name is. The name must
@@ -71,7 +75,7 @@ public class chatClient extends Thread
     // Just send the message, the server handles it.
     public void send( String message )
     {
-        out.println( message );
+        out.println(message );
     }
 
 
@@ -84,9 +88,17 @@ public class chatClient extends Thread
             in = new Scanner( socket.getInputStream() );
             out = new PrintWriter( socket.getOutputStream(), true );
             out.println( name );
-            int ID;
+            //recieve ID from server
+            int ID=Integer.parseInt(in.nextLine());
             //TODO get ID
-            //new Thread(new UPDClient(ID)).run();
+            System.out.println(socket.getInetAddress());
+            System.out.println(UDPServer.DEFAULTPORT);
+            System.out.println(ID);
+            UDPclient hi = new UDPclient(socket.getInetAddress(),UDPServer.DEFAULTPORT,display,ID);
+            Thread t = new Thread(hi);
+            //everything breaks when I run this
+           // t.run();
+            System.out.println("Thread go");
             while ( !stop )
             {
                 if ( in.hasNext() )
