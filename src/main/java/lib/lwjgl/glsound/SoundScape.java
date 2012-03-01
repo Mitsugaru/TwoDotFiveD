@@ -411,7 +411,7 @@ public class SoundScape {
      * can share the same data buffer.  Each sound source can have a position,
      * pitch, velocity that will affect the way the sound plays.
      * @return
-     */
+     */	
     public static int makeSoundSource(int soundDataHandle) {
         IntBuffer soundSourceHandle = allocInts(1);
         // al generate buffers and sources
@@ -531,6 +531,6 @@ public class SoundScape {
     public static FloatBuffer allocFloats(float[] floatarray) {
         FloatBuffer fb = ByteBuffer.allocateDirect(floatarray.length * SIZE_FLOAT).order(ByteOrder.nativeOrder()).asFloatBuffer();
         fb.put(floatarray).flip();
-        return fb;
-    }
+		return fb;
+	}
 }

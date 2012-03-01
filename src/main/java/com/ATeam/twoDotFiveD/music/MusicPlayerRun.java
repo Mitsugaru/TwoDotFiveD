@@ -44,10 +44,11 @@ public class MusicPlayerRun extends Thread implements Runnable {
 	}
 
 	void changePitch(float pitch) {
-		if (pitch >= 0) {// makes sure it doesnt go out of bounds
-			SoundScape.setPitch(ss, pitch);// somewhere above 0, 1 unchanged,
-											// 2x=6dBx
-		}
+		// makes sure it doesnt go out of bounds
+		System.out.println(pitch);	
+		SoundScape.setPitch(ss, pitch);// somewhere above 0, 1 unchanged,
+			// 2x=6dBx
+		
 	}
 	
 	void changeVolume(float vol){

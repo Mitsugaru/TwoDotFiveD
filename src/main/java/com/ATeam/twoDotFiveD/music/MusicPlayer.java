@@ -42,6 +42,12 @@ public class MusicPlayer {
 			if (toDo.equals("stop")) {
 				ths[num].setStop("quit");
 			}
+			if(toDo.equals("vol")){
+				changeVol(ths[num]);
+			}
+			if(toDo.equals("pit")){
+				changePitch(ths[num]);
+			}
 			if (num == 999) {
 				loop = false;
 			}
@@ -56,10 +62,11 @@ public class MusicPlayer {
 
 	}
 
-	public void createThread(int i) {
+	public void createThread(int i) {//problem
 		ths[i] = new MusicPlayerRun();
 		ths[i].start();// start a thread
 		ths[i].setSong(sound.get(i));
+		System.out.println(sound.get(i));
 	}
 
 	public static void getSound() {
@@ -76,11 +83,12 @@ public class MusicPlayer {
 	}
 
 	public static void changeVol(MusicPlayerRun ths2) {
-		float vol = 1;// 1 is default value
+		float vol=1;
 		try {
 			FileReader reader = new FileReader("Sounds.txt");
 			Scanner scanner = new Scanner(reader);
 			vol = scanner.nextFloat();
+			System.out.println(vol);
 			scanner.close();
 		} catch (IOException e) {
 		}
@@ -96,7 +104,8 @@ public class MusicPlayer {
 			scanner.close();
 		} catch (IOException e) {
 		}
-		ths2.changeVolume(pit);
+		ths2.changePitch(pit);
+		System.out.println(pit);
 	}
 
 }
