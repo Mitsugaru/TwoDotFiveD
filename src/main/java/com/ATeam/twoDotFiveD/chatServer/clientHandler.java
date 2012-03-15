@@ -1,13 +1,16 @@
 package com.ATeam.twoDotFiveD.chatServer;
 
 import java.io.PrintWriter;
+import java.net.DatagramPacket;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 
-public class clientHandler extends Thread
+public class clientHandler extends Thread implements Comparable
 {
     private String name;
 
@@ -23,7 +26,47 @@ public class clientHandler extends Thread
 
     private ArrayList<Room> rooms = new ArrayList<Room>();
 
+    private InetAddress address;
 
+    private int port;
+    
+    private int ID;
+    
+	private long ping;
+	
+	private long pingInitial;
+	
+	private long lastMessageTime;
+	
+
+	public int getID(){
+		return ID;
+	}
+    public void init( InetAddress anAddress, int aPort )
+    {
+        address = anAddress;
+        port = aPort;
+    }
+    public DatagramPacket message( byte[] data )
+    {
+        return new DatagramPacket( data, data.length, address, port );
+    }
+    public boolean active()
+    {
+        return address != null;
+    }
+	public void updateAliveTime(){
+		lastMessageTime=System.currentTimeMillis()/1000L;
+	}
+	public void pinginit(){
+		pingInitial=System.currentTimeMillis()/1000L;
+	}
+	public void updateLatency(){
+		ping=pingInitial-System.currentTimeMillis()/1000L;
+	}
+	public Long getLatency(){
+		return ping;
+	}
     public clientHandler( chatServer server, Socket socket )
     {
         stop = false;
@@ -44,20 +87,33 @@ public class clientHandler extends Thread
     @Override
     public void run()
     {
+        
+        name = in.nextLine();
+        server.addClient( this );
+        server.throwup("prep ID");
+        ID=server.getNewID();
+        //out.println(ID);
+        //server.sort();
+        //send ID
+        server.throwup("ID"+ID);
+        out.println(ID);
+        server.throwup("IDSENT"+ID);
+        // TODO send ID
+        // TODO something UDP
+        String[] roomList = server.getRoomList();
+        if ( roomList != null )
+        {
+            for ( int i = 0; i < roomList.length; i++ )
+            {
+                out.println( "[[Servermessage]] roomadd [" + roomList[i] + "]" );
+            }
+        }
         String[] playerList = server.getClientList();
         if ( playerList != null )
         {
             for ( int i = 0; i < playerList.length; i++ )
             {
                 out.println( "[[Servermessage]] add " + playerList[i] );
-            }
-        }
-        name = in.nextLine();
-        server.addClient( this );
-        String[] roomList = server.getRoomList();
-        if (roomList != null){
-            for (int i = 0; i< roomList.length;i++){
-                out.println("[[Servermessage]] roomadd [" + roomList[i] + "]");
             }
         }
         send( "Type /help for commands" );
@@ -461,8 +517,6 @@ public class clientHandler extends Thread
     {
         this.rooms.remove( room );
     }
-
-
     public boolean equals( Object o )
     {
         if ( o instanceof clientHandler )
@@ -475,5 +529,12 @@ public class clientHandler extends Thread
         }
         return false;
     }
+	@Override
+	public int compareTo(Object arg0) {
+		if(arg0 instanceof clientHandler){
+			return ID-((clientHandler) arg0).getID();
+		}
+		return 0;
+	}
 
 }

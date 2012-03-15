@@ -5,11 +5,14 @@ import java.awt.Dimension;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+
+import com.Ateam.twoDotFived.udp.server.UDPServer;
 
 
 public class chatServer
@@ -23,8 +26,23 @@ public class chatServer
     private JFrame panel;
 
     private Room Default;
+    
+    private UDPServer UDPServer;
 
-
+    public synchronized int getNewID(){
+    	if(clientlist.size()==1){
+    		return 1;
+    	}
+    	for(int i=0;i<clientlist.size();i++){
+    		if(clientlist.get(i).getID()!=i+1){
+    			return i+1;
+    		}
+    	}
+    	return clientlist.size();
+    }
+    public void sort(){
+    	Collections.sort(clientlist);
+    }
     public void throwup( String text )
     {
         read.setText( text + System.getProperty( "line.separator" )
@@ -89,6 +107,8 @@ public class chatServer
     public chatServer()
     {
         // TODO all this is optional
+    	UDPServer = new UDPServer(clientlist);
+    	new Thread(UDPServer).run();
         JFrame frame = new JFrame( "Server Window" );
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         Dimension d = new Dimension( 500, 500 );

@@ -48,9 +48,9 @@ import org.lwjgl.openal.AL10;
 
 /**
  * $Id: WaveData.java,v 1.15 2004/02/26 21:51:58 matzon Exp $
- *
+ * 
  * Utitlity class for loading wavefiles.
- *
+ * 
  * @author Brian Matzon <brian@matzon.dk>
  * @version $Revision: 1.15 $
  */
@@ -66,15 +66,19 @@ public class WaveData {
 
 	/**
 	 * Creates a new WaveData
-	 *
-	 * @param data actual wavedata
-	 * @param format format of wave data
-	 * @param samplerate sample rate of data
+	 * 
+	 * @param data
+	 *            actual wavedata
+	 * @param format
+	 *            format of wave data
+	 * @param samplerate
+	 *            sample rate of data
 	 */
 	private WaveData(ByteBuffer data, int format, int samplerate) {
 		this.data = data;
 		this.format = format;
 		this.samplerate = samplerate;
+		
 	}
 
 	/**
@@ -86,17 +90,19 @@ public class WaveData {
 
 	/**
 	 * Creates a WaveData container from the specified filename
-	 *
-	 * @param filepath path to file (relative, and in classpath)
+	 * 
+	 * @param filepath
+	 *            path to file (relative, and in classpath)
 	 * @return WaveData containing data, or null if a failure occured
 	 */
 	public static WaveData create(String filepath) {
 		try {
-			return create(
-				AudioSystem.getAudioInputStream(
-					new BufferedInputStream(WaveData.class.getClassLoader().getResourceAsStream(filepath))));
+			return create(AudioSystem
+					.getAudioInputStream(new BufferedInputStream(WaveData.class
+							.getClassLoader().getResourceAsStream(filepath))));
 		} catch (Exception e) {
-            System.out.println("WaveData.create(): Unable to load file: " + filepath);
+			System.out.println("WaveData.create(): Unable to load file: "
+					+ filepath);
 			e.printStackTrace();
 			return null;
 		}
@@ -104,15 +110,16 @@ public class WaveData {
 
 	/**
 	 * Creates a WaveData container from the specified bytes
-	 *
-	 * @param buffer array of bytes containing the complete wave file
+	 * 
+	 * @param buffer
+	 *            array of bytes containing the complete wave file
 	 * @return WaveData containing data, or null if a failure occured
 	 */
 	public static WaveData create(byte[] buffer) {
 		try {
-			return create(
-				AudioSystem.getAudioInputStream(
-					new BufferedInputStream(new ByteArrayInputStream(buffer))));
+			return create(AudioSystem
+					.getAudioInputStream(new BufferedInputStream(
+							new ByteArrayInputStream(buffer))));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -121,12 +128,13 @@ public class WaveData {
 
 	/**
 	 * Creates a WaveData container from the specified stream
-	 *
-	 * @param ais AudioInputStream to read from
+	 * 
+	 * @param ais
+	 *            AudioInputStream to read from
 	 * @return WaveData containing data, or null if a failure occured
 	 */
 	public static WaveData create(AudioInputStream ais) {
-		//get format of data
+		// get format of data
 		AudioFormat audioformat = ais.getFormat();
 
 		// get channels
@@ -148,36 +156,37 @@ public class WaveData {
 				System.out.println("WaveData.create(): Illegal sample size");
 			}
 		} else {
-			System.out.println("WaveData.create(): Only mono or stereo is supported");
+			System.out
+					.println("WaveData.create(): Only mono or stereo is supported");
 		}
 
-		//read data into buffer
-		byte[] buf =
-			new byte[audioformat.getChannels()
+		// read data into buffer
+		byte[] buf = new byte[audioformat.getChannels()
 				* (int) ais.getFrameLength()
-				* audioformat.getSampleSizeInBits()
-				/ 8];
+				* audioformat.getSampleSizeInBits() / 8];
 		int read = 0, total = 0;
 		try {
 			while ((read = ais.read(buf, total, buf.length - total)) != -1
-				&& total < buf.length) {
+					&& total < buf.length) {
 				total += read;
 			}
 		} catch (IOException ioe) {
 			return null;
 		}
 
-		//insert data into bytebuffer
-		ByteBuffer buffer = convertAudioBytes(buf, audioformat.getSampleSizeInBits() == 16);
-/*		ByteBuffer buffer = ByteBuffer.allocateDirect(buf.length);
-		buffer.put(buf);
-		buffer.rewind();*/
+		// insert data into bytebuffer
+		ByteBuffer buffer = convertAudioBytes(buf,
+				audioformat.getSampleSizeInBits() == 16);
+		/*
+		 * ByteBuffer buffer = ByteBuffer.allocateDirect(buf.length);
+		 * buffer.put(buf); buffer.rewind();
+		 */
 
-		//create our result
-		WaveData wavedata =
-			new WaveData(buffer, channels, (int) audioformat.getSampleRate());
+		// create our result
+		WaveData wavedata = new WaveData(buffer, channels,
+				(int) audioformat.getSampleRate());
 
-		//close stream
+		// close stream
 		try {
 			ais.close();
 		} catch (IOException ioe) {
@@ -186,7 +195,8 @@ public class WaveData {
 		return wavedata;
 	}
 
-	private static ByteBuffer convertAudioBytes(byte[] audio_bytes, boolean two_bytes_data) {
+	private static ByteBuffer convertAudioBytes(byte[] audio_bytes,
+			boolean two_bytes_data) {
 		ByteBuffer dest = ByteBuffer.allocateDirect(audio_bytes.length);
 		dest.order(ByteOrder.nativeOrder());
 		ByteBuffer src = ByteBuffer.wrap(audio_bytes);

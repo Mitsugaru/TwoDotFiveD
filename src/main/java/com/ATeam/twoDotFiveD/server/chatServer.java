@@ -7,27 +7,28 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import com.ATeam.twoDotFiveD.Player;
+import com.ATeam.twoDotFiveD.chatServer.clientHandler;
 
 
 public class chatServer implements Runnable
 {
 	public final static int DEFAULTCHATPORT=1337;
-	private ArrayList<client> players;
-	private ArrayList<chatClientHandler> clientlist = new ArrayList<chatClientHandler>();
+	private ArrayList<clientHandler> players;
+	//private ArrayList<chatClientHandler> clientlist = new ArrayList<chatClientHandler>();
 	private ArrayList<chatRoom> rooms = new ArrayList<chatRoom>();
 	private chatRoom Default;
 	private int port;
 	private boolean run;
 
 	// Start the server, create a room called default, accept connections
-	public chatServer(ArrayList<client> thePlayers, int aPort)
+	public chatServer(ArrayList<clientHandler> thePlayers, int aPort)
 	{
 		init(thePlayers,aPort);
 	}
-	public chatServer(ArrayList<client> thePlayers){
+	public chatServer(ArrayList<clientHandler> thePlayers){
 		init(thePlayers,DEFAULTCHATPORT);
 	}
-	private void init(ArrayList<client> thePlayers, int aPort){
+	private void init(ArrayList<clientHandler> thePlayers, int aPort){
 		port=aPort;
 		players=thePlayers;
 		run=true;
@@ -45,7 +46,7 @@ public class chatServer implements Runnable
 				Socket socket = server.accept();
 				client c = new client(this, socket);
 				newID(c);
-				players.add(c);
+//				players.add(c);
 				new Thread(c).run();
 
 				//chatClientHandler client = new chatClientHandler( this, socket );
@@ -100,25 +101,20 @@ public class chatServer implements Runnable
 	}
 
 
-	public void addClient( chatClientHandler client )
-	{
-		clientlist.add( client );
-	}
-
 
 
 
 
 	public boolean sendToPlayer( String playername, String message )
 	{
-		for ( chatClientHandler c : clientlist )
-		{
-			if ( c.getname().equals( playername ) )
-			{
-				c.send( message );
-				return true;
-			}
-		}
+//		for ( clientHandler c : clientlist )
+//		{
+//			if ( c.getname().equals( playername ) )
+//			{
+//				c.send( message );
+//				return true;
+//			}
+//		}
 		return false;
 	}
 
@@ -132,21 +128,21 @@ public class chatServer implements Runnable
 
 	public void sendToAll( String message )
 	{
-		for ( chatClientHandler c : clientlist )
-		{
-			c.send( message );
-		}
+//		for ( chatClientHandler c : clientlist )
+//		{
+//			c.send( message );
+//		}
 	}
 
 
 	public String[] getClientList()
 	{
-		String[] list = new String[clientlist.size()];
-		for ( int i = 0; i < clientlist.size(); i++ )
-		{
-			list[i] = clientlist.get( i ).getname();
-		}
-		return list;
+//		String[] list = new String[clientlist.size()];
+//		for ( int i = 0; i < clientlist.size(); i++ )
+//		{
+//			list[i] = clientlist.get( i ).getname();
+//		}
+		return null;
 	}
 
 
@@ -163,7 +159,7 @@ public class chatServer implements Runnable
 
 	public void removePlayer( chatClientHandler client )
 	{
-		clientlist.remove( client );
+		//clientlist.remove( client );
 		for ( chatRoom r : rooms )
 		{
 			r.removePlayer( client );
