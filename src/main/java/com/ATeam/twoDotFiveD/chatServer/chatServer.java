@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import com.Ateam.twoDotFived.udp.server.UDPServer;
+import com.ATeam.twoDotFiveD.udp.server.UDPServer;
 
 
 public class chatServer

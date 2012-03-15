@@ -1,4 +1,4 @@
-package com.Ateam.twoDotFived.udp.server;
+package com.ATeam.twoDotFiveD.udp.server;
 
 import java.io.IOException;
 import java.net.DatagramSocket;

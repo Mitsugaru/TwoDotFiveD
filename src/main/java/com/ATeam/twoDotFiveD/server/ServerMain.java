@@ -3,7 +3,7 @@ package com.ATeam.twoDotFiveD.server;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import com.Ateam.twoDotFived.udp.server.UDPServer;
+import com.ATeam.twoDotFiveD.udp.server.UDPServer;
 
 public class ServerMain implements Runnable{
 	private ArrayList<client> players=new ArrayList<client>();
