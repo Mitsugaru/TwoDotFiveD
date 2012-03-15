@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 import com.ATeam.twoDotFiveD.gui.MainStartScreen;
 import com.ATeam.twoDotFiveD.udp.Client.UDPclient;
-import com.Ateam.twoDotFived.udp.server.UDPServer;
+import com.ATeam.twoDotFiveD.udp.server.UDPServer;
 
 
 public class chatClient extends Thread
