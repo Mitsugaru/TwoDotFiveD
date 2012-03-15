@@ -19,6 +19,7 @@ import com.ATeam.twoDotFiveD.debug.Logging;
  * @author Mitsugaru
  * 
  */
+//TODO make this a singleton?
 public class Config
 {
 	//Class variables
@@ -128,6 +129,30 @@ public class Config
 			logLimit = 20;
 			logEnabled = false;
 		}
+	}
+	
+	/**
+	 * Save config.yml
+	 */
+	public void save()
+	{
+		try
+		{
+			config.save(configFile);
+		}
+		catch (IOException e)
+		{
+			Logging.log.log(Level.SEVERE, "Failed to save config file.", e);
+		}
+	}
+	
+	/**
+	 * Set property at given path with given object in the yaml.
+	 * @param path of node
+	 * @param object to put for node
+	 */
+	public void setProperty(String path, Object o) {
+		config.set(path, o);
 	}
 	
 	/**

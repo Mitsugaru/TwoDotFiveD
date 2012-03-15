@@ -265,6 +265,10 @@ public class CharacterDemo extends DemoApplication {
 				}
 				break;
 			}
+			case 'l':
+			{
+				character.jump();
+			}
 			default:
 				super.specialKeyboard(key, x, y, modifiers);
 				break;

@@ -87,21 +87,17 @@ public class clientHandler extends Thread implements Comparable
     @Override
     public void run()
     {
-        String[] playerList = server.getClientList();
-        if ( playerList != null )
-        {
-            for ( int i = 0; i < playerList.length; i++ )
-            {
-                out.println( "[[Servermessage]] add " + playerList[i] );
-            }
-        }
+        
         name = in.nextLine();
         server.addClient( this );
+        server.throwup("prep ID");
         ID=server.getNewID();
         //out.println(ID);
         //server.sort();
         //send ID
+        server.throwup("ID"+ID);
         out.println(ID);
+        server.throwup("IDSENT"+ID);
         // TODO send ID
         // TODO something UDP
         String[] roomList = server.getRoomList();
@@ -110,6 +106,14 @@ public class clientHandler extends Thread implements Comparable
             for ( int i = 0; i < roomList.length; i++ )
             {
                 out.println( "[[Servermessage]] roomadd [" + roomList[i] + "]" );
+            }
+        }
+        String[] playerList = server.getClientList();
+        if ( playerList != null )
+        {
+            for ( int i = 0; i < playerList.length; i++ )
+            {
+                out.println( "[[Servermessage]] add " + playerList[i] );
             }
         }
         send( "Type /help for commands" );

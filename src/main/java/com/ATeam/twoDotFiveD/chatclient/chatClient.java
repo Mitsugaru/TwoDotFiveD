@@ -90,12 +90,12 @@ public class chatClient extends Thread
             out.println( name );
             //recieve ID from server
             int ID=Integer.parseInt(in.nextLine());
-            //TODO get ID
             System.out.println(socket.getInetAddress());
             System.out.println(UDPServer.DEFAULTPORT);
-            System.out.println(ID);
-            UDPclient hi = new UDPclient(socket.getInetAddress(),UDPServer.DEFAULTPORT,display,ID);
-            Thread t = new Thread(hi);
+            display.processText(String.valueOf(ID));
+            ///UDPclient hi = new UDPclient(socket.getInetAddress(),UDPServer.DEFAULTPORT,display,ID);
+            //Thread t = new Thread(hi);
+            //t.start();
             //everything breaks when I run this
            // t.run();
             System.out.println("Thread go");
