@@ -1,5 +1,6 @@
 package com.bulletphysics.demos.bsp;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.logging.Level;
@@ -13,7 +14,7 @@ import com.bulletphysics.util.ObjectArrayList;
 
 public abstract class BspYamlConverter
 {
-	public void convertBspYaml(InputStream in)
+	public void convertBspYaml(InputStream in) throws IOException
 	{
 		final YamlConfiguration config = YamlConfiguration
 				.loadConfiguration(in);
@@ -60,6 +61,7 @@ public abstract class BspYamlConverter
 				Logging.log.log(Level.SEVERE, "NullPointerException! Could not find vertices list for: " + rootPath);
 			}
 		}
+		in.close();
 	}
 	
 	public abstract void addConvexVerticesCollider(

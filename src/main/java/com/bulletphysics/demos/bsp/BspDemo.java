@@ -22,6 +22,10 @@
 
 package com.bulletphysics.demos.bsp;
 
+import java.io.IOException;
+import java.util.logging.Level;
+
+import com.ATeam.twoDotFiveD.debug.Logging;
 import com.ATeam.twoDotFiveD.event.block.BlockCollisionEvent;
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.util.ObjectArrayList;
@@ -99,7 +103,14 @@ public class BspDemo extends DemoApplication
 		
 		//new BspToBulletConverter().convertBsp(getClass().getResourceAsStream(
 		//		"exported.bsp.txt"));
-		new BspYamlToBulletConverter().convertBspYaml(getClass().getResourceAsStream("scene.yml"));
+		try
+		{
+			new BspYamlToBulletConverter().convertBspYaml(getClass().getResourceAsStream("scene.yml"));
+		}
+		catch(IOException e)
+		{
+			Logging.log.log(Level.SEVERE, "Could not close InputStream for: scene.yml", e);
+		}
 		BulletGlobals.setDeactivationTime(0.1f);
 		clientResetScene();
 		
