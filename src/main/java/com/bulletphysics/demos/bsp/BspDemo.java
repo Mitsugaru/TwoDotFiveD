@@ -22,6 +22,10 @@
 
 package com.bulletphysics.demos.bsp;
 
+import java.io.IOException;
+import java.util.logging.Level;
+
+import com.ATeam.twoDotFiveD.debug.Logging;
 import com.ATeam.twoDotFiveD.event.block.BlockCollisionEvent;
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.util.ObjectArrayList;
@@ -38,6 +42,7 @@ import com.bulletphysics.demos.opengl.GLDebugDrawer;
 import com.bulletphysics.demos.opengl.IGL;
 import com.bulletphysics.demos.opengl.LWJGL;
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
+import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.dynamics.constraintsolver.ConstraintSolver;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
 import com.bulletphysics.linearmath.Transform;
@@ -97,8 +102,17 @@ public class BspDemo extends DemoApplication
 		gravity.scale(10f);
 		dynamicsWorld.setGravity(gravity);
 		
-		new BspToBulletConverter().convertBsp(getClass().getResourceAsStream(
-				"scene.bsp.txt"));
+
+		//new BspToBulletConverter().convertBsp(getClass().getResourceAsStream(
+		//		"exported.bsp.txt"));
+		try
+		{
+			new BspYamlToBulletConverter().convertBspYaml(getClass().getResourceAsStream("scene.yml"));
+		}
+		catch(IOException e)
+		{
+			Logging.log.log(Level.SEVERE, "Could not close InputStream for: scene.yml", e);
+		}
 		BulletGlobals.setDeactivationTime(0.1f);
 		clientResetScene();
 		
@@ -120,7 +134,7 @@ public class BspDemo extends DemoApplication
 		{
 			PersistentManifold contactManifold = dispatcher
 					.getManifoldByIndexInternal(i);
-			new BlockCollisionEvent(contactManifold);
+			//new BlockCollisionEvent(contactManifold);
 		}
 		renderme();
 		
@@ -175,6 +189,32 @@ public class BspDemo extends DemoApplication
 				localCreateRigidBody(mass, startTransform, shape);
 			}
 		}
+	}
+	
+	private class BspYamlToBulletConverter extends BspYamlConverter
+	{
+
+		@Override
+		public void addConvexVerticesCollider(ObjectArrayList<Vector3f> vertices, float mass, Vector3f acceleration)
+		{
+			Transform startTransform = new Transform();
+			// can use a shift
+			startTransform.setIdentity();
+			startTransform.origin.set(0, 0, -10f);
+			
+			// this create an internal copy of the vertices
+			CollisionShape shape = new ConvexHullShape(vertices);
+			collisionShapes.add(shape);
+			
+			// btRigidBody* body = m_demoApp->localCreateRigidBody(mass,
+			// startTransform,shape);
+			RigidBody body = localCreateRigidBody(mass, startTransform, shape);
+			if(acceleration != null)
+			{
+				body.setGravity(acceleration);
+			}
+		}
+		
 	}
 	
 }
