@@ -16,10 +16,10 @@
 		<layer id="background" childLayout="center">
 			<effect>
 				<onStartScreen name="fade" startColor="#0000"
-					endColor="#000f" length="500" startDelay="1500" post="false" />
+					endColor="#000f" length="10" startDelay="10" post="false" />
 				<onActive name="playSound" sound="ambient" repeat="true" />
 				<onEndScreen name="fade" startColor="#ffff" endColor="#0000"
-					length="500" startDelay="1500" post="false" inherit="true"
+					length="10" startDelay="10" post="false" inherit="true"
 					alternateEnable="exit" />
 			</effect>
 			<!-- TODO find out best imageMode numbers -->
@@ -28,7 +28,7 @@
 		<layer id="foreground" childLayout="vertical">
 			<effect>
 				<onStartScreen name="fade" startColor="#0000"
-					endColor="#000f" length="500" startDelay="2000" post="false" />
+					endColor="#000f" length="10" startDelay="10" post="false" />
 			</effect>
 			<panel id="panel_top" height="25%" width="75%" align="center"
 				childLayout="center">
@@ -102,9 +102,9 @@
 		<layer id="background" backgroundColor="#003f" childLayout="center">
 			<effect>
 				<onStartScreen name="fade" startColor="#0000"
-					endColor="#000f" length="500" startDelay="1500" post="false" />
+					endColor="#000f" length="10" startDelay="10" post="false" />
 				<onEndScreen name="fade" startColor="#ffff" endColor="#0000"
-					length="500" startDelay="1500" post="false" inherit="true"
+					length="10" startDelay="10" post="false" inherit="true"
 					alternateEnable="exit" />
 			</effect>
 			<!-- TODO find out best imageMode numbers -->
@@ -113,7 +113,7 @@
 		<layer id="foreground" childLayout="horizontal">
 			<effect>
 				<onStartScreen name="fade" startColor="#0000"
-					endColor="#000f" length="500" startDelay="2000" post="false" />
+					endColor="#000f" length="10" startDelay="10" post="false" />
 			</effect>
 			<panel id="panel_left" height="100%" width="25%" childLayout="vertical"
 				backgroundColor="#0f08">
