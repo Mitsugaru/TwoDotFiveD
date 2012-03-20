@@ -97,8 +97,9 @@ public class BspDemo extends DemoApplication
 		gravity.scale(10f);
 		dynamicsWorld.setGravity(gravity);
 		
-		new BspToBulletConverter().convertBsp(getClass().getResourceAsStream(
-				"exported.bsp.txt"));
+		//new BspToBulletConverter().convertBsp(getClass().getResourceAsStream(
+		//		"exported.bsp.txt"));
+		new BspYamlToBulletConverter().convertBspYaml(getClass().getResourceAsStream("scene.yml"));
 		BulletGlobals.setDeactivationTime(0.1f);
 		clientResetScene();
 		
@@ -175,6 +176,28 @@ public class BspDemo extends DemoApplication
 				localCreateRigidBody(mass, startTransform, shape);
 			}
 		}
+	}
+	
+	private class BspYamlToBulletConverter extends BspYamlConverter
+	{
+
+		@Override
+		public void addConvexVerticesCollider(ObjectArrayList<Vector3f> vertices, float mass)
+		{
+			Transform startTransform = new Transform();
+			// can use a shift
+			startTransform.setIdentity();
+			startTransform.origin.set(0, 0, -10f);
+			
+			// this create an internal copy of the vertices
+			CollisionShape shape = new ConvexHullShape(vertices);
+			collisionShapes.add(shape);
+			
+			// btRigidBody* body = m_demoApp->localCreateRigidBody(mass,
+			// startTransform,shape);
+			localCreateRigidBody(mass, startTransform, shape);
+		}
+		
 	}
 	
 }
