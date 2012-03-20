@@ -22,6 +22,7 @@ public abstract class BspYamlConverter
 		{
 			final ObjectArrayList<Vector3f> vertices = new ObjectArrayList<Vector3f>();
 			final List<Object> list = config.getList(rootPath + ".vertices");
+			Vector3f acceleration = null;
 			if (list != null)
 			{
 				float mass = 0f;
@@ -35,13 +36,26 @@ public abstract class BspYamlConverter
 					Logging.log.log(Level.SEVERE, "Failed to parse mass for: "
 							+ rootPath, e);
 				}
+				try
+				{
+					String a = config.getString(rootPath + ".acceleration");
+					if(a != null)
+					{
+						String[] ba = ((String) a).split(" ");
+						acceleration = new Vector3f(Float.parseFloat(ba[0]), Float.parseFloat(ba[1]), Float.parseFloat(ba[2]));
+					}
+				}
+				catch (Exception e)
+				{
+					acceleration = null;
+				}
 				for (Object o : list)
 				{
 					try
 					{
-						String[] a = ((String) o).split(" ");
-						vertices.add(new Vector3f(Float.parseFloat(a[0]), Float
-								.parseFloat(a[1]), Float.parseFloat(a[2])));
+						String[] b = ((String) o).split(" ");
+						vertices.add(new Vector3f(Float.parseFloat(b[0]), Float
+								.parseFloat(b[1]), Float.parseFloat(b[2])));
 					}
 					catch (Exception e)
 					{
@@ -53,7 +67,7 @@ public abstract class BspYamlConverter
 				}
 				if (!vertices.isEmpty())
 				{
-					addConvexVerticesCollider(vertices, mass);
+					addConvexVerticesCollider(vertices, mass, acceleration);
 				}
 			}
 			else
@@ -65,5 +79,5 @@ public abstract class BspYamlConverter
 	}
 	
 	public abstract void addConvexVerticesCollider(
-			ObjectArrayList<Vector3f> vertices, float mass);
+			ObjectArrayList<Vector3f> vertices, float mass, Vector3f acceleration);
 }

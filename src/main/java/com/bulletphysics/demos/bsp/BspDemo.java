@@ -42,6 +42,7 @@ import com.bulletphysics.demos.opengl.GLDebugDrawer;
 import com.bulletphysics.demos.opengl.IGL;
 import com.bulletphysics.demos.opengl.LWJGL;
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
+import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.dynamics.constraintsolver.ConstraintSolver;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
 import com.bulletphysics.linearmath.Transform;
@@ -132,7 +133,7 @@ public class BspDemo extends DemoApplication
 		{
 			PersistentManifold contactManifold = dispatcher
 					.getManifoldByIndexInternal(i);
-			new BlockCollisionEvent(contactManifold);
+			//new BlockCollisionEvent(contactManifold);
 		}
 		renderme();
 		
@@ -193,7 +194,7 @@ public class BspDemo extends DemoApplication
 	{
 
 		@Override
-		public void addConvexVerticesCollider(ObjectArrayList<Vector3f> vertices, float mass)
+		public void addConvexVerticesCollider(ObjectArrayList<Vector3f> vertices, float mass, Vector3f acceleration)
 		{
 			Transform startTransform = new Transform();
 			// can use a shift
@@ -206,7 +207,11 @@ public class BspDemo extends DemoApplication
 			
 			// btRigidBody* body = m_demoApp->localCreateRigidBody(mass,
 			// startTransform,shape);
-			localCreateRigidBody(mass, startTransform, shape);
+			RigidBody body = localCreateRigidBody(mass, startTransform, shape);
+			if(acceleration != null)
+			{
+				body.setGravity(acceleration);
+			}
 		}
 		
 	}
