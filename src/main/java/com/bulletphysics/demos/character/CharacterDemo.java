@@ -137,7 +137,7 @@ public class CharacterDemo extends DemoApplication {
 		//new BspToBulletConverter().convertBsp(getClass().getResourceAsStream("/com/bulletphysics/demos/bsp/exported.bsp.txt"));
 		try
         {
-            new BspYamlToBulletConverter().convertBspYaml(getClass().getResourceAsStream("EntryScene.yml"));
+            new BspYamlToBulletConverter().convertBspYaml(getClass().getResourceAsStream("scene.yml"));
         }
         catch(IOException e)
         {
