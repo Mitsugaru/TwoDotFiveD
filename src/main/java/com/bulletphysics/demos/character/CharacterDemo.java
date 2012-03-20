@@ -23,6 +23,10 @@
 
 package com.bulletphysics.demos.character;
 
+import java.io.IOException;
+import java.util.logging.Level;
+
+import com.ATeam.twoDotFiveD.debug.Logging;
 import com.bulletphysics.util.ObjectArrayList;
 import com.bulletphysics.collision.broadphase.AxisSweep3;
 import com.bulletphysics.collision.broadphase.BroadphaseInterface;
@@ -38,11 +42,14 @@ import com.bulletphysics.collision.shapes.CollisionShape;
 import com.bulletphysics.collision.shapes.ConvexHullShape;
 import com.bulletphysics.collision.shapes.ConvexShape;
 import com.bulletphysics.demos.bsp.BspConverter;
+import com.bulletphysics.demos.bsp.BspYamlConverter;
+import com.bulletphysics.demos.bsp.BspDemo.BspYamlToBulletConverter;
 import com.bulletphysics.demos.opengl.DemoApplication;
 import com.bulletphysics.demos.opengl.GLDebugDrawer;
 import com.bulletphysics.demos.opengl.IGL;
 import com.bulletphysics.demos.opengl.LWJGL;
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
+import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.dynamics.character.KinematicCharacterController;
 import com.bulletphysics.dynamics.constraintsolver.ConstraintSolver;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
@@ -90,6 +97,7 @@ public class CharacterDemo extends DemoApplication {
 	public void initPhysics() throws Exception {
 		CollisionShape groundShape = new BoxShape(new Vector3f(50, 3, 50));
 		collisionShapes.add(groundShape);
+		forwardAxis = 1;
 
 		collisionConfiguration = new DefaultCollisionConfiguration();
 		dispatcher = new CollisionDispatcher(collisionConfiguration);
@@ -117,8 +125,15 @@ public class CharacterDemo extends DemoApplication {
 		float stepHeight = 0.35f * characterScale;
 		character = new KinematicCharacterController(ghostObject, capsule, stepHeight);
 
-		new BspToBulletConverter().convertBsp(getClass().getResourceAsStream("/com/bulletphysics/demos/bsp/exported.bsp.txt"));
-
+		//new BspToBulletConverter().convertBsp(getClass().getResourceAsStream("/com/bulletphysics/demos/bsp/exported.bsp.txt"));
+		try
+        {
+            new BspYamlToBulletConverter().convertBspYaml(getClass().getResourceAsStream("EntryScene.yml"));
+        }
+        catch(IOException e)
+        {
+            Logging.log.log(Level.SEVERE, "Could not close InputStream for: scene.yml", e);
+        }
 		dynamicsWorld.addCollisionObject(ghostObject, CollisionFilterGroups.CHARACTER_FILTER, (short)(CollisionFilterGroups.STATIC_FILTER | CollisionFilterGroups.DEFAULT_FILTER));
 
 		dynamicsWorld.addAction(character);
@@ -155,7 +170,7 @@ public class CharacterDemo extends DemoApplication {
 			strafeDir.normalize();
 
 			Vector3f walkDirection = new Vector3f(0.0f, 0.0f, 0.0f);
-			float walkVelocity = 1.1f * 4.0f; // 4 km/h -> 1.1 m/s
+			float walkVelocity = 1.1f * 420.0f; // 4 km/h -> 1.1 m/s
 			float walkSpeed = walkVelocity * dt * characterScale;
 
 			if (gLeft != 0) {
@@ -347,5 +362,31 @@ public class CharacterDemo extends DemoApplication {
 			}
 		}
 	}
+	
+	private class BspYamlToBulletConverter extends BspYamlConverter
+    {
+
+        @Override
+        public void addConvexVerticesCollider(ObjectArrayList<Vector3f> vertices, float mass, Vector3f acceleration)
+        {
+            Transform startTransform = new Transform();
+            // can use a shift
+            startTransform.setIdentity();
+            startTransform.origin.set(0, 0, -10f);
+            
+            // this create an internal copy of the vertices
+            CollisionShape shape = new ConvexHullShape(vertices);
+            collisionShapes.add(shape);
+            
+            // btRigidBody* body = m_demoApp->localCreateRigidBody(mass,
+            // startTransform,shape);
+            RigidBody body = localCreateRigidBody(mass, startTransform, shape);
+            if(acceleration != null)
+            {
+                body.setGravity(acceleration);
+            }
+        }
+        
+    }
 	
 }

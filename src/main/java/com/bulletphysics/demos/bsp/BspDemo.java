@@ -191,7 +191,7 @@ public class BspDemo extends DemoApplication
 		}
 	}
 	
-	private class BspYamlToBulletConverter extends BspYamlConverter
+	public class BspYamlToBulletConverter extends BspYamlConverter
 	{
 
 		@Override
