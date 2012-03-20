@@ -31,6 +31,7 @@ import com.ATeam.twoDotFiveD.event.Event.Type;
 import com.ATeam.twoDotFiveD.event.EventDispatcher;
 import com.ATeam.twoDotFiveD.event.block.BlockCollisionEvent;
 import com.ATeam.twoDotFiveD.event.block.BlockListener;
+import com.ATeam.twoDotFiveD.music.MusicPlayer;
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.util.ObjectArrayList;
 import com.bulletphysics.collision.broadphase.AxisSweep3;
@@ -220,7 +221,7 @@ public class BspDemo extends DemoApplication
 	
 	public class BlockCollisionListener extends BlockListener
 	{
-
+		private MusicPlayer mp=new MusicPlayer();
 		@Override
 		public void onBlockCollision(BlockCollisionEvent event) {
 			final PersistentManifold pm = event.getPersistentManifold();
@@ -252,13 +253,21 @@ public class BspDemo extends DemoApplication
 							dynamicsWorld.removeCollisionObject(objB);
 						}
 					}
+					if(objA.getCollisionShape().getName().equalsIgnoreCase("box"))
+					{
+						System.out.println("objA is box");
+					}
+					else if(objB.getCollisionShape().getName().equalsIgnoreCase("box"))
+					{
+						System.out.println("objB is box");
+					}
 				}
 			}
 		}
 		
 		public boolean setGravity(RigidBody target, RigidBody source)
 		{
-			if(target.getCollisionShape().getName().equalsIgnoreCase("box"))
+			if(target.getCollisionShape().getName().equalsIgnoreCase("box") || target.getCollisionShape().getName().contains("Cyl"))
 			{
 				target.setGravity(new Vector3f(0f,30f,0f));
 				target.activate();
