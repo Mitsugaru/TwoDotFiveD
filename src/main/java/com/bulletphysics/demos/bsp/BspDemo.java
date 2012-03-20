@@ -98,7 +98,7 @@ public class BspDemo extends DemoApplication
 		dynamicsWorld.setGravity(gravity);
 		
 		new BspToBulletConverter().convertBsp(getClass().getResourceAsStream(
-				"exported.bsp.txt"));
+				"scene.bsp.txt"));
 		BulletGlobals.setDeactivationTime(0.1f);
 		clientResetScene();
 		

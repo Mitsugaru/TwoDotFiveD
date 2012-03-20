@@ -31,7 +31,7 @@ public class BlockCollisionEvent extends BlockEvent
 			objectAActivationState = objA.getActivationState();
 			objectBActivationState = objB.getActivationState();
 			
-			mp.createThread(4);//number in array, this case Explosion.wav 
+			//mp.createThread(4);//number in array, this case Explosion.wav 
 			
 			// If both object states are 2, then they are both deactivated... so
 			// we shouldn't care? Maybe we might care, but probably not?
