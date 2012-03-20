@@ -3,8 +3,10 @@ package com.ATeam.twoDotFiveD.event.block;
 import javax.vecmath.Vector3f;
 import com.ATeam.twoDotFiveD.music.*;
 import com.ATeam.twoDotFiveD.block.Block;
+import com.ATeam.twoDotFiveD.event.player.PlayerListener;
 import com.bulletphysics.collision.narrowphase.ManifoldPoint;
 import com.bulletphysics.collision.narrowphase.PersistentManifold;
+import com.bulletphysics.collision.shapes.SphereShape;
 import com.bulletphysics.dynamics.RigidBody;
 
 public class BlockCollisionEvent extends BlockEvent
@@ -35,14 +37,16 @@ public class BlockCollisionEvent extends BlockEvent
 			
 			// If both object states are 2, then they are both deactivated... so
 			// we shouldn't care? Maybe we might care, but probably not?
-			if (objectAActivationState == 2 && objectBActivationState == 2)
+			/*if (objectAActivationState == 2 && objectBActivationState == 2)
 			{
 				// More than likely duplicate / spam event. Ignore?
 			}
 			else
 			{
-				System.out.println("Collision with: " + objA.toString() + " and "
-						+ objB.toString());
+				System.out.println(objA.getCollisionShape().getName());
+				System.out.println(objB.getCollisionShape().getName());
+				//System.out.println("Collision with: " + objA.toString() + " and "
+				//		+ objB.toString());
 				/*int numContacts = persistentManifold.getNumContacts();
 				for (int j = 0; j < numContacts; j++)
 				{
@@ -57,9 +61,9 @@ public class BlockCollisionEvent extends BlockEvent
 								+ pointB.toString().toString() + " Normal:"
 								+ normal.toString().toString());
 					}
-				}*/
+				}
 			}
-			
+			*/
 		}
 		else
 		{
@@ -76,5 +80,7 @@ public class BlockCollisionEvent extends BlockEvent
 	{
 		return persistentManifold;
 	}
-	
+	public void notify(BlockListener listener) {
+		listener.onBlockCollision(this);
+	}
 }

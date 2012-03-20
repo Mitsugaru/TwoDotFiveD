@@ -26,13 +26,22 @@ import java.io.IOException;
 import java.util.logging.Level;
 
 import com.ATeam.twoDotFiveD.debug.Logging;
+import com.ATeam.twoDotFiveD.event.Event;
+import com.ATeam.twoDotFiveD.event.Event.Type;
+import com.ATeam.twoDotFiveD.event.EventDispatcher;
 import com.ATeam.twoDotFiveD.event.block.BlockCollisionEvent;
+import com.ATeam.twoDotFiveD.event.block.BlockListener;
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.util.ObjectArrayList;
+import com.bulletphysics.collision.broadphase.AxisSweep3;
 import com.bulletphysics.collision.broadphase.BroadphaseInterface;
+import com.bulletphysics.collision.broadphase.BroadphaseNativeType;
 import com.bulletphysics.collision.broadphase.DbvtBroadphase;
 import com.bulletphysics.collision.broadphase.SimpleBroadphase;
+import com.bulletphysics.collision.dispatch.CollisionAlgorithmCreateFunc;
+import com.bulletphysics.collision.dispatch.CollisionConfiguration;
 import com.bulletphysics.collision.dispatch.CollisionDispatcher;
+import com.bulletphysics.collision.dispatch.CollisionObject;
 import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
 import com.bulletphysics.collision.narrowphase.PersistentManifold;
 import com.bulletphysics.collision.shapes.CollisionShape;
@@ -42,6 +51,7 @@ import com.bulletphysics.demos.opengl.GLDebugDrawer;
 import com.bulletphysics.demos.opengl.IGL;
 import com.bulletphysics.demos.opengl.LWJGL;
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
+import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.dynamics.constraintsolver.ConstraintSolver;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
 import com.bulletphysics.linearmath.Transform;
@@ -67,6 +77,7 @@ public class BspDemo extends DemoApplication
 	public CollisionDispatcher				dispatcher;
 	public ConstraintSolver					solver;
 	public DefaultCollisionConfiguration	collisionConfiguration;
+	private static EventDispatcher	eventDispatcher		= new EventDispatcher();
 	
 	public BspDemo(IGL gl)
 	{
@@ -75,21 +86,21 @@ public class BspDemo extends DemoApplication
 	
 	public void initPhysics() throws Exception
 	{
-		cameraUp.set(0f, 0f, 1f);
-		forwardAxis = 1;
+		//cameraUp.set(0f, 0f, 1f);
+		//forwardAxis = 1;
 		
 		setCameraDistance(22f);
-		
+		eventDispatcher.registerListener(Type.BLOCK_COLLISION, new BlockCollisionListener());
 		// Setup a Physics Simulation Environment
 		
 		collisionConfiguration = new DefaultCollisionConfiguration();
 		// btCollisionShape* groundShape = new btBoxShape(btVector3(50,3,50));
-		dispatcher = new CollisionDispatcher(collisionConfiguration);
+		dispatcher = new CollisionStuff(collisionConfiguration);
 		Vector3f worldMin = new Vector3f(-1000f, -1000f, -1000f);
 		Vector3f worldMax = new Vector3f(1000f, 1000f, 1000f);
-		// broadphase = new AxisSweep3(worldMin, worldMax);
+		broadphase = new AxisSweep3(worldMin, worldMax);
 		// broadphase = new SimpleBroadphase();
-		broadphase = new DbvtBroadphase();
+		//broadphase = new DbvtBroadphase();
 		// btOverlappingPairCache* broadphase = new btSimpleBroadphase();
 		solver = new SequentialImpulseConstraintSolver();
 		// ConstraintSolver* solver = new OdeConstraintSolver;
@@ -126,14 +137,6 @@ public class BspDemo extends DemoApplication
 		
 		// optional but useful: debug drawing
 		dynamicsWorld.debugDrawWorld();
-		//TODO look at http://jbullet.advel.cz/javadoc/com/bulletphysics/ContactAddedCallback.html
-		int numManifolds = dispatcher.getNumManifolds();
-		for (int i = 0; i < numManifolds; i++)
-		{
-			PersistentManifold contactManifold = dispatcher
-					.getManifoldByIndexInternal(i);
-			new BlockCollisionEvent(contactManifold);
-		}
 		renderme();
 		
 		// glFlush();
@@ -189,11 +192,11 @@ public class BspDemo extends DemoApplication
 		}
 	}
 	
-	private class BspYamlToBulletConverter extends BspYamlConverter
+	public class BspYamlToBulletConverter extends BspYamlConverter
 	{
 
 		@Override
-		public void addConvexVerticesCollider(ObjectArrayList<Vector3f> vertices, float mass)
+		public void addConvexVerticesCollider(ObjectArrayList<Vector3f> vertices, float mass, Vector3f acceleration)
 		{
 			Transform startTransform = new Transform();
 			// can use a shift
@@ -206,9 +209,80 @@ public class BspDemo extends DemoApplication
 			
 			// btRigidBody* body = m_demoApp->localCreateRigidBody(mass,
 			// startTransform,shape);
-			localCreateRigidBody(mass, startTransform, shape);
+			RigidBody body = localCreateRigidBody(mass, startTransform, shape);
+			if(acceleration != null)
+			{
+				body.setGravity(acceleration);
+			}
 		}
 		
+	}
+	
+	public class BlockCollisionListener extends BlockListener
+	{
+
+		@Override
+		public void onBlockCollision(BlockCollisionEvent event) {
+			final PersistentManifold pm = event.getPersistentManifold();
+			if (pm.getBody0() instanceof RigidBody
+					&& pm.getBody1() instanceof RigidBody)
+			{
+				final RigidBody objA = (RigidBody) pm.getBody0();
+				final RigidBody objB = (RigidBody) pm.getBody1();
+				//Grab object activation state
+				// If both object states are 2, then they are both deactivated... so
+				// we shouldn't care? Maybe we might care, but probably not?
+				if (objA.getActivationState() == 2 && objB.getActivationState() == 2)
+				{
+					// More than likely duplicate / spam event. Ignore?
+				}
+				else
+				{
+					if(objA.getCollisionShape().getName().equalsIgnoreCase("sphere"))
+					{
+						if(setGravity(objB, objA))
+						{
+							dynamicsWorld.removeCollisionObject(objA);
+						}
+					}
+					else if(objB.getCollisionShape().getName().equalsIgnoreCase("sphere"))
+					{
+						if(setGravity(objA, objB))
+						{
+							dynamicsWorld.removeCollisionObject(objB);
+						}
+					}
+				}
+			}
+		}
+		
+		public boolean setGravity(RigidBody target, RigidBody source)
+		{
+			if(target.getCollisionShape().getName().equalsIgnoreCase("box"))
+			{
+				target.setGravity(new Vector3f(0f,30f,0f));
+				target.activate();
+				return true;
+			}
+			return false;
+		}
+	}
+	
+	public class CollisionStuff extends CollisionDispatcher
+	{
+
+		public CollisionStuff(CollisionConfiguration arg0) {
+			super(arg0);
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		public PersistentManifold getNewManifold(Object b0, Object b1) {
+			// TODO Auto-generated method stub
+			final PersistentManifold pm = super.getNewManifold(b0, b1);
+			eventDispatcher.notify(new BlockCollisionEvent(pm));
+			return pm;
+		}
 	}
 	
 }
