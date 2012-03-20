@@ -29,6 +29,7 @@ import com.ATeam.twoDotFiveD.debug.Logging;
 import com.ATeam.twoDotFiveD.event.block.BlockCollisionEvent;
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.util.ObjectArrayList;
+import com.bulletphysics.collision.broadphase.AxisSweep3;
 import com.bulletphysics.collision.broadphase.BroadphaseInterface;
 import com.bulletphysics.collision.broadphase.DbvtBroadphase;
 import com.bulletphysics.collision.broadphase.SimpleBroadphase;
@@ -76,8 +77,8 @@ public class BspDemo extends DemoApplication
 	
 	public void initPhysics() throws Exception
 	{
-		cameraUp.set(0f, 0f, 1f);
-		forwardAxis = 1;
+		//cameraUp.set(0f, 0f, 1f);
+		//forwardAxis = 1;
 		
 		setCameraDistance(22f);
 		
@@ -88,9 +89,9 @@ public class BspDemo extends DemoApplication
 		dispatcher = new CollisionDispatcher(collisionConfiguration);
 		Vector3f worldMin = new Vector3f(-1000f, -1000f, -1000f);
 		Vector3f worldMax = new Vector3f(1000f, 1000f, 1000f);
-		// broadphase = new AxisSweep3(worldMin, worldMax);
+		broadphase = new AxisSweep3(worldMin, worldMax);
 		// broadphase = new SimpleBroadphase();
-		broadphase = new DbvtBroadphase();
+		//broadphase = new DbvtBroadphase();
 		// btOverlappingPairCache* broadphase = new btSimpleBroadphase();
 		solver = new SequentialImpulseConstraintSolver();
 		// ConstraintSolver* solver = new OdeConstraintSolver;
@@ -102,16 +103,16 @@ public class BspDemo extends DemoApplication
 		gravity.scale(10f);
 		dynamicsWorld.setGravity(gravity);
 		
-		//new BspToBulletConverter().convertBsp(getClass().getResourceAsStream(
-		//		"exported.bsp.txt"));
-		try
+		new BspToBulletConverter().convertBsp(getClass().getResourceAsStream(
+				"exported.bsp.txt"));
+		/*try
 		{
 			new BspYamlToBulletConverter().convertBspYaml(getClass().getResourceAsStream("scene.yml"));
 		}
 		catch(IOException e)
 		{
 			Logging.log.log(Level.SEVERE, "Could not close InputStream for: scene.yml", e);
-		}
+		}*/
 		BulletGlobals.setDeactivationTime(0.1f);
 		clientResetScene();
 		

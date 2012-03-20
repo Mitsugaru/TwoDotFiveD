@@ -907,7 +907,7 @@ public abstract class DemoApplication {
 		{
 			if(bodyGravityType.equals("ANTIGRAVITY"))
 			{
-				body.setGravity(new Vector3f(0f, 0f, 30f));
+				body.setGravity(new Vector3f(0f, 30f, 0f));
 			}
 			else if(bodyGravityType.equals("STASIS"))
 			{
