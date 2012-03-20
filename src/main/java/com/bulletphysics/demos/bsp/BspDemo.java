@@ -103,16 +103,16 @@ public class BspDemo extends DemoApplication
 		gravity.scale(10f);
 		dynamicsWorld.setGravity(gravity);
 		
-		new BspToBulletConverter().convertBsp(getClass().getResourceAsStream(
-				"exported.bsp.txt"));
-		/*try
+		//new BspToBulletConverter().convertBsp(getClass().getResourceAsStream(
+		//		"exported.bsp.txt"));
+		try
 		{
 			new BspYamlToBulletConverter().convertBspYaml(getClass().getResourceAsStream("scene.yml"));
 		}
 		catch(IOException e)
 		{
 			Logging.log.log(Level.SEVERE, "Could not close InputStream for: scene.yml", e);
-		}*/
+		}
 		BulletGlobals.setDeactivationTime(0.1f);
 		clientResetScene();
 		
@@ -191,7 +191,7 @@ public class BspDemo extends DemoApplication
 		}
 	}
 	
-	private class BspYamlToBulletConverter extends BspYamlConverter
+	public class BspYamlToBulletConverter extends BspYamlConverter
 	{
 
 		@Override

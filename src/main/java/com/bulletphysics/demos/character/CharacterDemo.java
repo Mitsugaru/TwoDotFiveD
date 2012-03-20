@@ -103,6 +103,7 @@ public class CharacterDemo extends DemoApplication {
 	public void initPhysics() throws Exception {
 		CollisionShape groundShape = new BoxShape(new Vector3f(50, 3, 50));
 		collisionShapes.add(groundShape);
+		forwardAxis = 1;
 
 		collisionConfiguration = new DefaultCollisionConfiguration();
 		dispatcher = new CollisionDispatcher(collisionConfiguration);
@@ -133,21 +134,16 @@ public class CharacterDemo extends DemoApplication {
 		character = new KinematicCharacterController(ghostObject, capsule,
 				stepHeight);
 
-		//new BspToBulletConverter().convertBsp(getClass().getResourceAsStream(
-		//		"/com/bulletphysics/demos/bsp/exported.bsp.txt"));
+		//new BspToBulletConverter().convertBsp(getClass().getResourceAsStream("/com/bulletphysics/demos/bsp/exported.bsp.txt"));
 		try
-		{
-			new BspYamlToBulletConverter().convertBspYaml(getClass().getResourceAsStream("scene.yml"));
-		}
-		catch(IOException e)
-		{
-			Logging.log.log(Level.SEVERE, "Could not close InputStream for: scene.yml", e);
-		}
-		dynamicsWorld
-				.addCollisionObject(
-						ghostObject,
-						CollisionFilterGroups.CHARACTER_FILTER,
-						(short) (CollisionFilterGroups.STATIC_FILTER | CollisionFilterGroups.DEFAULT_FILTER));
+        {
+            new BspYamlToBulletConverter().convertBspYaml(getClass().getResourceAsStream("EntryScene.yml"));
+        }
+        catch(IOException e)
+        {
+            Logging.log.log(Level.SEVERE, "Could not close InputStream for: scene.yml", e);
+        }
+		dynamicsWorld.addCollisionObject(ghostObject, CollisionFilterGroups.CHARACTER_FILTER, (short)(CollisionFilterGroups.STATIC_FILTER | CollisionFilterGroups.DEFAULT_FILTER));
 
 		dynamicsWorld.addAction(character);
 
@@ -431,5 +427,4 @@ public class CharacterDemo extends DemoApplication {
 		}
 		
 	}
-
 }
