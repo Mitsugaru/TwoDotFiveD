@@ -12,9 +12,9 @@ import com.bulletphysics.dynamics.RigidBody;
 public class BlockCollisionEvent extends BlockEvent
 {
 	private PersistentManifold	persistentManifold;
-	private int					objectAActivationState;
+	/*private int					objectAActivationState;
 	private int					objectBActivationState;
-	private MusicPlayer mp=new MusicPlayer();
+	private MusicPlayer mp=new MusicPlayer();*/
 	
 	public BlockCollisionEvent(PersistentManifold persistentManifold)
 	{
@@ -24,7 +24,7 @@ public class BlockCollisionEvent extends BlockEvent
 		//Set PersistentManifold
 		this.persistentManifold = persistentManifold;
 		//Check object types
-		if (persistentManifold.getBody0() instanceof RigidBody
+		/*if (persistentManifold.getBody0() instanceof RigidBody
 				&& persistentManifold.getBody1() instanceof RigidBody)
 		{
 			RigidBody objA = (RigidBody) persistentManifold.getBody0();
@@ -37,7 +37,7 @@ public class BlockCollisionEvent extends BlockEvent
 			
 			// If both object states are 2, then they are both deactivated... so
 			// we shouldn't care? Maybe we might care, but probably not?
-			/*if (objectAActivationState == 2 && objectBActivationState == 2)
+			if (objectAActivationState == 2 && objectBActivationState == 2)
 			{
 				// More than likely duplicate / spam event. Ignore?
 			}
@@ -63,7 +63,7 @@ public class BlockCollisionEvent extends BlockEvent
 					}
 				}
 			}
-			*/
+			
 		}
 		else
 		{
@@ -73,13 +73,14 @@ public class BlockCollisionEvent extends BlockEvent
 					+ persistentManifold.getBody0().getClass().toString());
 			System.out.println("Body 1 class: "
 					+ persistentManifold.getBody1().getClass().toString());
-		}
+		}*/
 	}
 	
 	public PersistentManifold getPersistentManifold()
 	{
 		return persistentManifold;
 	}
+	
 	public void notify(BlockListener listener) {
 		listener.onBlockCollision(this);
 	}

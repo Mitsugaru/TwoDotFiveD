@@ -23,15 +23,18 @@
 package com.bulletphysics.demos.bsp;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
 import com.ATeam.twoDotFiveD.debug.Logging;
+import com.ATeam.twoDotFiveD.entity.Entity;
 import com.ATeam.twoDotFiveD.event.Event;
 import com.ATeam.twoDotFiveD.event.Event.Type;
 import com.ATeam.twoDotFiveD.event.EventDispatcher;
 import com.ATeam.twoDotFiveD.event.block.BlockCollisionEvent;
+import com.ATeam.twoDotFiveD.event.block.BlockCollisionResolvedEvent;
 import com.ATeam.twoDotFiveD.event.block.BlockListener;
-import com.ATeam.twoDotFiveD.music.MusicPlayer;
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.util.ObjectArrayList;
 import com.bulletphysics.collision.broadphase.AxisSweep3;
@@ -45,8 +48,12 @@ import com.bulletphysics.collision.dispatch.CollisionDispatcher;
 import com.bulletphysics.collision.dispatch.CollisionObject;
 import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
 import com.bulletphysics.collision.narrowphase.PersistentManifold;
+import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.collision.shapes.CollisionShape;
+import com.bulletphysics.collision.shapes.ConeShape;
 import com.bulletphysics.collision.shapes.ConvexHullShape;
+import com.bulletphysics.collision.shapes.CylinderShape;
+import com.bulletphysics.collision.shapes.SphereShape;
 import com.bulletphysics.demos.opengl.DemoApplication;
 import com.bulletphysics.demos.opengl.GLDebugDrawer;
 import com.bulletphysics.demos.opengl.IGL;
@@ -55,8 +62,10 @@ import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.dynamics.constraintsolver.ConstraintSolver;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
+import com.bulletphysics.linearmath.DefaultMotionState;
 import com.bulletphysics.linearmath.Transform;
 
+import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 import static com.bulletphysics.demos.opengl.IGL.*;
 
@@ -73,12 +82,12 @@ public class BspDemo extends DemoApplication
 	private static final float				EXTRA_HEIGHT		= -20f;
 	
 	// keep the collision shapes, for deletion/cleanup
-	public ObjectArrayList<CollisionShape>	collisionShapes		= new ObjectArrayList<CollisionShape>();
+	public Map<RigidBody, Entity>			entityList			= new HashMap<RigidBody, Entity>();
 	public BroadphaseInterface				broadphase;
 	public CollisionDispatcher				dispatcher;
 	public ConstraintSolver					solver;
 	public DefaultCollisionConfiguration	collisionConfiguration;
-	private static EventDispatcher	eventDispatcher		= new EventDispatcher();
+	private static EventDispatcher			eventDispatcher		= new EventDispatcher();
 	
 	public BspDemo(IGL gl)
 	{
@@ -87,11 +96,14 @@ public class BspDemo extends DemoApplication
 	
 	public void initPhysics() throws Exception
 	{
-		//cameraUp.set(0f, 0f, 1f);
-		//forwardAxis = 1;
+		// cameraUp.set(0f, 0f, 1f);
+		// forwardAxis = 1;
 		
 		setCameraDistance(22f);
-		eventDispatcher.registerListener(Type.BLOCK_COLLISION, new BlockCollisionListener());
+		BlockCollisionListener blockListener = new BlockCollisionListener();
+		eventDispatcher.registerListener(Type.BLOCK_COLLISION, blockListener);
+		eventDispatcher.registerListener(Type.BLOCK_COLLISION_RESOLVED,
+				blockListener);
 		// Setup a Physics Simulation Environment
 		
 		collisionConfiguration = new DefaultCollisionConfiguration();
@@ -99,9 +111,9 @@ public class BspDemo extends DemoApplication
 		dispatcher = new CollisionStuff(collisionConfiguration);
 		Vector3f worldMin = new Vector3f(-1000f, -1000f, -1000f);
 		Vector3f worldMax = new Vector3f(1000f, 1000f, 1000f);
-		broadphase = new AxisSweep3(worldMin, worldMax);
+		// broadphase = new AxisSweep3(worldMin, worldMax);
 		// broadphase = new SimpleBroadphase();
-		//broadphase = new DbvtBroadphase();
+		broadphase = new DbvtBroadphase();
 		// btOverlappingPairCache* broadphase = new btSimpleBroadphase();
 		solver = new SequentialImpulseConstraintSolver();
 		// ConstraintSolver* solver = new OdeConstraintSolver;
@@ -113,15 +125,17 @@ public class BspDemo extends DemoApplication
 		gravity.scale(10f);
 		dynamicsWorld.setGravity(gravity);
 		
-		//new BspToBulletConverter().convertBsp(getClass().getResourceAsStream(
-		//		"exported.bsp.txt"));
+		// new BspToBulletConverter().convertBsp(getClass().getResourceAsStream(
+		// "exported.bsp.txt"));
 		try
 		{
-			new BspYamlToBulletConverter().convertBspYaml(getClass().getResourceAsStream("scene.yml"));
+			new BspYamlToBulletConverter().convertBspYaml(getClass()
+					.getResourceAsStream("scene.yml"));
 		}
-		catch(IOException e)
+		catch (IOException e)
 		{
-			Logging.log.log(Level.SEVERE, "Could not close InputStream for: scene.yml", e);
+			Logging.log.log(Level.SEVERE,
+					"Could not close InputStream for: scene.yml", e);
 		}
 		BulletGlobals.setDeactivationTime(0.1f);
 		clientResetScene();
@@ -156,6 +170,75 @@ public class BspDemo extends DemoApplication
 		// glutSwapBuffers();
 	}
 	
+	@Override
+	public void shootBox(Vector3f destination)
+	{
+		if (dynamicsWorld != null)
+		{
+			float mass = 50f;
+			Transform startTransform = new Transform();
+			startTransform.setIdentity();
+			Vector3f camPos = new Vector3f(getCameraPosition());
+			startTransform.origin.set(camPos);
+			
+			if (shapeType.equals("BOX"))
+			{
+				shootBoxShape = new BoxShape(new Vector3f(1f, 1f, 1f));
+			}
+			else if (shapeType.equals("SPHERE"))
+			{
+				shootBoxShape = new SphereShape(1f);
+			}
+			else if (shapeType.equals("TRIANGLE"))
+			{
+				// TODO implement a pyramid
+				shootBoxShape = new ConeShape(1f, 3f);
+				// shootBoxShape = new TriangleShape(new Vector3f(1f, 1f, 1f),
+				// new Vector3f(1f, 0f, 0f), new Vector3f(0f, -1f, 0f));
+			}
+			else if (shapeType.equals("CYLINDER"))
+			{
+				shootBoxShape = new CylinderShape(new Vector3f(1f, 1f, 1f));
+			}
+			
+			RigidBody body = this.localCreateRigidBody(mass, startTransform,
+					shootBoxShape);
+			Entity entity = new Entity(body.getCollisionShape().getName(), body);
+			// Dynamic gravity for object
+			if (!bodyGravityType.equals("NORMAL"))
+			{
+				if (bodyGravityType.equals("ANTIGRAVITY"))
+				{
+					entity.setGravity(new Vector3f(0f, 30f, 0f));
+				}
+				else if (bodyGravityType.equals("STASIS"))
+				{
+					entity.setGravity(new Vector3f(0f, 0f, 0f));
+				}
+			}
+			else
+			{
+				entity.setGravity(dynamicsWorld.getGravity(new Vector3f()));
+			}
+			entityList.put(body, entity);
+			Vector3f linVel = new Vector3f(destination.x - camPos.x,
+					destination.y - camPos.y, destination.z - camPos.z);
+			linVel.normalize();
+			linVel.scale(ShootBoxInitialSpeed);
+			
+			Transform worldTrans = body.getWorldTransform(new Transform());
+			worldTrans.origin.set(camPos);
+			worldTrans.setRotation(new Quat4f(0f, 0f, 0f, 1f));
+			body.setWorldTransform(worldTrans);
+			
+			body.setLinearVelocity(linVel);
+			body.setAngularVelocity(new Vector3f(0f, 0f, 0f));
+			
+			body.setCcdMotionThreshold(1f);
+			body.setCcdSweptSphereRadius(0.2f);
+		}
+	}
+	
 	public static void main(String[] args) throws Exception
 	{
 		BspDemo demo = new BspDemo(LWJGL.getGL());
@@ -184,7 +267,7 @@ public class BspDemo extends DemoApplication
 				
 				// this create an internal copy of the vertices
 				CollisionShape shape = new ConvexHullShape(vertices);
-				collisionShapes.add(shape);
+				// collisionShapes.add(shape);
 				
 				// btRigidBody* body = m_demoApp->localCreateRigidBody(mass,
 				// startTransform,shape);
@@ -195,9 +278,11 @@ public class BspDemo extends DemoApplication
 	
 	public class BspYamlToBulletConverter extends BspYamlConverter
 	{
-
+		
 		@Override
-		public void addConvexVerticesCollider(ObjectArrayList<Vector3f> vertices, float mass, Vector3f acceleration)
+		public void addConvexVerticesCollider(String name,
+				ObjectArrayList<Vector3f> vertices, float mass,
+				Vector3f acceleration, String[] description)
 		{
 			Transform startTransform = new Transform();
 			// can use a shift
@@ -206,91 +291,163 @@ public class BspDemo extends DemoApplication
 			
 			// this create an internal copy of the vertices
 			CollisionShape shape = new ConvexHullShape(vertices);
-			collisionShapes.add(shape);
-			
-			// btRigidBody* body = m_demoApp->localCreateRigidBody(mass,
-			// startTransform,shape);
 			RigidBody body = localCreateRigidBody(mass, startTransform, shape);
-			if(acceleration != null)
+			if (acceleration != null)
 			{
 				body.setGravity(acceleration);
 			}
+			if(description != null)
+			{
+				entityList.put(body, new Entity(name, body, description));
+			}
+			else
+			{
+				entityList.put(body, new Entity(name, body));
+			}
+			
 		}
 		
 	}
 	
 	public class BlockCollisionListener extends BlockListener
 	{
-		private MusicPlayer mp=new MusicPlayer();
 		@Override
-		public void onBlockCollision(BlockCollisionEvent event) {
+		public void onBlockCollision(BlockCollisionEvent event)
+		{
 			final PersistentManifold pm = event.getPersistentManifold();
+			// TODO redo for custom classes
 			if (pm.getBody0() instanceof RigidBody
 					&& pm.getBody1() instanceof RigidBody)
 			{
-				final RigidBody objA = (RigidBody) pm.getBody0();
-				final RigidBody objB = (RigidBody) pm.getBody1();
-				//Grab object activation state
-				// If both object states are 2, then they are both deactivated... so
-				// we shouldn't care? Maybe we might care, but probably not?
-				if (objA.getActivationState() == 2 && objB.getActivationState() == 2)
+				final Entity entityA = entityList
+						.get((RigidBody) pm.getBody0());
+				final Entity entityB = entityList
+						.get((RigidBody) pm.getBody1());
+				if (entityA != null && entityB != null)
 				{
-					// More than likely duplicate / spam event. Ignore?
+					if (entityA.isFrozen())
+					{
+						entityA.unfreeze();
+					}
+					if (entityB.isFrozen())
+					{
+						entityB.unfreeze();
+					}
+					// Entites are known and exist, so we can act upon them
+					if (entityA.getRigidBody().getCollisionShape().getName()
+							.equals("sphere"))
+					{
+						
+						if (setGravity(entityA.getRigidBody(),
+								entityB.getRigidBody(), new Vector3f(0f, 30f,
+										0f)))
+						{
+							entityA.setGravity(new Vector3f(0f, 30f, 0f));
+							dynamicsWorld.removeCollisionObject(entityB
+									.getRigidBody());
+							entityList.remove(entityB);
+						}
+					}
+					else if (entityB.getRigidBody().getCollisionShape()
+							.getName().equals("sphere"))
+					{
+						if (setGravity(entityB.getRigidBody(),
+								entityB.getRigidBody(), new Vector3f(0f, 30f,
+										0f)))
+						{
+							dynamicsWorld.removeCollisionObject(entityA
+									.getRigidBody());
+							entityList.remove(entityA);
+						}
+					}
+					else
+					{
+						// System.out.println("objA: " + entityA.getID()
+						// + " objB: " + entityB.getID());
+					}
 				}
 				else
 				{
-					if(objA.getCollisionShape().getName().equalsIgnoreCase("sphere"))
-					{
-						if(setGravity(objB, objA))
-						{
-							dynamicsWorld.removeCollisionObject(objA);
-						}
-					}
-					else if(objB.getCollisionShape().getName().equalsIgnoreCase("sphere"))
-					{
-						if(setGravity(objA, objB))
-						{
-							dynamicsWorld.removeCollisionObject(objB);
-						}
-					}
-					if(objA.getCollisionShape().getName().equalsIgnoreCase("box"))
-					{
-						System.out.println("objA is box");
-					}
-					else if(objB.getCollisionShape().getName().equalsIgnoreCase("box"))
-					{
-						System.out.println("objB is box");
-					}
+					// Using spawned entities
+					// TODO compensate for this. Currently, DemoApplication is
+					// handling that...
 				}
 			}
 		}
 		
-		public boolean setGravity(RigidBody target, RigidBody source)
+		@Override
+		public void onBlockCollisionResolved(BlockCollisionResolvedEvent event)
 		{
-			if(target.getCollisionShape().getName().equalsIgnoreCase("box") || target.getCollisionShape().getName().contains("Cyl"))
+			
+			final PersistentManifold pm = event.getPersistentManifold();
+			if (pm.getBody0() instanceof RigidBody
+					&& pm.getBody1() instanceof RigidBody)
 			{
-				target.setGravity(new Vector3f(0f,30f,0f));
-				target.activate();
-				return true;
+				final Entity entityA = entityList
+						.get((RigidBody) pm.getBody0());
+				final Entity entityB = entityList
+						.get((RigidBody) pm.getBody1());
+				if (entityA != null && entityB != null)
+				{
+					if (entityA.getRigidBody().isActive()
+							&& entityB.getRigidBody().isActive())
+					{
+						if (entityA.getID().equalsIgnoreCase("box")
+								&& entityB.getID().equalsIgnoreCase("box"))
+						{
+							entityA.freeze();
+							entityB.freeze();
+						}
+					}
+				}
 			}
-			return false;
+			
+		}
+		
+		public boolean setGravity(RigidBody target, RigidBody source,
+				Vector3f direction)
+		{
+			target.setGravity(direction);
+			target.activate();
+			return true;
 		}
 	}
 	
 	public class CollisionStuff extends CollisionDispatcher
 	{
-
-		public CollisionStuff(CollisionConfiguration arg0) {
+		
+		/*
+		 * Standard constructor
+		 */
+		public CollisionStuff(CollisionConfiguration arg0)
+		{
 			super(arg0);
-			// TODO Auto-generated constructor stub
 		}
-
+		
+		/**
+		 * Called when a new collision between objects occured
+		 */
 		@Override
-		public PersistentManifold getNewManifold(Object b0, Object b1) {
-			// TODO Auto-generated method stub
+		public PersistentManifold getNewManifold(Object b0, Object b1)
+		{
+			// TODO maybe check and negate if one of the objects is frozen?
+			// don't know the effect it would cause
 			final PersistentManifold pm = super.getNewManifold(b0, b1);
+			// Throw event
 			eventDispatcher.notify(new BlockCollisionEvent(pm));
 			return pm;
+		}
+		
+		/**
+		 * Called when a collision has been resolved: when the objects are no
+		 * longer in contact
+		 */
+		@Override
+		public void releaseManifold(PersistentManifold manifold)
+		{
+			// Throw event
+			eventDispatcher.notify(new BlockCollisionResolvedEvent(manifold));
+			super.releaseManifold(manifold);
 		}
 	}
 	
