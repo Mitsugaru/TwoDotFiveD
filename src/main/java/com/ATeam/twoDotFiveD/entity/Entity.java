@@ -8,7 +8,7 @@ public class Entity
 {
 	private String		ID				= "UNKNOWN";
 	private RigidBody	rigidBody;
-	private String[]	description;
+	private String[]	description = {"NONE"};
 	private boolean		frozen			= false;
 	// Old state, for when we "freeze" a RigidBody by setting the following to
 	// zero
@@ -27,14 +27,20 @@ public class Entity
 		this.ID = ID;
 		this.rigidBody = rigidBody;
 		this.image = image;
-		this.description = description;
+		if(description != null)
+		{
+			this.description = description;
+		}
 	}
 	
 	public Entity(String ID, RigidBody rigidBody, String[] description)
 	{
 		this.ID = ID;
 		this.rigidBody = rigidBody;
-		this.description = description;
+		if(description != null)
+		{
+			this.description = description;
+		}
 	}
 	
 	public Entity(String ID, RigidBody rigidBody, String image)
@@ -115,5 +121,10 @@ public class Entity
 	public String getImage()
 	{
 		return image;
+	}
+	
+	public String[] getDescription()
+	{
+		return description;
 	}
 }

@@ -22,7 +22,6 @@ public abstract class BspYamlConverter
 		{
 			final ObjectArrayList<Vector3f> vertices = new ObjectArrayList<Vector3f>();
 			final List<Object> list = config.getList(rootPath + ".vertices");
-			Vector3f acceleration = null;
 			if (list != null)
 			{
 				for (Object o : list)
@@ -59,6 +58,7 @@ public abstract class BspYamlConverter
 						Logging.log.log(Level.SEVERE, "Failed to parse mass for: "
 								+ rootPath, e);
 					}
+					Vector3f acceleration = null;
 					try
 					{
 						String a = config.getString(rootPath + ".acceleration");
@@ -68,8 +68,15 @@ public abstract class BspYamlConverter
 							acceleration = new Vector3f(Float.parseFloat(ba[0]), Float.parseFloat(ba[1]), Float.parseFloat(ba[2]));
 						}
 					}
-					catch (Exception e)
+					catch(NumberFormatException e)
 					{
+						Logging.log.log(Level.SEVERE, "Failed to parse acceleration for: "
+								+ rootPath, e);
+						acceleration = null;
+					}
+					catch (NullPointerException e)
+					{
+						//Ignore, as probably missing
 						acceleration = null;
 					}
 					String[] description = null;
@@ -77,7 +84,7 @@ public abstract class BspYamlConverter
 					{
 						description = config.getList(rootPath + ".description").toArray(new String[0]);
 					}
-					catch(Exception e)
+					catch(NullPointerException e)
 					{
 						//Ignore, as it probably has no description
 					}

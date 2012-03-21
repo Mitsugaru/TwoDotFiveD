@@ -296,7 +296,15 @@ public class BspDemo extends DemoApplication
 			{
 				body.setGravity(acceleration);
 			}
-			entityList.put(body, new Entity(name, body, description));
+			if(description != null)
+			{
+				entityList.put(body, new Entity(name, body, description));
+			}
+			else
+			{
+				entityList.put(body, new Entity(name, body));
+			}
+			
 		}
 		
 	}
