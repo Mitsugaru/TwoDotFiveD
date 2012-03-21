@@ -22,6 +22,21 @@ public class Entity
 	// Might need an array of images, images per face? IDK
 	private String		image;
 	
+	public Entity(String ID, RigidBody rigidBody, String image, String[] description)
+	{
+		this.ID = ID;
+		this.rigidBody = rigidBody;
+		this.image = image;
+		this.description = description;
+	}
+	
+	public Entity(String ID, RigidBody rigidBody, String[] description)
+	{
+		this.ID = ID;
+		this.rigidBody = rigidBody;
+		this.description = description;
+	}
+	
 	public Entity(String ID, RigidBody rigidBody, String image)
 	{
 		this.ID = ID;
@@ -32,11 +47,6 @@ public class Entity
 	public Entity(String ID, RigidBody rigidBody)
 	{
 		this.ID = ID;
-		this.rigidBody = rigidBody;
-	}
-	
-	public Entity(RigidBody rigidBody)
-	{
 		this.rigidBody = rigidBody;
 	}
 	

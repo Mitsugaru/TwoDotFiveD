@@ -4,7 +4,6 @@ import lib.lwjgl.glmodel.GL_Vector;
 
 /**
  * Replaced with Entity, which contains a RigidBody object.
- * @author Tokume
  *
  */
 @Deprecated
@@ -28,11 +27,11 @@ public class dynamicEntity extends Entity
         String image )
     {
         //super( position, size, ID, image );
-    	super(null);
+    	super(null, null);
     }
     //this can be removed later
     public dynamicEntity(){
-        super(null);
+        super(null, null);
     }
 
         /**

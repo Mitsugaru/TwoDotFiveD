@@ -25,30 +25,6 @@ public abstract class BspYamlConverter
 			Vector3f acceleration = null;
 			if (list != null)
 			{
-				float mass = 0f;
-				try
-				{
-					mass = Float.parseFloat(config.getString(
-							rootPath + ".mass", "0f"));
-				}
-				catch (NumberFormatException e)
-				{
-					Logging.log.log(Level.SEVERE, "Failed to parse mass for: "
-							+ rootPath, e);
-				}
-				try
-				{
-					String a = config.getString(rootPath + ".acceleration");
-					if(a != null)
-					{
-						String[] ba = ((String) a).split(" ");
-						acceleration = new Vector3f(Float.parseFloat(ba[0]), Float.parseFloat(ba[1]), Float.parseFloat(ba[2]));
-					}
-				}
-				catch (Exception e)
-				{
-					acceleration = null;
-				}
 				for (Object o : list)
 				{
 					try
@@ -67,7 +43,45 @@ public abstract class BspYamlConverter
 				}
 				if (!vertices.isEmpty())
 				{
-					addConvexVerticesCollider(rootPath, vertices, mass, acceleration);
+					float mass = 0f;
+					try
+					{
+						mass = Float.parseFloat(config.getString(
+								rootPath + ".mass", "0f"));
+					}
+					catch (NumberFormatException e)
+					{
+						Logging.log.log(Level.SEVERE, "Failed to parse mass for: "
+								+ rootPath, e);
+					}
+					try
+					{
+						String a = config.getString(rootPath + ".acceleration");
+						if(a != null)
+						{
+							String[] ba = ((String) a).split(" ");
+							acceleration = new Vector3f(Float.parseFloat(ba[0]), Float.parseFloat(ba[1]), Float.parseFloat(ba[2]));
+						}
+					}
+					catch (Exception e)
+					{
+						acceleration = null;
+					}
+					String[] description = null;
+					try
+					{
+						description = config.getList(rootPath + ".description").toArray(new String[0]);
+					}
+					catch(Exception e)
+					{
+						//Ignore, as it probably has no description
+					}
+					//Add physics object to dynamic world
+					addConvexVerticesCollider(rootPath, vertices, mass, acceleration, description);
+				}
+				else
+				{
+					Logging.log.log(Level.WARNING, "Object at path '" + rootPath + "' has no vertices.");
 				}
 			}
 			else
@@ -79,5 +93,5 @@ public abstract class BspYamlConverter
 	}
 	
 	public abstract void addConvexVerticesCollider(String name,
-			ObjectArrayList<Vector3f> vertices, float mass, Vector3f acceleration);
+			ObjectArrayList<Vector3f> vertices, float mass, Vector3f acceleration, String[] description);
 }

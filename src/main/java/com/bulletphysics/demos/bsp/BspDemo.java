@@ -173,42 +173,45 @@ public class BspDemo extends DemoApplication
 	@Override
 	public void shootBox(Vector3f destination)
 	{
-		if (dynamicsWorld != null) {
+		if (dynamicsWorld != null)
+		{
 			float mass = 50f;
 			Transform startTransform = new Transform();
 			startTransform.setIdentity();
 			Vector3f camPos = new Vector3f(getCameraPosition());
 			startTransform.origin.set(camPos);
-
-			if (shapeType.equals("BOX")) {
+			
+			if (shapeType.equals("BOX"))
+			{
 				shootBoxShape = new BoxShape(new Vector3f(1f, 1f, 1f));
 			}
-			else if(shapeType.equals("SPHERE"))
+			else if (shapeType.equals("SPHERE"))
 			{
 				shootBoxShape = new SphereShape(1f);
 			}
-			else if(shapeType.equals("TRIANGLE"))
+			else if (shapeType.equals("TRIANGLE"))
 			{
-				//TODO implement a pyramid
+				// TODO implement a pyramid
 				shootBoxShape = new ConeShape(1f, 3f);
-				//shootBoxShape = new TriangleShape(new Vector3f(1f, 1f, 1f), new Vector3f(1f, 0f, 0f), new Vector3f(0f, -1f, 0f));
+				// shootBoxShape = new TriangleShape(new Vector3f(1f, 1f, 1f),
+				// new Vector3f(1f, 0f, 0f), new Vector3f(0f, -1f, 0f));
 			}
-			else if(shapeType.equals("CYLINDER"))
+			else if (shapeType.equals("CYLINDER"))
 			{
 				shootBoxShape = new CylinderShape(new Vector3f(1f, 1f, 1f));
 			}
-
-
-			RigidBody body = this.localCreateRigidBody(mass, startTransform, shootBoxShape);
+			
+			RigidBody body = this.localCreateRigidBody(mass, startTransform,
+					shootBoxShape);
 			Entity entity = new Entity(body.getCollisionShape().getName(), body);
-			//Dynamic gravity for object
-			if(!bodyGravityType.equals("NORMAL"))
+			// Dynamic gravity for object
+			if (!bodyGravityType.equals("NORMAL"))
 			{
-				if(bodyGravityType.equals("ANTIGRAVITY"))
+				if (bodyGravityType.equals("ANTIGRAVITY"))
 				{
 					entity.setGravity(new Vector3f(0f, 30f, 0f));
 				}
-				else if(bodyGravityType.equals("STASIS"))
+				else if (bodyGravityType.equals("STASIS"))
 				{
 					entity.setGravity(new Vector3f(0f, 0f, 0f));
 				}
@@ -218,18 +221,19 @@ public class BspDemo extends DemoApplication
 				entity.setGravity(dynamicsWorld.getGravity(new Vector3f()));
 			}
 			entityList.put(body, entity);
-			Vector3f linVel = new Vector3f(destination.x - camPos.x, destination.y - camPos.y, destination.z - camPos.z);
+			Vector3f linVel = new Vector3f(destination.x - camPos.x,
+					destination.y - camPos.y, destination.z - camPos.z);
 			linVel.normalize();
 			linVel.scale(ShootBoxInitialSpeed);
-
+			
 			Transform worldTrans = body.getWorldTransform(new Transform());
 			worldTrans.origin.set(camPos);
 			worldTrans.setRotation(new Quat4f(0f, 0f, 0f, 1f));
 			body.setWorldTransform(worldTrans);
-
+			
 			body.setLinearVelocity(linVel);
 			body.setAngularVelocity(new Vector3f(0f, 0f, 0f));
-
+			
 			body.setCcdMotionThreshold(1f);
 			body.setCcdSweptSphereRadius(0.2f);
 		}
@@ -278,7 +282,7 @@ public class BspDemo extends DemoApplication
 		@Override
 		public void addConvexVerticesCollider(String name,
 				ObjectArrayList<Vector3f> vertices, float mass,
-				Vector3f acceleration)
+				Vector3f acceleration, String[] description)
 		{
 			Transform startTransform = new Transform();
 			// can use a shift
@@ -292,7 +296,7 @@ public class BspDemo extends DemoApplication
 			{
 				body.setGravity(acceleration);
 			}
-			entityList.put(body, new Entity(name, body));
+			entityList.put(body, new Entity(name, body, description));
 		}
 		
 	}
@@ -313,30 +317,31 @@ public class BspDemo extends DemoApplication
 						.get((RigidBody) pm.getBody1());
 				if (entityA != null && entityB != null)
 				{
-					if(entityA.isFrozen())
+					if (entityA.isFrozen())
 					{
 						entityA.unfreeze();
 					}
-					if(entityB.isFrozen())
+					if (entityB.isFrozen())
 					{
 						entityB.unfreeze();
 					}
 					// Entites are known and exist, so we can act upon them
-					if (entityA.getRigidBody().getCollisionShape().getName().equals("sphere"))
+					if (entityA.getRigidBody().getCollisionShape().getName()
+							.equals("sphere"))
 					{
-
+						
 						if (setGravity(entityA.getRigidBody(),
 								entityB.getRigidBody(), new Vector3f(0f, 30f,
 										0f)))
 						{
-							entityA.setGravity(new Vector3f(0f, 30f,
-										0f));
+							entityA.setGravity(new Vector3f(0f, 30f, 0f));
 							dynamicsWorld.removeCollisionObject(entityB
 									.getRigidBody());
 							entityList.remove(entityB);
 						}
 					}
-					else if (entityB.getRigidBody().getCollisionShape().getName().equals("sphere"))
+					else if (entityB.getRigidBody().getCollisionShape()
+							.getName().equals("sphere"))
 					{
 						if (setGravity(entityB.getRigidBody(),
 								entityB.getRigidBody(), new Vector3f(0f, 30f,
@@ -349,14 +354,15 @@ public class BspDemo extends DemoApplication
 					}
 					else
 					{
-						//System.out.println("objA: " + entityA.getID()
-						//		+ " objB: " + entityB.getID());
+						// System.out.println("objA: " + entityA.getID()
+						// + " objB: " + entityB.getID());
 					}
 				}
 				else
 				{
-					//Using spawned entities
-					//TODO compensate for this. Currently, DemoApplication is handling that...
+					// Using spawned entities
+					// TODO compensate for this. Currently, DemoApplication is
+					// handling that...
 				}
 			}
 		}
@@ -375,9 +381,11 @@ public class BspDemo extends DemoApplication
 						.get((RigidBody) pm.getBody1());
 				if (entityA != null && entityB != null)
 				{
-					if(entityA.getRigidBody().isActive() && entityB.getRigidBody().isActive())
+					if (entityA.getRigidBody().isActive()
+							&& entityB.getRigidBody().isActive())
 					{
-						if(entityA.getID().equalsIgnoreCase("box") && entityB.getID().equalsIgnoreCase("box"))
+						if (entityA.getID().equalsIgnoreCase("box")
+								&& entityB.getID().equalsIgnoreCase("box"))
 						{
 							entityA.freeze();
 							entityB.freeze();
@@ -414,8 +422,10 @@ public class BspDemo extends DemoApplication
 		@Override
 		public PersistentManifold getNewManifold(Object b0, Object b1)
 		{
-			// Throw event
+			// TODO maybe check and negate if one of the objects is frozen?
+			// don't know the effect it would cause
 			final PersistentManifold pm = super.getNewManifold(b0, b1);
+			// Throw event
 			eventDispatcher.notify(new BlockCollisionEvent(pm));
 			return pm;
 		}
