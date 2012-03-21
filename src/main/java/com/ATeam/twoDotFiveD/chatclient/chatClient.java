@@ -96,7 +96,7 @@ public class chatClient extends Thread
             System.out.println(socket.getInetAddress());
             System.out.println(UDPServer.DEFAULTPORT);
             display.processText(String.valueOf(ID));
-            UDPclient hi = new UDPclient(socket.getLocalAddress(),UDPServer.DEFAULTPORT,display,ID);
+            UDPclient hi = new UDPclient(socket.getLocalAddress(),UDPServer.DEFAULTPORT,display,ID, null);
             Thread t = new Thread(hi);
             t.start();
             //everything breaks when I run this
