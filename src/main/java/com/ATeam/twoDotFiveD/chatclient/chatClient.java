@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
 
+import com.ATeam.twoDotFiveD.event.EventDispatcher;
 import com.ATeam.twoDotFiveD.gui.MainStartScreen;
 import com.ATeam.twoDotFiveD.udp.Client.UDPclient;
 import com.ATeam.twoDotFiveD.udp.server.UDPServer;
@@ -28,12 +29,14 @@ public class chatClient extends Thread
     private String name;
     
     private int ID;
+    EventDispatcher link;
 
 
     // Tells the client where to connect, and what it's name is. The name must
     // be decided by the game before the chat client connects
-    public chatClient( MainStartScreen whatIDisplay, String ip, String name )
+    public chatClient( MainStartScreen whatIDisplay, String ip, String name, EventDispatcher t )
     {
+    	link=t;
         display = whatIDisplay;
         this.ip = ip;
         stop = false;
