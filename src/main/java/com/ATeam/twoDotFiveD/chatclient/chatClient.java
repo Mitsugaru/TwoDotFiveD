@@ -83,7 +83,6 @@ public class chatClient extends Thread
     {
         out.println(message );
     }
-    
     public void sendMessage(byte[] data)
     {
     	hi.sendMessage(data);

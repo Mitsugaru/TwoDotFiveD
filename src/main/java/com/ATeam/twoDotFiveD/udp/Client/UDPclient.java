@@ -1,12 +1,15 @@
 package com.ATeam.twoDotFiveD.udp.Client;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import com.ATeam.twoDotFiveD.event.Event;
 import com.ATeam.twoDotFiveD.event.EventDispatcher;
 import com.ATeam.twoDotFiveD.event.block.BlockCreateEvent;
 import com.ATeam.twoDotFiveD.gui.MainStartScreen;
@@ -69,7 +72,7 @@ public class UDPclient implements Runnable{
 		}
 		System.out.println("hi2");
 		DatagramPacket receivePacket;
-		byte[] receiveData = new byte[10];
+		byte[] receiveData = new byte[512];
 		//this line for demo purposes, it simulates the program sending data
 		new Thread(new temp(this)).start();
 		while(run){
@@ -82,7 +85,20 @@ public class UDPclient implements Runnable{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			Object j = new Object();
+			 
+		      try {
+		    	  ByteArrayInputStream baos = new ByteArrayInputStream(receiveData);
+				ObjectInputStream oos = new ObjectInputStream(baos);
+				BlockCreateEvent event = (BlockCreateEvent)oos.readObject();
+				eventdispatcher.notify(event);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		      
 			
 		//	eventdispatcher.notify(event)
 			pntr.updateText(String.format("UDP-recieved from: %c:%c",(char) receiveData[0],(char) receiveData[1]));
