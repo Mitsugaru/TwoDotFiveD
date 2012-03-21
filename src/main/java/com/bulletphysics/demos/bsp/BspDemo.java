@@ -132,7 +132,6 @@ public class BspDemo extends DemoApplication
 		gravity.negate(cameraUp);
 		gravity.scale(10f);
 		dynamicsWorld.setGravity(gravity);
-		
 		// new BspToBulletConverter().convertBsp(getClass().getResourceAsStream(
 		// "exported.bsp.txt"));
 		populate();
@@ -146,7 +145,7 @@ public class BspDemo extends DemoApplication
 		try
 		{
 			new BspYamlToBulletConverter().convertBspYaml(getClass()
-					.getResourceAsStream("scene.yml"));
+					.getResourceAsStream("EntryScene.yml"));
 		}
 		catch (IOException e)
 		{
@@ -325,7 +324,7 @@ public class BspDemo extends DemoApplication
 			Transform startTransform = new Transform();
 			// can use a shift
 			startTransform.setIdentity();
-			startTransform.origin.set(0, 0, -10f);
+			startTransform.origin.set(0, 0, 0);
 			
 			// this create an internal copy of the vertices
 			CollisionShape shape = new ConvexHullShape(vertices);
