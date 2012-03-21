@@ -108,6 +108,7 @@ public class BspDemo extends DemoApplication
 		
 		setCameraDistance(22f);
 		BlockCollisionListener blockListener = new BlockCollisionListener();
+		//eventDispatcher.registerListener(Type.BLOCK_CREATE, blockListener);
 		eventDispatcher.registerListener(Type.BLOCK_COLLISION, blockListener);
 		eventDispatcher.registerListener(Type.BLOCK_COLLISION_RESOLVED,
 				blockListener);
@@ -351,6 +352,11 @@ public class BspDemo extends DemoApplication
 	
 	public class BlockCollisionListener extends BlockListener
 	{
+		@Override
+		public void onBlockCreate(BlockCreateEvent event)
+		{
+			System.out.println("Created: " + event.getEntity().getID());
+		}
 		@Override
 		public void onBlockCollision(BlockCollisionEvent event)
 		{
