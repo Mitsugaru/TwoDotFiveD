@@ -44,6 +44,8 @@ import com.bulletphysics.linearmath.VectorUtil;
 import com.bulletphysics.util.IntArrayList;
 import com.bulletphysics.util.ObjectPool;
 import javax.vecmath.Vector3f;
+
+import org.lwjgl.opengl.GL11;
 //import static org.lwjgl.opengl.GL11.*;
 //import static org.lwjgl.opengl.glu.GLU.*;
 import static com.bulletphysics.demos.opengl.IGL.*;
@@ -93,7 +95,7 @@ public class GLShapeDrawer {
 
 	private static float[] glMat = new float[16];
 	
-	public static void drawOpenGL(IGL gl, Transform trans, CollisionShape shape, Vector3f color, int debugMode) {
+	public static void drawOpenGL(IGL gl, Transform trans, CollisionShape shape, Vector3f color, int debugMode, int textureHandle) {
 		ObjectPool<Transform> transformsPool = ObjectPool.get(Transform.class);
 		ObjectPool<Vector3f> vectorsPool = ObjectPool.get(Vector3f.class);
 
@@ -125,7 +127,7 @@ public class GLShapeDrawer {
 			for (int i = compoundShape.getNumChildShapes() - 1; i >= 0; i--) {
 				compoundShape.getChildTransform(i, childTrans);
 				CollisionShape colShape = compoundShape.getChildShape(i);
-				drawOpenGL(gl, childTrans, colShape, color, debugMode);
+				//drawOpenGL(gl, childTrans, colShape, color, debugMode, );
 			}
 			transformsPool.release(childTrans);
 		}
@@ -134,8 +136,8 @@ public class GLShapeDrawer {
 
 			//glPushMatrix();
 
-			gl.glEnable(GL_COLOR_MATERIAL);
-			gl.glColor3f(color.x, color.y, color.z);
+			//gl.glEnable(GL_COLOR_MATERIAL);
+			//gl.glColor3f(color.x, color.y, color.z);
 
 			boolean useWireframeFallback = true;
 
@@ -145,6 +147,7 @@ public class GLShapeDrawer {
 				
 				switch (shape.getShapeType()) {
 					case BOX_SHAPE_PROXYTYPE: {
+						System.out.println(textureHandle);
 						BoxShape boxShape = (BoxShape) shape;
 						Vector3f halfExtent = boxShape.getHalfExtentsWithMargin(vectorsPool.get());
 						gl.glScalef(2f * halfExtent.x, 2f * halfExtent.y, 2f * halfExtent.z);

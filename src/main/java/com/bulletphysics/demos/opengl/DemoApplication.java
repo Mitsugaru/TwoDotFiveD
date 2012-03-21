@@ -1040,6 +1040,12 @@ public abstract class DemoApplication {
 			for (int i = 0; i < numObjects; i++) {
 				CollisionObject colObj = dynamicsWorld.getCollisionObjectArray().getQuick(i);
 				RigidBody body = RigidBody.upcast(colObj);
+				Transform t = null;
+				colObj.getWorldTransform(t);
+				System.out.println(t.origin);
+				if (!t.equals(null))
+				{System.out.println("NULL");}
+				
 
 				if (body != null && body.getMotionState() != null) {
 					DefaultMotionState myMotionState = (DefaultMotionState) body.getMotionState();
@@ -1078,7 +1084,7 @@ public abstract class DemoApplication {
 					}
 				}
 
-				GLShapeDrawer.drawOpenGL(gl, m, colObj.getCollisionShape(), wireColor, getDebugMode());
+				//GLShapeDrawer.drawOpenGL(gl, m, colObj.getCollisionShape(), wireColor, getDebugMode());
 			}
 
 			float xOffset = 10f;
