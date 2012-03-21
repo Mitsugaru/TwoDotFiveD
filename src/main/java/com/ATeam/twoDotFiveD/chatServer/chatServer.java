@@ -35,6 +35,7 @@ public class chatServer
     	}
     	for(int i=0;i<clientlist.size();i++){
     		if(clientlist.get(i).getID()!=i+1){
+    			this.throwup("return new ID:"+i+1);
     			return i+1;
     		}
     	}
@@ -52,7 +53,8 @@ public class chatServer
 
     public static void main( String[] args )
     {
-        new chatServer();
+        new chatServer().run();
+        
     }
 
 
@@ -108,7 +110,7 @@ public class chatServer
     {
         // TODO all this is optional
     	UDPServer = new UDPServer(clientlist);
-    	new Thread(UDPServer).run();
+    	new Thread(UDPServer).start();
         JFrame frame = new JFrame( "Server Window" );
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         Dimension d = new Dimension( 500, 500 );
@@ -128,7 +130,9 @@ public class chatServer
         scroll.setSize( read.getSize() );
         panel.add( scroll, BorderLayout.CENTER );
         frame.add( panel );
+    }
         // TODO down to here!
+    public void run(){
         try
         {
             ServerSocket server = new ServerSocket( 1337 );

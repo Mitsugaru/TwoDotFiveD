@@ -2,6 +2,7 @@ package com.ATeam.twoDotFiveD.event;
 
 import com.ATeam.twoDotFiveD.debug.Logging;
 import com.ATeam.twoDotFiveD.event.block.BlockCollisionEvent;
+import com.ATeam.twoDotFiveD.event.block.BlockCollisionResolvedEvent;
 import com.ATeam.twoDotFiveD.event.block.BlockCreateEvent;
 import com.ATeam.twoDotFiveD.event.block.BlockDestroyedEvent;
 import com.ATeam.twoDotFiveD.event.block.BlockMoveEvent;
@@ -99,6 +100,10 @@ public abstract class Event<L> {
 		 * Called when blocks collide
 		 */
 		BLOCK_COLLISION(Category.BLOCK, BlockCollisionEvent.class),
+		/**
+		 * Called when contact between block collisions have been fully resolved
+		 */
+		BLOCK_COLLISION_RESOLVED(Category.BLOCK, BlockCollisionResolvedEvent.class),
 		/**
 		 * Miscellaneous Event
 		 */

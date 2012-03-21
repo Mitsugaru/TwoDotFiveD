@@ -11,7 +11,7 @@
 		<layer id="background" childLayout="center" backgroundColor="#000f">
 			<effect>
 				<onEndScreen name="fade" startColor="#ffff" endColor="#0000"
-					length="500" startDelay="1500" post="false" inherit="true"
+					length="10" startDelay="10" post="false" inherit="true"
 					alternateEnable="exit" />
 			</effect>
 			<panel id="panel" childLayout="center"
@@ -19,7 +19,7 @@
 				height="100%">
 				<effect>
 					<onStartScreen name="fade" startColor="#fff0"
-						endColor="#ffff" length="1000" post="false" />
+						endColor="#ffff" length="10" post="false" />
 					<onEndScreen name="fade" startColor="#ffff" endColor="#0000"
 						length="500" startDelay="1500" post="false" inherit="true" />
 					<!--  <onStartScreen name="playSound" sound="gong" startDelay="1400" 
@@ -28,14 +28,14 @@
 				<panel align="center" valign="center" childLayout="vertical">
 					<effect>
 						<onEndScreen name="fade" startColor="#ffff" endColor="#0000"
-							length="500" startDelay="1500" post="false" inherit="true" />
+							length="10" startDelay="10" post="false" inherit="true" />
 					</effect>
 					<!-- fiter="true" imageMode="resize:3,3,3,3,3,3,3,3,3,3,3,3" -->
 					<image align="center" valign="center" fiter="true" height="200"
 						width="200" filename="com/ATeam/twoDotFiveD/images/emblem.png">
 						<effect>
 							<onStartScreen name="fade" startColor="#0000"
-								endColor="#000f" length="500" startDelay="1500" post="false" />
+								endColor="#000f" length="10" startDelay="10" post="false" />
 						</effect>
 					</image>
 				</panel>
@@ -49,7 +49,7 @@
 		<layer id="background" childLayout="center" backgroundColor="#000f">
 			<effect>
 				<onEndScreen name="fade" startColor="#ffff" endColor="#0000"
-					length="500" startDelay="1500" post="false" inherit="true"
+					length="10" startDelay="10" post="false" inherit="true"
 					alternateEnable="exit" />
 			</effect>
 			<panel id="panel" childLayout="vertical"
@@ -59,7 +59,7 @@
 					<onStartScreen name="fade" startColor="#fff0"
 						endColor="#ffff" length="1000" post="false" />
 					<onEndScreen name="fade" startColor="#ffff" endColor="#0000"
-						length="500" startDelay="1500" post="false" inherit="true" />
+						length="10" startDelay="10" post="false" inherit="true" />
 					<!-- <onStartScreen name="playSound" sound="gong" startDelay="1400" 
 						/> -->
 				</effect>
@@ -74,7 +74,7 @@
 							width="50%" childLayout="vertical">
 							<effect>
 								<onEndScreen name="fade" startColor="#ffff"
-									endColor="#0000" length="500" startDelay="1500" post="false"
+									endColor="#0000" length="10" startDelay="10" post="false"
 									inherit="true" />
 							</effect>
 							<!-- fiter="true" imageMode="resize:3,3,3,3,3,3,3,3,3,3,3,3" -->
@@ -82,7 +82,7 @@
 								filename="cz/advel/jbullet/bullet_logo.png">
 								<effect>
 									<onStartScreen name="fade" startColor="#0000"
-										endColor="#000f" length="500" startDelay="1500" post="false" />
+										endColor="#000f" length="10" startDelay="10" post="false" />
 								</effect>
 							</image>
 						</panel>
@@ -90,14 +90,14 @@
 							width="50%" childLayout="vertical">
 							<effect>
 								<onEndScreen name="fade" startColor="#ffff"
-									endColor="#0000" length="500" startDelay="1500" post="false"
+									endColor="#0000" length="10" startDelay="10" post="false"
 									inherit="true" />
 							</effect>
 							<!-- fiter="true" imageMode="resize:3,3,3,3,3,3,3,3,3,3,3,3" -->
 							<image align="center" valign="center" filename="com/lwjgl/lwjgl.png">
 								<effect>
 									<onStartScreen name="fade" startColor="#0000"
-										endColor="#000f" length="500" startDelay="3000" post="false" />
+										endColor="#000f" length="10" startDelay="10" post="false" />
 								</effect>
 							</image>
 						</panel>
@@ -108,14 +108,14 @@
 							width="100%" childLayout="vertical">
 							<effect>
 								<onEndScreen name="fade" startColor="#ffff"
-									endColor="#0000" length="500" startDelay="1500" post="false"
+									endColor="#0000" length="10" startDelay="10" post="false"
 									inherit="true" />
 							</effect>
 							<!-- fiter="true" imageMode="resize:3,3,3,3,3,3,3,3,3,3,3,3" -->
 							<image align="center" valign="center" filename="demo-logo.png">
 								<effect>
 									<onStartScreen name="fade" startColor="#0000"
-										endColor="#000f" length="500" startDelay="4500" post="false" />
+										endColor="#000f" length="10" startDelay="10" post="false" />
 								</effect>
 							</image>
 						</panel>
