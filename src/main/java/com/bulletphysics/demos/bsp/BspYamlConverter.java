@@ -48,6 +48,11 @@ public abstract class BspYamlConverter
 					{
 						mass = Float.parseFloat(config.getString(
 								rootPath + ".mass", "0f"));
+						if(mass < 0)
+						{
+							Logging.log.log(Level.WARNING, "Mass for '" + rootPath + "' is negative => Defaulting to static object. Fix.");
+							mass = 0f;
+						}
 					}
 					catch (NumberFormatException e)
 					{
