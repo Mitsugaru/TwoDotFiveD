@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 
+import com.ATeam.twoDotFiveD.chatclient.chatClient;
 import com.ATeam.twoDotFiveD.debug.Logging;
 import com.ATeam.twoDotFiveD.entity.Entity;
 import com.ATeam.twoDotFiveD.event.Event;
@@ -282,7 +283,7 @@ public class BspDemo extends DemoApplication
 		demo.initPhysics();
 		demo.getDynamicsWorld()
 				.setDebugDrawer(new GLDebugDrawer(LWJGL.getGL()));
-		
+		//chatClient client = new chatClient();
 		LWJGL.main(args, 800, 600, "Bullet Physics Demo. http://bullet.sf.net",
 				demo);
 	}
