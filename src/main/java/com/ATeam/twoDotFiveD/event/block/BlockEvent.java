@@ -1,10 +1,13 @@
 package com.ATeam.twoDotFiveD.event.block;
 
+import java.io.Serializable;
+
 import com.ATeam.twoDotFiveD.block.Block;
+import com.ATeam.twoDotFiveD.entity.Entity;
 import com.ATeam.twoDotFiveD.event.Event;
 
-public class BlockEvent extends Event<BlockListener> {
-	private Block block;
+public class BlockEvent extends Event<BlockListener> implements Serializable{
+	private Entity entity;
 	
 	/**
 	 * Constructor
@@ -12,10 +15,10 @@ public class BlockEvent extends Event<BlockListener> {
 	 * @param Event type
 	 * @param Block associated with event
 	 */
-	public BlockEvent(final Event.Type type, final Block block)
+	public BlockEvent(final Event.Type type, final Entity entity)
 	{
 		super(type);
-		this.block = block;
+		this.entity = entity;
 	}
 	
 	/**
@@ -28,9 +31,9 @@ public class BlockEvent extends Event<BlockListener> {
 	 * 
 	 * @return Block associated with event
 	 */
-	public Block getBlock()
+	public Entity getEntity()
 	{
-		return block;
+		return entity;
 	}
 
 }

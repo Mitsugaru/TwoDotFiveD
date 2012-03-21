@@ -42,6 +42,16 @@ public class clientHandler extends Thread implements Comparable
 	public int getID(){
 		return ID;
 	}
+	public InetAddress getAddress(){
+		return address;
+	}
+	public boolean initialized(){
+		return address!=null;
+		//if(address==null){
+		//	return false;
+		//}
+		//return true;
+	}
     public void init( InetAddress anAddress, int aPort )
     {
         address = anAddress;
@@ -79,27 +89,19 @@ public class clientHandler extends Thread implements Comparable
         }
         catch ( Exception e )
         {
-
+        	
         }
     }
-
-
     @Override
     public void run()
     {
-        
         name = in.nextLine();
         server.addClient( this );
         server.throwup("prep ID");
         ID=server.getNewID();
-        //out.println(ID);
-        //server.sort();
-        //send ID
         server.throwup("ID"+ID);
         out.println(ID);
         server.throwup("IDSENT"+ID);
-        // TODO send ID
-        // TODO something UDP
         String[] roomList = server.getRoomList();
         if ( roomList != null )
         {
@@ -135,14 +137,10 @@ public class clientHandler extends Thread implements Comparable
             }
         }
     }
-
-
     public String getname()
     {
         return name;
     }
-
-
     public void close()
     {
         stop = true;
@@ -151,8 +149,6 @@ public class clientHandler extends Thread implements Comparable
         out.close();
         server.removePlayer( this );
     }
-
-
     public void handle( String text )
     {
         if ( text.length() < 1 )
@@ -522,11 +518,14 @@ public class clientHandler extends Thread implements Comparable
         if ( o instanceof clientHandler )
         {
             clientHandler temp = (clientHandler)o;
+            //System.out.println("compare:"+temp.name+":"+this.name);
             if ( temp.name.equals( this.name ) )
             {
+            	//System.out.println("true");
                 return true;
             }
         }
+        //System.out.println("false");
         return false;
     }
 	@Override

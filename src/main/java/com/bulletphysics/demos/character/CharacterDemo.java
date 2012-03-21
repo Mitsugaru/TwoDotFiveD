@@ -23,6 +23,11 @@
 
 package com.bulletphysics.demos.character;
 
+import java.io.IOException;
+import java.util.logging.Level;
+
+import com.ATeam.twoDotFiveD.debug.Logging;
+import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.util.ObjectArrayList;
 import com.bulletphysics.collision.broadphase.AxisSweep3;
 import com.bulletphysics.collision.broadphase.BroadphaseInterface;
@@ -38,15 +43,22 @@ import com.bulletphysics.collision.shapes.CollisionShape;
 import com.bulletphysics.collision.shapes.ConvexHullShape;
 import com.bulletphysics.collision.shapes.ConvexShape;
 import com.bulletphysics.demos.bsp.BspConverter;
+import com.bulletphysics.demos.bsp.BspYamlConverter;
 import com.bulletphysics.demos.opengl.DemoApplication;
 import com.bulletphysics.demos.opengl.GLDebugDrawer;
 import com.bulletphysics.demos.opengl.IGL;
 import com.bulletphysics.demos.opengl.LWJGL;
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
+import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.dynamics.character.KinematicCharacterController;
 import com.bulletphysics.dynamics.constraintsolver.ConstraintSolver;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
+import com.bulletphysics.linearmath.QuaternionUtil;
 import com.bulletphysics.linearmath.Transform;
+import com.bulletphysics.linearmath.VectorUtil;
+
+import javax.vecmath.Matrix3f;
+import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 import org.lwjgl.input.Keyboard;
 import static com.bulletphysics.demos.opengl.IGL.*;
@@ -73,9 +85,10 @@ public class CharacterDemo extends DemoApplication {
 	public float minCameraDistance = 3f;
 	public float maxCameraDistance = 10f;
 
-	// JAVA NOTE: the original demo scaled the bsp room, we scale up the character
+	// JAVA NOTE: the original demo scaled the bsp room, we scale up the
+	// character
 	private float characterScale = 2f;
-	
+
 	// keep the collision shapes, for deletion/cleanup
 	public ObjectArrayList<CollisionShape> collisionShapes = new ObjectArrayList<CollisionShape>();
 	public BroadphaseInterface overlappingPairCache;
@@ -86,20 +99,22 @@ public class CharacterDemo extends DemoApplication {
 	public CharacterDemo(IGL gl) {
 		super(gl);
 	}
-	
+
 	public void initPhysics() throws Exception {
 		CollisionShape groundShape = new BoxShape(new Vector3f(50, 3, 50));
 		collisionShapes.add(groundShape);
+		forwardAxis = 1;
 
 		collisionConfiguration = new DefaultCollisionConfiguration();
 		dispatcher = new CollisionDispatcher(collisionConfiguration);
-		Vector3f worldMin = new Vector3f(-1000f,-1000f,-1000f);
-		Vector3f worldMax = new Vector3f(1000f,1000f,1000f);
+		Vector3f worldMin = new Vector3f(-1000f, -1000f, -1000f);
+		Vector3f worldMax = new Vector3f(1000f, 1000f, 1000f);
 		AxisSweep3 sweepBP = new AxisSweep3(worldMin, worldMax);
 		overlappingPairCache = sweepBP;
 
 		constraintSolver = new SequentialImpulseConstraintSolver();
-		dynamicsWorld = new DiscreteDynamicsWorld(dispatcher,overlappingPairCache,constraintSolver,collisionConfiguration);
+		dynamicsWorld = new DiscreteDynamicsWorld(dispatcher,
+				overlappingPairCache, constraintSolver, collisionConfiguration);
 
 		Transform startTransform = new Transform();
 		startTransform.setIdentity();
@@ -107,7 +122,8 @@ public class CharacterDemo extends DemoApplication {
 
 		ghostObject = new PairCachingGhostObject();
 		ghostObject.setWorldTransform(startTransform);
-		sweepBP.getOverlappingPairCache().setInternalGhostPairCallback(new GhostPairCallback());
+		sweepBP.getOverlappingPairCache().setInternalGhostPairCallback(
+				new GhostPairCallback());
 		float characterHeight = 1.75f * characterScale;
 		float characterWidth = 1.75f * characterScale;
 		ConvexShape capsule = new CapsuleShape(characterWidth, characterHeight);
@@ -115,22 +131,36 @@ public class CharacterDemo extends DemoApplication {
 		ghostObject.setCollisionFlags(CollisionFlags.CHARACTER_OBJECT);
 
 		float stepHeight = 0.35f * characterScale;
-		character = new KinematicCharacterController(ghostObject, capsule, stepHeight);
+		character = new KinematicCharacterController(ghostObject, capsule,
+				stepHeight);
+		/*
+		 * 0: pos x
+		 * 1: down y
+		 * 2: neg z
+		 * character.setUpAxis();
+		 */
 
-		new BspToBulletConverter().convertBsp(getClass().getResourceAsStream("/com/bulletphysics/demos/bsp/exported.bsp.txt"));
-
+		//new BspToBulletConverter().convertBsp(getClass().getResourceAsStream("/com/bulletphysics/demos/bsp/exported.bsp.txt"));
+		try
+        {
+            new BspYamlToBulletConverter().convertBspYaml(getClass().getResourceAsStream("scene.yml"));
+        }
+        catch(IOException e)
+        {
+            Logging.log.log(Level.SEVERE, "Could not close InputStream for: scene.yml", e);
+        }
 		dynamicsWorld.addCollisionObject(ghostObject, CollisionFilterGroups.CHARACTER_FILTER, (short)(CollisionFilterGroups.STATIC_FILTER | CollisionFilterGroups.DEFAULT_FILTER));
 
 		dynamicsWorld.addAction(character);
-		
+
 		clientResetScene();
 
 		setCameraDistance(56f);
 	}
-	
+
 	@Override
 	public void clientMoveAndDisplay() {
-		gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
+		gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		float dt = getDeltaTimeMicroseconds() * 0.000001f;
 
 		if (dynamicsWorld != null) {
@@ -145,7 +175,7 @@ public class CharacterDemo extends DemoApplication {
 
 			Vector3f forwardDir = new Vector3f();
 			xform.basis.getRow(2, forwardDir);
-			//printf("forwardDir=%f,%f,%f\n",forwardDir[0],forwardDir[1],forwardDir[2]);
+			// printf("forwardDir=%f,%f,%f\n",forwardDir[0],forwardDir[1],forwardDir[2]);
 			Vector3f upDir = new Vector3f();
 			xform.basis.getRow(1, upDir);
 			Vector3f strafeDir = new Vector3f();
@@ -155,7 +185,7 @@ public class CharacterDemo extends DemoApplication {
 			strafeDir.normalize();
 
 			Vector3f walkDirection = new Vector3f(0.0f, 0.0f, 0.0f);
-			float walkVelocity = 1.1f * 4.0f; // 4 km/h -> 1.1 m/s
+			float walkVelocity = 1.1f * 150.0f; // 4 km/h -> 1.1 m/s
 			float walkSpeed = walkVelocity * dt * characterScale;
 
 			if (gLeft != 0) {
@@ -185,8 +215,8 @@ public class CharacterDemo extends DemoApplication {
 
 		renderme();
 
-		//glFlush();
-		//glutSwapBuffers();
+		// glFlush();
+		// glutSwapBuffers();
 	}
 
 	@Override
@@ -199,85 +229,85 @@ public class CharacterDemo extends DemoApplication {
 			dynamicsWorld.debugDrawWorld();
 		}
 
-		//glFlush();
-		//glutSwapBuffers();
+		// glFlush();
+		// glutSwapBuffers();
 	}
 
 	@Override
 	public void clientResetScene() {
-		dynamicsWorld.getBroadphase().getOverlappingPairCache().cleanProxyFromPairs(
-				ghostObject.getBroadphaseHandle(), getDynamicsWorld().getDispatcher());
+		dynamicsWorld
+				.getBroadphase()
+				.getOverlappingPairCache()
+				.cleanProxyFromPairs(ghostObject.getBroadphaseHandle(),
+						getDynamicsWorld().getDispatcher());
 
 		character.reset();
-		///WTF
+		// /WTF
 		character.warp(new Vector3f(0, -2, 0));
 	}
 
 	@Override
 	public void specialKeyboardUp(int key, int x, int y, int modifiers) {
 		switch (key) {
-			case Keyboard.KEY_UP: {
-				gForward = 0;
-				break;
-			}
-			case Keyboard.KEY_DOWN: {
-				gBackward = 0;
-				break;
-			}
-			case Keyboard.KEY_LEFT: {
-				gLeft = 0;
-				break;
-			}
-			case Keyboard.KEY_RIGHT: {
-				gRight = 0;
-				break;
-			}
-			default:
-				super.specialKeyboardUp(key, x, y, modifiers);
-				break;
+		case Keyboard.KEY_W: {
+			gForward = 0;
+			break;
+		}
+		case Keyboard.KEY_S: {
+			gBackward = 0;
+			break;
+		}
+		case Keyboard.KEY_A: {
+			gLeft = 0;
+			break;
+		}
+		case Keyboard.KEY_D: {
+			gRight = 0;
+			break;
+		}
+		default:
+			super.specialKeyboardUp(key, x, y, modifiers);
+			break;
 		}
 	}
-	
-	
 
 	@Override
 	public void specialKeyboard(int key, int x, int y, int modifiers) {
 		switch (key) {
-			case Keyboard.KEY_UP: {
-				gForward = 1;
-				break;
+		case Keyboard.KEY_W: {
+			gForward = 1;
+			break;
+		}
+		case Keyboard.KEY_S: {
+			gBackward = 1;
+			break;
+		}
+		case Keyboard.KEY_A: {
+			gLeft = 1;
+			break;
+		}
+		case Keyboard.KEY_D: {
+			gRight = 1;
+			break;
+		}
+		case Keyboard.KEY_F1: {
+			if (character != null && character.canJump()) {
+				gJump = 1;
 			}
-			case Keyboard.KEY_DOWN: {
-				gBackward = 1;
-				break;
-			}
-			case Keyboard.KEY_LEFT: {
-				gLeft = 1;
-				break;
-			}
-			case Keyboard.KEY_RIGHT: {
-				gRight = 1;
-				break;
-			}
-			case Keyboard.KEY_F1: {
-				if (character != null && character.canJump()) {
-					gJump = 1;
-				}
-				break;
-			}
-			case 'l':
-			{
-				character.jump();
-			}
-			default:
-				super.specialKeyboard(key, x, y, modifiers);
-				break;
+			break;
+		}
+		case 'l': {
+			character.jump();
+		}
+		default:
+			super.specialKeyboard(key, x, y, modifiers);
+			break;
 		}
 	}
 
 	@Override
 	public void updateCamera() {
-		//if (useDefaultCamera) {
+		// if (useDefaultCamera) {
 		if (false) {
 			super.updateCamera();
 			return;
@@ -285,16 +315,16 @@ public class CharacterDemo extends DemoApplication {
 
 		gl.glMatrixMode(gl.GL_PROJECTION);
 		gl.glLoadIdentity();
-
 		// look at the vehicle
-		Transform characterWorldTrans = ghostObject.getWorldTransform(new Transform());
+		Transform characterWorldTrans = ghostObject
+				.getWorldTransform(new Transform());
 		Vector3f up = new Vector3f();
 		characterWorldTrans.basis.getRow(1, up);
 		Vector3f backward = new Vector3f();
 		characterWorldTrans.basis.getRow(2, backward);
 		backward.scale(-1);
-		up.normalize ();
-		backward.normalize ();
+		up.normalize();
+		backward.normalize();
 
 		cameraTargetPosition.set(characterWorldTrans.origin);
 
@@ -303,6 +333,33 @@ public class CharacterDemo extends DemoApplication {
 		cameraPosition.add(cameraTargetPosition);
 		backward.scale(12);
 		cameraPosition.add(backward);
+		
+		//rotation
+		float rele = ele * 0.01745329251994329547f; // rads per deg
+		float razi = azi * 0.01745329251994329547f; // rads per deg
+		Quat4f rot = new Quat4f();
+		QuaternionUtil.setRotation(rot, cameraUp, razi);
+		Vector3f right = new Vector3f();
+		Vector3f eyePos = new Vector3f();
+		//eyePos.set(0f, 0f, 0f);
+		VectorUtil.setCoord(eyePos, forwardAxis, -cameraDistance);
+		Vector3f forward = new Vector3f();
+		forward.set(eyePos.x, eyePos.y, eyePos.z);
+		if (forward.lengthSquared() < BulletGlobals.FLT_EPSILON) {
+			forward.set(1f, 0f, 0f);
+		}
+
+		right.cross(cameraUp, forward);
+		Quat4f roll = new Quat4f();
+		QuaternionUtil.setRotation(roll, right, -rele);
+
+		Matrix3f tmpMat1 = new Matrix3f();
+		Matrix3f tmpMat2 = new Matrix3f();
+		tmpMat1.set(rot);
+		tmpMat2.set(roll);
+		tmpMat1.mul(tmpMat2);
+		tmpMat1.transform(eyePos);
+		//cameraPosition.set(eyePos);
 
 		// update OpenGL camera settings
 		gl.glFrustum(-1.0, 1.0, -1.0, 1.0, 1.0, 10000.0);
@@ -311,20 +368,22 @@ public class CharacterDemo extends DemoApplication {
 		gl.glLoadIdentity();
 
 		gl.gluLookAt(cameraPosition.x, cameraPosition.y, cameraPosition.z,
-		             cameraTargetPosition.x, cameraTargetPosition.y, cameraTargetPosition.z,
-		             cameraUp.x, cameraUp.y, cameraUp.z);
+				cameraTargetPosition.x, cameraTargetPosition.y,
+				cameraTargetPosition.z, cameraUp.x, cameraUp.y, cameraUp.z);
 	}
 
 	public static void main(String[] args) throws Exception {
 		CharacterDemo demo = new CharacterDemo(LWJGL.getGL());
 		demo.initPhysics();
-		demo.getDynamicsWorld().setDebugDrawer(new GLDebugDrawer(LWJGL.getGL()));
+		demo.getDynamicsWorld()
+				.setDebugDrawer(new GLDebugDrawer(LWJGL.getGL()));
 
-		LWJGL.main(args, 800, 600, "Bullet Character Demo. http://bullet.sf.net", demo);
+		LWJGL.main(args, 800, 600,
+				"Bullet Character Demo. http://bullet.sf.net", demo);
 	}
-	
-	////////////////////////////////////////////////////////////////////////////
-	
+
+	// //////////////////////////////////////////////////////////////////////////
+
 	private class BspToBulletConverter extends BspConverter {
 		@Override
 		public void addConvexVerticesCollider(ObjectArrayList<Vector3f> vertices) {
@@ -336,16 +395,42 @@ public class CharacterDemo extends DemoApplication {
 				// JAVA NOTE: port change, we want y to be up.
 				startTransform.basis.rotX((float) -Math.PI / 2f);
 				startTransform.origin.set(0, -10, 0);
-				//startTransform.origin.set(0, 0, -10f);
-				
+				// startTransform.origin.set(0, 0, -10f);
+
 				// this create an internal copy of the vertices
 				CollisionShape shape = new ConvexHullShape(vertices);
 				collisionShapes.add(shape);
 
-				//btRigidBody* body = m_demoApp->localCreateRigidBody(mass, startTransform,shape);
+				// btRigidBody* body = m_demoApp->localCreateRigidBody(mass,
+				// startTransform,shape);
 				localCreateRigidBody(mass, startTransform, shape);
 			}
 		}
 	}
 	
+	private class BspYamlToBulletConverter extends BspYamlConverter
+	{
+
+		@Override
+		public void addConvexVerticesCollider(String name, ObjectArrayList<Vector3f> vertices, float mass, Vector3f acceleration, String image, String[] description)
+		{
+			Transform startTransform = new Transform();
+			// can use a shift
+			startTransform.setIdentity();
+			startTransform.origin.set(0, 0, -10f);
+			
+			// this create an internal copy of the vertices
+			CollisionShape shape = new ConvexHullShape(vertices);
+			collisionShapes.add(shape);
+			
+			// btRigidBody* body = m_demoApp->localCreateRigidBody(mass,
+			// startTransform,shape);
+			RigidBody body = localCreateRigidBody(mass, startTransform, shape);
+			if(acceleration != null)
+			{
+				body.setGravity(acceleration);
+			}
+		}
+		
+	}
 }

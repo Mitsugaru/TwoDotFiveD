@@ -39,7 +39,7 @@ import javax.vecmath.Vector3f;
  */
 public abstract class BspConverter
 {
-	
+	//TODO use yaml
 	public void convertBsp(InputStream in) throws IOException
 	{
 		BufferedReader r = new BufferedReader(
@@ -49,15 +49,25 @@ public abstract class BspConverter
 		ObjectArrayList<Vector3f> vertices = new ObjectArrayList<Vector3f>();
 		while ((s = r.readLine()) != null)
 		{
-			int count = Integer.parseInt(s);
-			vertices.clear();
-			for (int i = 0; i < count; i++)
+			if (s.charAt(0) != '#')
 			{
-				String[] c = r.readLine().split(" ");
-				vertices.add(new Vector3f(Float.parseFloat(c[0]), Float
-						.parseFloat(c[1]), Float.parseFloat(c[2])));
+				try
+				{
+					int count = Integer.parseInt(s);
+					vertices.clear();
+					for (int i = 0; i < count; i++)
+					{
+						String[] c = r.readLine().split(" ");
+						vertices.add(new Vector3f(Float.parseFloat(c[0]), Float
+								.parseFloat(c[1]), Float.parseFloat(c[2])));
+					}
+					addConvexVerticesCollider(vertices);
+				}
+				catch (NumberFormatException num)
+				{
+					//Bad file
+				}
 			}
-			addConvexVerticesCollider(vertices);
 		}
 		r.close();
 	}
