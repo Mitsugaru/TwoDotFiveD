@@ -289,7 +289,7 @@ public class BspDemo extends DemoApplication
 		demo.initPhysics();
 		demo.getDynamicsWorld()
 				.setDebugDrawer(new GLDebugDrawer(LWJGL.getGL()));
-		client = new chatClient(null, "192.168.1.2", "Vin", eventDispatcher);
+		client = new chatClient(null, "192.168.1.2", "Ju", eventDispatcher);
 		if (client.connect())
 		{
 			client.start();
