@@ -22,7 +22,7 @@
 						endColor="#ffff" length="1000" post="false" />
 					<onEndScreen name="fade" startColor="#ffff" endColor="#0000"
 						length="500" startDelay="1500" post="false" inherit="true" />
-					<!-- <onStartScreen name="playSound" sound="gong" startDelay="1400" 
+					<!--  <onStartScreen name="playSound" sound="gong" startDelay="1400" 
 						/> -->
 				</effect>
 				<panel align="center" valign="center" childLayout="vertical">

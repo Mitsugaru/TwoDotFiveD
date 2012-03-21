@@ -22,7 +22,7 @@
 					length="500" startDelay="1500" post="false" inherit="true"
 					alternateEnable="exit" />
 			</effect>
-			<!-- TODO find out best imageMode numbers -->
+			<!--  TODO find out best imageMode numbers -->
 			<image filename="com/lovetextures/cubes.jpg"></image>
 		</layer>
 		<layer id="foreground" childLayout="vertical">
