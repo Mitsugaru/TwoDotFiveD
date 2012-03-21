@@ -65,7 +65,7 @@ public class UDPclient implements Runnable{
 	public void run() {
 		System.out.println("hi");
 		try {
-			Thread.sleep(5000);
+			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
