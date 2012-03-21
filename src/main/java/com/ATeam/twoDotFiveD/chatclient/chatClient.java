@@ -1,6 +1,7 @@
 package com.ATeam.twoDotFiveD.chatclient;
 
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -45,6 +46,7 @@ public class chatClient extends Thread
     {
         try
         {
+        	ip="127.0.0.1";
             socket = new Socket( ip, 1337 );
             return true;
         }
@@ -90,14 +92,15 @@ public class chatClient extends Thread
             out.println( name );
             //recieve ID from server
             int ID=Integer.parseInt(in.nextLine());
+            System.out.println("ID: "+ID);
             System.out.println(socket.getInetAddress());
             System.out.println(UDPServer.DEFAULTPORT);
             display.processText(String.valueOf(ID));
-            ///UDPclient hi = new UDPclient(socket.getInetAddress(),UDPServer.DEFAULTPORT,display,ID);
-            //Thread t = new Thread(hi);
-            //t.start();
+            UDPclient hi = new UDPclient(socket.getLocalAddress(),UDPServer.DEFAULTPORT,display,ID);
+            Thread t = new Thread(hi);
+            t.start();
             //everything breaks when I run this
-           // t.run();
+            //t.run();
             System.out.println("Thread go");
             while ( !stop )
             {

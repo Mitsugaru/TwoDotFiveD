@@ -33,6 +33,7 @@ public class UDPServer implements Runnable {
 	private void init(ArrayList<clientHandler> players,  int aPort){
 		port=aPort;
 		clients=players;
+		run=true;
 		try {
 			socket=new DatagramSocket(port);
 		} 
@@ -55,16 +56,24 @@ public class UDPServer implements Runnable {
 			while(run)
 			{
 				receivePacket = new DatagramPacket(receiveData, receiveData.length);
+				System.out.println("Listen");
 				socket.receive(receivePacket);
 				System.out.println("Server Recieve");
 				id=(byte) (receiveData[0]&0x0F);
+				//System.out.println(id);
 				pntr = getByID(id);
+				if(!pntr.initialized()){
+					pntr.init(receivePacket.getAddress(), receivePacket.getPort());
+				}
 				for(clientHandler c :clients){
-					if(c.getID()!=id){
-						if(c.getID()!=-1){
-							socket.send(c.message(new byte[] {receiveData[0]}));
+					//System.out.println(c.getname()+":"+c.getID());
+					if((!c.equals(pntr))){
+						if(c.initialized()){
+							System.out.println("Relayed message from:"+pntr.getID()+" to:"+c.getID());
+							socket.send(c.message(new byte[] {receiveData[1]}));
 						}
 					}
+
 				}
 				//				switch((byte) (receiveData[0]&0xC0)){
 				//
