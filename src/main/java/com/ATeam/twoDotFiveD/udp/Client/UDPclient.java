@@ -29,7 +29,10 @@ public class UDPclient implements Runnable{
 
 
 	public DatagramPacket makeMessage(byte[] message){
-		return new DatagramPacket(message,message.length,serverAddress,serverPort);
+		byte[] tmp = new byte[message.length+1];
+		System.arraycopy(message, 0, tmp, 1, message.length);
+		tmp[0]=(byte) ID;
+		return new DatagramPacket(tmp,tmp.length,serverAddress,serverPort);
 	}
 	public void sendMessage(byte[] message) {
 		send(makeMessage(message));
@@ -42,7 +45,7 @@ public class UDPclient implements Runnable{
 	public void quit(){
 		run=false;
 		try {
-			socket.send(new DatagramPacket(new byte[] {0x00},1,InetAddress.getLocalHost(),socket.getPort()));
+			socket.send(new DatagramPacket(new byte[] {0x00},1,InetAddress.getLocalHost(),9999));
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -55,7 +58,7 @@ public class UDPclient implements Runnable{
 	public void run() {
 		System.out.println("hi");
 		try {
-			Thread.sleep(20000);
+			Thread.sleep(5000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -64,10 +67,17 @@ public class UDPclient implements Runnable{
 		DatagramPacket receivePacket;
 		byte[] receiveData = new byte[10];
 		//this line for demo purposes, it simulates the program sending data
-		new Thread(new temp(this)).run();
+		new Thread(new temp(this)).start();
 		while(run){
 			//this is where data will be received need to know where to send it
+			System.out.println("CLIENT LISTENING");
 			receivePacket = new DatagramPacket(receiveData, receiveData.length);
+			try {
+				socket.receive(receivePacket);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			pntr.updateText(String.format("UDP-recieved from: %c:%c",(char) receiveData[0],(char) receiveData[1]));
 			System.out.println("revcieved");
 		}
