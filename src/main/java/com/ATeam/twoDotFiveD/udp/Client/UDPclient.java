@@ -74,7 +74,7 @@ public class UDPclient implements Runnable{
 		DatagramPacket receivePacket;
 		byte[] receiveData = new byte[512];
 		//this line for demo purposes, it simulates the program sending data
-		new Thread(new temp(this)).start();
+		//new Thread(new temp(this)).start();
 		while(run){
 			//this is where data will be received need to know where to send it
 			System.out.println("CLIENT LISTENING");
