@@ -43,7 +43,13 @@ public class chatClient extends Thread
         stop = false;
         this.name = name;
     }
-
+    public chatClient( MainStartScreen whatIDisplay, String ip, String name)
+    {
+        display = whatIDisplay;
+        this.ip = ip;
+        stop = false;
+        this.name = name;
+    }
 
     // Returns true on successful connect, false otherwise.
     public boolean connect()
@@ -104,7 +110,7 @@ public class chatClient extends Thread
             System.out.println(socket.getInetAddress());
             System.out.println(UDPServer.DEFAULTPORT);
             //display.processText(String.valueOf(ID));
-            hi = new UDPclient(InetAddress.getByName(ip),UDPServer.DEFAULTPORT,display,ID, null);
+            hi = new UDPclient(InetAddress.getByName(ip),UDPServer.DEFAULTPORT,display,ID);
             Thread t = new Thread(hi);
             t.start();
             //everything breaks when I run this
