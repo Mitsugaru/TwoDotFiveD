@@ -294,6 +294,10 @@ public class BspDemo extends DemoApplication
 		{
 			client.start();
 		}
+		Thread.sleep(2000);
+		demo.initPhysics();
+		demo.getDynamicsWorld()
+				.setDebugDrawer(new GLDebugDrawer(LWJGL.getGL()));
 		LWJGL.main(args, 800, 600, "Bullet Physics Demo. http://bullet.sf.net",
 				demo);
 	}

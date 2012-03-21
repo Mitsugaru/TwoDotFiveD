@@ -1,10 +1,12 @@
 package com.ATeam.twoDotFiveD.entity;
 
+import java.io.Serializable;
+
 import javax.vecmath.Vector3f;
 
 import com.bulletphysics.dynamics.RigidBody;
 
-public class Entity
+public class Entity implements Serializable
 {
 	private String		ID				= "UNKNOWN";
 	private RigidBody	rigidBody;
