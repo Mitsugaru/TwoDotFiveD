@@ -7,6 +7,8 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import com.ATeam.twoDotFiveD.event.EventDispatcher;
+import com.ATeam.twoDotFiveD.event.block.BlockCreateEvent;
 import com.ATeam.twoDotFiveD.gui.MainStartScreen;
 
 public class UDPclient implements Runnable{
@@ -15,12 +17,14 @@ public class UDPclient implements Runnable{
 	DatagramSocket socket;
 	boolean run;
 	MainStartScreen pntr;
+	EventDispatcher eventdispatcher;
 	int ID;
-	public UDPclient(InetAddress anAddress,int aPort,MainStartScreen dur,int ID){
+	public UDPclient(InetAddress anAddress,int aPort,MainStartScreen dur,int ID, EventDispatcher event){
 		serverAddress=anAddress;
 		serverPort=aPort;
 		pntr=dur;
 		this.ID=ID;
+		eventdispatcher=event;
 		run=true;
 		try {
 			socket=new DatagramSocket();
@@ -78,6 +82,9 @@ public class UDPclient implements Runnable{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			Object j = new Object();
+			
+			eventdispatcher.notify(event)
 			pntr.updateText(String.format("UDP-recieved from: %c:%c",(char) receiveData[0],(char) receiveData[1]));
 			System.out.println("revcieved");
 		}
