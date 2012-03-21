@@ -286,14 +286,15 @@ public class BspDemo extends DemoApplication
 	public static void main(String[] args) throws Exception
 	{
 		BspDemo demo = new BspDemo(LWJGL.getGL());
-		demo.initPhysics();
-		demo.getDynamicsWorld()
-				.setDebugDrawer(new GLDebugDrawer(LWJGL.getGL()));
 		client = new chatClient(null, "192.168.1.2", "Vin", eventDispatcher);
 		if (client.connect())
 		{
 			client.start();
 		}
+		Thread.sleep(2000);
+		demo.initPhysics();
+		demo.getDynamicsWorld()
+				.setDebugDrawer(new GLDebugDrawer(LWJGL.getGL()));
 		LWJGL.main(args, 800, 600, "Bullet Physics Demo. http://bullet.sf.net",
 				demo);
 	}
