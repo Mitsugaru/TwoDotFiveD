@@ -24,6 +24,7 @@ package com.bulletphysics.demos.bsp;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -34,7 +35,10 @@ import com.ATeam.twoDotFiveD.event.Event.Type;
 import com.ATeam.twoDotFiveD.event.EventDispatcher;
 import com.ATeam.twoDotFiveD.event.block.BlockCollisionEvent;
 import com.ATeam.twoDotFiveD.event.block.BlockCollisionResolvedEvent;
+import com.ATeam.twoDotFiveD.event.block.BlockCreateEvent;
+import com.ATeam.twoDotFiveD.event.block.BlockDestroyedEvent;
 import com.ATeam.twoDotFiveD.event.block.BlockListener;
+import com.ATeam.twoDotFiveD.event.block.BlockPhysicsChangeEvent;
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.util.ObjectArrayList;
 import com.bulletphysics.collision.broadphase.AxisSweep3;
@@ -67,6 +71,9 @@ import com.bulletphysics.linearmath.Transform;
 
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
+
+import org.lwjgl.input.Keyboard;
+
 import static com.bulletphysics.demos.opengl.IGL.*;
 
 /**
@@ -127,6 +134,14 @@ public class BspDemo extends DemoApplication
 		
 		// new BspToBulletConverter().convertBsp(getClass().getResourceAsStream(
 		// "exported.bsp.txt"));
+		populate();
+		BulletGlobals.setDeactivationTime(0.1f);
+		clientResetScene();
+		
+	}
+	
+	public void populate()
+	{
 		try
 		{
 			new BspYamlToBulletConverter().convertBspYaml(getClass()
@@ -137,9 +152,6 @@ public class BspDemo extends DemoApplication
 			Logging.log.log(Level.SEVERE,
 					"Could not close InputStream for: scene.yml", e);
 		}
-		BulletGlobals.setDeactivationTime(0.1f);
-		clientResetScene();
-		
 	}
 	
 	@Override
@@ -168,6 +180,31 @@ public class BspDemo extends DemoApplication
 		
 		// glFlush();
 		// glutSwapBuffers();
+	}
+	
+	@Override
+	public void specialKeyboard(int key, int x, int y, int modifiers)
+	{
+		switch(key)
+		{
+			case Keyboard.KEY_R:
+			{
+				//Remove all objects
+				for(CollisionObject a : dynamicsWorld.getCollisionObjectArray().toArray(new CollisionObject[0]))
+				{
+					dynamicsWorld.removeCollisionObject(a);
+					entityList.remove(a);
+				}
+				//repopulate world
+				populate();
+				break;
+			}
+			default:
+			{
+				super.specialKeyboard(key, x, y, modifiers);
+				break;
+			}
+		}
 	}
 	
 	@Override
@@ -296,15 +333,18 @@ public class BspDemo extends DemoApplication
 			{
 				body.setGravity(acceleration);
 			}
+			Entity e = new Entity(null, null);
 			if(description != null)
 			{
-				entityList.put(body, new Entity(name, body, description));
+				e = new Entity(name, body, description);
+				entityList.put(body, e);
 			}
 			else
 			{
-				entityList.put(body, new Entity(name, body));
+				e = new Entity(name, body);
+				entityList.put(body, e);
 			}
-			
+			eventDispatcher.notify(new BlockCreateEvent(e));
 		}
 		
 	}
@@ -315,7 +355,6 @@ public class BspDemo extends DemoApplication
 		public void onBlockCollision(BlockCollisionEvent event)
 		{
 			final PersistentManifold pm = event.getPersistentManifold();
-			// TODO redo for custom classes
 			if (pm.getBody0() instanceof RigidBody
 					&& pm.getBody1() instanceof RigidBody)
 			{
@@ -325,6 +364,8 @@ public class BspDemo extends DemoApplication
 						.get((RigidBody) pm.getBody1());
 				if (entityA != null && entityB != null)
 				{
+					//TODO block unfreeze
+					//TODO also, when a block is collided, check if they need to be "refrozen"
 					if (entityA.isFrozen())
 					{
 						entityA.unfreeze();
@@ -335,29 +376,28 @@ public class BspDemo extends DemoApplication
 					}
 					// Entites are known and exist, so we can act upon them
 					if (entityA.getRigidBody().getCollisionShape().getName()
-							.equals("sphere"))
+							.equalsIgnoreCase("sphere"))
 					{
-						
-						if (setGravity(entityA.getRigidBody(),
-								entityB.getRigidBody(), new Vector3f(0f, 30f,
+						if (setGravity(entityB, new Vector3f(0f, 30f,
 										0f)))
 						{
-							entityA.setGravity(new Vector3f(0f, 30f, 0f));
-							dynamicsWorld.removeCollisionObject(entityB
-									.getRigidBody());
-							entityList.remove(entityB);
-						}
-					}
-					else if (entityB.getRigidBody().getCollisionShape()
-							.getName().equals("sphere"))
-					{
-						if (setGravity(entityB.getRigidBody(),
-								entityB.getRigidBody(), new Vector3f(0f, 30f,
-										0f)))
-						{
+							//entityA.setGravity(new Vector3f(0f, 30f, 0f));
+							eventDispatcher.notify(new BlockDestroyedEvent(entityA));
 							dynamicsWorld.removeCollisionObject(entityA
 									.getRigidBody());
 							entityList.remove(entityA);
+						}
+					}
+					else if (entityB.getRigidBody().getCollisionShape()
+							.getName().equalsIgnoreCase("sphere"))
+					{
+						if (setGravity(entityA, new Vector3f(0f, 30f,
+										0f)))
+						{
+							eventDispatcher.notify(new BlockDestroyedEvent(entityB));
+							dynamicsWorld.removeCollisionObject(entityB
+									.getRigidBody());
+							entityList.remove(entityB);
 						}
 					}
 					else
@@ -368,9 +408,7 @@ public class BspDemo extends DemoApplication
 				}
 				else
 				{
-					// Using spawned entities
-					// TODO compensate for this. Currently, DemoApplication is
-					// handling that...
+					//TODO Somehow it is known.... how to handle?
 				}
 			}
 		}
@@ -395,6 +433,7 @@ public class BspDemo extends DemoApplication
 						if (entityA.getID().equalsIgnoreCase("box")
 								&& entityB.getID().equalsIgnoreCase("box"))
 						{
+							//TODO block freeze event
 							entityA.freeze();
 							entityB.freeze();
 						}
@@ -404,12 +443,18 @@ public class BspDemo extends DemoApplication
 			
 		}
 		
-		public boolean setGravity(RigidBody target, RigidBody source,
+		public boolean setGravity(Entity target,
 				Vector3f direction)
 		{
-			target.setGravity(direction);
-			target.activate();
-			return true;
+			if(!target.getRigidBody().isStaticObject())
+			{
+				eventDispatcher.notify(new BlockPhysicsChangeEvent(target, direction));
+				target.getRigidBody().setGravity(direction);
+				target.getRigidBody().activate();
+				
+				return true;
+			}
+			return false;
 		}
 	}
 	
