@@ -67,7 +67,7 @@ public abstract class BspYamlConverter
 				}
 				if (!vertices.isEmpty())
 				{
-					addConvexVerticesCollider(vertices, mass, acceleration);
+					addConvexVerticesCollider(rootPath, vertices, mass, acceleration);
 				}
 			}
 			else
@@ -78,6 +78,6 @@ public abstract class BspYamlConverter
 		in.close();
 	}
 	
-	public abstract void addConvexVerticesCollider(
+	public abstract void addConvexVerticesCollider(String name,
 			ObjectArrayList<Vector3f> vertices, float mass, Vector3f acceleration);
 }

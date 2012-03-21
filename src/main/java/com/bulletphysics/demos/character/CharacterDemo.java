@@ -133,6 +133,12 @@ public class CharacterDemo extends DemoApplication {
 		float stepHeight = 0.35f * characterScale;
 		character = new KinematicCharacterController(ghostObject, capsule,
 				stepHeight);
+		/*
+		 * 0: pos x
+		 * 1: down y
+		 * 2: neg z
+		 * character.setUpAxis();
+		 */
 
 		//new BspToBulletConverter().convertBsp(getClass().getResourceAsStream("/com/bulletphysics/demos/bsp/exported.bsp.txt"));
 		try
@@ -406,7 +412,7 @@ public class CharacterDemo extends DemoApplication {
 	{
 
 		@Override
-		public void addConvexVerticesCollider(ObjectArrayList<Vector3f> vertices, float mass, Vector3f acceleration)
+		public void addConvexVerticesCollider(String name, ObjectArrayList<Vector3f> vertices, float mass, Vector3f acceleration)
 		{
 			Transform startTransform = new Transform();
 			// can use a shift

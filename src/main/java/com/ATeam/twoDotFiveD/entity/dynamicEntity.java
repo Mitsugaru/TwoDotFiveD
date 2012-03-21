@@ -2,10 +2,14 @@ package com.ATeam.twoDotFiveD.entity;
 
 import lib.lwjgl.glmodel.GL_Vector;
 
-
+/**
+ * Replaced with Entity, which contains a RigidBody object.
+ * @author Tokume
+ *
+ */
+@Deprecated
 public class dynamicEntity extends Entity
 {
-
     // Is a GL_Vector good for direction, or should something else be used?
     private GL_Vector direction;
     
@@ -23,11 +27,12 @@ public class dynamicEntity extends Entity
         int ID,
         String image )
     {
-        super( position, size, ID, image );
+        //super( position, size, ID, image );
+    	super(null);
     }
     //this can be removed later
     public dynamicEntity(){
-        super();
+        super(null);
     }
 
         /**
