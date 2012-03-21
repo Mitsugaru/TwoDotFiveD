@@ -84,7 +84,7 @@ public class UDPclient implements Runnable{
 			}
 			Object j = new Object();
 			
-			eventdispatcher.notify(event)
+		//	eventdispatcher.notify(event)
 			pntr.updateText(String.format("UDP-recieved from: %c:%c",(char) receiveData[0],(char) receiveData[1]));
 			System.out.println("revcieved");
 		}
