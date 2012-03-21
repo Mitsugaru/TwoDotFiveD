@@ -36,7 +36,8 @@
 			</panel>
 			<panel id="panel_mid" height="50%" width="75%" align="right"
 				childLayout="vertical">
-				<control id="chatId" name="nifty-chat" width="100%" height="100%" lines="13" sendLabel="Send Message" />
+				<control id="chatId" name="nifty-chat" width="100%" height="100%"
+					lines="13" sendLabel="Send Message" />
 				<!-- <text text="text" font="console.fnt" width="100%" height="100%" 
 					wrap="true" /> -->
 				<panel id="panel_mid_right" height="50%" width="75%" align="right"
@@ -97,6 +98,7 @@
 			</panel>
 		</layer>
 	</screen>
+	
 	<!-- Option menu screen -->
 	<screen id="optionmenu" controller="com.ATeam.twoDotFiveD.gui.MainOptionController">
 		<layer id="background" backgroundColor="#003f" childLayout="center">
@@ -151,13 +153,93 @@
 					<control name="label" color="#000" text="123" width="100%"
 						height="100%" />
 				</panel>
+				<!-- HERE HERE -->
 				<panel id="panel_top_right2" height="15%" width="100%"
-					childLayout="center" backgroundColor="#44f8"></panel>
+					childLayout="center" backgroundColor="#44f8">
+					<control name="button" label="Back3" id="OptionBackButton"
+						align="center" valign="bottom">
+					</control>
+				</panel>
+
+				<!-- <panel id="panel_top_left" height="34%" width="55%" childLayout="horizontal" 
+					backgroundColor="#88f8"> <control id="testDropDown" name="dropDownControl" 
+					align="center" valign="bottom"> </control> </panel> -->
+
 				<panel id="panel_top_right" height="70%" width="100%"
-					childLayout="center" backgroundColor="#88f8"></panel>
+					childLayout="center" backgroundColor="#88f8">
+
+					<control name="button" label="PlaySound" id="OptionBackButton"
+						align="center" valign="bottom">
+						<effect>
+							<onClick name="playSound" sound="ping" />
+							<onHover name="pulsate" scaleFactor="0.008" startColor="#f600"
+								endColor="#ffff" post="true" />
+						</effect>
+					</control>
+
+					<control name="button" label="Credits2" id="SettingsButton"
+						align="center" valign="center">
+						<interact onClick="changeScreen(Credits)" />
+					</control>
+					<control name="button" label="Start" id="StartButton"
+						align="left" valign="bottom">
+						<interact onClick="beginGame()" />
+						<effect>
+							<onClick name="playSound" sound="ping" />
+							<onHover name="pulsate" scaleFactor="0.008" startColor="#f600"
+								endColor="#ffff" post="true" />
+						</effect>
+					</control>
+
+					<!-- <control name="dropdown" id="OptionBackButton" align="center" valign="top"> 
+						<control value="hi"></control> <control value="bye"></control> </control> 
+						<control name="dropdown"> <menuitem> <title>first set</title> <values> <value>option 
+						a</value> <value>option b</value> </values> </menuitem> </control> <Combobox 
+						setShape="5,5,120,25" setLabel="Select Item"> <Listbox setSize="100,60"> 
+						<Item setLabel="Item 1" /> <Item setLabel="Item 2" /> <Item setLabel="Item 
+						3" /> </Listbox> </Combobox> -->
+
+
+				</panel>
+			</panel>
+
+		</layer>
+	</screen>
+
+	<!-- HERE HERE -->
+	<!-- Credits Screen -->
+	<screen id="Credits" controller="com.ATeam.twoDotFiveD.gui.MainOptionController">
+		<layer id="foreground" childLayout="horizontal">
+			<panel id="panel_whole" height="100%" width="100%" childLayout="horizontal"
+				backgroundColor="#88f8">
+				<control name="label" color="#000"
+					text="Cliff, Vannie, Justin, Bridget, and Andrew" align="left" />
+
+				<control name="button" label="Back" id="SettingsButton"
+					align="center" valign="center">
+					<interact onClick="changeScreen(mainmenu)" />
+				</control>
+				<control name="button" label="Quit" id="SettingsButton"
+					align="center" valign="center">
+					<interact onClick="exit()" />
+				</control>
+			</panel>
+			<!-- <panel id="panel_top_left" height="34%" width="55%" childLayout="horizontal" 
+				backgroundColor="#88f8"> <control name="dropDownControl" id="testDropDown" 
+				align="left" valign="bottom"> </control> </panel> <panel childLayout="horizontal"> 
+				<label id="dropDownLabel2" text="DropDown 2: " width="120px" align="left" 
+				textVAlign="center" textHAlign="left" /> <control id="dropDown2" name="dropDownControl" 
+				/> </panel> -->
+
+			<panel childLayout="horizontal" height="38px" />
+			<panel childLayout="horizontal">
+				<label id="dropDownLabel2" text="DropDown 2: " width="120px"
+					align="left" textVAlign="center" textHAlign="left" />
+				<control id="dropDown2" name="dropDownControl" />
 			</panel>
 		</layer>
 	</screen>
+
 	<!-- Exit popup -->
 	<popup id="popupExit" childLayout="center" backgroundColor="#000a">
 		<effect>
