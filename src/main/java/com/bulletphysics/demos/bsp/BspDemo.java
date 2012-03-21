@@ -22,7 +22,10 @@
 
 package com.bulletphysics.demos.bsp;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -96,6 +99,7 @@ public class BspDemo extends DemoApplication
 	public ConstraintSolver					solver;
 	public DefaultCollisionConfiguration	collisionConfiguration;
 	private static EventDispatcher			eventDispatcher		= new EventDispatcher();
+	private static chatClient				client;
 	
 	public BspDemo(IGL gl)
 	{
@@ -109,7 +113,7 @@ public class BspDemo extends DemoApplication
 		
 		setCameraDistance(22f);
 		BlockCollisionListener blockListener = new BlockCollisionListener();
-		//eventDispatcher.registerListener(Type.BLOCK_CREATE, blockListener);
+		eventDispatcher.registerListener(Type.BLOCK_CREATE, blockListener);
 		eventDispatcher.registerListener(Type.BLOCK_COLLISION, blockListener);
 		eventDispatcher.registerListener(Type.BLOCK_COLLISION_RESOLVED,
 				blockListener);
@@ -186,17 +190,19 @@ public class BspDemo extends DemoApplication
 	@Override
 	public void specialKeyboard(int key, int x, int y, int modifiers)
 	{
-		switch(key)
+		switch (key)
 		{
 			case Keyboard.KEY_R:
 			{
-				//Remove all objects
-				for(CollisionObject a : dynamicsWorld.getCollisionObjectArray().toArray(new CollisionObject[0]))
+				// Remove all objects
+				for (CollisionObject a : dynamicsWorld
+						.getCollisionObjectArray().toArray(
+								new CollisionObject[0]))
 				{
 					dynamicsWorld.removeCollisionObject(a);
 					entityList.remove(a);
 				}
-				//repopulate world
+				// repopulate world
 				populate();
 				break;
 			}
@@ -283,7 +289,11 @@ public class BspDemo extends DemoApplication
 		demo.initPhysics();
 		demo.getDynamicsWorld()
 				.setDebugDrawer(new GLDebugDrawer(LWJGL.getGL()));
-		//chatClient client = new chatClient();
+		client = new chatClient(null, "192.168.1.2", "Vin", eventDispatcher);
+		if (client.connect())
+		{
+			client.start();
+		}
 		LWJGL.main(args, 800, 600, "Bullet Physics Demo. http://bullet.sf.net",
 				demo);
 	}
@@ -335,7 +345,7 @@ public class BspDemo extends DemoApplication
 				body.setGravity(acceleration);
 			}
 			Entity e = new Entity(null, null);
-			if(description != null)
+			if (description != null)
 			{
 				e = new Entity(name, body, description);
 				entityList.put(body, e);
@@ -355,8 +365,27 @@ public class BspDemo extends DemoApplication
 		@Override
 		public void onBlockCreate(BlockCreateEvent event)
 		{
-			System.out.println("Created: " + event.getEntity().getID());
+			// System.out.println("Created: " + event.getEntity().getID());
+			
+			try
+			{
+				final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				final ObjectOutputStream oos = new ObjectOutputStream(baos);
+				oos.writeObject(event);
+				oos.flush();
+				byte[] data = baos.toByteArray();
+				client.sendMessage(data);
+				oos.close();
+				baos.close();
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		}
+		
 		@Override
 		public void onBlockCollision(BlockCollisionEvent event)
 		{
@@ -370,8 +399,9 @@ public class BspDemo extends DemoApplication
 						.get((RigidBody) pm.getBody1());
 				if (entityA != null && entityB != null)
 				{
-					//TODO block unfreeze
-					//TODO also, when a block is collided, check if they need to be "refrozen"
+					// TODO block unfreeze
+					// TODO also, when a block is collided, check if they need
+					// to be "refrozen"
 					if (entityA.isFrozen())
 					{
 						entityA.unfreeze();
@@ -384,11 +414,11 @@ public class BspDemo extends DemoApplication
 					if (entityA.getRigidBody().getCollisionShape().getName()
 							.equalsIgnoreCase("sphere"))
 					{
-						if (setGravity(entityB, new Vector3f(0f, 30f,
-										0f)))
+						if (setGravity(entityB, new Vector3f(0f, 30f, 0f)))
 						{
-							//entityA.setGravity(new Vector3f(0f, 30f, 0f));
-							eventDispatcher.notify(new BlockDestroyedEvent(entityA));
+							// entityA.setGravity(new Vector3f(0f, 30f, 0f));
+							eventDispatcher.notify(new BlockDestroyedEvent(
+									entityA));
 							dynamicsWorld.removeCollisionObject(entityA
 									.getRigidBody());
 							entityList.remove(entityA);
@@ -397,10 +427,10 @@ public class BspDemo extends DemoApplication
 					else if (entityB.getRigidBody().getCollisionShape()
 							.getName().equalsIgnoreCase("sphere"))
 					{
-						if (setGravity(entityA, new Vector3f(0f, 30f,
-										0f)))
+						if (setGravity(entityA, new Vector3f(0f, 30f, 0f)))
 						{
-							eventDispatcher.notify(new BlockDestroyedEvent(entityB));
+							eventDispatcher.notify(new BlockDestroyedEvent(
+									entityB));
 							dynamicsWorld.removeCollisionObject(entityB
 									.getRigidBody());
 							entityList.remove(entityB);
@@ -414,7 +444,7 @@ public class BspDemo extends DemoApplication
 				}
 				else
 				{
-					//TODO Somehow it is known.... how to handle?
+					// TODO Somehow it is known.... how to handle?
 				}
 			}
 		}
@@ -439,7 +469,7 @@ public class BspDemo extends DemoApplication
 						if (entityA.getID().equalsIgnoreCase("box")
 								&& entityB.getID().equalsIgnoreCase("box"))
 						{
-							//TODO block freeze event
+							// TODO block freeze event
 							entityA.freeze();
 							entityB.freeze();
 						}
@@ -449,12 +479,12 @@ public class BspDemo extends DemoApplication
 			
 		}
 		
-		public boolean setGravity(Entity target,
-				Vector3f direction)
+		public boolean setGravity(Entity target, Vector3f direction)
 		{
-			if(!target.getRigidBody().isStaticObject())
+			if (!target.getRigidBody().isStaticObject())
 			{
-				eventDispatcher.notify(new BlockPhysicsChangeEvent(target, direction));
+				eventDispatcher.notify(new BlockPhysicsChangeEvent(target,
+						direction));
 				target.getRigidBody().setGravity(direction);
 				target.getRigidBody().activate();
 				

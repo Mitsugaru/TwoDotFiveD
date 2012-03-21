@@ -30,6 +30,7 @@ public class chatClient extends Thread
     
     private int ID;
     EventDispatcher link;
+    UDPclient hi;
 
 
     // Tells the client where to connect, and what it's name is. The name must
@@ -82,6 +83,11 @@ public class chatClient extends Thread
     {
         out.println(message );
     }
+    
+    public void sendMessage(byte[] data)
+    {
+    	hi.sendMessage(data);
+    }
 
 
     // make the input and output, send the client name, and keep throwing up on
@@ -98,8 +104,8 @@ public class chatClient extends Thread
             System.out.println("ID: "+ID);
             System.out.println(socket.getInetAddress());
             System.out.println(UDPServer.DEFAULTPORT);
-            display.processText(String.valueOf(ID));
-            UDPclient hi = new UDPclient(socket.getLocalAddress(),UDPServer.DEFAULTPORT,display,ID, null);
+            //display.processText(String.valueOf(ID));
+            hi = new UDPclient(InetAddress.getByName(ip),UDPServer.DEFAULTPORT,display,ID, null);
             Thread t = new Thread(hi);
             t.start();
             //everything breaks when I run this
@@ -109,7 +115,7 @@ public class chatClient extends Thread
             {
                 if ( in.hasNext() )
                 {
-                    display.processText( in.nextLine() );
+                    //display.processText( in.nextLine() );
                 }
             }
         }
