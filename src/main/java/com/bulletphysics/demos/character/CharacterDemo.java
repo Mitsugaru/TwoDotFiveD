@@ -412,7 +412,7 @@ public class CharacterDemo extends DemoApplication {
 	{
 
 		@Override
-		public void addConvexVerticesCollider(String name, ObjectArrayList<Vector3f> vertices, float mass, Vector3f acceleration, String[] description)
+		public void addConvexVerticesCollider(String name, ObjectArrayList<Vector3f> vertices, float mass, Vector3f acceleration, String image, String[] description)
 		{
 			Transform startTransform = new Transform();
 			// can use a shift

@@ -331,7 +331,7 @@ public class BspDemo extends DemoApplication
 		@Override
 		public void addConvexVerticesCollider(String name,
 				ObjectArrayList<Vector3f> vertices, float mass,
-				Vector3f acceleration, String[] description)
+				Vector3f acceleration, String image, String[] description)
 		{
 			Transform startTransform = new Transform();
 			// can use a shift
@@ -348,12 +348,12 @@ public class BspDemo extends DemoApplication
 			Entity e = new Entity(null, null);
 			if (description != null)
 			{
-				e = new Entity(name, body, description);
+				e = new Entity(name, body, image, description);
 				entityList.put(body, e);
 			}
 			else
 			{
-				e = new Entity(name, body);
+				e = new Entity(name, body, image);
 				entityList.put(body, e);
 			}
 			eventDispatcher.notify(new BlockCreateEvent(e));
@@ -368,7 +368,7 @@ public class BspDemo extends DemoApplication
 		{
 			// System.out.println("Created: " + event.getEntity().getID());
 			
-			try
+			/*try
 			{
 				final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				final ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -383,7 +383,7 @@ public class BspDemo extends DemoApplication
 			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
 			
 		}
 		
@@ -406,10 +406,12 @@ public class BspDemo extends DemoApplication
 					if (entityA.isFrozen())
 					{
 						entityA.unfreeze();
+						entityA.getRigidBody().translate(new Vector3f(0f, 5f, 0f));
 					}
 					if (entityB.isFrozen())
 					{
 						entityB.unfreeze();
+						entityA.getRigidBody().translate(new Vector3f(0f, 5f, 0f));
 					}
 					// Entites are known and exist, so we can act upon them
 					if (entityA.getRigidBody().getCollisionShape().getName()
@@ -423,6 +425,7 @@ public class BspDemo extends DemoApplication
 							dynamicsWorld.removeCollisionObject(entityA
 									.getRigidBody());
 							entityList.remove(entityA);
+							entityB.getRigidBody().translate(new Vector3f(5f, 0f, 0f));
 						}
 					}
 					else if (entityB.getRigidBody().getCollisionShape()
@@ -434,7 +437,7 @@ public class BspDemo extends DemoApplication
 									entityB));
 							dynamicsWorld.removeCollisionObject(entityB
 									.getRigidBody());
-							entityList.remove(entityB);
+							entityA.getRigidBody().translate(new Vector3f(5f, 0f, 0f));
 						}
 					}
 					else

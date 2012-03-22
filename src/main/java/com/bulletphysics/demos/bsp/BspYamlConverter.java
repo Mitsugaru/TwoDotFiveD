@@ -88,8 +88,9 @@ public abstract class BspYamlConverter
 					{
 						//Ignore, as it probably has no description
 					}
+					String image = config.getString(rootPath + ".image");
 					//Add physics object to dynamic world
-					addConvexVerticesCollider(rootPath, vertices, mass, acceleration, description);
+					addConvexVerticesCollider(rootPath, vertices, mass, acceleration, image, description);
 				}
 				else
 				{
@@ -105,5 +106,5 @@ public abstract class BspYamlConverter
 	}
 	
 	public abstract void addConvexVerticesCollider(String name,
-			ObjectArrayList<Vector3f> vertices, float mass, Vector3f acceleration, String[] description);
+			ObjectArrayList<Vector3f> vertices, float mass, Vector3f acceleration, String image, String[] description);
 }
