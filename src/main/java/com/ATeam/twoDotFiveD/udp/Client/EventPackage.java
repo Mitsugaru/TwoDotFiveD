@@ -87,6 +87,7 @@ public class EventPackage implements Serializable
 					list.add(new Vector3f(Float.parseFloat(cut[0]), Float.parseFloat(cut[1]), Float.parseFloat(cut[2])));
 				}
 				c = new ConvexHullShape(list);
+				startTransform.origin.set(0, 0, 0);
 			}
 			c.calculateLocalInertia(mass, inertia);
 			DefaultMotionState myMotionState = new DefaultMotionState(startTransform);
