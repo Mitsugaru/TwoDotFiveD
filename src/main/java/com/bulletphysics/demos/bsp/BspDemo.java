@@ -286,7 +286,7 @@ public class BspDemo extends DemoApplication
 	public static void main(String[] args) throws Exception
 	{
 		demo = new BspDemo(LWJGL.getGL());
-		client = new chatClient(null, "192.168.1.2", "Ju", remoteDispatcher);
+		client = new chatClient(null, "192.168.1.2", "ASDF", remoteDispatcher);
 		if (client.connect())
 		{
 			client.start();
@@ -300,6 +300,9 @@ public class BspDemo extends DemoApplication
 				demo);
 	}
 	
+	/**
+	 * Initialize event listeners
+	 */
 	public void initListener(){
 		/**
 		 * LocalEvents

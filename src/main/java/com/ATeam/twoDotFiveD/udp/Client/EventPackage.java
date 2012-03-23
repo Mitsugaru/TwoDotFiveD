@@ -13,10 +13,12 @@ import com.ATeam.twoDotFiveD.event.Event.Type;
 import com.ATeam.twoDotFiveD.event.block.BlockCreateEvent;
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.collision.shapes.CollisionShape;
+import com.bulletphysics.collision.shapes.ConvexHullShape;
 import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
 import com.bulletphysics.linearmath.DefaultMotionState;
 import com.bulletphysics.linearmath.Transform;
+import com.bulletphysics.util.ObjectArrayList;
 
 public class EventPackage implements Serializable
 {
@@ -50,16 +52,24 @@ public class EventPackage implements Serializable
 			final Transform startTransform = new Transform(transformMatrix);
 			Vector3f inertia = new Vector3f(0f, 0f, 0f);
 			final String shapeClass = (String)data.get("entity.rigidbody.collisionshape.class");
-			CollisionShape c = new BoxShape(new Vector3f(0f, 0f, 0f));
+			CollisionShape c = new BoxShape(new Vector3f(1f, 1f, 1f));
+			System.out.println(shapeClass);
+			System.out.println("BoxShape: " + shapeClass.contains("BoxShape"));
+			System.out.println("Convex: " + shapeClass.contains("ConvexHullShape"));
 			if(shapeClass.contains("BoxShape"))
 			{
 				//TODO parse localscaling string to be Vector3f
-				c = new BoxShape(new Vector3f(0f, 0f, 0f));
-				System.out.println(shapeClass);
+				c = new BoxShape(new Vector3f(1f, 1f, 1f));
 			}
 			else if(shapeClass.contains("ConvexHullShape"))
 			{
 				//TODO make new shape and parse all points to be added to shape
+				ObjectArrayList<Vector3f> list = new ObjectArrayList<Vector3f>();
+				for(int i = 0; i < ((Integer)data.get("entity.rigidbody.collisionshape.size")).intValue(); i++)
+				{
+					System.out.println((String) data.get("entity.rigidbody.collisionshape.point" + i));
+				}
+				//c = new ConvexHullShape(list);
 			}
 			c.calculateLocalInertia(mass, inertia);
 			DefaultMotionState myMotionState = new DefaultMotionState(startTransform);

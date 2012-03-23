@@ -87,6 +87,7 @@ public class BlockCreateEvent extends BlockEvent
 			{
 				data.put("entity.rigidbody.collisionshape.point" + i, point.toString());
 			}
+			data.put("entity.rigidbody.collisionshape.size", i);
 		}
 		return data;
 	}
