@@ -310,6 +310,7 @@ public class BspDemo extends DemoApplication {
 				body.setDamping(event.getEntity().getRigidBody()
 						.getLinearDamping(), event.getEntity().getRigidBody()
 						.getAngularDamping());
+				body.setGravity(event.getEntity().getRigidBody().getGravity(new Vector3f()));
 				// System.out.println(event.getEntity().getRigidBody().getLinearVelocity(new
 				// Vector3f()).toString());
 				Entity e = new Entity(event.getEntity().getID(), body);
