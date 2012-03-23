@@ -110,9 +110,8 @@ public class UDPclient implements Runnable{
 //				e.printStackTrace();
 //			}
 		      
-			
 		//	eventdispatcher.notify(event)
-			pntr.updateText(String.format("UDP-recieved from: %c:%c",(byte) receiveData[0],(char) receiveData[1]));
+			//pntr.updateText(String.format("UDP-recieved from: %c:%c",(byte) receiveData[0],(char) receiveData[1]));
 			System.out.println("revcieved");
 		}
 		socket.close();

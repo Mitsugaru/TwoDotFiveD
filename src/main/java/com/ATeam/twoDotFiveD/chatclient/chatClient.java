@@ -109,7 +109,7 @@ public class chatClient extends Thread
             System.out.println("ID: "+ID);
             System.out.println(socket.getInetAddress());
             System.out.println(UDPServer.DEFAULTPORT);
-            display.processText(String.valueOf(ID));
+           // display.processText(String.valueOf(ID));
             hi = new UDPclient(InetAddress.getByName(ip),UDPServer.DEFAULTPORT,display,ID);
             Thread t = new Thread(hi);
             t.start();
@@ -120,7 +120,7 @@ public class chatClient extends Thread
             {
                 if ( in.hasNext() )
                 {
-                    display.processText( in.nextLine() );
+                    //display.processText( in.nextLine() );
                 }
             }
         }
