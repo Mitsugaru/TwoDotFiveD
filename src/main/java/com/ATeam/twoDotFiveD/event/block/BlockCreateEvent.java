@@ -47,19 +47,18 @@ public class BlockCreateEvent extends BlockEvent
 		 * Rigid body
 		 */
 		//Gravity
-		final Vector3f gravity = getEntity().getRigidBody().getGravity(
-				new Vector3f());
-		data.put("entity.rigidbody.gravity", gravity.toString());
+		data.put("entity.rigidbody.gravity", getEntity().getRigidBody().getGravity(
+				new Vector3f()).toString());
 		//Mass
 		data.put("entity.rigidbody.rigidbodyconstructioninfo.mass",
 				new Float((1f / getEntity().getRigidBody().getInvMass())));
 		//TODO see if local inertia is actually necessary
 		//Start transform
-		final Transform worldTransform = getEntity().getRigidBody()
+		/*final Transform worldTransform = getEntity().getRigidBody()
 				.getMotionState().getWorldTransform(new Transform());
 		final Matrix4f transformMatrix = worldTransform
 				.getMatrix(new Matrix4f());
-		/*data.put("entity.rigidbody.motionstate.transform", new float[] {
+		data.put("entity.rigidbody.motionstate.transform", new float[] {
 				transformMatrix.m00, transformMatrix.m01, transformMatrix.m02,
 				transformMatrix.m03, transformMatrix.m10, transformMatrix.m11,
 				transformMatrix.m12, transformMatrix.m13, transformMatrix.m20,
@@ -69,7 +68,7 @@ public class BlockCreateEvent extends BlockEvent
 		data.put("entity.rigidbody.angularfactor", getEntity().getRigidBody().getAngularFactor());
 		data.put("entity.rigidbody.angularvelocity", getEntity().getRigidBody().getAngularVelocity(new Vector3f()).toString());
 		data.put("entity.rigidbody.linearvelocity", getEntity().getRigidBody().getLinearVelocity(new Vector3f()).toString());
-		System.out.println(getEntity().getRigidBody().getLinearVelocity(new Vector3f()).toString());
+		//System.out.println(getEntity().getRigidBody().getLinearVelocity(new Vector3f()).toString());
 		data.put("entity.rigidbody.lineardampening", getEntity().getRigidBody().getLinearDamping());
 		data.put("entity.rigidbody.angulardampening", getEntity().getRigidBody().getAngularDamping());
 		data.put("entity.rigidbody.center", getEntity().getRigidBody().getCenterOfMassPosition(new Vector3f()).toString());
