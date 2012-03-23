@@ -283,12 +283,12 @@ public class BspDemo extends DemoApplication
 	public static void main(String[] args) throws Exception
 	{
 		BspDemo demo = new BspDemo(LWJGL.getGL());
-		/*client = new chatClient(null, "192.168.1.2", "Ju", eventDispatcher);
+		client = new chatClient(null, "192.168.1.2", "Ju", eventDispatcher);
 		if (client.connect())
 		{
 			client.start();
 		}
-		Thread.sleep(2000);*/
+		Thread.sleep(2000);
 		demo.initPhysics();
 		demo.getDynamicsWorld()
 				.setDebugDrawer(new GLDebugDrawer(LWJGL.getGL()));
