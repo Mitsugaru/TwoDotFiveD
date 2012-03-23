@@ -289,10 +289,10 @@ public class BspDemo extends DemoApplication
 			client.start();
 		}
 		Thread.sleep(2000);
+		demo.initListener();
 		demo.initPhysics();
 		demo.getDynamicsWorld()
 				.setDebugDrawer(new GLDebugDrawer(LWJGL.getGL()));
-		demo.initListener();
 		LWJGL.main(args, 800, 600, "Bullet Physics Demo. http://bullet.sf.net",
 				demo);
 	}
@@ -385,6 +385,7 @@ public class BspDemo extends DemoApplication
 				client.sendMessage(data);
 				oos.close();
 				baos.close();
+				System.out.println("Sent object");
 			}
 			catch (IOException e)
 			{

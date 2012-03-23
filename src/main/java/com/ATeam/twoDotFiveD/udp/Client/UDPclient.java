@@ -96,19 +96,20 @@ public class UDPclient implements Runnable{
 				e.printStackTrace();
 			}
 			 
-//		      try {
-//		    	  ByteArrayInputStream baos = new ByteArrayInputStream(receiveData);
-//				ObjectInputStream oos = new ObjectInputStream(baos);
-//				BlockCreateEvent event = (BlockCreateEvent)oos.readObject();
-//				eventdispatcher.notify(event);
-			//} 
-//			catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (ClassNotFoundException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
+		      try {
+		    	  ByteArrayInputStream baos = new ByteArrayInputStream(receiveData);
+				ObjectInputStream oos = new ObjectInputStream(baos);
+				EventPackage event = (EventPackage)oos.readObject();
+				event.getEvent();
+				//eventdispatcher.notify(event);
+			} 
+			catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		      
 		//	eventdispatcher.notify(event)
 			//pntr.updateText(String.format("UDP-recieved from: %c:%c",(byte) receiveData[0],(char) receiveData[1]));

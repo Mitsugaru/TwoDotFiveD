@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.ATeam.twoDotFiveD.event.Event;
+import com.ATeam.twoDotFiveD.event.Event.Type;
+import com.ATeam.twoDotFiveD.event.block.BlockCreateEvent;
 
 public class EventPackage implements Serializable
 {
@@ -26,5 +28,12 @@ public class EventPackage implements Serializable
 	public Map<String, Object> getData()
 	{
 		return data;
+	}
+	
+	public void getEvent()
+	{
+		String className = (String)data.get("class");
+		System.out.println(className);
+		System.out.println(data.get("entity.gravity.x") + " " + data.get("entity.gravity.y") + " " + data.get("entity.gravity.z"));
 	}
 }

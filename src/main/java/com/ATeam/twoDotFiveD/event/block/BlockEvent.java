@@ -38,16 +38,4 @@ public class BlockEvent extends Event<BlockListener> implements Serializable{
 		return entity;
 	}
 
-	@Override
-	public Map<String, Object> getData()
-	{
-		final Map<String, Object> data = new HashMap<String, Object>();
-		data.put("entity.gravity.x", entity.getGravity().x);
-		data.put("entity.gravity.y", entity.getGravity().y);
-		data.put("entity.gravity.z", entity.getGravity().z);
-		return getData();
-	}
-	
-	
-
 }

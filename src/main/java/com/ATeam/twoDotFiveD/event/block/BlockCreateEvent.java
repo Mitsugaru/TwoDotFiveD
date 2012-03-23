@@ -23,10 +23,9 @@ public class BlockCreateEvent extends BlockEvent{
 	{
 		final Map<String, Object> data = new HashMap<String, Object>();
 		data.put("class", name);
-		for(Map.Entry<String, Object> entry : super.getData().entrySet())
-		{
-			data.put(entry.getKey(), entry.getValue());
-		}
+		data.put("entity.gravity.x", getEntity().getGravity().x);
+		data.put("entity.gravity.y", getEntity().getGravity().y);
+		data.put("entity.gravity.z", getEntity().getGravity().z);
 		return data;
 	}
 	
