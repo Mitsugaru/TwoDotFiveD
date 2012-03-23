@@ -52,6 +52,13 @@ public class EventPackage implements Serializable
 			//System.out.println(transformMatrix.toString());
 			final Transform startTransform = new Transform();
 			startTransform.setIdentity();
+			String centerString = (String) data.get("entity.rigidbody.center");
+			centerString = centerString.replace("(", "");
+			centerString = centerString.replace(",","");
+			centerString = centerString.replace(")", "");
+			final String[] centerCut = centerString.split(" ");
+			final Vector3f center = new Vector3f(Float.parseFloat(centerCut[0]), Float.parseFloat(centerCut[1]), Float.parseFloat(centerCut[2]));
+			startTransform.origin.set(center);
 			System.out.println(startTransform.toString());
 			Vector3f inertia = new Vector3f(0f, 0f, 0f);
 			final String shapeClass = (String)data.get("entity.rigidbody.collisionshape.class");

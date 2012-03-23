@@ -59,13 +59,14 @@ public class BlockCreateEvent extends BlockEvent
 				.getMotionState().getWorldTransform(new Transform());
 		final Matrix4f transformMatrix = worldTransform
 				.getMatrix(new Matrix4f());
-		data.put("entity.rigidbody.motionstate.transform", new float[] {
+		/*data.put("entity.rigidbody.motionstate.transform", new float[] {
 				transformMatrix.m00, transformMatrix.m01, transformMatrix.m02,
 				transformMatrix.m03, transformMatrix.m10, transformMatrix.m11,
 				transformMatrix.m12, transformMatrix.m13, transformMatrix.m20,
 				transformMatrix.m21, transformMatrix.m22, transformMatrix.m23,
 				transformMatrix.m30, transformMatrix.m31, transformMatrix.m32,
-				transformMatrix.m33 });
+				transformMatrix.m33 });*/
+		data.put("entity.rigidbody.center", getEntity().getRigidBody().getCenterOfMassPosition(new Vector3f()).toString());
 		/**
 		 * Collision Shape
 		 */
