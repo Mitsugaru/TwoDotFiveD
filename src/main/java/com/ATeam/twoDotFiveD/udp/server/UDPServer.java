@@ -46,7 +46,7 @@ public class UDPServer implements Runnable {
 	}
 	@Override
 	public void run() {
-		byte[] receiveData = new byte[1024];
+		byte[] receiveData = new byte[2048];
 		System.out.println("UDP PORT"+port);
 		DatagramPacket receivePacket;
 		byte id;
