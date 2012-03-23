@@ -56,7 +56,7 @@ public class chatClient extends Thread
     {
         try
         {
-        	ip="localhost";
+        	//ip="192.168.1.2";
             socket = new Socket( ip, 1337 );
             return true;
         }
@@ -110,7 +110,7 @@ public class chatClient extends Thread
             System.out.println(socket.getInetAddress());
             System.out.println(UDPServer.DEFAULTPORT);
            // display.processText(String.valueOf(ID));
-            hi = new UDPclient(InetAddress.getByName(ip),UDPServer.DEFAULTPORT,display,ID);
+            hi = new UDPclient(InetAddress.getByName(ip),UDPServer.DEFAULTPORT,display,ID, link);
             Thread t = new Thread(hi);
             t.start();
             //everything breaks when I run this

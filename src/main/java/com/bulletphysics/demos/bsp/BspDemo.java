@@ -90,7 +90,7 @@ import static com.bulletphysics.demos.opengl.IGL.*;
  */
 public class BspDemo extends DemoApplication
 {
-	
+	private static BspDemo demo;
 	private static final float				CUBE_HALF_EXTENTS	= 1;
 	private static final float				EXTRA_HEIGHT		= -20f;
 	
@@ -285,7 +285,7 @@ public class BspDemo extends DemoApplication
 	
 	public static void main(String[] args) throws Exception
 	{
-		BspDemo demo = new BspDemo(LWJGL.getGL());
+		demo = new BspDemo(LWJGL.getGL());
 		client = new chatClient(null, "192.168.1.2", "Ju", remoteDispatcher);
 		if (client.connect())
 		{
@@ -317,7 +317,9 @@ public class BspDemo extends DemoApplication
 			@Override
 			public void onBlockCreate(BlockCreateEvent event)
 			{
-				System.out.println("received event");
+				RigidBody body = demo.localCreateRigidBody((1f/event.getEntity().getRigidBody().getInvMass()), event.getEntity().getRigidBody().getWorldTransform(new Transform()), event.getEntity().getRigidBody().getCollisionShape());
+				Entity e = new Entity(event.getEntity().getID(), body);
+				entityList.put(body, e);
 			}
 		};
 		remoteDispatcher.registerListener(Type.BLOCK_CREATE, remoteListener);
@@ -400,14 +402,11 @@ public class BspDemo extends DemoApplication
 				oos.writeObject(new EventPackage(event));
 				oos.flush();
 				byte[] data = baos.toByteArray();
-				/*if(count == 0)
+				if(count == 0)
 				{
-					for(byte b : data)
-					{
-						System.out.print(b + " ");
-					}
+					System.out.println(data.length);
 					count++;
-				}*/
+				}
 				client.sendMessage(data);
 				oos.close();
 				baos.close();

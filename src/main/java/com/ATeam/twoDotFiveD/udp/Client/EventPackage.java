@@ -50,11 +50,12 @@ public class EventPackage implements Serializable
 			final Transform startTransform = new Transform(transformMatrix);
 			Vector3f inertia = new Vector3f(0f, 0f, 0f);
 			final String shapeClass = (String)data.get("entity.rigidbody.collisionshape.class");
-			CollisionShape c = null;
+			CollisionShape c = new BoxShape(new Vector3f(0f, 0f, 0f));
 			if(shapeClass.contains("BoxShape"))
 			{
 				//TODO parse localscaling string to be Vector3f
 				c = new BoxShape(new Vector3f(0f, 0f, 0f));
+				System.out.println(shapeClass);
 			}
 			else if(shapeClass.contains("ConvexHullShape"))
 			{
