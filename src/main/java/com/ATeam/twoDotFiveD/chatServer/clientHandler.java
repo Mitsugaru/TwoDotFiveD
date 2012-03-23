@@ -127,9 +127,15 @@ public class clientHandler extends Thread implements Comparable
         {
             try
             {
-                String text = in.nextLine();
-                server.throwup( name + ": " + text );
-                handle( text );
+                //String text = in.nextLine();
+                //server.throwup( name + ": " + text );
+                //handle( text );
+            	try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
             catch ( NoSuchElementException e )
             {

@@ -89,6 +89,7 @@ public class UDPclient implements Runnable{
 		while(run){
 			//this is where data will be received need to know where to send it
 			System.out.println("CLIENT LISTENING");
+			sendMessage(new byte[] {(byte) 0xFF});
 			receivePacket = new DatagramPacket(receiveData, receiveData.length);
 			try {
 				socket.receive(receivePacket);
