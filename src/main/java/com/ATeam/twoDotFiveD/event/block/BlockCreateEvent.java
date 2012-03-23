@@ -86,7 +86,9 @@ public class BlockCreateEvent extends BlockEvent
 			for(Vector3f point : ((ConvexHullShape) shape).getPoints())
 			{
 				data.put("entity.rigidbody.collisionshape.point" + i, point.toString());
+				i++;
 			}
+			System.out.println(i);
 			data.put("entity.rigidbody.collisionshape.size", i);
 		}
 		return data;

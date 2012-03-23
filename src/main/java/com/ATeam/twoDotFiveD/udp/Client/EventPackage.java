@@ -48,8 +48,11 @@ public class EventPackage implements Serializable
 		if(className.contains("BlockCreateEvent"))
 		{
 			final float mass = ((Float) data.get("entity.rigidbody.rigidbodyconstructioninfo.mass")).floatValue();
-			final Matrix4f transformMatrix = new Matrix4f((float[])(data.get("entity.rigidbody.motionstate.transform")));
-			final Transform startTransform = new Transform(transformMatrix);
+			//final Matrix4f transformMatrix = new Matrix4f((float[])(data.get("entity.rigidbody.motionstate.transform")));
+			//System.out.println(transformMatrix.toString());
+			final Transform startTransform = new Transform();
+			startTransform.setIdentity();
+			System.out.println(startTransform.toString());
 			Vector3f inertia = new Vector3f(0f, 0f, 0f);
 			final String shapeClass = (String)data.get("entity.rigidbody.collisionshape.class");
 			CollisionShape c = new BoxShape(new Vector3f(1f, 1f, 1f));
@@ -65,7 +68,9 @@ public class EventPackage implements Serializable
 			{
 				//TODO make new shape and parse all points to be added to shape
 				ObjectArrayList<Vector3f> list = new ObjectArrayList<Vector3f>();
-				for(int i = 0; i < ((Integer)data.get("entity.rigidbody.collisionshape.size")).intValue(); i++)
+				int size = ((Integer)data.get("entity.rigidbody.collisionshape.size")).intValue();
+				System.out.println(size);
+				for(int i = 0; i < size; i++)
 				{
 					System.out.println((String) data.get("entity.rigidbody.collisionshape.point" + i));
 				}
@@ -73,6 +78,11 @@ public class EventPackage implements Serializable
 			}
 			c.calculateLocalInertia(mass, inertia);
 			DefaultMotionState myMotionState = new DefaultMotionState(startTransform);
+			System.out.println("Mass:" + mass);
+			//System.out.println("myMotionState" + myMotionState.toString());
+			System.out.println("Transform: " + startTransform.toString());
+			System.out.println("Shape: " + c.toString());
+			System.out.println("Inertia: " + inertia.toString());
 			final RigidBodyConstructionInfo info = new RigidBodyConstructionInfo(mass, myMotionState, c, inertia);
 			RigidBody body = new RigidBody(info);
 			final String ID = (String) data.get("entity.ID");
