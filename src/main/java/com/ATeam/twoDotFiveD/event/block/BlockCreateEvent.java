@@ -66,6 +66,11 @@ public class BlockCreateEvent extends BlockEvent
 				transformMatrix.m21, transformMatrix.m22, transformMatrix.m23,
 				transformMatrix.m30, transformMatrix.m31, transformMatrix.m32,
 				transformMatrix.m33 });*/
+		data.put("entity.rigidbody.angularfactor", getEntity().getRigidBody().getAngularFactor());
+		data.put("entity.rigidbody.angularvelocity", getEntity().getRigidBody().getAngularVelocity(new Vector3f()).toString());
+		data.put("entity.rigidbody.linearvelocity", getEntity().getRigidBody().getLinearVelocity(new Vector3f()).toString());
+		data.put("entity.rigidbody.lineardampening", getEntity().getRigidBody().getLinearDamping());
+		data.put("entity.rigidbody.angulardampening", getEntity().getRigidBody().getAngularDamping());
 		data.put("entity.rigidbody.center", getEntity().getRigidBody().getCenterOfMassPosition(new Vector3f()).toString());
 		/**
 		 * Collision Shape

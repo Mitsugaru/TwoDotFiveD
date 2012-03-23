@@ -286,7 +286,7 @@ public class BspDemo extends DemoApplication
 	public static void main(String[] args) throws Exception
 	{
 		demo = new BspDemo(LWJGL.getGL());
-		client = new chatClient(null, "137.155.2.104", "ASDF", remoteDispatcher);
+		client = new chatClient(null, "137.155.2.104", "mac", remoteDispatcher);
 		if (client.connect())
 		{
 			client.start();
@@ -325,6 +325,10 @@ public class BspDemo extends DemoApplication
 				System.out.println("Event transform: " + event.getEntity().getRigidBody().getWorldTransform(new Transform()).toString());
 				System.out.println("Event CollisionShape: " + event.getEntity().getRigidBody().getCollisionShape().toString());
 				RigidBody body = demo.localCreateRigidBody(mass, event.getEntity().getRigidBody().getWorldTransform(new Transform()), event.getEntity().getRigidBody().getCollisionShape());
+				body.setAngularFactor(event.getEntity().getRigidBody().getAngularFactor());
+				body.setAngularVelocity(event.getEntity().getRigidBody().getAngularVelocity(new Vector3f()));
+				body.setLinearVelocity(event.getEntity().getRigidBody().getLinearVelocity(new Vector3f()));
+				body.setDamping(event.getEntity().getRigidBody().getLinearDamping(), event.getEntity().getRigidBody().getAngularDamping());
 				//Entity e = new Entity(event.getEntity().getID(), body);
 				//entityList.put(body, e);
 				System.out.println("Added block");
