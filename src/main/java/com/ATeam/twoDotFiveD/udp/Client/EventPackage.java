@@ -66,15 +66,20 @@ public class EventPackage implements Serializable
 			}
 			else if(shapeClass.contains("ConvexHullShape"))
 			{
-				//TODO make new shape and parse all points to be added to shape
+				//Make new shape and parse all points to be added to shape
 				ObjectArrayList<Vector3f> list = new ObjectArrayList<Vector3f>();
 				int size = ((Integer)data.get("entity.rigidbody.collisionshape.size")).intValue();
 				System.out.println(size);
 				for(int i = 0; i < size; i++)
 				{
-					System.out.println((String) data.get("entity.rigidbody.collisionshape.point" + i));
+					String point = ((String) data.get("entity.rigidbody.collisionshape.point" + i));
+					point = point.replace("(", "");
+					point = point.replace(",","");
+					point = point.replace(")", "");
+					final String[] cut = point.split(" ");
+					list.add(new Vector3f(Float.parseFloat(cut[0]), Float.parseFloat(cut[1]), Float.parseFloat(cut[2])));
 				}
-				//c = new ConvexHullShape(list);
+				c = new ConvexHullShape(list);
 			}
 			c.calculateLocalInertia(mass, inertia);
 			DefaultMotionState myMotionState = new DefaultMotionState(startTransform);
