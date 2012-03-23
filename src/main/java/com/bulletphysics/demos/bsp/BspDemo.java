@@ -43,6 +43,7 @@ import com.ATeam.twoDotFiveD.event.block.BlockCreateEvent;
 import com.ATeam.twoDotFiveD.event.block.BlockDestroyedEvent;
 import com.ATeam.twoDotFiveD.event.block.BlockListener;
 import com.ATeam.twoDotFiveD.event.block.BlockPhysicsChangeEvent;
+import com.ATeam.twoDotFiveD.music.MusicPlayer;
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.util.ObjectArrayList;
 import com.bulletphysics.collision.broadphase.AxisSweep3;
@@ -112,11 +113,6 @@ public class BspDemo extends DemoApplication
 		// forwardAxis = 1;
 		
 		setCameraDistance(22f);
-		BlockCollisionListener blockListener = new BlockCollisionListener();
-		eventDispatcher.registerListener(Type.BLOCK_CREATE, blockListener);
-		eventDispatcher.registerListener(Type.BLOCK_COLLISION, blockListener);
-		eventDispatcher.registerListener(Type.BLOCK_COLLISION_RESOLVED,
-				blockListener);
 		// Setup a Physics Simulation Environment
 		
 		collisionConfiguration = new DefaultCollisionConfiguration();
@@ -295,8 +291,18 @@ public class BspDemo extends DemoApplication
 		demo.initPhysics();
 		demo.getDynamicsWorld()
 				.setDebugDrawer(new GLDebugDrawer(LWJGL.getGL()));
+		demo.initListener();
 		LWJGL.main(args, 800, 600, "Bullet Physics Demo. http://bullet.sf.net",
 				demo);
+	}
+	
+	public void initListener(){
+		BlockCollisionListener blockListener = new BlockCollisionListener();
+		eventDispatcher.registerListener(Type.BLOCK_CREATE, blockListener);
+		eventDispatcher.registerListener(Type.BLOCK_COLLISION, blockListener);
+		eventDispatcher.registerListener(Type.BLOCK_COLLISION_RESOLVED,
+				blockListener);
+		MusicPlayer mp = new MusicPlayer(eventDispatcher);
 	}
 	
 	// //////////////////////////////////////////////////////////////////////////

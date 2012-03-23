@@ -4,10 +4,22 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import com.ATeam.twoDotFiveD.event.EventDispatcher;
+import com.ATeam.twoDotFiveD.event.Event.Type;
+import com.ATeam.twoDotFiveD.event.block.BlockCollisionEvent;
+import com.ATeam.twoDotFiveD.event.block.BlockCollisionResolvedEvent;
+import com.ATeam.twoDotFiveD.event.block.BlockCreateEvent;
+import com.ATeam.twoDotFiveD.event.block.BlockDestroyedEvent;
+import com.ATeam.twoDotFiveD.event.block.BlockListener;
+import com.ATeam.twoDotFiveD.event.block.BlockMoveEvent;
+import com.ATeam.twoDotFiveD.event.block.BlockPhysicsChangeEvent;
+
 import lib.lwjgl.glsound.*;
 
 public class MusicPlayer {
 	Runnable runn = new MusicPlayerRun();
+	EventDispatcher dispatcher;
 
 	Scanner in = new Scanner(System.in);
 	static ArrayList<String> sound = new ArrayList<String>();
@@ -58,8 +70,57 @@ public class MusicPlayer {
 
 	}
 
-	public MusicPlayer() {
+	public MusicPlayer(EventDispatcher dispatcher) {
+		this.dispatcher = dispatcher;
+		BlockListener blockListener = new BlockListener(){
 
+			@Override
+			public void onBlockDestroyed(BlockDestroyedEvent blockDestroyedEvent)
+			{
+				// TODO Auto-generated method stub
+				super.onBlockDestroyed(blockDestroyedEvent);
+			}
+
+			@Override
+			public void onBlockCreate(BlockCreateEvent blockCreateEvent)
+			{
+				// TODO Auto-generated method stub
+				super.onBlockCreate(blockCreateEvent);
+			}
+
+			@Override
+			public void onBlockMove(BlockMoveEvent blockMoveEvent)
+			{
+				// TODO Auto-generated method stub
+				super.onBlockMove(blockMoveEvent);
+			}
+
+			@Override
+			public void onBlockPhysicsChange(
+					BlockPhysicsChangeEvent blockPhysicsChangeEvent)
+			{
+				// TODO Auto-generated method stub
+				super.onBlockPhysicsChange(blockPhysicsChangeEvent);
+			}
+
+			@Override
+			public void onBlockCollision(BlockCollisionEvent blockCollisionEvent)
+			{
+				MusicPlayerRun mpr = new MusicPlayerRun();
+				//System.out.println(getClass().getResource("hit.wav").getFile());
+				mpr.setSong("com/ATeam/twoDotFiveD/music/hit.wav");
+			}
+
+			@Override
+			public void onBlockCollisionResolved(
+					BlockCollisionResolvedEvent blockCollisionResolvedEvent)
+			{
+				
+			}
+			
+		};
+		//Register listeners to events;
+		dispatcher.registerListener(Type.BLOCK_COLLISION, blockListener);
 	}
 
 	public void createThread(int i) {//problem
