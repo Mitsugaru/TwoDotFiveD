@@ -303,7 +303,7 @@ public class BspDemo extends DemoApplication
 		eventDispatcher.registerListener(Type.BLOCK_COLLISION, blockListener);
 		eventDispatcher.registerListener(Type.BLOCK_COLLISION_RESOLVED,
 				blockListener);
-		MusicPlayer mp = new MusicPlayer(eventDispatcher);
+		//MusicPlayer mp = new MusicPlayer(eventDispatcher);
 	}
 	
 	// //////////////////////////////////////////////////////////////////////////
