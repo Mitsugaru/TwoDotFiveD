@@ -47,8 +47,7 @@ public class BlockCreateEvent extends BlockEvent
 		 * Rigid body
 		 */
 		//Gravity
-		data.put("entity.rigidbody.gravity", getEntity().getRigidBody().getGravity(
-				new Vector3f()).toString());
+		data.put("entity.gravity", getEntity().getGravity().toString());
 		//Mass
 		data.put("entity.rigidbody.rigidbodyconstructioninfo.mass",
 				new Float((1f / getEntity().getRigidBody().getInvMass())));
