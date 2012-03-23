@@ -138,7 +138,7 @@ public class BspDemo extends DemoApplication
 		dynamicsWorld.setGravity(gravity);
 		// new BspToBulletConverter().convertBsp(getClass().getResourceAsStream(
 		// "exported.bsp.txt"));
-		populate();
+		//populate();
 		BulletGlobals.setDeactivationTime(0.1f);
 		clientResetScene();
 		
@@ -320,9 +320,14 @@ public class BspDemo extends DemoApplication
 			@Override
 			public void onBlockCreate(BlockCreateEvent event)
 			{
-				RigidBody body = demo.localCreateRigidBody((1f/event.getEntity().getRigidBody().getInvMass()), event.getEntity().getRigidBody().getWorldTransform(new Transform()), event.getEntity().getRigidBody().getCollisionShape());
-				Entity e = new Entity(event.getEntity().getID(), body);
-				entityList.put(body, e);
+				float mass = (1f/event.getEntity().getRigidBody().getInvMass());
+				System.out.println("Event mass: " + mass);
+				System.out.println("Event transform: " + event.getEntity().getRigidBody().getWorldTransform(new Transform()).toString());
+				System.out.println("Event CollisionShape: " + event.getEntity().getRigidBody().getCollisionShape().toString());
+				RigidBody body = demo.localCreateRigidBody(mass, event.getEntity().getRigidBody().getWorldTransform(new Transform()), event.getEntity().getRigidBody().getCollisionShape());
+				//Entity e = new Entity(event.getEntity().getID(), body);
+				//entityList.put(body, e);
+				System.out.println("Added block");
 			}
 		};
 		remoteDispatcher.registerListener(Type.BLOCK_CREATE, remoteListener);
