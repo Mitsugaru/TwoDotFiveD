@@ -118,8 +118,9 @@ public class clientHandler extends Thread implements Comparable
                 out.println( "[[Servermessage]] add " + playerList[i] );
             }
         }
-        send( "Type /help for commands" );
         server.sendToAll( "[[Servermessage]] add " + name );
+        send( "Type /help for commands" );
+        
         addRoom( server.getDefault() );
         server.getDefault().addPlayer( this, "" );
         while ( !stop )

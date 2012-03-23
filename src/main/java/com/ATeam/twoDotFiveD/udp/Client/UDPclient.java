@@ -22,6 +22,16 @@ public class UDPclient implements Runnable{
 	MainStartScreen pntr;
 	EventDispatcher eventdispatcher;
 	int ID;
+	public UDPclient(InetAddress anAddress,int aPort,MainStartScreen dur,int ID){
+		serverAddress=anAddress;
+		serverPort=aPort;
+		pntr=dur;
+		this.ID=ID;
+		run=true;
+		try {
+			socket=new DatagramSocket();
+		} catch (SocketException e) {e.printStackTrace();}
+	}
 	public UDPclient(InetAddress anAddress,int aPort,MainStartScreen dur,int ID, EventDispatcher event){
 		serverAddress=anAddress;
 		serverPort=aPort;
@@ -74,7 +84,7 @@ public class UDPclient implements Runnable{
 		DatagramPacket receivePacket;
 		byte[] receiveData = new byte[512];
 		//this line for demo purposes, it simulates the program sending data
-		//new Thread(new temp(this)).start();
+		new Thread(new temp(this)).start();
 		while(run){
 			//this is where data will be received need to know where to send it
 			System.out.println("CLIENT LISTENING");
@@ -86,22 +96,23 @@ public class UDPclient implements Runnable{
 				e.printStackTrace();
 			}
 			 
-		      try {
-		    	  ByteArrayInputStream baos = new ByteArrayInputStream(receiveData);
-				ObjectInputStream oos = new ObjectInputStream(baos);
-				BlockCreateEvent event = (BlockCreateEvent)oos.readObject();
-				eventdispatcher.notify(event);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//		      try {
+//		    	  ByteArrayInputStream baos = new ByteArrayInputStream(receiveData);
+//				ObjectInputStream oos = new ObjectInputStream(baos);
+//				BlockCreateEvent event = (BlockCreateEvent)oos.readObject();
+//				eventdispatcher.notify(event);
+			//} 
+//			catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (ClassNotFoundException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 		      
 			
 		//	eventdispatcher.notify(event)
-			pntr.updateText(String.format("UDP-recieved from: %c:%c",(char) receiveData[0],(char) receiveData[1]));
+			pntr.updateText(String.format("UDP-recieved from: %c:%c",(byte) receiveData[0],(char) receiveData[1]));
 			System.out.println("revcieved");
 		}
 		socket.close();

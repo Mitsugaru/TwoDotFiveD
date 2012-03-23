@@ -22,7 +22,7 @@ public class temp implements Runnable{
 			}
 			char c=abc[r.nextInt(25)];
 			t.sendMessage(new byte[] {(byte) c});
-			//t.pntr.updateText(String.format("UDP-sent from %d: %c ",t.ID,c));
+			t.pntr.updateText(String.format("UDP-sent from %d: %c ",t.ID,c));
 			System.out.println("Sent");
 		}
 	}
