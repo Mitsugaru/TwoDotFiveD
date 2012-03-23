@@ -22,6 +22,7 @@ public class UDPclient implements Runnable{
 	MainStartScreen pntr;
 	EventDispatcher eventdispatcher;
 	int ID;
+	int count = 0;
 	public UDPclient(InetAddress anAddress,int aPort,MainStartScreen dur,int ID){
 		serverAddress=anAddress;
 		serverPort=aPort;
@@ -97,10 +98,21 @@ public class UDPclient implements Runnable{
 			}
 			 
 		      try {
+		    	  System.arraycopy(receiveData, 1, receiveData, 0, receiveData.length - 1);
+		    	  /*if(count == 0)
+					{
+						for(byte b : receiveData)
+						{
+							System.out.print(b + " ");
+						}
+						count++;
+					}*/
 		    	  ByteArrayInputStream baos = new ByteArrayInputStream(receiveData);
 				ObjectInputStream oos = new ObjectInputStream(baos);
 				EventPackage event = (EventPackage)oos.readObject();
 				event.getEvent();
+				oos.close();
+				baos.close();
 				//eventdispatcher.notify(event);
 			} 
 			catch (IOException e) {

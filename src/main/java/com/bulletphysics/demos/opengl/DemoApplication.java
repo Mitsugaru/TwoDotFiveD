@@ -895,7 +895,7 @@ public abstract class DemoApplication {
 		DefaultMotionState myMotionState = new DefaultMotionState(startTransform);
 
 		RigidBodyConstructionInfo cInfo = new RigidBodyConstructionInfo(mass, myMotionState, shape, localInertia);
-
+		
 		RigidBody body = new RigidBody(cInfo);
 		//#else
 		//btRigidBody* body = new btRigidBody(mass,0,shape,localInertia);	
@@ -916,7 +916,6 @@ public abstract class DemoApplication {
 				body.setGravity(new Vector3f(0f, 0f, 0f));
 			}
 		}
-
 		return body;
 	}
 

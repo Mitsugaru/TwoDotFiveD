@@ -101,7 +101,9 @@ public class BspDemo extends DemoApplication
 	public ConstraintSolver					solver;
 	public DefaultCollisionConfiguration	collisionConfiguration;
 	private static EventDispatcher			eventDispatcher		= new EventDispatcher();
+	private static EventDispatcher			remoteDispatcher	= new EventDispatcher();
 	private static chatClient				client;
+	int count = 0;
 	
 	public BspDemo(IGL gl)
 	{
@@ -250,18 +252,19 @@ public class BspDemo extends DemoApplication
 			{
 				if (bodyGravityType.equals("ANTIGRAVITY"))
 				{
-					entity.setGravity(new Vector3f(0f, 30f, 0f));
+					entity.getRigidBody().setGravity(new Vector3f(0f, 30f, 0f));
 				}
 				else if (bodyGravityType.equals("STASIS"))
 				{
-					entity.setGravity(new Vector3f(0f, 0f, 0f));
+					entity.getRigidBody().setGravity(new Vector3f(0f, 0f, 0f));
 				}
 			}
 			else
 			{
-				entity.setGravity(dynamicsWorld.getGravity(new Vector3f()));
+				entity.getRigidBody().setGravity(dynamicsWorld.getGravity(new Vector3f()));
 			}
 			entityList.put(body, entity);
+			eventDispatcher.notify(new BlockCreateEvent(entity));
 			Vector3f linVel = new Vector3f(destination.x - camPos.x,
 					destination.y - camPos.y, destination.z - camPos.z);
 			linVel.normalize();
@@ -283,7 +286,7 @@ public class BspDemo extends DemoApplication
 	public static void main(String[] args) throws Exception
 	{
 		BspDemo demo = new BspDemo(LWJGL.getGL());
-		client = new chatClient(null, "192.168.1.2", "Ju", eventDispatcher);
+		client = new chatClient(null, "192.168.1.2", "Ju", remoteDispatcher);
 		if (client.connect())
 		{
 			client.start();
@@ -298,11 +301,26 @@ public class BspDemo extends DemoApplication
 	}
 	
 	public void initListener(){
+		/**
+		 * LocalEvents
+		 */
 		BlockCollisionListener blockListener = new BlockCollisionListener();
 		eventDispatcher.registerListener(Type.BLOCK_CREATE, blockListener);
 		eventDispatcher.registerListener(Type.BLOCK_COLLISION, blockListener);
 		eventDispatcher.registerListener(Type.BLOCK_COLLISION_RESOLVED,
 				blockListener);
+		/**
+		 * Remote events
+		 */
+		BlockListener remoteListener = new BlockListener()
+		{
+			@Override
+			public void onBlockCreate(BlockCreateEvent event)
+			{
+				System.out.println("received event");
+			}
+		};
+		remoteDispatcher.registerListener(Type.BLOCK_CREATE, remoteListener);
 		//MusicPlayer mp = new MusicPlayer(eventDispatcher);
 	}
 	
@@ -382,10 +400,17 @@ public class BspDemo extends DemoApplication
 				oos.writeObject(new EventPackage(event));
 				oos.flush();
 				byte[] data = baos.toByteArray();
+				/*if(count == 0)
+				{
+					for(byte b : data)
+					{
+						System.out.print(b + " ");
+					}
+					count++;
+				}*/
 				client.sendMessage(data);
 				oos.close();
 				baos.close();
-				System.out.println("Sent object");
 			}
 			catch (IOException e)
 			{

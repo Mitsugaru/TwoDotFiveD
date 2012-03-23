@@ -56,7 +56,7 @@ public class chatClient extends Thread
     {
         try
         {
-        	ip="192.168.1.2";
+        	ip="localhost";
             socket = new Socket( ip, 1337 );
             return true;
         }
