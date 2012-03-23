@@ -46,7 +46,7 @@ public class UDPServer implements Runnable {
 	}
 	@Override
 	public void run() {
-		byte[] receiveData = new byte[512];
+		byte[] receiveData = new byte[1024];
 		System.out.println("UDP PORT"+port);
 		DatagramPacket receivePacket;
 		byte id;
@@ -70,7 +70,7 @@ public class UDPServer implements Runnable {
 					if((!c.equals(pntr))){
 						if(c.initialized()){
 							System.out.println("Relayed message from:"+pntr.getID()+" to:"+c.getID());
-							socket.send(c.message(new byte[] {receiveData[1]}));
+							socket.send(c.message(receiveData));
 						}
 					}
 
