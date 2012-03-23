@@ -1,6 +1,8 @@
 package com.ATeam.twoDotFiveD.event.block;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.ATeam.twoDotFiveD.block.Block;
 import com.ATeam.twoDotFiveD.entity.Entity;
@@ -35,5 +37,17 @@ public class BlockEvent extends Event<BlockListener> implements Serializable{
 	{
 		return entity;
 	}
+
+	@Override
+	public Map<String, Object> getData()
+	{
+		final Map<String, Object> data = new HashMap<String, Object>();
+		data.put("entity.gravity.x", entity.getGravity().x);
+		data.put("entity.gravity.y", entity.getGravity().y);
+		data.put("entity.gravity.z", entity.getGravity().z);
+		return getData();
+	}
+	
+	
 
 }

@@ -44,6 +44,7 @@ import com.ATeam.twoDotFiveD.event.block.BlockDestroyedEvent;
 import com.ATeam.twoDotFiveD.event.block.BlockListener;
 import com.ATeam.twoDotFiveD.event.block.BlockPhysicsChangeEvent;
 import com.ATeam.twoDotFiveD.music.MusicPlayer;
+import com.ATeam.twoDotFiveD.udp.Client.EventPackage;
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.util.ObjectArrayList;
 import com.bulletphysics.collision.broadphase.AxisSweep3;
@@ -374,11 +375,11 @@ public class BspDemo extends DemoApplication
 		{
 			// System.out.println("Created: " + event.getEntity().getID());
 			
-			/*try
+			try
 			{
 				final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				final ObjectOutputStream oos = new ObjectOutputStream(baos);
-				oos.writeObject(event);
+				oos.writeObject(new EventPackage(event));
 				oos.flush();
 				byte[] data = baos.toByteArray();
 				client.sendMessage(data);
@@ -389,7 +390,7 @@ public class BspDemo extends DemoApplication
 			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}*/
+			}
 			
 		}
 		
