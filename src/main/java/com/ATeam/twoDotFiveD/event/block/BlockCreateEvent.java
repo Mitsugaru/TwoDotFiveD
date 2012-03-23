@@ -69,6 +69,7 @@ public class BlockCreateEvent extends BlockEvent
 		data.put("entity.rigidbody.angularfactor", getEntity().getRigidBody().getAngularFactor());
 		data.put("entity.rigidbody.angularvelocity", getEntity().getRigidBody().getAngularVelocity(new Vector3f()).toString());
 		data.put("entity.rigidbody.linearvelocity", getEntity().getRigidBody().getLinearVelocity(new Vector3f()).toString());
+		System.out.println(getEntity().getRigidBody().getLinearVelocity(new Vector3f()).toString());
 		data.put("entity.rigidbody.lineardampening", getEntity().getRigidBody().getLinearDamping());
 		data.put("entity.rigidbody.angulardampening", getEntity().getRigidBody().getAngularDamping());
 		data.put("entity.rigidbody.center", getEntity().getRigidBody().getCenterOfMassPosition(new Vector3f()).toString());
