@@ -286,7 +286,7 @@ public class BspDemo extends DemoApplication
 	public static void main(String[] args) throws Exception
 	{
 		demo = new BspDemo(LWJGL.getGL());
-		client = new chatClient(null, "137.155.2.104", "mac", remoteDispatcher);
+		client = new chatClient(null, "137.155.2.104", "ASDF", remoteDispatcher);
 		if (client.connect())
 		{
 			client.start();
@@ -410,11 +410,7 @@ public class BspDemo extends DemoApplication
 				oos.writeObject(new EventPackage(event));
 				oos.flush();
 				byte[] data = baos.toByteArray();
-				if(count == 0)
-				{
 					System.out.println(data.length);
-					count++;
-				}
 				client.sendMessage(data);
 				oos.close();
 				baos.close();
