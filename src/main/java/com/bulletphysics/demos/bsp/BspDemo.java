@@ -384,6 +384,8 @@ public class BspDemo extends DemoApplication
 			@Override
 			public void onBlockDestroyed(BlockDestroyedEvent event)
 			{
+				//TODO not working
+				System.out.println("Received destroyed event");
 				Entity removed = null;
 				for(Entity e : entityList.values())
 				{
@@ -395,6 +397,7 @@ public class BspDemo extends DemoApplication
 				}
 				if(removed != null)
 				{
+					System.out.println("Found in list");
 					removed = entityList.remove(removed.getRigidBody());
 					final CollisionShape shape = removed.getRigidBody().getCollisionShape();
 					CollisionObject toRemove = null;
@@ -402,12 +405,14 @@ public class BspDemo extends DemoApplication
 					{
 						if(o.getCollisionShape().equals(shape))
 						{
+							System.out.println("found in dynamics world");
 							toRemove = o;
 							break;
 						}
 					}
 					if(toRemove != null)
 					{
+						System.out.println("Removed");
 						dynamicsWorld.removeCollisionObject(toRemove);
 					}
 					
