@@ -160,7 +160,7 @@ public class EventPackage implements Serializable
 		}
 		else if(className.contains("BlockDestroyedEvent"))
 		{
-			System.out.println("BlockDestroyedEvent package");
+			//System.out.println("BlockDestroyedEvent package");
 			Entity e = new Entity((String) data.get("entity.ID"), null);
 			return(new BlockDestroyedEvent(e));
 		}
