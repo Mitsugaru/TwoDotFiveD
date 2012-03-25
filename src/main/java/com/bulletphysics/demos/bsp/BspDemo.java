@@ -358,15 +358,14 @@ public class BspDemo extends DemoApplication
 				body.setDamping(event.getEntity().getRigidBody()
 						.getLinearDamping(), event.getEntity().getRigidBody()
 						.getAngularDamping());
-				// TODO gravity is still borked, at least at the remote side.
 				body.setGravity(event.getEntity().getGravity());
-				System.out.println("Remote gravity: " +event.getEntity().getGravity());
+				//System.out.println("Remote gravity: " +event.getEntity().getGravity());
 				// System.out.println(event.getEntity().getRigidBody().getLinearVelocity(new
 				// Vector3f()).toString());
 				Entity e = new Entity(event.getEntity().getID(), body);
 				e.setGravity(event.getEntity().getGravity());
 				entityList.put(body, e);
-				System.out.println("Added block");
+				//System.out.println("Added block");
 			}
 		};
 		remoteDispatcher.registerListener(Type.BLOCK_CREATE, remoteListener);

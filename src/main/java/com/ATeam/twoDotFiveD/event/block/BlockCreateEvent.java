@@ -10,7 +10,9 @@ import com.ATeam.twoDotFiveD.block.Block;
 import com.ATeam.twoDotFiveD.entity.Entity;
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.collision.shapes.CollisionShape;
+import com.bulletphysics.collision.shapes.ConeShape;
 import com.bulletphysics.collision.shapes.ConvexHullShape;
+import com.bulletphysics.collision.shapes.SphereShape;
 import com.bulletphysics.linearmath.Transform;
 
 public class BlockCreateEvent extends BlockEvent
@@ -48,7 +50,7 @@ public class BlockCreateEvent extends BlockEvent
 		 */
 		//Gravity
 		data.put("entity.gravity", getEntity().getGravity().toString());
-		System.out.println("Event gravity: " + getEntity().getGravity().toString());
+		//System.out.println("Event gravity: " + getEntity().getGravity().toString());
 		//Mass
 		data.put("entity.rigidbody.rigidbodyconstructioninfo.mass",
 				new Float((1f / getEntity().getRigidBody().getInvMass())));
@@ -84,6 +86,17 @@ public class BlockCreateEvent extends BlockEvent
 		{
 			//BoxShape
 			data.put("entity.rigidbody.collisionshape.localscaling", ((BoxShape) shape).getLocalScaling(new Vector3f()).toString());
+			//System.out.println((String)data.get("entity.rigidbody.collisionshape.localscaling"));
+		}
+		else if(shape instanceof SphereShape)
+		{
+			data.put("entity.rigidbody.collisionshape.radius", ((SphereShape) shape).getRadius());
+			//System.out.println((String)data.get("entity.rigidbody.collisionshape.localscaling"));
+		}
+		else if(shape instanceof ConeShape)
+		{
+			data.put("entity.rigidbody.collisionshape.height",((ConeShape) shape).getHeight());
+			data.put("entity.rigidbody.collisionshape.radius",((ConeShape) shape).getRadius());
 		}
 		else if(shape instanceof ConvexHullShape)
 		{

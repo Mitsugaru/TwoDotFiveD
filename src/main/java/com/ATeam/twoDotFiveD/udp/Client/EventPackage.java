@@ -13,7 +13,9 @@ import com.ATeam.twoDotFiveD.event.Event.Type;
 import com.ATeam.twoDotFiveD.event.block.BlockCreateEvent;
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.collision.shapes.CollisionShape;
+import com.bulletphysics.collision.shapes.ConeShape;
 import com.bulletphysics.collision.shapes.ConvexHullShape;
+import com.bulletphysics.collision.shapes.SphereShape;
 import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
 import com.bulletphysics.linearmath.DefaultMotionState;
@@ -57,6 +59,7 @@ public class EventPackage implements Serializable
 			centerString = centerString.replace(",","");
 			centerString = centerString.replace(")", "");
 			final String[] centerCut = centerString.split(" ");
+			//TODO not a perfect translation
 			final Vector3f center = new Vector3f(Float.parseFloat(centerCut[0]), Float.parseFloat(centerCut[1]), Float.parseFloat(centerCut[2]));
 			startTransform.origin.set(center);
 			//System.out.println(startTransform.toString());
@@ -68,8 +71,22 @@ public class EventPackage implements Serializable
 			//System.out.println("Convex: " + shapeClass.contains("ConvexHullShape"));
 			if(shapeClass.contains("BoxShape"))
 			{
-				//TODO parse localscaling string to be Vector3f
-				c = new BoxShape(new Vector3f(1f, 1f, 1f));
+				//parse localscaling string to be Vector3f
+				String localscaling = (String)data.get("entity.rigidbody.collisionshape.localscaling");
+				localscaling = localscaling.replace("(", "");
+				localscaling = localscaling.replace(",","");
+				localscaling = localscaling.replace(")", "");
+				final String[] localscalingcut = localscaling.split(" ");
+				c = new BoxShape(new Vector3f(Float.parseFloat(localscalingcut[0]), Float.parseFloat(localscalingcut[1]), Float.parseFloat(localscalingcut[2])));
+			}
+			else if(shapeClass.contains("SphereShape"))
+			{
+				
+				c = new SphereShape(((Float)data.get("entity.rigidbody.collisionshape.radius")).floatValue());
+			}
+			else if(shapeClass.contains("ConeShape"))
+			{
+				c = new ConeShape(((Float)data.get("entity.rigidbody.collisionshape.height")).floatValue(),((Float)data.get("entity.rigidbody.collisionshape.radius")).floatValue());
 			}
 			else if(shapeClass.contains("ConvexHullShape"))
 			{
@@ -123,7 +140,7 @@ public class EventPackage implements Serializable
 			gravityString = gravityString.replace(")", "");
 			final String[] gravityCut =  gravityString.split(" ");
 			final Vector3f gravity = new Vector3f(Float.parseFloat(gravityCut[0]), Float.parseFloat(gravityCut[1]), Float.parseFloat(gravityCut[2]));
-			System.out.println("EP Gravity: " + gravity.toString());
+			//System.out.println("EP Gravity: " + gravity.toString());
 			body.setGravity(gravity);
 			final String ID = (String) data.get("entity.ID");
 			Entity e = new Entity(ID, body);
