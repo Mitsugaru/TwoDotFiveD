@@ -37,7 +37,7 @@ public class TwoDotFiveD
 		Logging.systemInfo();
 		Logging.memoryInfo();
 		// Event test
-		dispatcher.registerListener(Event.Type.PLAYER_MOVE, new ListenerTest());
+		//dispatcher.registerListener(Event.Type.PLAYER_MOVE, new ListenerTest());
 		final Player player = new Player();
 		dispatcher.notify(new PlayerMoveEvent(player));
 		// TODO initialize screen
