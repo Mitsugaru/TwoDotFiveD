@@ -119,6 +119,7 @@ public class EventPackage implements Serializable
 			gravityString = gravityString.replace(")", "");
 			final String[] gravityCut =  linear.split(" ");
 			final Vector3f gravity = new Vector3f(Float.parseFloat(gravityCut[0]), Float.parseFloat(gravityCut[1]), Float.parseFloat(gravityCut[2]));
+			System.out.println(gravity.toString());
 			body.setGravity(gravity);
 			final String ID = (String) data.get("entity.ID");
 			Entity e = new Entity(ID, body);
