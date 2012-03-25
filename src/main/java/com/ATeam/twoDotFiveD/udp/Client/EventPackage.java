@@ -121,7 +121,7 @@ public class EventPackage implements Serializable
 			gravityString = gravityString.replace("(", "");
 			gravityString = gravityString.replace(",","");
 			gravityString = gravityString.replace(")", "");
-			final String[] gravityCut =  linear.split(" ");
+			final String[] gravityCut =  gravityString.split(" ");
 			final Vector3f gravity = new Vector3f(Float.parseFloat(gravityCut[0]), Float.parseFloat(gravityCut[1]), Float.parseFloat(gravityCut[2]));
 			System.out.println("EP Gravity: " + gravity.toString());
 			body.setGravity(gravity);
