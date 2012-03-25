@@ -83,7 +83,7 @@ public class UDPclient implements Runnable{
 		}
 		System.out.println("hi2");
 		DatagramPacket receivePacket;
-		byte[] receiveData = new byte[1024];
+		byte[] receiveData = new byte[2560];
 		//this line for demo purposes, it simulates the program sending data
 		//new Thread(new temp(this)).start();
 		while(run){

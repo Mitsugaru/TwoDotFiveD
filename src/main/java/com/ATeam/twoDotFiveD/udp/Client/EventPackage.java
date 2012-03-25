@@ -48,8 +48,18 @@ public class EventPackage implements Serializable
 		if(className.contains("BlockCreateEvent"))
 		{
 			final float mass = ((Float) data.get("entity.rigidbody.rigidbodyconstructioninfo.mass")).floatValue();
-			final Matrix4f transformMatrix = new Matrix4f((float[])(data.get("entity.rigidbody.motionstate.transform")));
-			final Transform startTransform = new Transform(transformMatrix);
+			//final Matrix4f transformMatrix = new Matrix4f((float[])(data.get("entity.rigidbody.motionstate.transform")));
+			//System.out.println(transformMatrix.toString());
+			final Transform startTransform = new Transform();
+			startTransform.setIdentity();
+			String centerString = (String) data.get("entity.rigidbody.center");
+			centerString = centerString.replace("(", "");
+			centerString = centerString.replace(",","");
+			centerString = centerString.replace(")", "");
+			final String[] centerCut = centerString.split(" ");
+			final Vector3f center = new Vector3f(Float.parseFloat(centerCut[0]), Float.parseFloat(centerCut[1]), Float.parseFloat(centerCut[2]));
+			startTransform.origin.set(center);
+			System.out.println(startTransform.toString());
 			Vector3f inertia = new Vector3f(0f, 0f, 0f);
 			final String shapeClass = (String)data.get("entity.rigidbody.collisionshape.class");
 			CollisionShape c = new BoxShape(new Vector3f(1f, 1f, 1f));
@@ -63,18 +73,51 @@ public class EventPackage implements Serializable
 			}
 			else if(shapeClass.contains("ConvexHullShape"))
 			{
-				//TODO make new shape and parse all points to be added to shape
+				//Make new shape and parse all points to be added to shape
 				ObjectArrayList<Vector3f> list = new ObjectArrayList<Vector3f>();
-				for(int i = 0; i < ((Integer)data.get("entity.rigidbody.collisionshape.size")).intValue(); i++)
+				int size = ((Integer)data.get("entity.rigidbody.collisionshape.size")).intValue();
+				System.out.println(size);
+				for(int i = 0; i < size; i++)
 				{
-					System.out.println((String) data.get("entity.rigidbody.collisionshape.point" + i));
+					String point = ((String) data.get("entity.rigidbody.collisionshape.point" + i));
+					point = point.replace("(", "");
+					point = point.replace(",","");
+					point = point.replace(")", "");
+					final String[] cut = point.split(" ");
+					list.add(new Vector3f(Float.parseFloat(cut[0]), Float.parseFloat(cut[1]), Float.parseFloat(cut[2])));
 				}
-				//c = new ConvexHullShape(list);
+				c = new ConvexHullShape(list);
+				startTransform.origin.set(0, 0, 0);
 			}
 			c.calculateLocalInertia(mass, inertia);
 			DefaultMotionState myMotionState = new DefaultMotionState(startTransform);
+			System.out.println("Mass:" + mass);
+			//System.out.println("myMotionState" + myMotionState.toString());
+			System.out.println("Transform: " + startTransform.toString());
+			System.out.println("Shape: " + c.toString());
+			System.out.println("Inertia: " + inertia.toString());
 			final RigidBodyConstructionInfo info = new RigidBodyConstructionInfo(mass, myMotionState, c, inertia);
 			RigidBody body = new RigidBody(info);
+			body.setAngularFactor(((Float)data.get("entity.rigidbody.angularfactor")).floatValue());
+			String angular = (String) data.get("entity.rigidbody.angularvelocity");
+			angular = angular.replace("(", "");
+			angular = angular.replace(",","");
+			angular = angular.replace(")", "");
+			final String[] angularCut =  angular.split(" ");
+			body.setAngularVelocity(new Vector3f(Float.parseFloat(angularCut[0]), Float.parseFloat(angularCut[1]), Float.parseFloat(angularCut[2])));
+			String linear = (String) data.get("entity.rigidbody.linearvelocity");
+			linear = linear.replace("(", "");
+			linear = linear.replace(",","");
+			linear = linear.replace(")", "");
+			final String[] linearCut =  linear.split(" ");
+			body.setLinearVelocity(new Vector3f(Float.parseFloat(linearCut[0]), Float.parseFloat(linearCut[1]), Float.parseFloat(linearCut[2])));
+			body.setDamping(((Float)data.get("entity.rigidbody.lineardampening")).floatValue(), ((Float)data.get("entity.rigidbody.angulardampening")).floatValue());
+			String gravity = (String) data.get("entity.gravity");
+			gravity = gravity.replace("(", "");
+			gravity = gravity.replace(",","");
+			gravity = gravity.replace(")", "");
+			final String[] gravityCut =  linear.split(" ");
+			body.setGravity(new Vector3f(Float.parseFloat(gravityCut[0]), Float.parseFloat(gravityCut[1]), Float.parseFloat(gravityCut[2])));
 			final String ID = (String) data.get("entity.ID");
 			Entity e = new Entity(ID, body);
 			return(new BlockCreateEvent(e));
