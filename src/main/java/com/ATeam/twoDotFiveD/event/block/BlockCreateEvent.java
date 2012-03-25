@@ -48,6 +48,7 @@ public class BlockCreateEvent extends BlockEvent
 		 */
 		//Gravity
 		data.put("entity.gravity", getEntity().getGravity().toString());
+		System.out.println("Event gravity: " + getEntity().getGravity().toString());
 		//Mass
 		data.put("entity.rigidbody.rigidbodyconstructioninfo.mass",
 				new Float((1f / getEntity().getRigidBody().getInvMass())));

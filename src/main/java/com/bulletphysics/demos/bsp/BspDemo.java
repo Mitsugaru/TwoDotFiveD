@@ -284,7 +284,6 @@ public class BspDemo extends DemoApplication
 						dynamicsWorld.getGravity(new Vector3f()));
 				entity.setGravity(dynamicsWorld.getGravity(new Vector3f()));
 			}
-			System.out.println(entity.getGravity().toString());
 			entityList.put(body, entity);
 			eventDispatcher.notify(new BlockCreateEvent(entity));
 		}
@@ -447,7 +446,7 @@ public class BspDemo extends DemoApplication
 				oos.writeObject(new EventPackage(event));
 				oos.flush();
 				byte[] data = baos.toByteArray();
-				System.out.println(data.length);
+				//System.out.println(data.length);
 				client.sendMessage(data);
 				oos.close();
 				baos.close();
