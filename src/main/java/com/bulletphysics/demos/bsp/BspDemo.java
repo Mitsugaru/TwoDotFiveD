@@ -396,7 +396,21 @@ public class BspDemo extends DemoApplication
 				if(removed != null)
 				{
 					removed = entityList.remove(removed.getRigidBody());
-					dynamicsWorld.removeRigidBody(removed.getRigidBody());
+					final CollisionShape shape = removed.getRigidBody().getCollisionShape();
+					CollisionObject toRemove = null;
+					for(CollisionObject o : dynamicsWorld.getCollisionObjectArray())
+					{
+						if(o.getCollisionShape().equals(shape))
+						{
+							toRemove = o;
+							break;
+						}
+					}
+					if(toRemove != null)
+					{
+						dynamicsWorld.removeCollisionObject(toRemove);
+					}
+					
 				}
 			}
 		};
