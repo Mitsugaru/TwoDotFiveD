@@ -320,6 +320,7 @@ public class BspDemo extends DemoApplication {
 				// System.out.println(event.getEntity().getRigidBody().getLinearVelocity(new
 				// Vector3f()).toString());
 				Entity e = new Entity(event.getEntity().getID(), body);
+				e.setGravity(event.getEntity().getGravity());
 				entityList.put(body, e);
 				System.out.println("Added block");
 			}
