@@ -361,6 +361,7 @@ public class BspDemo extends DemoApplication
 						.getAngularDamping());
 				// TODO gravity is still borked, at least at the remote side.
 				body.setGravity(event.getEntity().getGravity());
+				System.out.println(event.getEntity().getGravity());
 				// System.out.println(event.getEntity().getRigidBody().getLinearVelocity(new
 				// Vector3f()).toString());
 				Entity e = new Entity(event.getEntity().getID(), body);

@@ -113,7 +113,7 @@ public class EventPackage implements Serializable
 			body.setLinearVelocity(new Vector3f(Float.parseFloat(linearCut[0]), Float.parseFloat(linearCut[1]), Float.parseFloat(linearCut[2])));
 			body.setDamping(((Float)data.get("entity.rigidbody.lineardampening")).floatValue(), ((Float)data.get("entity.rigidbody.angulardampening")).floatValue());
 			String gravityString = (String) data.get("entity.gravity");
-			System.out.println(gravityString);
+			//System.out.println(gravityString);
 			gravityString = gravityString.replace("(", "");
 			gravityString = gravityString.replace(",","");
 			gravityString = gravityString.replace(")", "");
