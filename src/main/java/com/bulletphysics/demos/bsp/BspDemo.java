@@ -401,6 +401,7 @@ public class BspDemo extends DemoApplication
 			}
 		};
 		remoteDispatcher.registerListener(Type.BLOCK_CREATE, remoteListener);
+		remoteDispatcher.registerListener(Type.BLOCK_DESTROYED, remoteListener);
 		// MusicPlayer mp = new MusicPlayer(eventDispatcher);
 	}
 	
@@ -468,26 +469,13 @@ public class BspDemo extends DemoApplication
 		@Override
 		public void onBlockCreate(BlockCreateEvent event)
 		{
-			// System.out.println("Created: " + event.getEntity().getID());
-			
-			try
-			{
-				final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				final ObjectOutputStream oos = new ObjectOutputStream(baos);
-				oos.writeObject(new EventPackage(event));
-				oos.flush();
-				byte[] data = baos.toByteArray();
-				//System.out.println(data.length);
-				client.sendMessage(data);
-				oos.close();
-				baos.close();
-			}
-			catch (IOException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
+			sendToRemote(event);
+		}
+		
+		@Override
+		public void onBlockDestroyed(BlockDestroyedEvent event)
+		{
+			sendToRemote(event);
 		}
 		
 		@Override
@@ -602,6 +590,27 @@ public class BspDemo extends DemoApplication
 				return true;
 			}
 			return false;
+		}
+		
+		public void sendToRemote(Event<?> event)
+		{
+			try
+			{
+				final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				final ObjectOutputStream oos = new ObjectOutputStream(baos);
+				oos.writeObject(new EventPackage(event));
+				oos.flush();
+				byte[] data = baos.toByteArray();
+				//System.out.println(data.length);
+				client.sendMessage(data);
+				oos.close();
+				baos.close();
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	
