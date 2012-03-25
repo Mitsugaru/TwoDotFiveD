@@ -339,6 +339,7 @@ public class BspDemo extends DemoApplication
 		 */
 		BlockCollisionListener blockListener = new BlockCollisionListener();
 		eventDispatcher.registerListener(Type.BLOCK_CREATE, blockListener);
+		eventDispatcher.registerListener(Type.BLOCK_DESTROYED, blockListener);
 		eventDispatcher.registerListener(Type.BLOCK_COLLISION, blockListener);
 		eventDispatcher.registerListener(Type.BLOCK_COLLISION_RESOLVED,
 				blockListener);
