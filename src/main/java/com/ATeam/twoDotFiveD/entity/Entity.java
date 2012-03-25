@@ -8,6 +8,7 @@ import com.bulletphysics.dynamics.RigidBody;
 
 public class Entity implements Serializable
 {
+	//TODO need local owner ID to differentiate which client made what Entity
 	private String		ID				= "UNKNOWN";
 	private RigidBody	rigidBody;
 	private String[]	description = {"NONE"};
