@@ -45,7 +45,7 @@ public abstract class Event<L> {
 	public Map<String, Object> getData()
 	{
 		final Map<String, Object> data = new HashMap<String, Object>();
-		data.put("name", name);
+		data.put("class", name);
 		return data;
 	}
 
