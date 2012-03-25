@@ -59,13 +59,13 @@ public class EventPackage implements Serializable
 			final String[] centerCut = centerString.split(" ");
 			final Vector3f center = new Vector3f(Float.parseFloat(centerCut[0]), Float.parseFloat(centerCut[1]), Float.parseFloat(centerCut[2]));
 			startTransform.origin.set(center);
-			System.out.println(startTransform.toString());
+			//System.out.println(startTransform.toString());
 			Vector3f inertia = new Vector3f(0f, 0f, 0f);
 			final String shapeClass = (String)data.get("entity.rigidbody.collisionshape.class");
 			CollisionShape c = new BoxShape(new Vector3f(1f, 1f, 1f));
-			System.out.println(shapeClass);
-			System.out.println("BoxShape: " + shapeClass.contains("BoxShape"));
-			System.out.println("Convex: " + shapeClass.contains("ConvexHullShape"));
+			//System.out.println(shapeClass);
+			//System.out.println("BoxShape: " + shapeClass.contains("BoxShape"));
+			//System.out.println("Convex: " + shapeClass.contains("ConvexHullShape"));
 			if(shapeClass.contains("BoxShape"))
 			{
 				//TODO parse localscaling string to be Vector3f
@@ -76,7 +76,7 @@ public class EventPackage implements Serializable
 				//Make new shape and parse all points to be added to shape
 				ObjectArrayList<Vector3f> list = new ObjectArrayList<Vector3f>();
 				int size = ((Integer)data.get("entity.rigidbody.collisionshape.size")).intValue();
-				System.out.println(size);
+				//System.out.println(size);
 				for(int i = 0; i < size; i++)
 				{
 					String point = ((String) data.get("entity.rigidbody.collisionshape.point" + i));
@@ -91,11 +91,11 @@ public class EventPackage implements Serializable
 			}
 			c.calculateLocalInertia(mass, inertia);
 			DefaultMotionState myMotionState = new DefaultMotionState(startTransform);
-			System.out.println("Mass:" + mass);
+			//System.out.println("Mass:" + mass);
 			//System.out.println("myMotionState" + myMotionState.toString());
-			System.out.println("Transform: " + startTransform.toString());
-			System.out.println("Shape: " + c.toString());
-			System.out.println("Inertia: " + inertia.toString());
+			//System.out.println("Transform: " + startTransform.toString());
+			//System.out.println("Shape: " + c.toString());
+			//System.out.println("Inertia: " + inertia.toString());
 			final RigidBodyConstructionInfo info = new RigidBodyConstructionInfo(mass, myMotionState, c, inertia);
 			RigidBody body = new RigidBody(info);
 			body.setAngularFactor(((Float)data.get("entity.rigidbody.angularfactor")).floatValue());
@@ -113,6 +113,7 @@ public class EventPackage implements Serializable
 			body.setLinearVelocity(new Vector3f(Float.parseFloat(linearCut[0]), Float.parseFloat(linearCut[1]), Float.parseFloat(linearCut[2])));
 			body.setDamping(((Float)data.get("entity.rigidbody.lineardampening")).floatValue(), ((Float)data.get("entity.rigidbody.angulardampening")).floatValue());
 			String gravity = (String) data.get("entity.gravity");
+			System.out.println(gravity);
 			gravity = gravity.replace("(", "");
 			gravity = gravity.replace(",","");
 			gravity = gravity.replace(")", "");

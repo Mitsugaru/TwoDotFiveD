@@ -253,6 +253,7 @@ public class BspDemo extends DemoApplication {
 						dynamicsWorld.getGravity(new Vector3f()));
 				entity.setGravity(dynamicsWorld.getGravity(new Vector3f()));
 			}
+			System.out.println(entity.getGravity().toString());
 			entityList.put(body, entity);
 			eventDispatcher.notify(new BlockCreateEvent(entity));
 		}
@@ -260,7 +261,7 @@ public class BspDemo extends DemoApplication {
 
 	public static void main(String[] args) throws Exception {
 		demo = new BspDemo(LWJGL.getGL());
-		client = new chatClient(null, "137.155.2.104", "ASDF", remoteDispatcher);
+		client = new chatClient(null, "192.168.1.14", "BASE", remoteDispatcher);
 		if (client.connect())
 		{
 			client.start();
