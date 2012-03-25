@@ -112,15 +112,17 @@ public class EventPackage implements Serializable
 			final String[] linearCut =  linear.split(" ");
 			body.setLinearVelocity(new Vector3f(Float.parseFloat(linearCut[0]), Float.parseFloat(linearCut[1]), Float.parseFloat(linearCut[2])));
 			body.setDamping(((Float)data.get("entity.rigidbody.lineardampening")).floatValue(), ((Float)data.get("entity.rigidbody.angulardampening")).floatValue());
-			String gravity = (String) data.get("entity.gravity");
-			System.out.println(gravity);
-			gravity = gravity.replace("(", "");
-			gravity = gravity.replace(",","");
-			gravity = gravity.replace(")", "");
+			String gravityString = (String) data.get("entity.gravity");
+			System.out.println(gravityString);
+			gravityString = gravityString.replace("(", "");
+			gravityString = gravityString.replace(",","");
+			gravityString = gravityString.replace(")", "");
 			final String[] gravityCut =  linear.split(" ");
-			body.setGravity(new Vector3f(Float.parseFloat(gravityCut[0]), Float.parseFloat(gravityCut[1]), Float.parseFloat(gravityCut[2])));
+			final Vector3f gravity = new Vector3f(Float.parseFloat(gravityCut[0]), Float.parseFloat(gravityCut[1]), Float.parseFloat(gravityCut[2]));
+			body.setGravity(gravity);
 			final String ID = (String) data.get("entity.ID");
 			Entity e = new Entity(ID, body);
+			e.setGravity(gravity);
 			return(new BlockCreateEvent(e));
 		}
 		else

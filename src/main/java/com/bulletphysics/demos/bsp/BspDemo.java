@@ -332,7 +332,7 @@ public class BspDemo extends DemoApplication {
 
 	// //////////////////////////////////////////////////////////////////////////
 
-	private class BspToBulletConverter extends BspConverter {
+	/*private class BspToBulletConverter extends BspConverter {
 		@Override
 		public void addConvexVerticesCollider(ObjectArrayList<Vector3f> vertices) {
 			if (vertices.size() > 0) {
@@ -351,7 +351,7 @@ public class BspDemo extends DemoApplication {
 				localCreateRigidBody(mass, startTransform, shape);
 			}
 		}
-	}
+	}*/
 
 	public class BspYamlToBulletConverter extends BspYamlConverter {
 
@@ -373,11 +373,11 @@ public class BspDemo extends DemoApplication {
 			Entity e = new Entity(null, null);
 			if (description != null) {
 				e = new Entity(name, body, image, description);
-				entityList.put(body, e);
 			} else {
 				e = new Entity(name, body, image);
-				entityList.put(body, e);
 			}
+			e.setGravity(acceleration);
+			entityList.put(body, e);
 			eventDispatcher.notify(new BlockCreateEvent(e));
 		}
 
