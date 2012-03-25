@@ -239,15 +239,19 @@ public class BspDemo extends DemoApplication {
 			body.setCcdSweptSphereRadius(0.2f);
 			Entity entity = new Entity(body.getCollisionShape().getName(), body);
 			// Dynamic gravity for object
+			//TODO consolidate setgravity into one method, let entity set its tied rigidbody gravity
 			if (!bodyGravityType.equals("NORMAL")) {
 				if (bodyGravityType.equals("ANTIGRAVITY")) {
 					entity.getRigidBody().setGravity(new Vector3f(0f, 30f, 0f));
+					entity.setGravity(new Vector3f(0f, 30f, 0f));
 				} else if (bodyGravityType.equals("STASIS")) {
 					entity.getRigidBody().setGravity(new Vector3f(0f, 0f, 0f));
+					entity.setGravity(new Vector3f(0f, 0f, 0f));
 				}
 			} else {
 				entity.getRigidBody().setGravity(
 						dynamicsWorld.getGravity(new Vector3f()));
+				entity.setGravity(dynamicsWorld.getGravity(new Vector3f()));
 			}
 			entityList.put(body, entity);
 			eventDispatcher.notify(new BlockCreateEvent(entity));
