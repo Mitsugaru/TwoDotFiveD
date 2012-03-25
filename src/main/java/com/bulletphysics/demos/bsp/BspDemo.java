@@ -198,8 +198,22 @@ public class BspDemo extends DemoApplication
 						.getCollisionObjectArray().toArray(
 								new CollisionObject[0]))
 				{
+					Entity e = null;
+					for(RigidBody r : entityList.keySet())
+					{
+						if(r.getCollisionShape().equals(a.getCollisionShape()))
+						{
+							e = entityList.get(r);
+							break;
+						}
+					}
 					dynamicsWorld.removeCollisionObject(a);
-					entityList.remove(a);
+					if(e != null)
+					{
+						eventDispatcher.notify(new BlockDestroyedEvent(e));
+						entityList.remove(e);
+					}
+					
 				}
 				// repopulate world
 				populate();
@@ -366,6 +380,24 @@ public class BspDemo extends DemoApplication
 				e.setGravity(event.getEntity().getGravity());
 				entityList.put(body, e);
 				//System.out.println("Added block");
+			}
+			@Override
+			public void onBlockDestroyed(BlockDestroyedEvent event)
+			{
+				Entity removed = null;
+				for(Entity e : entityList.values())
+				{
+					if(e.getID().equals(event.getEntity().getID()))
+					{
+						removed = e;
+						break;
+					}
+				}
+				if(removed != null)
+				{
+					removed = entityList.remove(removed.getRigidBody());
+					dynamicsWorld.removeRigidBody(removed.getRigidBody());
+				}
 			}
 		};
 		remoteDispatcher.registerListener(Type.BLOCK_CREATE, remoteListener);
@@ -585,7 +617,7 @@ public class BspDemo extends DemoApplication
 		}
 		
 		/**
-		 * Called when a new collision between objects occured
+		 * Called when a new collision between objects occurred
 		 */
 		@Override
 		public PersistentManifold getNewManifold(Object b0, Object b1)

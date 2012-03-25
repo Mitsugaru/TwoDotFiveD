@@ -11,6 +11,7 @@ import com.ATeam.twoDotFiveD.entity.Entity;
 import com.ATeam.twoDotFiveD.event.Event;
 import com.ATeam.twoDotFiveD.event.Event.Type;
 import com.ATeam.twoDotFiveD.event.block.BlockCreateEvent;
+import com.ATeam.twoDotFiveD.event.block.BlockDestroyedEvent;
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.collision.shapes.CollisionShape;
 import com.bulletphysics.collision.shapes.ConeShape;
@@ -146,6 +147,11 @@ public class EventPackage implements Serializable
 			Entity e = new Entity(ID, body);
 			e.setGravity(gravity);
 			return(new BlockCreateEvent(e));
+		}
+		else if(className.contains("BlockDestroyedEvent"))
+		{
+			Entity e = new Entity((String) data.get("entity.ID"), null);
+			return(new BlockDestroyedEvent(e));
 		}
 		else
 		{
