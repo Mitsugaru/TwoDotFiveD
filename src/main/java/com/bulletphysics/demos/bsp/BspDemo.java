@@ -104,6 +104,7 @@ public class BspDemo extends DemoApplication
 	private static EventDispatcher			remoteDispatcher	= new EventDispatcher();
 	private static chatClient				client;
 	int										count				= 0;
+	private static boolean					connected			= false;
 	
 	public BspDemo(IGL gl)
 	{
@@ -199,16 +200,16 @@ public class BspDemo extends DemoApplication
 								new CollisionObject[0]))
 				{
 					Entity e = null;
-					for(RigidBody r : entityList.keySet())
+					for (RigidBody r : entityList.keySet())
 					{
-						if(r.getCollisionShape().equals(a.getCollisionShape()))
+						if (r.getCollisionShape().equals(a.getCollisionShape()))
 						{
 							e = entityList.get(r);
 							break;
 						}
 					}
 					dynamicsWorld.removeCollisionObject(a);
-					if(e != null)
+					if (e != null)
 					{
 						eventDispatcher.notify(new BlockDestroyedEvent(e));
 						entityList.remove(e);
@@ -313,13 +314,14 @@ public class BspDemo extends DemoApplication
 			if (client.connect())
 			{
 				client.start();
+				connected = true;
 			}
 			Thread.sleep(2000);
 		}
 		catch (Exception e)
 		{
 			// No networking
-			// TODO have variable on whether or not to use the networking stuff
+			connected = false;
 		}
 		demo.initListener();
 		demo.initPhysics();
@@ -346,81 +348,90 @@ public class BspDemo extends DemoApplication
 		/**
 		 * Remote events
 		 */
-		BlockListener remoteListener = new BlockListener() {
-			@Override
-			public void onBlockCreate(BlockCreateEvent event)
-			{
-				float mass = (1f / event.getEntity().getRigidBody()
-						.getInvMass());
-				// System.out.println("Event mass: " + mass);
-				// System.out.println("Event transform: " +
-				// event.getEntity().getRigidBody().getWorldTransform(new
-				// Transform()).toString());
-				// System.out.println("Event CollisionShape: " +
-				// event.getEntity().getRigidBody().getCollisionShape().toString());
-				RigidBody body = demo
-						.localCreateRigidBody(mass,
-								event.getEntity().getRigidBody()
-										.getWorldTransform(new Transform()),
-								event.getEntity().getRigidBody()
-										.getCollisionShape());
-				body.setAngularFactor(event.getEntity().getRigidBody()
-						.getAngularFactor());
-				body.setAngularVelocity(event.getEntity().getRigidBody()
-						.getAngularVelocity(new Vector3f()));
-				body.setLinearVelocity(event.getEntity().getRigidBody()
-						.getLinearVelocity(new Vector3f()));
-				body.setDamping(event.getEntity().getRigidBody()
-						.getLinearDamping(), event.getEntity().getRigidBody()
-						.getAngularDamping());
-				body.setGravity(event.getEntity().getGravity());
-				//System.out.println("Remote gravity: " +event.getEntity().getGravity());
-				// System.out.println(event.getEntity().getRigidBody().getLinearVelocity(new
-				// Vector3f()).toString());
-				Entity e = new Entity(event.getEntity().getID(), body);
-				e.setGravity(event.getEntity().getGravity());
-				entityList.put(body, e);
-				//System.out.println("Added block");
-			}
-			@Override
-			public void onBlockDestroyed(BlockDestroyedEvent event)
-			{
-				//System.out.println("Received destroyed event");
-				Entity removed = null;
-				for(Entity e : entityList.values())
+		if (connected)
+		{
+			BlockListener remoteListener = new BlockListener() {
+				@Override
+				public void onBlockCreate(BlockCreateEvent event)
 				{
-					if(e.getID().equals(event.getEntity().getID()))
-					{
-						removed = e;
-						break;
-					}
+					float mass = (1f / event.getEntity().getRigidBody()
+							.getInvMass());
+					// System.out.println("Event mass: " + mass);
+					// System.out.println("Event transform: " +
+					// event.getEntity().getRigidBody().getWorldTransform(new
+					// Transform()).toString());
+					// System.out.println("Event CollisionShape: " +
+					// event.getEntity().getRigidBody().getCollisionShape().toString());
+					RigidBody body = demo.localCreateRigidBody(
+							mass,
+							event.getEntity().getRigidBody()
+									.getWorldTransform(new Transform()), event
+									.getEntity().getRigidBody()
+									.getCollisionShape());
+					body.setAngularFactor(event.getEntity().getRigidBody()
+							.getAngularFactor());
+					body.setAngularVelocity(event.getEntity().getRigidBody()
+							.getAngularVelocity(new Vector3f()));
+					body.setLinearVelocity(event.getEntity().getRigidBody()
+							.getLinearVelocity(new Vector3f()));
+					body.setDamping(event.getEntity().getRigidBody()
+							.getLinearDamping(), event.getEntity()
+							.getRigidBody().getAngularDamping());
+					body.setGravity(event.getEntity().getGravity());
+					// System.out.println("Remote gravity: "
+					// +event.getEntity().getGravity());
+					// System.out.println(event.getEntity().getRigidBody().getLinearVelocity(new
+					// Vector3f()).toString());
+					Entity e = new Entity(event.getEntity().getID(), body);
+					e.setGravity(event.getEntity().getGravity());
+					entityList.put(body, e);
+					// System.out.println("Added block");
 				}
-				if(removed != null)
+				
+				@Override
+				public void onBlockDestroyed(BlockDestroyedEvent event)
 				{
-					//System.out.println("Found in list");
-					removed = entityList.remove(removed.getRigidBody());
-					final CollisionShape shape = removed.getRigidBody().getCollisionShape();
-					CollisionObject toRemove = null;
-					for(CollisionObject o : dynamicsWorld.getCollisionObjectArray())
+					// System.out.println("Received destroyed event");
+					Entity removed = null;
+					for (Entity e : entityList.values())
 					{
-						if(o.getCollisionShape().equals(shape))
+						if (e.getID().equals(event.getEntity().getID()))
 						{
-							//System.out.println("found in dynamics world");
-							toRemove = o;
+							removed = e;
 							break;
 						}
 					}
-					if(toRemove != null)
+					if (removed != null)
 					{
-						//System.out.println("Removed");
-						dynamicsWorld.removeCollisionObject(toRemove);
+						// System.out.println("Found in list");
+						removed = entityList.remove(removed.getRigidBody());
+						final CollisionShape shape = removed.getRigidBody()
+								.getCollisionShape();
+						CollisionObject toRemove = null;
+						for (CollisionObject o : dynamicsWorld
+								.getCollisionObjectArray())
+						{
+							if (o.getCollisionShape().equals(shape))
+							{
+								// System.out.println("found in dynamics world");
+								toRemove = o;
+								break;
+							}
+						}
+						if (toRemove != null)
+						{
+							// System.out.println("Removed");
+							dynamicsWorld.removeCollisionObject(toRemove);
+						}
+						
 					}
-					
 				}
-			}
-		};
-		remoteDispatcher.registerListener(Type.BLOCK_CREATE, remoteListener);
-		remoteDispatcher.registerListener(Type.BLOCK_DESTROYED, remoteListener);
+			};
+			remoteDispatcher
+					.registerListener(Type.BLOCK_CREATE, remoteListener);
+			remoteDispatcher.registerListener(Type.BLOCK_DESTROYED,
+					remoteListener);
+		}
 		// MusicPlayer mp = new MusicPlayer(eventDispatcher);
 	}
 	
@@ -474,7 +485,7 @@ public class BspDemo extends DemoApplication
 			}
 			else
 			{
-				//set default gravity;
+				// set default gravity;
 				e.setGravity(dynamicsWorld.getGravity(new Vector3f()));
 			}
 			entityList.put(body, e);
@@ -613,22 +624,25 @@ public class BspDemo extends DemoApplication
 		
 		public void sendToRemote(Event<?> event)
 		{
-			try
+			if (connected)
 			{
-				final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				final ObjectOutputStream oos = new ObjectOutputStream(baos);
-				oos.writeObject(new EventPackage(event));
-				oos.flush();
-				byte[] data = baos.toByteArray();
-				//System.out.println(data.length);
-				client.sendMessage(data);
-				oos.close();
-				baos.close();
-			}
-			catch (IOException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				try
+				{
+					final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					final ObjectOutputStream oos = new ObjectOutputStream(baos);
+					oos.writeObject(new EventPackage(event));
+					oos.flush();
+					byte[] data = baos.toByteArray();
+					// System.out.println(data.length);
+					client.sendMessage(data);
+					oos.close();
+					baos.close();
+				}
+				catch (IOException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 	}
