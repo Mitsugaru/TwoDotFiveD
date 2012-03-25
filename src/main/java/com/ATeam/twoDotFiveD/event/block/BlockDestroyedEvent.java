@@ -21,6 +21,7 @@ public class BlockDestroyedEvent extends BlockEvent {
 	@Override
 	public Map<String, Object> getData()
 	{
+		System.out.println("Get data for: " + name);
 		final Map<String, Object> data = new HashMap<String, Object>();
 		/**
 		 * Entity
