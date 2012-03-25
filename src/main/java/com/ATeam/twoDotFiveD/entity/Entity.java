@@ -102,7 +102,7 @@ public class Entity implements Serializable
 	
 	public void setGravity(Vector3f gravity)
 	{
-		this.gravity = (Vector3f) gravity.clone();
+		this.gravity = gravity;
 	}
 	
 	public Vector3f getGravity()

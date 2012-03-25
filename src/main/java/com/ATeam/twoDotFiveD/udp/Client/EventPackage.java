@@ -60,7 +60,7 @@ public class EventPackage implements Serializable
 			final Vector3f center = new Vector3f(Float.parseFloat(centerCut[0]), Float.parseFloat(centerCut[1]), Float.parseFloat(centerCut[2]));
 			startTransform.origin.set(center);
 			//System.out.println(startTransform.toString());
-			Vector3f inertia = new Vector3f(0f, 0f, 0f);
+			
 			final String shapeClass = (String)data.get("entity.rigidbody.collisionshape.class");
 			CollisionShape c = new BoxShape(new Vector3f(1f, 1f, 1f));
 			//System.out.println(shapeClass);
@@ -89,7 +89,11 @@ public class EventPackage implements Serializable
 				c = new ConvexHullShape(list);
 				startTransform.origin.set(0, 0, 0);
 			}
-			c.calculateLocalInertia(mass, inertia);
+			Vector3f inertia = new Vector3f(0f, 0f, 0f);
+			if(mass != 0f)
+			{
+				c.calculateLocalInertia(mass, inertia);
+			}
 			DefaultMotionState myMotionState = new DefaultMotionState(startTransform);
 			//System.out.println("Mass:" + mass);
 			//System.out.println("myMotionState" + myMotionState.toString());
@@ -119,7 +123,7 @@ public class EventPackage implements Serializable
 			gravityString = gravityString.replace(")", "");
 			final String[] gravityCut =  linear.split(" ");
 			final Vector3f gravity = new Vector3f(Float.parseFloat(gravityCut[0]), Float.parseFloat(gravityCut[1]), Float.parseFloat(gravityCut[2]));
-			System.out.println(gravity.toString());
+			System.out.println("EP Gravity: " + gravity.toString());
 			body.setGravity(gravity);
 			final String ID = (String) data.get("entity.ID");
 			Entity e = new Entity(ID, body);
