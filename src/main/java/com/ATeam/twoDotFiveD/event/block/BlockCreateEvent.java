@@ -12,6 +12,7 @@ import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.collision.shapes.CollisionShape;
 import com.bulletphysics.collision.shapes.ConeShape;
 import com.bulletphysics.collision.shapes.ConvexHullShape;
+import com.bulletphysics.collision.shapes.CylinderShape;
 import com.bulletphysics.collision.shapes.SphereShape;
 import com.bulletphysics.linearmath.Transform;
 
@@ -97,6 +98,10 @@ public class BlockCreateEvent extends BlockEvent
 		{
 			data.put("entity.rigidbody.collisionshape.height",((ConeShape) shape).getHeight());
 			data.put("entity.rigidbody.collisionshape.radius",((ConeShape) shape).getRadius());
+		}
+		else if(shape instanceof CylinderShape)
+		{
+			data.put("entity.rigidbody.collisionshape.localscaling", ((CylinderShape) shape).getLocalScaling(new Vector3f()).toString());
 		}
 		else if(shape instanceof ConvexHullShape)
 		{

@@ -16,6 +16,7 @@ import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.collision.shapes.CollisionShape;
 import com.bulletphysics.collision.shapes.ConeShape;
 import com.bulletphysics.collision.shapes.ConvexHullShape;
+import com.bulletphysics.collision.shapes.CylinderShape;
 import com.bulletphysics.collision.shapes.SphereShape;
 import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
@@ -87,7 +88,16 @@ public class EventPackage implements Serializable
 			}
 			else if(shapeClass.contains("ConeShape"))
 			{
-				c = new ConeShape(((Float)data.get("entity.rigidbody.collisionshape.height")).floatValue(),((Float)data.get("entity.rigidbody.collisionshape.radius")).floatValue());
+				c = new ConeShape(((Float)data.get("entity.rigidbody.collisionshape.radius")).floatValue(),((Float)data.get("entity.rigidbody.collisionshape.height")).floatValue());
+			}
+			else if(shapeClass.contains("CylinderShape"))
+			{
+				String localscaling = (String)data.get("entity.rigidbody.collisionshape.localscaling");
+				localscaling = localscaling.replace("(", "");
+				localscaling = localscaling.replace(",","");
+				localscaling = localscaling.replace(")", "");
+				final String[] localscalingcut = localscaling.split(" ");
+				c = new CylinderShape(new Vector3f(Float.parseFloat(localscalingcut[0]), Float.parseFloat(localscalingcut[1]), Float.parseFloat(localscalingcut[2])));
 			}
 			else if(shapeClass.contains("ConvexHullShape"))
 			{
