@@ -1047,7 +1047,7 @@ public abstract class DemoApplication {
 				}
 				catch(NullPointerException e)
 				{
-					System.out.println("An object was null");
+					System.out.println("A RigidBody was null");
 				}
 				
 
@@ -1056,7 +1056,14 @@ public abstract class DemoApplication {
 					m.set(myMotionState.graphicsWorldTrans);
 				}
 				else {
-					colObj.getWorldTransform(m);
+					try
+					{
+						colObj.getWorldTransform(m);
+					}
+					catch(NullPointerException e)
+					{
+						System.out.println("A CollisionObject was null");
+					}
 				}
 
 				wireColor.set(1f, 1f, 0.5f); // wants deactivation
