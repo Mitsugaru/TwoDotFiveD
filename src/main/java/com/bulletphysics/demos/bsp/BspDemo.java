@@ -223,7 +223,7 @@ public class BspDemo extends DemoApplication
 					}
 					try
 					{
-					dynamicsWorld.removeCollisionObject(a);
+						dynamicsWorld.removeCollisionObject(a);
 					if (e != null)
 					{
 						eventDispatcher.notify(new BlockDestroyedEvent(e));
@@ -233,6 +233,10 @@ public class BspDemo extends DemoApplication
 					catch(NullPointerException n)
 					{
 						System.out.println("Tried to remove object that is not there");
+					}
+					catch(ArrayIndexOutOfBoundsException b)
+					{
+						System.out.println("ArrayIndexOutOfBounds in simulation");
 					}
 				}
 				// repopulate world
