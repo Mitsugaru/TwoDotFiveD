@@ -1273,15 +1273,15 @@ public abstract class DemoApplication
 				{
 					System.out.println("A CollisionObject was null");
 				}
-				/*try
-				{*/
+				try
+				{
 					GLShapeDrawer.drawOpenGL(gl, m, colObj.getCollisionShape(),
 						wireColor, getDebugMode());
-				/*}
+				}
 				catch(NullPointerException e)
 				{
 					System.out.println("GL draw was null");
-				}*/
+				}
 			}
 			
 			float xOffset = 10f;

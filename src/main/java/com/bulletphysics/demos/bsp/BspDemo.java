@@ -172,6 +172,10 @@ public class BspDemo extends DemoApplication
 		{
 			System.out.println("Simulation had null at some point");
 		}
+		catch(ArrayIndexOutOfBoundsException arr)
+		{
+			System.out.println("Index Out of Bounds in Simulation");
+		}
 		
 		// optional but useful: debug drawing
 		dynamicsWorld.debugDrawWorld();
