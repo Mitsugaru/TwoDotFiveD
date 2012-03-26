@@ -166,11 +166,14 @@ public class BspDemo extends DemoApplication
 		float dt = getDeltaTimeMicroseconds() * 0.000001f;
 		try
 		{
+			//TODO May need custom DynamicsWorld to catch exceptions per step
 			dynamicsWorld.stepSimulation(dt);
 		}
 		catch(NullPointerException e)
 		{
 			System.out.println("Simulation had null at some point");
+			//WARN this is very serious
+			//TODO figure out how to fix this...
 		}
 		catch(ArrayIndexOutOfBoundsException arr)
 		{
@@ -218,13 +221,19 @@ public class BspDemo extends DemoApplication
 							break;
 						}
 					}
+					try
+					{
 					dynamicsWorld.removeCollisionObject(a);
 					if (e != null)
 					{
 						eventDispatcher.notify(new BlockDestroyedEvent(e));
 						entityList.remove(e);
 					}
-					
+					}
+					catch(NullPointerException n)
+					{
+						System.out.println("Tried to remove object that is not there");
+					}
 				}
 				// repopulate world
 				populate();
@@ -431,7 +440,14 @@ public class BspDemo extends DemoApplication
 						if (toRemove != null)
 						{
 							// System.out.println("Removed");
-							dynamicsWorld.removeCollisionObject(toRemove);
+							try
+							{
+								dynamicsWorld.removeCollisionObject(toRemove);
+							}
+							catch(NullPointerException e)
+							{
+								System.out.println("Attempted to remove object taht no longer exists.");
+							}
 						}
 						
 					}
