@@ -1040,7 +1040,16 @@ public abstract class DemoApplication {
 			wireColor.set(1f, 0f, 0f);
 			for (int i = 0; i < numObjects; i++) {
 				CollisionObject colObj = dynamicsWorld.getCollisionObjectArray().getQuick(i);
-				RigidBody body = RigidBody.upcast(colObj);
+				RigidBody body = null;
+				try
+				{
+					body = RigidBody.upcast(colObj);
+				}
+				catch(NullPointerException e)
+				{
+					System.out.println("An object was null");
+				}
+				
 
 				if (body != null && body.getMotionState() != null) {
 					DefaultMotionState myMotionState = (DefaultMotionState) body.getMotionState();
