@@ -164,8 +164,14 @@ public class BspDemo extends DemoApplication
 	{
 		gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		float dt = getDeltaTimeMicroseconds() * 0.000001f;
-		
-		dynamicsWorld.stepSimulation(dt);
+		try
+		{
+			dynamicsWorld.stepSimulation(dt);
+		}
+		catch(NullPointerException e)
+		{
+			System.out.println("Simulation had null at some point");
+		}
 		
 		// optional but useful: debug drawing
 		dynamicsWorld.debugDrawWorld();
