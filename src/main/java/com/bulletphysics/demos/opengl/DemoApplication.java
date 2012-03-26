@@ -289,7 +289,7 @@ public abstract class DemoApplication {
 		updateCamera();
 	}
 
-	public void keyboardCallback(char key, int x, int y, int modifiers) {
+	public synchronized void keyboardCallback(char key, int x, int y, int modifiers) {
 		lastKey = 0;
 
 		if (key >= 0x31 && key < 0x37) {
@@ -646,7 +646,7 @@ public abstract class DemoApplication {
 	public void displayCallback() {
 	}
 
-	public void shootBox(Vector3f destination) {
+	public synchronized void shootBox(Vector3f destination) {
 		if (dynamicsWorld != null) {
 			float mass = 50f;
 			Transform startTransform = new Transform();
@@ -761,7 +761,7 @@ public abstract class DemoApplication {
 		return rayTo;
 	}
 
-	public void mouseFunc(int button, int state, int x, int y) {
+	public synchronized void mouseFunc(int button, int state, int x, int y) {
 		//printf("button %i, state %i, x=%i,y=%i\n",button,state,x,y);
 		//button 0, state 0 means left mouse down
 
@@ -879,7 +879,7 @@ public abstract class DemoApplication {
 		}
 	}
 
-	public RigidBody localCreateRigidBody(float mass, Transform startTransform, CollisionShape shape) {
+	public synchronized RigidBody localCreateRigidBody(float mass, Transform startTransform, CollisionShape shape) {
 		// rigidbody is dynamic if and only if mass is non zero, otherwise static
 		boolean isDynamic = (mass != 0f);
 
@@ -1032,7 +1032,7 @@ public abstract class DemoApplication {
 	protected Color3f TEXT_COLOR = new Color3f(0f, 0f, 0f);
 	private StringBuilder buf = new StringBuilder();
 
-	public void renderme() {
+	public synchronized void renderme() {
 		updateCamera();
 
 		if (dynamicsWorld != null) {
@@ -1256,7 +1256,7 @@ public abstract class DemoApplication {
 		updateCamera();
 	}
 
-	public void clientResetScene() {
+	public synchronized void clientResetScene() {
 		//#ifdef SHOW_NUM_DEEP_PENETRATIONS
 		BulletStats.gNumDeepPenetrationChecks = 0;
 		BulletStats.gNumGjkChecks = 0;

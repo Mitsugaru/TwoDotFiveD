@@ -111,7 +111,7 @@ public class BspDemo extends DemoApplication
 		super(gl);
 	}
 	
-	public void initPhysics() throws Exception
+	public synchronized void initPhysics() throws Exception
 	{
 		// cameraUp.set(0f, 0f, 1f);
 		// forwardAxis = 1;
@@ -160,7 +160,7 @@ public class BspDemo extends DemoApplication
 	}
 	
 	@Override
-	public void clientMoveAndDisplay()
+	public synchronized void clientMoveAndDisplay()
 	{
 		gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		float dt = getDeltaTimeMicroseconds() * 0.000001f;
@@ -188,7 +188,7 @@ public class BspDemo extends DemoApplication
 	}
 	
 	@Override
-	public void specialKeyboard(int key, int x, int y, int modifiers)
+	public synchronized void specialKeyboard(int key, int x, int y, int modifiers)
 	{
 		switch (key)
 		{
@@ -229,7 +229,7 @@ public class BspDemo extends DemoApplication
 	}
 	
 	@Override
-	public void shootBox(Vector3f destination)
+	public synchronized void shootBox(Vector3f destination)
 	{
 		if (dynamicsWorld != null)
 		{
@@ -309,7 +309,7 @@ public class BspDemo extends DemoApplication
 		demo = new BspDemo(LWJGL.getGL());
 		try
 		{
-			client = new chatClient(null, "192.168.1.14", "BASE",
+			client = new chatClient(null, "137.155.2.104", "BASE",
 					remoteDispatcher);
 			if (client.connect())
 			{
@@ -389,7 +389,7 @@ public class BspDemo extends DemoApplication
 				}
 				
 				@Override
-				public void onBlockDestroyed(BlockDestroyedEvent event)
+				public synchronized void onBlockDestroyed(BlockDestroyedEvent event)
 				{
 					// System.out.println("Received destroyed event");
 					Entity removed = null;
@@ -457,7 +457,7 @@ public class BspDemo extends DemoApplication
 	{
 		
 		@Override
-		public void addConvexVerticesCollider(String name,
+		public synchronized void addConvexVerticesCollider(String name,
 				ObjectArrayList<Vector3f> vertices, float mass,
 				Vector3f acceleration, String image, String[] description)
 		{
@@ -509,7 +509,7 @@ public class BspDemo extends DemoApplication
 		}
 		
 		@Override
-		public void onBlockCollision(BlockCollisionEvent event)
+		public synchronized void onBlockCollision(BlockCollisionEvent event)
 		{
 			final PersistentManifold pm = event.getPersistentManifold();
 			if (pm.getBody0() instanceof RigidBody
