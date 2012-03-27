@@ -3,9 +3,9 @@
 # Mac OS X
 .DS_Store
 # Eclipse
-.classpath
-.project
-.settings/
+/.classpath
+/.project
+/.settings
 # Test folder used by SQLite JUnit test
 /SQLiteTest
 # Netbeans

@@ -8,7 +8,7 @@ object1:
    - 25.600000 12.800000 30.400000
    - 25.600000 25.600000 19.200001
    - 25.600000 25.600000 30.400000
-   mass: 20f
+   mass: 1f
    acceleration: 0f -10f 0f
 object2:
    vertices:
@@ -20,8 +20,8 @@ object2:
    - 25.600000 12.800000 19.200001
    - 25.600000 25.600000 1.600000
    - 25.600000 25.600000 19.200001
-   mass: 10f
-   acceleration: 10f 0f 0f
+   mass: 1f
+   acceleration: 0f -10f 0f
    description:
    - This is a description for object2
 object3:
@@ -36,6 +36,10 @@ object3:
    - 4.600000 12.800000 19.200001
    - 0.000000 20.000000 0.0000000
    - 4.600000 20.000000 0.0000000
+box:
+   shape: box
+   localscaling: 1.0 1.0 1.0
+   transform: 0.0 0.0 0.0
 object4:
    vertices:
    - 24.000000 12.800000 19.200001
@@ -97,8 +101,8 @@ object7:
    - 16.000000 -1.600000 8.000000
    - 9.600000 1.600000 8.000000
    - 11.200001 -3.200000 8.000000
-   mass: 20f
-   acceleration: 0f 10f 10f
+   mass: 1f
+   acceleration: 0f -10f 10f
 object8:
    vertices:
    - -0.000000 -21.600000 12.800000

@@ -52,10 +52,10 @@ public class EventPackage implements Serializable
 		if(className.contains("BlockCreateEvent"))
 		{
 			final float mass = ((Float) data.get("entity.rigidbody.rigidbodyconstructioninfo.mass")).floatValue();
-			//final Matrix4f transformMatrix = new Matrix4f((float[])(data.get("entity.rigidbody.motionstate.transform")));
+			final Matrix4f transformMatrix = new Matrix4f((float[])(data.get("entity.rigidbody.motionstate.transform")));
 			//System.out.println(transformMatrix.toString());
-			final Transform startTransform = new Transform();
-			startTransform.setIdentity();
+			final Transform startTransform = new Transform(transformMatrix);
+			//startTransform.setIdentity();
 			String centerString = (String) data.get("entity.rigidbody.center");
 			centerString = centerString.replace("(", "");
 			centerString = centerString.replace(",","");
