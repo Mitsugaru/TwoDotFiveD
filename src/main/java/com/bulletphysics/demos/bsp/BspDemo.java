@@ -332,7 +332,7 @@ public class BspDemo extends DemoApplication
 		demo = new BspDemo(LWJGL.getGL());
 		try
 		{
-			client = new chatClient(null, "137.155.2.104", "BASE",
+			client = new chatClient(null, "137.155.2.101", "ASDF",
 					remoteDispatcher);
 			if (client.connect())
 			{
