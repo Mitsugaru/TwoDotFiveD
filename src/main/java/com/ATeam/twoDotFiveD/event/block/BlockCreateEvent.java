@@ -57,7 +57,7 @@ public class BlockCreateEvent extends BlockEvent
 				new Float((1f / getEntity().getRigidBody().getInvMass())));
 		//TODO see if local inertia is actually necessary
 		//Start transform
-		/*final Transform worldTransform = getEntity().getRigidBody()
+		final Transform worldTransform = getEntity().getRigidBody()
 				.getMotionState().getWorldTransform(new Transform());
 		final Matrix4f transformMatrix = worldTransform
 				.getMatrix(new Matrix4f());
@@ -67,7 +67,7 @@ public class BlockCreateEvent extends BlockEvent
 				transformMatrix.m12, transformMatrix.m13, transformMatrix.m20,
 				transformMatrix.m21, transformMatrix.m22, transformMatrix.m23,
 				transformMatrix.m30, transformMatrix.m31, transformMatrix.m32,
-				transformMatrix.m33 });*/
+				transformMatrix.m33 });
 		data.put("entity.rigidbody.angularfactor", getEntity().getRigidBody().getAngularFactor());
 		data.put("entity.rigidbody.angularvelocity", getEntity().getRigidBody().getAngularVelocity(new Vector3f()).toString());
 		data.put("entity.rigidbody.linearvelocity", getEntity().getRigidBody().getLinearVelocity(new Vector3f()).toString());

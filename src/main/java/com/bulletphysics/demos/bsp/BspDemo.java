@@ -70,6 +70,7 @@ import com.bulletphysics.demos.opengl.IGL;
 import com.bulletphysics.demos.opengl.LWJGL;
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 import com.bulletphysics.dynamics.RigidBody;
+import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
 import com.bulletphysics.dynamics.constraintsolver.ConstraintSolver;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
 import com.bulletphysics.linearmath.DefaultMotionState;
@@ -141,7 +142,6 @@ public class BspDemo extends DemoApplication
 		// "exported.bsp.txt"));
 		// populate();
 		BulletGlobals.setDeactivationTime(0.1f);
-		clientResetScene();
 		
 	}
 	
@@ -157,6 +157,36 @@ public class BspDemo extends DemoApplication
 			Logging.log.log(Level.SEVERE,
 					"Could not close InputStream for: scene.yml", e);
 		}
+		Transform startTransform = new Transform();
+		startTransform.setIdentity();
+		
+		float start_x = 0 - 5 / 2;
+		float start_y = 0;
+		float start_z = 0 - 5 / 2;
+		final ObjectArrayList<Vector3f> points = new ObjectArrayList<Vector3f>();
+		points.add(new Vector3f(1f, 1f, 1f));
+		points.add(new Vector3f(0f, 0f, 0f));
+		points.add(new Vector3f(0f, 0f, 2f));
+		points.add(new Vector3f(0f, 2f, 0f));
+		points.add(new Vector3f(0f, 2f, 2f));
+		points.add(new Vector3f(2f, 0f, 0f));
+		points.add(new Vector3f(2f, 0f, 2f));
+		points.add(new Vector3f(2f, 2f, 0f));
+		points.add(new Vector3f(2f, 2f, 2f));
+		final CollisionShape shape = new ConvexHullShape(points);
+		for (int k = 0; k < 4; k++) {
+			for (int i = 0; i < 4; i++) {
+				for (int j = 0; j < 4; j++) {
+					startTransform.origin.set(
+							2f * i + start_x,
+							10f + 2f * k + start_y,
+							2f * j + start_z);
+					RigidBody body = localCreateRigidBody(1f, startTransform, shape);
+					eventDispatcher.notify(new BlockCreateEvent(new Entity("Box", body)));
+				}
+			}
+		}
+		clientResetScene();
 	}
 	
 	@Override
@@ -332,7 +362,7 @@ public class BspDemo extends DemoApplication
 		demo = new BspDemo(LWJGL.getGL());
 		try
 		{
-			client = new chatClient(null, "137.155.2.104", "BASE",
+			client = new chatClient(null, "137.155.2.153", "BASE",
 					remoteDispatcher);
 			if (client.connect())
 			{
@@ -350,6 +380,7 @@ public class BspDemo extends DemoApplication
 		demo.initPhysics();
 		demo.getDynamicsWorld()
 				.setDebugDrawer(new GLDebugDrawer(LWJGL.getGL()));
+		//demo.debugMode = 1;
 		LWJGL.main(args, 800, 600, "Bullet Physics Demo. http://bullet.sf.net",
 				demo);
 	}
@@ -499,6 +530,7 @@ public class BspDemo extends DemoApplication
 			// this create an internal copy of the vertices
 			CollisionShape shape = new ConvexHullShape(vertices);
 			RigidBody body = localCreateRigidBody(mass, startTransform, shape);
+			//body.setActivationState(RigidBody.ACTIVE_TAG);
 			Entity e = new Entity(null, null);
 			if (description != null)
 			{
@@ -520,6 +552,15 @@ public class BspDemo extends DemoApplication
 			}
 			entityList.put(body, e);
 			eventDispatcher.notify(new BlockCreateEvent(e));
+		}
+
+		@Override
+		public void addShapeCollider(String name, String type, Vector3f localscaling,
+				float mass, Vector3f acceleration, String image,
+				String[] description)
+		{
+			// TODO Auto-generated method stub
+			
 		}
 		
 	}
