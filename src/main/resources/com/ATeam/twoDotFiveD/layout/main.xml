@@ -210,7 +210,7 @@
 	<!-- Credits Screen -->
 	<screen id="Credits" controller="com.ATeam.twoDotFiveD.gui.MainOptionController">
 		<layer id="foreground" childLayout="horizontal">
-			<panel id="panel_whole" height="100%" width="100%" childLayout="horizontal"
+			<panel id="panel_whole" height="50%" width="50%" childLayout="horizontal"
 				backgroundColor="#88f8">
 				<control name="label" color="#000"
 					text="Cliff, Vannie, Justin, Bridget, and Andrew" align="left" />
@@ -231,12 +231,12 @@
 				textVAlign="center" textHAlign="left" /> <control id="dropDown2" name="dropDownControl" 
 				/> </panel> -->
 
-			<panel childLayout="horizontal" height="38px" />
-			<panel childLayout="horizontal">
+			<panel childLayout="horizontal"height="50%" width="50%">
 				<label id="dropDownLabel2" text="DropDown 2: " width="120px"
 					align="left" textVAlign="center" textHAlign="left" />
-				<control id="dropDown2" name="dropDownControl" />
+				<control id="dropDown2" name="dropDown" />
 			</panel>
+			
 		</layer>
 	</screen>
 

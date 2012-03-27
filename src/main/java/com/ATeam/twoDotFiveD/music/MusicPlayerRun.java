@@ -14,6 +14,7 @@ public class MusicPlayerRun extends Thread implements Runnable {
 	}
 
 	void setSong(String inp) {
+		SoundScape.create();
 		g = inp;
 		System.out.println(g);
 		int soundData = SoundScape.loadSoundData(g);
