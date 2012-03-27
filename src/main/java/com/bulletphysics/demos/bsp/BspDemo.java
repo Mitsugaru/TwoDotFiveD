@@ -123,11 +123,11 @@ public class BspDemo extends DemoApplication
 		collisionConfiguration = new DefaultCollisionConfiguration();
 		// btCollisionShape* groundShape = new btBoxShape(btVector3(50,3,50));
 		dispatcher = new CollisionStuff(collisionConfiguration);
-		Vector3f worldMin = new Vector3f(-1000f, -1000f, -1000f);
-		Vector3f worldMax = new Vector3f(1000f, 1000f, 1000f);
-		// broadphase = new AxisSweep3(worldMin, worldMax);
+		Vector3f worldMin = new Vector3f(-10f, -10f, -10f);
+		Vector3f worldMax = new Vector3f(10f, 10f, 10f);
+		broadphase = new AxisSweep3(worldMin, worldMax);
 		// broadphase = new SimpleBroadphase();
-		broadphase = new DbvtBroadphase();
+		//broadphase = new DbvtBroadphase();
 		// btOverlappingPairCache* broadphase = new btSimpleBroadphase();
 		solver = new SequentialImpulseConstraintSolver();
 		// ConstraintSolver* solver = new OdeConstraintSolver;
@@ -484,6 +484,10 @@ public class BspDemo extends DemoApplication
 								dynamicsWorld.removeCollisionObject(toRemove);
 							}
 							catch(NullPointerException e)
+							{
+								System.out.println("Attempted to remove object taht no longer exists.");
+							}
+							catch(ArrayIndexOutOfBoundsException a)
 							{
 								System.out.println("Attempted to remove object taht no longer exists.");
 							}
