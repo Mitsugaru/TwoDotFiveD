@@ -189,9 +189,9 @@ public class BasicDemo extends DemoApplication {
 			float start_y = START_POS_Y;
 			float start_z = START_POS_Z - ARRAY_SIZE_Z / 2;
 
-			for (int k = 0; k < 1; k++) {
-				for (int i = 0; i < 1; i++) {
-					for (int j = 0; j < 1; j++) {
+			for (int k = 0; k < 5; k++) {
+				for (int i = 0; i < 5; i++) {
+					for (int j = 0; j < 5; j++) {
 						startTransform.origin.set(
 								2f * i + start_x,
 								10f + 2f * k + start_y,

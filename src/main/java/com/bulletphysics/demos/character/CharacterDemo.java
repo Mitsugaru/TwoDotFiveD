@@ -431,6 +431,15 @@ public class CharacterDemo extends DemoApplication {
 				body.setGravity(acceleration);
 			}
 		}
+
+		@Override
+		public void addShapeCollider(String name, String type,
+				Vector3f localscaling, float mass, Vector3f acceleration,
+				String image, String[] description)
+		{
+			// TODO Auto-generated method stub
+			
+		}
 		
 	}
 }

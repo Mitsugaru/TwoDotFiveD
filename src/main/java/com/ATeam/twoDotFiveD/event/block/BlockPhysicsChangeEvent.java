@@ -1,5 +1,8 @@
 package com.ATeam.twoDotFiveD.event.block;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.vecmath.Vector3f;
 
 import com.ATeam.twoDotFiveD.block.Block;
@@ -21,6 +24,24 @@ public class BlockPhysicsChangeEvent extends BlockEvent {
 	public void notify(BlockListener listener)
 	{
 		listener.onBlockPhysicsChange(this);
+	}
+	
+	@Override
+	public Map<String, Object> getData()
+	{
+		final Map<String, Object> data = new HashMap<String, Object>();
+		/**
+		 * Entity
+		 */
+		//Class
+		data.put("class", name);
+		//Entity
+		data.put("entity.ID", getEntity().getID());
+		/**
+		 * Direction
+		 */
+		data.put("entity.direction", direction.toString());
+		return data;
 	}
 
 }

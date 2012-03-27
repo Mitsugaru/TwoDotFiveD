@@ -10,7 +10,7 @@ public class MusicPlayerRun extends Thread implements Runnable {
 
 	@Override
 	public void run() {
-		SoundScape.create();
+		
 	}
 
 	void setSong(String inp) {

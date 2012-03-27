@@ -46,7 +46,7 @@ public class UDPServer implements Runnable {
 	}
 	@Override
 	public void run() {
-		byte[] receiveData = new byte[512];
+		byte[] receiveData = new byte[2560];
 		System.out.println("UDP PORT"+port);
 		DatagramPacket receivePacket;
 		byte id;
@@ -58,22 +58,25 @@ public class UDPServer implements Runnable {
 				receivePacket = new DatagramPacket(receiveData, receiveData.length);
 				System.out.println("Listen");
 				socket.receive(receivePacket);
-				System.out.println("Server Recieve");
+
 				id=(byte) (receiveData[0]&0x0F);
+				System.out.println("Server Recieve From:" + id);
 				//System.out.println(id);
 				pntr = getByID(id);
 				if(!pntr.initialized()){
 					pntr.init(receivePacket.getAddress(), receivePacket.getPort());
+					System.out.println("init:"+pntr.getID());
 				}
-				for(clientHandler c :clients){
-					//System.out.println(c.getname()+":"+c.getID());
-					if((!c.equals(pntr))){
-						if(c.initialized()){
-							System.out.println("Relayed message from:"+pntr.getID()+" to:"+c.getID());
-							socket.send(c.message(new byte[] {receiveData[1]}));
+				if(receiveData[1]!=(byte) 0xFF){
+					for(clientHandler c :clients){
+						//System.out.println(c.getname()+":"+c.getID());
+						if((!c.equals(pntr))){
+							if(c.initialized()){
+								System.out.println("Relayed message from:"+pntr.getID()+" to:"+c.getID());
+								socket.send(c.message(receiveData));
+							}
 						}
 					}
-
 				}
 				//				switch((byte) (receiveData[0]&0xC0)){
 				//

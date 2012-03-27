@@ -66,6 +66,16 @@ public class PlayerMoveEventTest extends TestCase
 		}
 		assertTrue(true);
 	}
+	
+	public void testModifyPlayerAfterEvent()
+	{
+		player = new Player();
+		if(event.getPlayer().equals(player))
+		{
+			fail("The event's player should not be modifiable.");
+		}
+		assertTrue(true);
+	}
 }
 
 

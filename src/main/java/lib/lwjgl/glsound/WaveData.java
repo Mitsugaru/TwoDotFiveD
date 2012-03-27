@@ -101,6 +101,7 @@ public class WaveData {
 					.getAudioInputStream(new BufferedInputStream(WaveData.class
 							.getClassLoader().getResourceAsStream(filepath))));
 		} catch (Exception e) {
+			//System.out.println(WaveData.class.getClassLoader().getResource(filepath).getPath());
 			System.out.println("WaveData.create(): Unable to load file: "
 					+ filepath);
 			e.printStackTrace();

@@ -1,5 +1,8 @@
 package com.ATeam.twoDotFiveD.event;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.ATeam.twoDotFiveD.debug.Logging;
 import com.ATeam.twoDotFiveD.event.block.BlockCollisionEvent;
 import com.ATeam.twoDotFiveD.event.block.BlockCollisionResolvedEvent;
@@ -20,9 +23,9 @@ import com.ATeam.twoDotFiveD.event.player.*;
  */
 public abstract class Event<L> {
 	public abstract void notify(final L listener);
-	private final Type type;
-	private final String name;
-	private boolean cancelled;
+	protected final Type type;
+	protected final String name;
+	protected boolean cancelled;
 
 	public Event(){
 		this.type = Type.FIXED_EVENT;
@@ -37,6 +40,13 @@ public abstract class Event<L> {
 		}
 		this.type = type;
 		this.name = getClass().getName();
+	}
+	
+	public Map<String, Object> getData()
+	{
+		final Map<String, Object> data = new HashMap<String, Object>();
+		data.put("class", name);
+		return data;
 	}
 
 	public Type getType()
