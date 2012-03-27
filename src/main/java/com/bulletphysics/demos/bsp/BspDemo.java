@@ -164,7 +164,6 @@ public class BspDemo extends DemoApplication
 		float start_y = 0;
 		float start_z = 0 - 5 / 2;
 		final ObjectArrayList<Vector3f> points = new ObjectArrayList<Vector3f>();
-		points.add(new Vector3f(1f, 1f, 1f));
 		points.add(new Vector3f(0f, 0f, 0f));
 		points.add(new Vector3f(0f, 0f, 2f));
 		points.add(new Vector3f(0f, 2f, 0f));
@@ -182,7 +181,12 @@ public class BspDemo extends DemoApplication
 							10f + 2f * k + start_y,
 							2f * j + start_z);
 					RigidBody body = localCreateRigidBody(1f, startTransform, shape);
-					eventDispatcher.notify(new BlockCreateEvent(new Entity("Box", body)));
+					//TODO figure out why setting the center of mass transform doesn't want to work
+					Transform center = new Transform();
+					center.setIdentity();
+					center.origin.set(0.5f, 0.5f, 0.5f);
+					body.setCenterOfMassTransform(center);
+					//eventDispatcher.notify(new BlockCreateEvent(new Entity("Box", body)));
 				}
 			}
 		}
@@ -380,7 +384,7 @@ public class BspDemo extends DemoApplication
 		demo.initPhysics();
 		demo.getDynamicsWorld()
 				.setDebugDrawer(new GLDebugDrawer(LWJGL.getGL()));
-		//demo.debugMode = 1;
+		demo.debugMode = 1;
 		LWJGL.main(args, 800, 600, "Bullet Physics Demo. http://bullet.sf.net",
 				demo);
 	}
@@ -531,6 +535,10 @@ public class BspDemo extends DemoApplication
 			CollisionShape shape = new ConvexHullShape(vertices);
 			RigidBody body = localCreateRigidBody(mass, startTransform, shape);
 			//body.setActivationState(RigidBody.ACTIVE_TAG);
+			final Transform center = new Transform();
+			center.setIdentity();
+			center.origin.set(1f, 1f, 1f);
+			body.setCenterOfMassTransform(center);
 			Entity e = new Entity(null, null);
 			if (description != null)
 			{
