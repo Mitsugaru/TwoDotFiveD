@@ -1,10 +1,21 @@
 package com.ATeam.twoDotFiveD;
 
+import static com.bulletphysics.demos.opengl.IGL.GL_AMBIENT;
 import static com.bulletphysics.demos.opengl.IGL.GL_COLOR_BUFFER_BIT;
 import static com.bulletphysics.demos.opengl.IGL.GL_DEPTH_BUFFER_BIT;
+import static com.bulletphysics.demos.opengl.IGL.GL_DEPTH_TEST;
+import static com.bulletphysics.demos.opengl.IGL.GL_DIFFUSE;
+import static com.bulletphysics.demos.opengl.IGL.GL_LESS;
+import static com.bulletphysics.demos.opengl.IGL.GL_LIGHT0;
+import static com.bulletphysics.demos.opengl.IGL.GL_LIGHT1;
 import static com.bulletphysics.demos.opengl.IGL.GL_LIGHTING;
+import static com.bulletphysics.demos.opengl.IGL.GL_LINES;
 import static com.bulletphysics.demos.opengl.IGL.GL_MODELVIEW;
+import static com.bulletphysics.demos.opengl.IGL.GL_POSITION;
 import static com.bulletphysics.demos.opengl.IGL.GL_PROJECTION;
+import static com.bulletphysics.demos.opengl.IGL.GL_SMOOTH;
+import static com.bulletphysics.demos.opengl.IGL.GL_SPECULAR;
+import static com.bulletphysics.demos.opengl.IGL.GL_TRIANGLES;
 
 import javax.vecmath.Color3f;
 import javax.vecmath.Matrix3f;
@@ -15,11 +26,13 @@ import lib.lwjgl.glmodel.GL_Vector;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.*;
 
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.BulletStats;
 import com.bulletphysics.collision.broadphase.AxisSweep3;
 import com.bulletphysics.collision.broadphase.BroadphaseInterface;
+import com.bulletphysics.collision.broadphase.BroadphaseNativeType;
 import com.bulletphysics.collision.broadphase.CollisionFilterGroups;
 import com.bulletphysics.collision.dispatch.CollisionDispatcher;
 import com.bulletphysics.collision.dispatch.CollisionFlags;
@@ -30,7 +43,16 @@ import com.bulletphysics.collision.dispatch.PairCachingGhostObject;
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.collision.shapes.CapsuleShape;
 import com.bulletphysics.collision.shapes.CollisionShape;
+import com.bulletphysics.collision.shapes.CompoundShape;
+import com.bulletphysics.collision.shapes.ConcaveShape;
 import com.bulletphysics.collision.shapes.ConvexShape;
+import com.bulletphysics.collision.shapes.CylinderShape;
+import com.bulletphysics.collision.shapes.InternalTriangleIndexCallback;
+import com.bulletphysics.collision.shapes.PolyhedralConvexShape;
+import com.bulletphysics.collision.shapes.ShapeHull;
+import com.bulletphysics.collision.shapes.SphereShape;
+import com.bulletphysics.collision.shapes.StaticPlaneShape;
+import com.bulletphysics.collision.shapes.TriangleCallback;
 import com.bulletphysics.demos.basic.BasicDemo;
 import com.bulletphysics.demos.opengl.DemoApplication;
 import com.bulletphysics.demos.opengl.FastFormat;
@@ -49,14 +71,18 @@ import com.bulletphysics.linearmath.DebugDrawModes;
 import com.bulletphysics.linearmath.DefaultMotionState;
 import com.bulletphysics.linearmath.QuaternionUtil;
 import com.bulletphysics.linearmath.Transform;
+import com.bulletphysics.linearmath.TransformUtil;
 import com.bulletphysics.linearmath.VectorUtil;
+import com.bulletphysics.util.IntArrayList;
 import com.bulletphysics.util.ObjectArrayList;
+import com.bulletphysics.util.ObjectPool;
 
 import demo.lwjgl.basic.GLApp;
 import demo.lwjgl.basic.GLCam;
 import demo.lwjgl.basic.GLCamera;
 
 public class TwoDotFiveDCameraBullet extends DemoApplication{
+	int cubeTextureHandle;
 	
 	private ObjectArrayList<CollisionShape> collisionShapes = new ObjectArrayList<CollisionShape>();
 	private BroadphaseInterface broadphase;
@@ -83,8 +109,7 @@ public class TwoDotFiveDCameraBullet extends DemoApplication{
 
     
     //texture
-    int groundTextureHandle = 0;
-
+	int[] textures = new int[4];
 
 	public TwoDotFiveDCameraBullet(IGL gl) {
 		super(gl);
@@ -96,9 +121,11 @@ public class TwoDotFiveDCameraBullet extends DemoApplication{
 
 	}
 	
+	
+	
 	public void initPhysics(){
-        
-		CollisionShape groundShape = new BoxShape(new Vector3f(10f, 0f, 10f));
+
+		CollisionShape groundShape = new BoxShape(new Vector3f(10f, 0.001f, 10f));
 		collisionShapes.add(groundShape);
 		
 		collisionConfiguration = new DefaultCollisionConfiguration();
@@ -149,7 +176,6 @@ public class TwoDotFiveDCameraBullet extends DemoApplication{
 			DefaultMotionState myMotionState = new DefaultMotionState(groundTransform);
 			RigidBodyConstructionInfo rbInfo = new RigidBodyConstructionInfo(mass, myMotionState, groundShape, localInertia);
 			RigidBody body = new RigidBody(rbInfo);
-
 			// add the body to the dynamics world
 			dynamicsWorld.addRigidBody(body);
 		}
@@ -225,84 +251,127 @@ public class TwoDotFiveDCameraBullet extends DemoApplication{
 			dynamicsWorld.addRigidBody(body);
 			body.setActivationState(RigidBody.ISLAND_SLEEPING);
 		}
-		{
-			// create a few dynamic rigidbodies
-			// Re-using the same collision is better for memory usage and performance
-
-			CollisionShape colShape = new BoxShape(new Vector3f(1, 1, 1));
-			//CollisionShape colShape = new SphereShape(1f);
-			collisionShapes.add(colShape);
-
-			// Create Dynamic Objects
-			Transform startObj = new Transform();
-			startObj.setIdentity();
-
-			//-mass  = phasing
-			float mass = 1f;
-
-			// rigidbody is dynamic if and only if mass is non zero, otherwise static
-			boolean isDynamic = (mass != 0f);
-
-			Vector3f localInertia = new Vector3f(0, -1, 0);
-			if (isDynamic) {
-				colShape.calculateLocalInertia(mass, localInertia);
-			}
-
-
-			startObj.origin.set(0,0,0);
-
-			// using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
-			DefaultMotionState myMotionState = new DefaultMotionState(startObj);
-			RigidBodyConstructionInfo rbInfo = new RigidBodyConstructionInfo(mass, myMotionState, colShape, localInertia);
-			RigidBody body = new RigidBody(rbInfo);
-			body.setActivationState(RigidBody.ISLAND_SLEEPING);
-
-			dynamicsWorld.addRigidBody(body);
-			body.setActivationState(RigidBody.ISLAND_SLEEPING);
-		}
+//		{
+//			// create a few dynamic rigidbodies
+//			// Re-using the same collision is better for memory usage and performance
+//
+//			CollisionShape colShape = new BoxShape(new Vector3f(1, 1, 1));
+//			//CollisionShape colShape = new SphereShape(1f);
+//			collisionShapes.add(colShape);
+//
+//			// Create Dynamic Objects
+//			Transform startObj = new Transform();
+//			startObj.setIdentity();
+//
+//			//-mass  = phasing
+//			float mass = 1f;
+//
+//			// rigidbody is dynamic if and only if mass is non zero, otherwise static
+//			boolean isDynamic = (mass != 0f);
+//
+//			Vector3f localInertia = new Vector3f(0, -1, 0);
+//			if (isDynamic) {
+//				colShape.calculateLocalInertia(mass, localInertia);
+//			}
+//
+//
+//			startObj.origin.set(0,0,0);
+//
+//			// using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
+//			DefaultMotionState myMotionState = new DefaultMotionState(startObj);
+//			RigidBodyConstructionInfo rbInfo = new RigidBodyConstructionInfo(mass, myMotionState, colShape, localInertia);
+//			RigidBody body = new RigidBody(rbInfo);
+//			body.setActivationState(RigidBody.ISLAND_SLEEPING);
+//
+//			dynamicsWorld.addRigidBody(body);
+//			body.setActivationState(RigidBody.ISLAND_SLEEPING);
+//		}
 	
-		{
-			// create a few dynamic rigidbodies
-			// Re-using the same collision is better for memory usage and performance
-
-			CollisionShape colShape = new BoxShape(new Vector3f(4, 1.5f, 0.3f));
-			//CollisionShape colShape = new SphereShape(1f);
-			collisionShapes.add(colShape);
-
-			// Create Dynamic Objects
-			Transform startObj = new Transform();
-			startObj.setIdentity();
-
-			//-mass  = phasing
-			float mass = 0f;
-
-			// rigidbody is dynamic if and only if mass is non zero, otherwise static
-			boolean isDynamic = (mass != 0f);
-
-			Vector3f localInertia = new Vector3f(0, -1, 0);
-			if (isDynamic) {
-				colShape.calculateLocalInertia(mass, localInertia);
-			}
-
-
-			startObj.origin.set(-6,0.3f,-8);
-
-			// using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
-			DefaultMotionState myMotionState = new DefaultMotionState(startObj);
-			RigidBodyConstructionInfo rbInfo = new RigidBodyConstructionInfo(mass, myMotionState, colShape, localInertia);
-			RigidBody body = new RigidBody(rbInfo);
-			body.setActivationState(RigidBody.ISLAND_SLEEPING);
-
-			dynamicsWorld.addRigidBody(body);
-			body.setActivationState(RigidBody.ISLAND_SLEEPING);
-		}
+//		{
+//			// create a few dynamic rigidbodies
+//			// Re-using the same collision is better for memory usage and performance
+//
+//			CollisionShape colShape = new BoxShape(new Vector3f(4, 1.5f, 0.3f));
+//			//CollisionShape colShape = new SphereShape(1f);
+//			collisionShapes.add(colShape);
+//
+//			// Create Dynamic Objects
+//			Transform startObj = new Transform();
+//			startObj.setIdentity();
+//
+//			//-mass  = phasing
+//			float mass = 0f;
+//
+//			// rigidbody is dynamic if and only if mass is non zero, otherwise static
+//			boolean isDynamic = (mass != 0f);
+//
+//			Vector3f localInertia = new Vector3f(0, -1, 0);
+//			if (isDynamic) {
+//				colShape.calculateLocalInertia(mass, localInertia);
+//			}
+//
+//
+//			startObj.origin.set(-6,0.3f,-8);
+//
+//			// using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
+//			DefaultMotionState myMotionState = new DefaultMotionState(startObj);
+//			RigidBodyConstructionInfo rbInfo = new RigidBodyConstructionInfo(mass, myMotionState, colShape, localInertia);
+//			RigidBody body = new RigidBody(rbInfo);
+//			body.setActivationState(RigidBody.ISLAND_SLEEPING);
+//
+//			dynamicsWorld.addRigidBody(body);
+//			body.setActivationState(RigidBody.ISLAND_SLEEPING);
+//		}
 		
 		resetScene();		
+	}
+	@Override
+	public void myinit() {
+		float[] light_ambient = new float[] { 0.2f, 0.2f, 0.2f, 1.0f };
+		float[] light_diffuse = new float[] { 1.0f, 1.0f, 1.0f, 1.0f };
+		float[] light_specular = new float[] { 1.0f, 1.0f, 1.0f, 1.0f };
+		/* light_position is NOT default value */
+		float[] light_position0 = new float[] { 1.0f, 10.0f, 1.0f, 0.0f };
+		//float[] light_position1 = new float[] { -1.0f, -10.0f, -1.0f, 0.0f };
+
+		gl.glLight(GL_LIGHT0, GL_AMBIENT, light_ambient);
+		gl.glLight(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+		gl.glLight(GL_LIGHT0, GL_SPECULAR, light_specular);
+		gl.glLight(GL_LIGHT0, GL_POSITION, light_position0);
+
+		gl.glLight(GL_LIGHT1, GL_AMBIENT, light_ambient);
+		gl.glLight(GL_LIGHT1, GL_DIFFUSE, light_diffuse);
+		gl.glLight(GL_LIGHT1, GL_SPECULAR, light_specular);
+		//gl.glLight(GL_LIGHT1, GL_POSITION, light_position1);
+
+		gl.glEnable(GL_LIGHTING);
+		gl.glEnable(GL_LIGHT0);
+		gl.glEnable(GL_LIGHT1);
+
+		gl.glShadeModel(GL_SMOOTH);
+		gl.glEnable(GL_DEPTH_TEST);
+		gl.glDepthFunc(GL_LESS);
+
+		gl.glClearColor(0.7f, 0.7f, 0.7f, 0f);
+        gl.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+		cubeTextureHandle = 0;
+		cubeTextureHandle = GLApp.makeTexture("src/main/resources/com/lovetextures/cube.png");
+		//cube
+		textures[0] = 0;
+		textures[0] = GLApp.makeTexture("src/main/resources/com/lovetextures/cube.png");
+		
+
+		//glEnable(GL_CULL_FACE);
+		//glCullFace(GL_BACK);
 	}
 
 	@Override
 	public void clientMoveAndDisplay() {
 		gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 
 		// simple dynamics world doesn't handle fixed-time-stepping
 		float ms = getDeltaTimeMicroseconds();
@@ -355,8 +424,6 @@ public class TwoDotFiveDCameraBullet extends DemoApplication{
 			globalTrans.y += walkDirection.y;
 			globalTrans.z += walkDirection.z;
 			
-			System.out.println(walkDirection);			
-			System.out.println(globalTrans);
 			
 		//	int numSimSteps = dynamicsWorld.stepSimulation(ms, maxSimSubSteps);
 
@@ -389,7 +456,7 @@ public class TwoDotFiveDCameraBullet extends DemoApplication{
 				else {
 					colObj.getWorldTransform(m);
 				}
-
+				System.out.println(m.origin);
 				
 				
 				wireColor.set(1f, 1f, 0.5f); // wants deactivation
@@ -421,8 +488,11 @@ public class TwoDotFiveDCameraBullet extends DemoApplication{
 					}
 				}
 
-				GLShapeDrawer.drawOpenGL(gl, m, colObj.getCollisionShape(), wireColor, getDebugMode());
+				int a = 0;
+				drawOpenGL(gl, m, colObj.getCollisionShape(), wireColor, getDebugMode(), a);
 			}
+			
+			
 
 			float xOffset = 10f;
 			float yStart = 20f;
@@ -731,9 +801,9 @@ public class TwoDotFiveDCameraBullet extends DemoApplication{
 //		Transform characterWorldTrans = ghostObject.getWorldTransform(new Transform());
 
 //    	cameraTargetPosition.set(characterWorldTrans.origin);
-    	System.out.println(cameraPosition.x + " " + cameraPosition.y + " " + cameraPosition.z + " ... " +
-    						cameraTargetPosition.x + " " + cameraTargetPosition.y + " " + cameraTargetPosition.z + " ... " +
-    						cameraUp.x + " " + cameraUp.y + " " + cameraUp.z);
+//    	System.out.println(cameraPosition.x + " " + cameraPosition.y + " " + cameraPosition.z + " ... " +
+//    						cameraTargetPosition.x + " " + cameraTargetPosition.y + " " + cameraTargetPosition.z + " ... " +
+//    						cameraUp.x + " " + cameraUp.y + " " + cameraUp.z);
 		gl.gluLookAt(cameraPosition.x, cameraPosition.y, cameraPosition.z,
 				cameraTargetPosition.x, cameraTargetPosition.y, cameraTargetPosition.z,
 				cameraUp.x, cameraUp.y, cameraUp.z);
@@ -811,6 +881,7 @@ public class TwoDotFiveDCameraBullet extends DemoApplication{
                 dispatcher, broadphase, solver, collisionConfiguration);
     }
 	
+	
 	public static void main(String[] args) throws LWJGLException {
 		TwoDotFiveDCameraBullet demo = new TwoDotFiveDCameraBullet(LWJGL.getGL());
 		demo.initPhysics();
@@ -818,6 +889,581 @@ public class TwoDotFiveDCameraBullet extends DemoApplication{
 		demo.getDynamicsWorld().setDebugDrawer(new GLDebugDrawer(LWJGL.getGL()));
 
 		LWJGL.main(args, 800, 600, "2.5D camera, movement, and physics demo", demo);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//////////////////////////////////////////REWORK
+	public void drawCube(float extent) {
+		extent = extent * 0.5f;
+        gl.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_BLEND);
+        //GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, cubeTextureHandle);
+
+	    GL11.glBegin(GL11.GL_QUADS);
+        GL11.glNormal3f( 1f, 0f, 0f); 
+        GL11.glTexCoord2f(0.0f, 0.0f); GL11.glVertex3f(+extent,-extent,+extent); 
+        GL11.glTexCoord2f(1.0f, 0.0f); GL11.glVertex3f(+extent,-extent,-extent); 
+        GL11.glTexCoord2f(1.0f, 1.0f); GL11.glVertex3f(+extent,+extent,-extent); 
+        GL11.glTexCoord2f(0.0f, 1.0f); GL11.glVertex3f(+extent,+extent,+extent);
+        
+        GL11.glNormal3f( 0f, 1f, 0f); 
+        GL11.glTexCoord2f(0.0f, 1.0f);GL11.glVertex3f(+extent,+extent,+extent); 
+        GL11.glTexCoord2f(1.0f, 1.0f);GL11.glVertex3f(+extent,+extent,-extent); 
+        GL11.glTexCoord2f(1.0f, 0.0f);GL11.glVertex3f(-extent,+extent,-extent); 
+        GL11.glTexCoord2f(0.0f, 0.0f);GL11.glVertex3f(-extent,+extent,+extent);
+        
+        GL11.glNormal3f( 0f, 0f, 1f); 
+        GL11.glTexCoord2f(1.0f, 1.0f); GL11.glVertex3f(+extent,+extent,+extent); 
+        GL11.glTexCoord2f(0.0f, 1.0f); GL11.glVertex3f(-extent,+extent,+extent); 
+        GL11.glTexCoord2f(0.0f, 0.0f); GL11.glVertex3f(-extent,-extent,+extent); 
+        GL11.glTexCoord2f(1.0f, 0.0f); GL11.glVertex3f(+extent,-extent,+extent);
+        
+        GL11.glNormal3f(-1f, 0f, 0f); 
+        GL11.glTexCoord2f(1.0f, 0.0f); GL11.glVertex3f(-extent,-extent,+extent); 
+        GL11.glTexCoord2f(1.0f, 1.0f); GL11.glVertex3f(-extent,+extent,+extent); 
+        GL11.glTexCoord2f(0.0f, 1.0f); GL11.glVertex3f(-extent,+extent,-extent); 
+        GL11.glTexCoord2f(0.0f, 0.0f); GL11.glVertex3f(-extent,-extent,-extent);
+        
+        GL11.glNormal3f( 0f,-1f, 0f); 
+        GL11.glTexCoord2f(0.0f, 1.0f); GL11.glVertex3f(-extent,-extent,+extent); 
+        GL11.glTexCoord2f(0.0f, 0.0f); GL11.glVertex3f(-extent,-extent,-extent); 
+        GL11.glTexCoord2f(1.0f, 0.0f); GL11.glVertex3f(+extent,-extent,-extent); 
+        GL11.glTexCoord2f(1.0f, 1.0f); GL11.glVertex3f(+extent,-extent,+extent);
+
+        GL11.glNormal3f( 0f, 0f,-1f); 
+        GL11.glTexCoord2f(1.0f, 0.0f); GL11.glVertex3f(-extent,-extent,-extent); 
+        GL11.glTexCoord2f(1.0f, 1.0f); GL11.glVertex3f(-extent,+extent,-extent); 
+        GL11.glTexCoord2f(0.0f, 1.0f); GL11.glVertex3f(+extent,+extent,-extent); 
+        GL11.glTexCoord2f(0.0f, 0.0f); GL11.glVertex3f(+extent,-extent,-extent);
+		GL11.glEnd();
+	}
+	
+	public static void drawCoordSystem(IGL gl) {
+		gl.glBegin(GL_LINES);
+		gl.glColor3f(1, 0, 0);
+		gl.glVertex3f(0, 0, 0);
+		gl.glVertex3f(1, 0, 0);
+		gl.glColor3f(0, 1, 0);
+		gl.glVertex3f(0, 0, 0);
+		gl.glVertex3f(0, 1, 0);
+		gl.glColor3f(0, 0, 1);
+		gl.glVertex3f(0, 0, 0);
+		gl.glVertex3f(0, 0, 1);
+		gl.glEnd();
+	}
+
+	private static float[] glMat = new float[16];
+	
+	public void drawOpenGL(IGL gl, Transform trans, CollisionShape shape, Vector3f color, int debugMode, int textureHandle) {
+		ObjectPool<Transform> transformsPool = ObjectPool.get(Transform.class);
+		ObjectPool<Vector3f> vectorsPool = ObjectPool.get(Vector3f.class);
+
+		//System.out.println("shape="+shape+" type="+BroadphaseNativeTypes.forValue(shape.getShapeType()));
+
+		gl.glPushMatrix();
+		trans.getOpenGLMatrix(glMat);
+		gl.glMultMatrix(glMat);
+//		if (shape.getShapeType() == BroadphaseNativeTypes.UNIFORM_SCALING_SHAPE_PROXYTYPE.getValue())
+//		{
+//			const btUniformScalingShape* scalingShape = static_cast<const btUniformScalingShape*>(shape);
+//			const btConvexShape* convexShape = scalingShape->getChildShape();
+//			float	scalingFactor = (float)scalingShape->getUniformScalingFactor();
+//			{
+//				btScalar tmpScaling[4][4]={{scalingFactor,0,0,0},
+//					{0,scalingFactor,0,0},
+//					{0,0,scalingFactor,0},
+//					{0,0,0,1}};
+//
+//				drawOpenGL( (btScalar*)tmpScaling,convexShape,color,debugMode);
+//			}
+//			glPopMatrix();
+//			return;
+//		}
+
+		if (shape.getShapeType() == BroadphaseNativeType.COMPOUND_SHAPE_PROXYTYPE) {
+			CompoundShape compoundShape = (CompoundShape) shape;
+			Transform childTrans = transformsPool.get();
+			for (int i = compoundShape.getNumChildShapes() - 1; i >= 0; i--) {
+				compoundShape.getChildTransform(i, childTrans);
+				CollisionShape colShape = compoundShape.getChildShape(i);
+				//drawOpenGL(gl, childTrans, colShape, color, debugMode, );
+			}
+			transformsPool.release(childTrans);
+		}
+		else {
+			//drawCoordSystem();
+
+			//glPushMatrix();
+
+			//gl.glEnable(GL_COLOR_MATERIAL);
+			//gl.glColor3f(color.x, color.y, color.z);
+
+			boolean useWireframeFallback = true;
+
+			if ((debugMode & DebugDrawModes.DRAW_WIREFRAME) == 0) {
+				// you can comment out any of the specific cases, and use the default
+				// the benefit of 'default' is that it approximates the actual collision shape including collision margin
+				
+				switch (shape.getShapeType()) {
+					case BOX_SHAPE_PROXYTYPE: {
+						System.out.println(textureHandle);
+						BoxShape boxShape = (BoxShape) shape;
+						Vector3f halfExtent = boxShape.getHalfExtentsWithMargin(vectorsPool.get());
+						gl.glScalef(2f * halfExtent.x, 2f * halfExtent.y, 2f * halfExtent.z);
+						drawCube(1f);
+						vectorsPool.release(halfExtent);
+						useWireframeFallback = false;
+						break;
+					}
+					case SPHERE_SHAPE_PROXYTYPE: {
+						SphereShape sphereShape = (SphereShape) shape;
+						float radius = sphereShape.getMargin(); // radius doesn't include the margin, so draw with margin
+						// TODO: glutSolidSphere(radius,10,10);
+						//sphere.draw(radius, 8, 8);
+						gl.drawSphere(radius, 10, 10);
+						/*
+						glPointSize(10f);
+						glBegin(GL_POINTS);
+						glVertex3f(0f, 0f, 0f);
+						glEnd();
+						glPointSize(1f);
+						*/
+						useWireframeFallback = false;
+						break;
+					}
+//				case CONE_SHAPE_PROXYTYPE:
+//					{
+//						const btConeShape* coneShape = static_cast<const btConeShape*>(shape);
+//						int upIndex = coneShape->getConeUpIndex();
+//						float radius = coneShape->getRadius();//+coneShape->getMargin();
+//						float height = coneShape->getHeight();//+coneShape->getMargin();
+//						switch (upIndex)
+//						{
+//						case 0:
+//							glRotatef(90.0, 0.0, 1.0, 0.0);
+//							break;
+//						case 1:
+//							glRotatef(-90.0, 1.0, 0.0, 0.0);
+//							break;
+//						case 2:
+//							break;
+//						default:
+//							{
+//							}
+//						};
+//
+//						glTranslatef(0.0, 0.0, -0.5*height);
+//						glutSolidCone(radius,height,10,10);
+//						useWireframeFallback = false;
+//						break;
+//
+//					}
+
+					case STATIC_PLANE_PROXYTYPE:
+					{
+						StaticPlaneShape staticPlaneShape = (StaticPlaneShape)shape;
+						float planeConst = staticPlaneShape.getPlaneConstant();
+						Vector3f planeNormal = staticPlaneShape.getPlaneNormal(vectorsPool.get());
+						Vector3f planeOrigin = vectorsPool.get();
+						planeOrigin.scale(planeConst, planeNormal);
+						Vector3f vec0 = vectorsPool.get();
+						Vector3f vec1 = vectorsPool.get();
+						TransformUtil.planeSpace1(planeNormal,vec0,vec1);
+						float vecLen = 100f;
+						
+						Vector3f pt0 = vectorsPool.get();
+						pt0.scaleAdd(vecLen, vec0, planeOrigin);
+
+						Vector3f pt1 = vectorsPool.get();
+						pt1.scale(vecLen, vec0);
+						pt1.sub(planeOrigin, pt1);
+
+						Vector3f pt2 = vectorsPool.get();
+						pt2.scaleAdd(vecLen, vec1, planeOrigin);
+
+						Vector3f pt3 = vectorsPool.get();
+						pt3.scale(vecLen, vec1);
+						pt3.sub(planeOrigin, pt3);
+						
+						gl.glBegin(gl.GL_LINES);
+						gl.glVertex3f(pt0.x,pt0.y,pt0.z);
+						gl.glVertex3f(pt1.x,pt1.y,pt1.z);
+						gl.glVertex3f(pt2.x,pt2.y,pt2.z);
+						gl.glVertex3f(pt3.x,pt3.y,pt3.z);
+						gl.glEnd();
+						
+						vectorsPool.release(planeNormal);
+						vectorsPool.release(planeOrigin);
+						vectorsPool.release(vec0);
+						vectorsPool.release(vec1);
+						vectorsPool.release(pt0);
+						vectorsPool.release(pt1);
+						vectorsPool.release(pt2);
+						vectorsPool.release(pt3);
+						
+						break;
+					}
+					
+				case CYLINDER_SHAPE_PROXYTYPE:
+					{
+						CylinderShape cylinder = (CylinderShape) shape;
+						int upAxis = cylinder.getUpAxis();
+
+						float radius = cylinder.getRadius();
+						Vector3f halfVec = vectorsPool.get();
+						float halfHeight = VectorUtil.getCoord(cylinder.getHalfExtentsWithMargin(halfVec), upAxis);
+
+						gl.drawCylinder(radius, halfHeight, upAxis);
+						
+						vectorsPool.release(halfVec);
+
+						break;
+					}
+					default: {
+						if (shape.isConvex())
+						{
+							ConvexShape convexShape = (ConvexShape)shape;
+							if (shape.getUserPointer() == null)
+							{
+								// create a hull approximation
+								ShapeHull hull = new ShapeHull(convexShape);
+
+								// JAVA NOTE: not needed
+								///// cleanup memory
+								//m_shapeHulls.push_back(hull);
+
+								float margin = shape.getMargin();
+								hull.buildHull(margin);
+								convexShape.setUserPointer(hull);
+
+								//printf("numTriangles = %d\n", hull->numTriangles ());
+								//printf("numIndices = %d\n", hull->numIndices ());
+								//printf("numVertices = %d\n", hull->numVertices ());
+							}
+
+							if (shape.getUserPointer() != null)
+							{
+								//glutSolidCube(1.0);
+								ShapeHull hull = (ShapeHull)shape.getUserPointer();
+								
+								Vector3f normal = vectorsPool.get();
+								Vector3f tmp1 = vectorsPool.get();
+								Vector3f tmp2 = vectorsPool.get();
+
+								if (hull.numTriangles () > 0)
+								{
+									int index = 0;
+									IntArrayList idx = hull.getIndexPointer();
+									ObjectArrayList<Vector3f> vtx = hull.getVertexPointer();
+
+									gl.glBegin (gl.GL_TRIANGLES);
+
+									for (int i=0; i<hull.numTriangles (); i++)
+									{
+										int i1 = index++;
+										int i2 = index++;
+										int i3 = index++;
+										assert(i1 < hull.numIndices () &&
+											i2 < hull.numIndices () &&
+											i3 < hull.numIndices ());
+
+										int index1 = idx.get(i1);
+										int index2 = idx.get(i2);
+										int index3 = idx.get(i3);
+										assert(index1 < hull.numVertices () &&
+											index2 < hull.numVertices () &&
+											index3 < hull.numVertices ());
+
+										Vector3f v1 = vtx.getQuick(index1);
+										Vector3f v2 = vtx.getQuick(index2);
+										Vector3f v3 = vtx.getQuick(index3);
+										tmp1.sub(v3, v1);
+										tmp2.sub(v2, v1);
+										normal.cross(tmp1, tmp2);
+										normal.normalize();
+
+										gl.glNormal3f(normal.x,normal.y,normal.z);
+										gl.glVertex3f (v1.x, v1.y, v1.z);
+										gl.glVertex3f (v2.x, v2.y, v2.z);
+										gl.glVertex3f (v3.x, v3.y, v3.z);
+
+									}
+									gl.glEnd ();
+								}
+								
+								vectorsPool.release(normal);
+								vectorsPool.release(tmp1);
+								vectorsPool.release(tmp2);
+							}
+						} else
+						{
+	//						printf("unhandled drawing\n");
+						}						
+
+					}
+
+				}
+
+			}
+
+			if (useWireframeFallback) {
+				// for polyhedral shapes
+				if (shape.isPolyhedral()) {
+					PolyhedralConvexShape polyshape = (PolyhedralConvexShape) shape;
+
+					gl.glBegin(GL_LINES);
+
+					Vector3f a = vectorsPool.get(), b = vectorsPool.get();
+					int i;
+					for (i = 0; i < polyshape.getNumEdges(); i++) {
+						polyshape.getEdge(i, a, b);
+
+						gl.glVertex3f(a.x, a.y, a.z);
+						gl.glVertex3f(b.x, b.y, b.z);
+					}
+					gl.glEnd();
+					
+					vectorsPool.release(a);
+					vectorsPool.release(b);
+
+//					if (debugMode==btIDebugDraw::DBG_DrawFeaturesText)
+//					{
+//						glRasterPos3f(0.0,  0.0,  0.0);
+//						//BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),polyshape->getExtraDebugInfo());
+//
+//						glColor3f(1.f, 1.f, 1.f);
+//						for (i=0;i<polyshape->getNumVertices();i++)
+//						{
+//							btPoint3 vtx;
+//							polyshape->getVertex(i,vtx);
+//							glRasterPos3f(vtx.x(),  vtx.y(),  vtx.z());
+//							char buf[12];
+//							sprintf(buf," %d",i);
+//							BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
+//						}
+//
+//						for (i=0;i<polyshape->getNumPlanes();i++)
+//						{
+//							btVector3 normal;
+//							btPoint3 vtx;
+//							polyshape->getPlane(normal,vtx,i);
+//							btScalar d = vtx.dot(normal);
+//
+//							glRasterPos3f(normal.x()*d,  normal.y()*d, normal.z()*d);
+//							char buf[12];
+//							sprintf(buf," plane %d",i);
+//							BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
+//
+//						}
+//					}
+
+
+				}
+			}
+
+//		#ifdef USE_DISPLAY_LISTS
+//
+//		if (shape->getShapeType() == TRIANGLE_MESH_SHAPE_PROXYTYPE||shape->getShapeType() == GIMPACT_SHAPE_PROXYTYPE)
+//			{
+//				GLuint dlist =   OGL_get_displaylist_for_shape((btCollisionShape * )shape);
+//				if (dlist)
+//				{
+//					glCallList(dlist);
+//				}
+//				else
+//				{
+//		#else		
+			if (shape.isConcave())//>getShapeType() == TRIANGLE_MESH_SHAPE_PROXYTYPE||shape->getShapeType() == GIMPACT_SHAPE_PROXYTYPE)
+			//		if (shape->getShapeType() == TRIANGLE_MESH_SHAPE_PROXYTYPE)
+			{
+				ConcaveShape concaveMesh = (ConcaveShape) shape;
+				//btVector3 aabbMax(btScalar(1e30),btScalar(1e30),btScalar(1e30));
+				//btVector3 aabbMax(100,100,100);//btScalar(1e30),btScalar(1e30),btScalar(1e30));
+
+				//todo pass camera, for some culling
+				Vector3f aabbMax = vectorsPool.get();
+				aabbMax.set(1e30f, 1e30f, 1e30f);
+				Vector3f aabbMin = vectorsPool.get();
+				aabbMin.set(-1e30f, -1e30f, -1e30f);
+
+				GlDrawcallback drawCallback = new GlDrawcallback(gl);
+				drawCallback.wireframe = (debugMode & DebugDrawModes.DRAW_WIREFRAME) != 0;
+
+				concaveMesh.processAllTriangles(drawCallback, aabbMin, aabbMax);
+				
+				vectorsPool.release(aabbMax);
+				vectorsPool.release(aabbMin);
+			}
+			//#endif
+
+			//#ifdef USE_DISPLAY_LISTS
+			//		}
+			//	}
+			//#endif
+
+//			if (shape->getShapeType() == CONVEX_TRIANGLEMESH_SHAPE_PROXYTYPE)
+//			{
+//				btConvexTriangleMeshShape* convexMesh = (btConvexTriangleMeshShape*) shape;
+//
+//				//todo: pass camera for some culling			
+//				btVector3 aabbMax(btScalar(1e30),btScalar(1e30),btScalar(1e30));
+//				btVector3 aabbMin(-btScalar(1e30),-btScalar(1e30),-btScalar(1e30));
+//				TriangleGlDrawcallback drawCallback;
+//				convexMesh->getMeshInterface()->InternalProcessAllTriangles(&drawCallback,aabbMin,aabbMax);
+//
+//			}
+
+			// TODO: error in original sources GL_DEPTH_BUFFER_BIT instead of GL_DEPTH_TEST
+			//gl.glDisable(GL_DEPTH_TEST);
+			//glRasterPos3f(0, 0, 0);//mvtx.x(),  vtx.y(),  vtx.z());
+			if ((debugMode & DebugDrawModes.DRAW_TEXT) != 0) {
+				// TODO: BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),shape->getName());
+			}
+
+			if ((debugMode & DebugDrawModes.DRAW_FEATURES_TEXT) != 0) {
+				//BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),shape->getExtraDebugInfo());
+			}
+			//gl.glEnable(GL_DEPTH_TEST);
+
+			//glPopMatrix();
+		}
+		gl.glPopMatrix();
+	}
+	
+	////////////////////////////////////////////////////////////////////////////
+	
+	private static class TriMeshKey {
+		public CollisionShape shape;
+		public int dlist; // OpenGL display list	
+	}
+	
+	private static class GlDisplaylistDrawcallback extends TriangleCallback {
+		private IGL gl;
+		
+		private final Vector3f diff1 = new Vector3f();
+		private final Vector3f diff2 = new Vector3f();
+		private final Vector3f normal = new Vector3f();
+
+		public GlDisplaylistDrawcallback(IGL gl) {
+			this.gl = gl;
+		}
+		
+		public void processTriangle(Vector3f[] triangle, int partId, int triangleIndex) {
+			diff1.sub(triangle[1], triangle[0]);
+			diff2.sub(triangle[2], triangle[0]);
+			normal.cross(diff1, diff2);
+
+			normal.normalize();
+
+			gl.glBegin(GL_TRIANGLES);
+			gl.glColor3f(0, 1, 0);
+			gl.glNormal3f(normal.x, normal.y, normal.z);
+			gl.glVertex3f(triangle[0].x, triangle[0].y, triangle[0].z);
+
+			gl.glColor3f(0, 1, 0);
+			gl.glNormal3f(normal.x, normal.y, normal.z);
+			gl.glVertex3f(triangle[1].x, triangle[1].y, triangle[1].z);
+
+			gl.glColor3f(0, 1, 0);
+			gl.glNormal3f(normal.x, normal.y, normal.z);
+			gl.glVertex3f(triangle[2].x, triangle[2].y, triangle[2].z);
+			gl.glEnd();
+
+			/*glBegin(GL_LINES);
+			glColor3f(1, 1, 0);
+			glNormal3d(normal.getX(),normal.getY(),normal.getZ());
+			glVertex3d(triangle[0].getX(), triangle[0].getY(), triangle[0].getZ());
+			glNormal3d(normal.getX(),normal.getY(),normal.getZ());
+			glVertex3d(triangle[1].getX(), triangle[1].getY(), triangle[1].getZ());
+			glColor3f(1, 1, 0);
+			glNormal3d(normal.getX(),normal.getY(),normal.getZ());
+			glVertex3d(triangle[2].getX(), triangle[2].getY(), triangle[2].getZ());
+			glNormal3d(normal.getX(),normal.getY(),normal.getZ());
+			glVertex3d(triangle[1].getX(), triangle[1].getY(), triangle[1].getZ());
+			glColor3f(1, 1, 0);
+			glNormal3d(normal.getX(),normal.getY(),normal.getZ());
+			glVertex3d(triangle[2].getX(), triangle[2].getY(), triangle[2].getZ());
+			glNormal3d(normal.getX(),normal.getY(),normal.getZ());
+			glVertex3d(triangle[0].getX(), triangle[0].getY(), triangle[0].getZ());
+			glEnd();*/
+		}
+	}
+	
+	private static class GlDrawcallback extends TriangleCallback {
+		private IGL gl;
+		public boolean wireframe = false;
+
+		public GlDrawcallback(IGL gl) {
+			this.gl = gl;
+		}
+		
+		public void processTriangle(Vector3f[] triangle, int partId, int triangleIndex) {
+			if (wireframe) {
+				gl.glBegin(GL_LINES);
+				gl.glColor3f(1, 0, 0);
+				gl.glVertex3f(triangle[0].x, triangle[0].y, triangle[0].z);
+				gl.glVertex3f(triangle[1].x, triangle[1].y, triangle[1].z);
+				gl.glColor3f(0, 1, 0);
+				gl.glVertex3f(triangle[2].x, triangle[2].y, triangle[2].z);
+				gl.glVertex3f(triangle[1].x, triangle[1].y, triangle[1].z);
+				gl.glColor3f(0, 0, 1);
+				gl.glVertex3f(triangle[2].x, triangle[2].y, triangle[2].z);
+				gl.glVertex3f(triangle[0].x, triangle[0].y, triangle[0].z);
+				gl.glEnd();
+			}
+			else {
+				gl.glBegin(GL_TRIANGLES);
+				gl.glColor3f(1, 0, 0);
+				gl.glVertex3f(triangle[0].x, triangle[0].y, triangle[0].z);
+				gl.glColor3f(0, 1, 0);
+				gl.glVertex3f(triangle[1].x, triangle[1].y, triangle[1].z);
+				gl.glColor3f(0, 0, 1);
+				gl.glVertex3f(triangle[2].x, triangle[2].y, triangle[2].z);
+				gl.glEnd();
+			}
+		}
+	}
+	
+	private static class TriangleGlDrawcallback extends InternalTriangleIndexCallback {
+		private IGL gl;
+
+		public TriangleGlDrawcallback(IGL gl) {
+			this.gl = gl;
+		}
+		
+		public void internalProcessTriangleIndex(Vector3f[] triangle, int partId, int triangleIndex) {
+			gl.glBegin(GL_TRIANGLES);//LINES);
+			gl.glColor3f(1, 0, 0);
+			gl.glVertex3f(triangle[0].x, triangle[0].y, triangle[0].z);
+			gl.glVertex3f(triangle[1].x, triangle[1].y, triangle[1].z);
+			gl.glColor3f(0, 1, 0);
+			gl.glVertex3f(triangle[2].x, triangle[2].y, triangle[2].z);
+			gl.glVertex3f(triangle[1].x, triangle[1].y, triangle[1].z);
+			gl.glColor3f(0, 0, 1);
+			gl.glVertex3f(triangle[2].x, triangle[2].y, triangle[2].z);
+			gl.glVertex3f(triangle[0].x, triangle[0].y, triangle[0].z);
+			gl.glEnd();
+		}
 	}
 
 }

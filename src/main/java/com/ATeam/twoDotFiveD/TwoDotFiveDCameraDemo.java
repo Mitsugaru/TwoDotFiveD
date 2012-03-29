@@ -122,16 +122,7 @@ public class TwoDotFiveDCameraDemo extends GLApp {
 
         
         
-        GL11.glEnable(GL11.GL_LIGHTING);
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-        cubeTextureHandle = makeTexture("src/main/resources/com/lovetextures/cube.png");
-        sphereTextureHandle = makeTexture("src/main/resources/com/lovetextures/sphere.png");
-        cubeOtherTextureHandle = makeTexture("src/main/resources/com/lovetextures/grey.png");
-        skyTextureHandle = makeTexture("src/main/resources/com/lovetextures/sky.png");
-        groundTextureHandle = makeTexture("src/main/resources/com/lovetextures/ground.jpg",true,true);
+ 
 	    camera1.setCamera(0,0,20, 0,0,0, 0,1,0);
 
 //	    cubeTestBottom = beginDisplayList(); {

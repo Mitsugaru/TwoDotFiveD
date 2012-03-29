@@ -508,7 +508,7 @@ public class ForkLiftDemo extends DemoApplication {
 			vehicle.updateWheelTransform(i,true);
 			// draw wheels (cylinders)
 			Transform trans = vehicle.getWheelInfo(i).worldTransform;
-			GLShapeDrawer.drawOpenGL(gl,trans,wheelShape,wheelColor,getDebugMode()/*,worldBoundsMin,worldBoundsMax*/);
+			//GLShapeDrawer.drawOpenGL(gl,trans,wheelShape,wheelColor,getDebugMode()/*,worldBoundsMin,worldBoundsMax*/);
 		}
 		
 		super.renderme();
