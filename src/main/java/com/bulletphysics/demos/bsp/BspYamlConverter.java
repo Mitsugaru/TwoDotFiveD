@@ -112,6 +112,7 @@ public abstract class BspYamlConverter
 			}
 			else if (localScaling != null)
 			{
+				//TODO basic shapes that are not of convex hull shape
 				final String shapeType = config.getString(rootPath + ".type");
 				
 			}

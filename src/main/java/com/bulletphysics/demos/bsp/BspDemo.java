@@ -604,7 +604,6 @@ public class BspDemo extends DemoApplication
 						.get((RigidBody) pm.getBody1());
 				if (entityA != null && entityB != null)
 				{
-					// TODO block unfreeze
 					// TODO also, when a block is collided, check if they need
 					// to be "refrozen"
 					if (entityA.isFrozen())
