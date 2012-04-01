@@ -1,6 +1,6 @@
 1.5
-16. Unknown Artist - Track16.wav
-Footsteps.wav
-hit.wav
-Explosion.wav
-12 Battle in the Forgotten City.wav
+com/ATeam/twoDotFiveD/music/16. Unknown Artist - Track16.wav
+com/ATeam/twoDotFiveD/music/Footsteps.wav
+com/ATeam/twoDotFiveD/music/hit.wav
+com/ATeam/twoDotFiveD/music/Explosion.wav
+com/ATeam/twoDotFiveD/music/12 Battle in the Forgotten City.wav

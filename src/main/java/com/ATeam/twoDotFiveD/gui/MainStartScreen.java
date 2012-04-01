@@ -48,7 +48,7 @@ public class MainStartScreen implements ScreenController
         updateText( "You have joined the game." );
         // TODO you're going to need to ask for a client to connect to and a
         // name.
-        client = new chatClient( this, "localhost", "Clifford" );
+        client = new chatClient( this, "localhost", "Clifford");
         if ( client.connect() )
         {
             client.start();

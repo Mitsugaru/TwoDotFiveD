@@ -30,6 +30,9 @@ import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import com.bulletphysics.demos.opengl.FontRender.GLFont;
+
+import demo.lwjgl.basic.GLApp;
+
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.Cylinder;
@@ -177,14 +180,44 @@ public class LwjglGL implements IGL {
 
 	public void drawCube(float extent) {
 		extent = extent * 0.5f;
-		
+
 	    GL11.glBegin(GL11.GL_QUADS);
-        GL11.glNormal3f( 1f, 0f, 0f); GL11.glVertex3f(+extent,-extent,+extent); GL11.glVertex3f(+extent,-extent,-extent); GL11.glVertex3f(+extent,+extent,-extent); GL11.glVertex3f(+extent,+extent,+extent);
-        GL11.glNormal3f( 0f, 1f, 0f); GL11.glVertex3f(+extent,+extent,+extent); GL11.glVertex3f(+extent,+extent,-extent); GL11.glVertex3f(-extent,+extent,-extent); GL11.glVertex3f(-extent,+extent,+extent);
-        GL11.glNormal3f( 0f, 0f, 1f); GL11.glVertex3f(+extent,+extent,+extent); GL11.glVertex3f(-extent,+extent,+extent); GL11.glVertex3f(-extent,-extent,+extent); GL11.glVertex3f(+extent,-extent,+extent);
-        GL11.glNormal3f(-1f, 0f, 0f); GL11.glVertex3f(-extent,-extent,+extent); GL11.glVertex3f(-extent,+extent,+extent); GL11.glVertex3f(-extent,+extent,-extent); GL11.glVertex3f(-extent,-extent,-extent);
-        GL11.glNormal3f( 0f,-1f, 0f); GL11.glVertex3f(-extent,-extent,+extent); GL11.glVertex3f(-extent,-extent,-extent); GL11.glVertex3f(+extent,-extent,-extent); GL11.glVertex3f(+extent,-extent,+extent);
-        GL11.glNormal3f( 0f, 0f,-1f); GL11.glVertex3f(-extent,-extent,-extent); GL11.glVertex3f(-extent,+extent,-extent); GL11.glVertex3f(+extent,+extent,-extent); GL11.glVertex3f(+extent,-extent,-extent);
+        GL11.glNormal3f( 1f, 0f, 0f); 
+        GL11.glVertex3f(+extent,-extent,+extent); 
+        GL11.glVertex3f(+extent,-extent,-extent); 
+        GL11.glVertex3f(+extent,+extent,-extent); 
+        GL11.glVertex3f(+extent,+extent,+extent);
+        
+        GL11.glNormal3f( 0f, 1f, 0f); 
+        
+        GL11.glTexCoord2f(0.0f, 1.0f);GL11.glVertex3f(+extent,+extent,+extent); 
+        GL11.glTexCoord2f(1.0f, 1.0f);GL11.glVertex3f(+extent,+extent,-extent); 
+        GL11.glTexCoord2f(1.0f, 0.0f);GL11.glVertex3f(-extent,+extent,-extent); 
+        GL11.glTexCoord2f(0.0f, 0.0f);GL11.glVertex3f(-extent,+extent,+extent);
+        
+        GL11.glNormal3f( 0f, 0f, 1f); 
+        GL11.glTexCoord2f(1.0f, 1.0f); GL11.glVertex3f(+extent,+extent,+extent); 
+        GL11.glTexCoord2f(0.0f, 1.0f); GL11.glVertex3f(-extent,+extent,+extent); 
+        GL11.glTexCoord2f(0.0f, 0.0f); GL11.glVertex3f(-extent,-extent,+extent); 
+        GL11.glTexCoord2f(1.0f, 0.0f); GL11.glVertex3f(+extent,-extent,+extent);
+        
+        GL11.glNormal3f(-1f, 0f, 0f); 
+        GL11.glVertex3f(-extent,-extent,+extent); 
+        GL11.glVertex3f(-extent,+extent,+extent); 
+        GL11.glVertex3f(-extent,+extent,-extent); 
+        GL11.glVertex3f(-extent,-extent,-extent);
+        
+        GL11.glNormal3f( 0f,-1f, 0f); 
+        GL11.glVertex3f(-extent,-extent,+extent); 
+        GL11.glVertex3f(-extent,-extent,-extent); 
+        GL11.glVertex3f(+extent,-extent,-extent); 
+        GL11.glVertex3f(+extent,-extent,+extent);
+
+        GL11.glNormal3f( 0f, 0f,-1f); 
+        GL11.glVertex3f(-extent,-extent,-extent); 
+        GL11.glVertex3f(-extent,+extent,-extent); 
+        GL11.glVertex3f(+extent,+extent,-extent); 
+        GL11.glVertex3f(+extent,-extent,-extent);
 		GL11.glEnd();
 	}
 	

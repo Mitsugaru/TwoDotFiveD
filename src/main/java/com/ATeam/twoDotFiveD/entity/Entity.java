@@ -1,11 +1,14 @@
 package com.ATeam.twoDotFiveD.entity;
 
+import java.io.Serializable;
+
 import javax.vecmath.Vector3f;
 
 import com.bulletphysics.dynamics.RigidBody;
 
-public class Entity
+public class Entity implements Serializable
 {
+	//TODO need local owner ID to differentiate which client made what Entity
 	private String		ID				= "UNKNOWN";
 	private RigidBody	rigidBody;
 	private String[]	description = {"NONE"};

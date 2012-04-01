@@ -118,17 +118,24 @@ public class clientHandler extends Thread implements Comparable
                 out.println( "[[Servermessage]] add " + playerList[i] );
             }
         }
-        send( "Type /help for commands" );
         server.sendToAll( "[[Servermessage]] add " + name );
+        send( "Type /help for commands" );
+        
         addRoom( server.getDefault() );
         server.getDefault().addPlayer( this, "" );
         while ( !stop )
         {
             try
             {
-                String text = in.nextLine();
-                server.throwup( name + ": " + text );
-                handle( text );
+                //String text = in.nextLine();
+                //server.throwup( name + ": " + text );
+                //handle( text );
+            	try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
             catch ( NoSuchElementException e )
             {
