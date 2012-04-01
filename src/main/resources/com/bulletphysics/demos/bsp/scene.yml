@@ -39,7 +39,8 @@ object3:
 box:
    shape: box
    localscaling: 1.0 1.0 1.0
-   transform: 0.0 0.0 0.0
+   origin: 0.0 0.0 0.0
+   mass: 1f
 object4:
    vertices:
    - 24.000000 12.800000 19.200001
@@ -121,6 +122,12 @@ object8:
    - 12.800000 -21.600000 14.400001
    - 12.000000 -28.000000 12.800000
    - 12.000000 -28.000000 14.400001
+block:
+  shape: box
+  localscaling: 1.0 1.0 1.0
+  acceleration: 0f -10f 0f
+  mass: 1f
+  origin: 5f 5f 5f
 floor:
   vertices:
    - 100 -10 100

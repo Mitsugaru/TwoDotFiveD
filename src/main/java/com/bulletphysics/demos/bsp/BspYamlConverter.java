@@ -69,6 +69,10 @@ public abstract class BspYamlConverter
 				// Ignore, as probably missing
 				acceleration = null;
 			}
+			catch(ArrayIndexOutOfBoundsException a)
+			{
+				Logging.log.log(Level.WARNING,"Bad parse for: "+ rootPath);
+			}
 			String[] description = null;
 			try
 			{
@@ -112,8 +116,39 @@ public abstract class BspYamlConverter
 			}
 			else if (localScaling != null)
 			{
-				final String shapeType = config.getString(rootPath + ".type");
-				
+				//TODO basic shapes that are not of convex hull shape
+				final String shapeType = config.getString(rootPath + ".shape");
+				if(shapeType == null)
+				{
+					Logging.log.log(Level.WARNING, "Object at path '"
+							+ rootPath + "' has no shape type defined.");
+				}
+				else
+				{
+					try
+					{
+						final String[] l = localScaling.split(" ");
+						final Vector3f scale = new Vector3f(Float.parseFloat(l[0]), Float
+								.parseFloat(l[1]), Float.parseFloat(l[2]));
+						final String origin = config.getString(rootPath + ".origin");
+						Vector3f originTransform = new Vector3f(0f, 0f, 0f);
+						if(origin != null)
+						{
+							final String[] t = origin.split(" ");
+							originTransform = new Vector3f(Float.parseFloat(t[0]), Float
+								.parseFloat(t[1]), Float.parseFloat(t[2]));
+						}
+						addShapeCollider(rootPath, shapeType, scale, originTransform, mass, acceleration, image, description);
+					}
+					catch(ArrayIndexOutOfBoundsException a)
+					{
+						Logging.log.log(Level.WARNING,"Bad parse for: "+ rootPath);
+					}
+					catch(NumberFormatException n)
+					{
+						Logging.log.log(Level.WARNING,"Bad parse for: "+ rootPath);
+					}
+				}
 			}
 			else
 			{
@@ -126,7 +161,7 @@ public abstract class BspYamlConverter
 	}
 	
 	public abstract void addShapeCollider(String name, String type,
-			Vector3f localscaling, float mass, Vector3f acceleration,
+			Vector3f localscaling, Vector3f transform, float mass, Vector3f acceleration,
 			String image, String[] description);
 	
 	public abstract void addConvexVerticesCollider(String name,
