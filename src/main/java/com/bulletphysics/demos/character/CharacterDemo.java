@@ -434,7 +434,7 @@ public class CharacterDemo extends DemoApplication {
 
 		@Override
 		public void addShapeCollider(String name, String type,
-				Vector3f localscaling, float mass, Vector3f acceleration,
+				Vector3f localscaling, Vector3f transform, float mass, Vector3f acceleration,
 				String image, String[] description)
 		{
 			// TODO Auto-generated method stub

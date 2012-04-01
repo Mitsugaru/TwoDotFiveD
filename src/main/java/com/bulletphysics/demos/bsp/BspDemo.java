@@ -123,9 +123,15 @@ public class BspDemo extends DemoApplication
 		collisionConfiguration = new DefaultCollisionConfiguration();
 		// btCollisionShape* groundShape = new btBoxShape(btVector3(50,3,50));
 		dispatcher = new CollisionStuff(collisionConfiguration);
+		// the maximum size of the collision world. Make sure objects stay 
+        // within these boundaries. Don't make the world AABB size too large, it
+        // will harm simulation quality and performance
 		Vector3f worldMin = new Vector3f(-10f, -10f, -10f);
 		Vector3f worldMax = new Vector3f(10f, 10f, 10f);
-		broadphase = new AxisSweep3(worldMin, worldMax);
+		// maximum number of objects
+        final int maxProxies = 1024;
+        // Broadphase computes an conservative approximate list of colliding pairs
+		broadphase = new AxisSweep3(worldMin, worldMax, maxProxies);
 		// broadphase = new SimpleBroadphase();
 		//broadphase = new DbvtBroadphase();
 		// btOverlappingPairCache* broadphase = new btSimpleBroadphase();
@@ -157,7 +163,7 @@ public class BspDemo extends DemoApplication
 			Logging.log.log(Level.SEVERE,
 					"Could not close InputStream for: scene.yml", e);
 		}
-		Transform startTransform = new Transform();
+		/*Transform startTransform = new Transform();
 		startTransform.setIdentity();
 		
 		float start_x = 0 - 5 / 2;
@@ -173,23 +179,27 @@ public class BspDemo extends DemoApplication
 		points.add(new Vector3f(2f, 2f, 0f));
 		points.add(new Vector3f(2f, 2f, 2f));
 		final CollisionShape shape = new ConvexHullShape(points);
-		for (int k = 0; k < 4; k++) {
-			for (int i = 0; i < 4; i++) {
-				for (int j = 0; j < 4; j++) {
-					startTransform.origin.set(
-							2f * i + start_x,
-							10f + 2f * k + start_y,
-							2f * j + start_z);
-					RigidBody body = localCreateRigidBody(1f, startTransform, shape);
-					//TODO figure out why setting the center of mass transform doesn't want to work
+		for (int k = 0; k < 4; k++)
+		{
+			for (int i = 0; i < 4; i++)
+			{
+				for (int j = 0; j < 4; j++)
+				{
+					startTransform.origin.set(2f * i + start_x, 10f + 2f * k
+							+ start_y, 2f * j + start_z);
+					RigidBody body = localCreateRigidBody(1f, startTransform,
+							shape);
+					// TODO figure out why setting the center of mass transform
+					// doesn't want to work
 					Transform center = new Transform();
 					center.setIdentity();
 					center.origin.set(0.5f, 0.5f, 0.5f);
 					body.setCenterOfMassTransform(center);
-					//eventDispatcher.notify(new BlockCreateEvent(new Entity("Box", body)));
+					// eventDispatcher.notify(new BlockCreateEvent(new
+					// Entity("Box", body)));
 				}
 			}
-		}
+		}*/
 		clientResetScene();
 	}
 	
@@ -200,16 +210,16 @@ public class BspDemo extends DemoApplication
 		float dt = getDeltaTimeMicroseconds() * 0.000001f;
 		try
 		{
-			//TODO May need custom DynamicsWorld to catch exceptions per step
+			// TODO May need custom DynamicsWorld to catch exceptions per step
 			dynamicsWorld.stepSimulation(dt);
 		}
-		catch(NullPointerException e)
+		catch (NullPointerException e)
 		{
 			System.out.println("Simulation had null at some point");
-			//WARN this is very serious
-			//TODO figure out how to fix this...
+			// WARN this is very serious
+			// TODO figure out how to fix this...
 		}
-		catch(ArrayIndexOutOfBoundsException arr)
+		catch (ArrayIndexOutOfBoundsException arr)
 		{
 			System.out.println("Index Out of Bounds in Simulation");
 		}
@@ -235,7 +245,8 @@ public class BspDemo extends DemoApplication
 	}
 	
 	@Override
-	public synchronized void specialKeyboard(int key, int x, int y, int modifiers)
+	public synchronized void specialKeyboard(int key, int x, int y,
+			int modifiers)
 	{
 		switch (key)
 		{
@@ -258,19 +269,21 @@ public class BspDemo extends DemoApplication
 					try
 					{
 						dynamicsWorld.removeCollisionObject(a);
-					if (e != null)
-					{
-						eventDispatcher.notify(new BlockDestroyedEvent(e));
-						entityList.remove(e);
+						if (e != null)
+						{
+							eventDispatcher.notify(new BlockDestroyedEvent(e));
+							entityList.remove(e);
+						}
 					}
-					}
-					catch(NullPointerException n)
+					catch (NullPointerException n)
 					{
-						System.out.println("Tried to remove object that is not there");
+						System.out
+								.println("Tried to remove object that is not there");
 					}
-					catch(ArrayIndexOutOfBoundsException b)
+					catch (ArrayIndexOutOfBoundsException b)
 					{
-						System.out.println("ArrayIndexOutOfBounds in simulation");
+						System.out
+								.println("ArrayIndexOutOfBounds in simulation");
 					}
 				}
 				// repopulate world
@@ -384,7 +397,7 @@ public class BspDemo extends DemoApplication
 		demo.initPhysics();
 		demo.getDynamicsWorld()
 				.setDebugDrawer(new GLDebugDrawer(LWJGL.getGL()));
-		//demo.debugMode = 1;
+		demo.debugMode = 1;
 		LWJGL.main(args, 800, 600, "Bullet Physics Demo. http://bullet.sf.net",
 				demo);
 	}
@@ -447,7 +460,8 @@ public class BspDemo extends DemoApplication
 				}
 				
 				@Override
-				public synchronized void onBlockDestroyed(BlockDestroyedEvent event)
+				public synchronized void onBlockDestroyed(
+						BlockDestroyedEvent event)
 				{
 					// System.out.println("Received destroyed event");
 					Entity removed = null;
@@ -483,13 +497,15 @@ public class BspDemo extends DemoApplication
 							{
 								dynamicsWorld.removeCollisionObject(toRemove);
 							}
-							catch(NullPointerException e)
+							catch (NullPointerException e)
 							{
-								System.out.println("Attempted to remove object taht no longer exists.");
+								System.out
+										.println("Attempted to remove object taht no longer exists.");
 							}
-							catch(ArrayIndexOutOfBoundsException a)
+							catch (ArrayIndexOutOfBoundsException a)
 							{
-								System.out.println("Attempted to remove object taht no longer exists.");
+								System.out
+										.println("Attempted to remove object taht no longer exists.");
 							}
 						}
 						
@@ -505,22 +521,6 @@ public class BspDemo extends DemoApplication
 	}
 	
 	// //////////////////////////////////////////////////////////////////////////
-	
-	/*
-	 * private class BspToBulletConverter extends BspConverter {
-	 * 
-	 * @Override public void addConvexVerticesCollider(ObjectArrayList<Vector3f>
-	 * vertices) { if (vertices.size() > 0) { float mass = 0f; Transform
-	 * startTransform = new Transform(); // can use a shift
-	 * startTransform.setIdentity(); startTransform.origin.set(0, 0, -10f);
-	 * 
-	 * // this create an internal copy of the vertices CollisionShape shape =
-	 * new ConvexHullShape(vertices); // collisionShapes.add(shape);
-	 * 
-	 * // btRigidBody* body = m_demoApp->localCreateRigidBody(mass, //
-	 * startTransform,shape); localCreateRigidBody(mass, startTransform, shape);
-	 * } } }
-	 */
 	
 	public class BspYamlToBulletConverter extends BspYamlConverter
 	{
@@ -538,11 +538,49 @@ public class BspDemo extends DemoApplication
 			// this create an internal copy of the vertices
 			CollisionShape shape = new ConvexHullShape(vertices);
 			RigidBody body = localCreateRigidBody(mass, startTransform, shape);
-			//body.setActivationState(RigidBody.ACTIVE_TAG);
+			// body.setActivationState(RigidBody.ACTIVE_TAG);
 			final Transform center = new Transform();
 			center.setIdentity();
 			center.origin.set(1f, 1f, 1f);
 			body.setCenterOfMassTransform(center);
+			addEntity(name, body, image, description, acceleration);
+		}
+		
+		@Override
+		public void addShapeCollider(String name, String type,
+				Vector3f localscaling, Vector3f transform, float mass,
+				Vector3f acceleration, String image, String[] description)
+		{
+			CollisionShape shape = new BoxShape(new Vector3f(1f, 1f, 1f));
+			if (type.contains("box"))
+			{
+				shape = new BoxShape(localscaling);
+			}
+			else if (type.contains("sphere"))
+			{
+				shape = new SphereShape(localscaling.x);
+			}
+			else if(type.contains("cylinder"))
+			{
+				shape = new CylinderShape(localscaling);
+			}
+			else if(type.contains("cone"))
+			{
+				shape = new ConeShape(localscaling.x, localscaling.y);
+			}
+			else
+			{
+				Logging.log.warning("Unknown type '" + type +"' for shape: " + name);
+				return;
+			}
+			Transform origin = new Transform();
+			origin.setIdentity();
+			origin.origin.set(transform.x, transform.y, transform.z);
+			RigidBody body = localCreateRigidBody(mass, origin, shape);
+			addEntity(name, body, image, description, acceleration);
+		}
+		public void addEntity(String name, RigidBody body, String image, String[] description, Vector3f acceleration)
+		{
 			Entity e = new Entity(null, null);
 			if (description != null)
 			{
@@ -565,16 +603,6 @@ public class BspDemo extends DemoApplication
 			entityList.put(body, e);
 			eventDispatcher.notify(new BlockCreateEvent(e));
 		}
-
-		@Override
-		public void addShapeCollider(String name, String type, Vector3f localscaling,
-				float mass, Vector3f acceleration, String image,
-				String[] description)
-		{
-			// TODO Auto-generated method stub
-			
-		}
-		
 	}
 	
 	public class BlockCollisionListener extends BlockListener
