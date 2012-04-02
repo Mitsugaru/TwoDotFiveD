@@ -43,7 +43,6 @@ public abstract class Database {
 	/*
 	 *  MySQL, SQLLite
 	 */
-
 	public Database(Logger log, String prefix, String dp) {
 		this.log = log;
 		this.PREFIX = prefix;

@@ -290,6 +290,11 @@
 			<artifactId>sqlite-jdbc</artifactId>
 			<version>3.6.16</version>
 		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.18</version>
+		</dependency>
 		<!-- http://maximporges.blogspot.com/2007/09/build-tools-adding-sql-to-mix.html -->
 		<dependency>
 			<groupId>com.jme3</groupId>
