@@ -91,8 +91,8 @@ public abstract class BspYamlConverter
 					try
 					{
 						String[] b = ((String) o).split(" ");
-						vertices.add(new Vector3f(Float.parseFloat(b[0]), Float
-								.parseFloat(b[1]), Float.parseFloat(b[2])));
+						vertices.add(new Vector3f(Float.parseFloat(b[0]) * 5f, Float
+								.parseFloat(b[1])* 5f, Float.parseFloat(b[2])* 5f));
 					}
 					catch (Exception e)
 					{

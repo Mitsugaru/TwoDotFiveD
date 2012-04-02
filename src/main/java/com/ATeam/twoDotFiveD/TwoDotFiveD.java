@@ -3,6 +3,8 @@ package com.ATeam.twoDotFiveD;
 import java.io.IOException;
 import java.util.logging.Level;
 
+import lib.Mitsugaru.SQLibrary.MySQL;
+
 import com.ATeam.twoDotFiveD.debug.*;
 import com.ATeam.twoDotFiveD.entity.Player;
 import com.ATeam.twoDotFiveD.event.EventDispatcher;
@@ -73,6 +75,15 @@ public class TwoDotFiveD
 		DisplayStuff.renderLoop(nifty, null);
 		DisplayStuff.destroy();
 		// TODO initialize nifty-gui main menu
+		/*MySQL database = new MySQL(Logging.log, "TEST", "dakani.no-ip.org", "3306", "minecraft", "minecraft", "mc");
+		if(database.checkConnection())
+		{
+			System.out.println("CONNECTED");
+		}
+		else
+		{
+			System.out.println("NOPE");
+		}*/
 	}
 	
 	// TODO create a method that saves all info and safely stop the program

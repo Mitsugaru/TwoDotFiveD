@@ -4,6 +4,7 @@ import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 
+//TODO implement
 public class MainOptionController implements ScreenController
 {
 	Nifty nifty;
@@ -17,7 +18,7 @@ public class MainOptionController implements ScreenController
 	public void onStartScreen()
 	{
 		// TODO Auto-generated method stub
-		
+		System.out.println("in options");
 	}
 
 	@Override
