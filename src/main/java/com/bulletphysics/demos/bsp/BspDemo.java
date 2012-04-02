@@ -156,7 +156,7 @@ public class BspDemo extends DemoApplication
 		try
 		{
 			new BspYamlToBulletConverter().convertBspYaml(getClass()
-					.getResourceAsStream("scene.yml"));
+					.getResourceAsStream("EntryScene.yml"));
 		}
 		catch (IOException e)
 		{
@@ -397,7 +397,7 @@ public class BspDemo extends DemoApplication
 		demo.initPhysics();
 		demo.getDynamicsWorld()
 				.setDebugDrawer(new GLDebugDrawer(LWJGL.getGL()));
-		demo.debugMode = 1;
+		demo.debugMode = 0;
 		LWJGL.main(args, 800, 600, "Bullet Physics Demo. http://bullet.sf.net",
 				demo);
 	}
