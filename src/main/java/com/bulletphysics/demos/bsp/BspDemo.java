@@ -156,7 +156,7 @@ public class BspDemo extends DemoApplication
 		try
 		{
 			new BspYamlToBulletConverter().convertBspYaml(getClass()
-					.getResourceAsStream("scene.yml"));
+					.getResourceAsStream("EntryScene.yml"));
 		}
 		catch (IOException e)
 		{
