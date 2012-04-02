@@ -113,96 +113,36 @@
 			<image filename="com/lovetextures/light-refraction-1.jpg"></image>
 		</layer>
 		<layer id="foreground" childLayout="horizontal">
-			<effect>
-				<onStartScreen name="fade" startColor="#0000"
-					endColor="#000f" length="10" startDelay="10" post="false" />
-			</effect>
-			<panel id="panel_left" height="100%" width="25%" childLayout="vertical"
-				backgroundColor="#0f08">
-				<panel id="panel_left_video" height="15%" width="100%"
-					childLayout="center" backgroundColor="#00f8">
-					<control id="edit_tabs" name="nifty-tabs">
-						<control id="tab_1" name="nifty-tab" caption="Tab #1">
-							<panel childLayout="vertical" valign="center" align="center"
-								backgroundColor="#f004" width="100%" height="100%">
-								<control align="center" valign="center" name="label"
-									text="Content for Tab #1" width="100%" height="100%" />
-							</panel>
-						</control>
-						<control id="tab_2" name="nifty-tab" caption="Tab #2">
-							<panel childLayout="vertical" valign="center" align="center"
-								backgroundColor="#0f04" width="100%" height="100%">
-								<control align="center" valign="center" name="label"
-									text="Content for Tab #2" width="100%" height="100%" />
-							</panel>
-						</control>
-					</control>
-				</panel>
-				<control name="button" label="Back" id="OptionBackButton"
-					align="center" valign="center">
-					<effect>
-						<onClick name="playSound" sound="ping" />
-					</effect>
-					<interact onClick="changeScreen(mainmenu)" />
-				</control>
-			</panel>
-			<panel id="panel_right" height="100%" width="70%" childLayout="vertical"
-				backgroundColor="#00f8">
-				<panel id="panel_top_right1" height="15%" width="100%"
-					childLayout="center" backgroundColor="#00f8">
-					<control name="label" color="#000" text="123" width="100%"
-						height="100%" />
-				</panel>
-				<!-- HERE HERE -->
-				<panel id="panel_top_right2" height="15%" width="100%"
-					childLayout="center" backgroundColor="#44f8">
-					<control name="button" label="Back3" id="OptionBackButton"
-						align="center" valign="bottom">
-					</control>
-				</panel>
-
-				<!-- <panel id="panel_top_left" height="34%" width="55%" childLayout="horizontal" 
-					backgroundColor="#88f8"> <control id="testDropDown" name="dropDownControl" 
-					align="center" valign="bottom"> </control> </panel> -->
-
-				<panel id="panel_top_right" height="70%" width="100%"
-					childLayout="center" backgroundColor="#88f8">
-
-					<control name="button" label="PlaySound" id="OptionBackButton"
-						align="center" valign="bottom">
-						<effect>
-							<onClick name="playSound" sound="ping" />
-							<onHover name="pulsate" scaleFactor="0.008" startColor="#f600"
-								endColor="#ffff" post="true" />
-						</effect>
-					</control>
-
-					<control name="button" label="Credits2" id="SettingsButton"
-						align="center" valign="center">
-						<interact onClick="changeScreen(Credits)" />
-					</control>
-					<control name="button" label="Start" id="StartButton"
-						align="left" valign="bottom">
-						<interact onClick="beginGame()" />
-						<effect>
-							<onClick name="playSound" sound="ping" />
-							<onHover name="pulsate" scaleFactor="0.008" startColor="#f600"
-								endColor="#ffff" post="true" />
-						</effect>
-					</control>
-
-					<!-- <control name="dropdown" id="OptionBackButton" align="center" valign="top"> 
-						<control value="hi"></control> <control value="bye"></control> </control> 
-						<control name="dropdown"> <menuitem> <title>first set</title> <values> <value>option 
-						a</value> <value>option b</value> </values> </menuitem> </control> <Combobox 
-						setShape="5,5,120,25" setLabel="Select Item"> <Listbox setSize="100,60"> 
-						<Item setLabel="Item 1" /> <Item setLabel="Item 2" /> <Item setLabel="Item 
-						3" /> </Listbox> </Combobox> -->
-
-
-				</panel>
-			</panel>
-
+			   <panel id="dialog" style="nifty-panel" childLayout="vertical" padding="18px,28px,28px,16px" width="55%" height="58%" align="center" valign="center">
+        <effect>
+          <onStartScreen name="move" timeType="exp" factor="3.5" direction="top" mode="in" length="500" inherit="true"/>
+          <onEndScreen name="move" timeType="exp" factor="3.5" direction="bottom" mode="out" length="500" inherit="true"/>
+        </effect>
+        <panel id="b" childLayout="horizontal">
+          <text id="dropDownLabel1" style="nifty-label" text="DropDown 1: " width="120px" align="left" textVAlign="center" textHAlign="left" />
+          <control id="dropDown1" name="dropDown" />
+        </panel>
+        <panel childLayout="horizontal" height="8px" />
+        <panel childLayout="horizontal">
+          <text id="dropDownLabel2" style="nifty-label" text="DropDown 2: " width="120px" align="left" textVAlign="center" textHAlign="left" />
+          <control id="dropDown2" name="dropDown" />
+        </panel>
+        <panel childLayout="horizontal" height="8px" />
+        <panel childLayout="horizontal">
+          <text text="Fo Shizzle: " style="nifty-label" width="120px" align="left" textVAlign="center" textHAlign="left" />
+          <control id="checkbox" name="checkbox" checked="false" />
+        </panel>    
+        <panel id="dynamic-parent" childLayout="vertical">
+        </panel>
+        <panel childLayout="horizontal" height="8px" />
+        <panel childLayout="horizontal">
+          <text text="Listbox Static: " style="nifty-label" width="120px" align="left" textVAlign="center" textHAlign="left" />
+          <control id="listBoxStatic" name="listBox" horizontal="off" width="*" height="100%" displayItems="3" />
+        </panel>
+        <panel childLayout="horizontal" height="8px" />
+        <panel id="buttonPanel" childLayout="vertical" width="100%">
+        </panel>
+      </panel>
 		</layer>
 	</screen>
 
