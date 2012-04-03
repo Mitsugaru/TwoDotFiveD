@@ -47,6 +47,8 @@ public class EventPackage implements Serializable
 	
 	public Event<?> getEvent() throws ClassNotFoundException
 	{
+		//Because we cannot have a null RigidBody, this is a default rigid body to be used for when we don't care about the rigidbody at all
+		final RigidBodyConstructionInfo baseInfo = new RigidBodyConstructionInfo(0, new DefaultMotionState(), new BoxShape(new Vector3f(1f, 1f, 1f)));
 		String className = (String)data.get("class");
 		if(className.contains("BlockCreateEvent"))
 		{
@@ -160,12 +162,12 @@ public class EventPackage implements Serializable
 		{
 			//System.out.println("BlockDestroyedEvent package");
 			//TODO not sure if this will error out or not...
-			Entity e = new Entity(null, (String) data.get("entity.ID"), null, null);
+			Entity e = new Entity(baseInfo, (String) data.get("entity.ID"), null, null);
 			return(new BlockDestroyedEvent(e));
 		}
 		else if(className.contains("BlockPhysicsChangeEvent"))
 		{
-			Entity e = new Entity(null, (String) data.get("entity.ID"), null, null);
+			Entity e = new Entity(baseInfo, (String) data.get("entity.ID"), null, null);
 			String gravityString = (String) data.get("entity.direction");
 			gravityString = gravityString.replace("(", "");
 			gravityString = gravityString.replace(",","");
