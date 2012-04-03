@@ -11,6 +11,7 @@ import com.ATeam.twoDotFiveD.entity.Entity;
 import com.ATeam.twoDotFiveD.event.Event;
 import com.ATeam.twoDotFiveD.event.block.BlockCreateEvent;
 import com.ATeam.twoDotFiveD.event.block.BlockDestroyedEvent;
+import com.ATeam.twoDotFiveD.event.block.BlockPhysicsChangeEvent;
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.collision.shapes.CollisionShape;
 import com.bulletphysics.collision.shapes.ConeShape;
@@ -161,6 +162,17 @@ public class EventPackage implements Serializable
 			//TODO not sure if this will error out or not...
 			Entity e = new Entity(null, (String) data.get("entity.ID"), null, null);
 			return(new BlockDestroyedEvent(e));
+		}
+		else if(className.contains("BlockPhysicsChangeEvent"))
+		{
+			Entity e = new Entity(null, (String) data.get("entity.ID"), null, null);
+			String gravityString = (String) data.get("entity.direction");
+			gravityString = gravityString.replace("(", "");
+			gravityString = gravityString.replace(",","");
+			gravityString = gravityString.replace(")", "");
+			final String[] gravityCut =  gravityString.split(" ");
+			final Vector3f gravity = new Vector3f(Float.parseFloat(gravityCut[0]), Float.parseFloat(gravityCut[1]), Float.parseFloat(gravityCut[2]));
+			return(new BlockPhysicsChangeEvent(e, gravity));
 		}
 		else
 		{

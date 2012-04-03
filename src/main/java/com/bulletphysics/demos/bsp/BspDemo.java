@@ -26,6 +26,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -67,13 +68,11 @@ import com.bulletphysics.demos.opengl.GLDebugDrawer;
 import com.bulletphysics.demos.opengl.IGL;
 import com.bulletphysics.demos.opengl.LWJGL;
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
-import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.dynamics.constraintsolver.ConstraintSolver;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
 import com.bulletphysics.linearmath.DefaultMotionState;
 import com.bulletphysics.linearmath.Transform;
 
-import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
 import org.lwjgl.input.Keyboard;
@@ -86,6 +85,7 @@ import static com.bulletphysics.demos.opengl.IGL.*;
  * 
  * @author jezek2
  */
+@SuppressWarnings("unused")
 public class BspDemo extends DemoApplication
 {
 	private static BspDemo					demo;
@@ -348,9 +348,10 @@ public class BspDemo extends DemoApplication
 			{
 				shootBoxShape = new CylinderShape(new Vector3f(1f, 1f, 1f));
 			}
-			
-			Entity entity = localCreateEntity(mass, startTransform, shootBoxShape,
-					shootBoxShape.getName(), "", new String[] { "" });
+			final Random r = new Random();
+			Entity entity = localCreateEntity(mass, startTransform,
+					shootBoxShape, shootBoxShape.getName() + r.nextFloat(),
+					null, null);
 			Vector3f linVel = new Vector3f(destination.x - camPos.x,
 					destination.y - camPos.y, destination.z - camPos.z);
 			linVel.normalize();
@@ -505,21 +506,36 @@ public class BspDemo extends DemoApplication
 							catch (NullPointerException e)
 							{
 								System.out
-										.println("Attempted to remove object taht no longer exists.");
+										.println("Attempted to remove object that no longer exists.");
 							}
 							catch (ArrayIndexOutOfBoundsException a)
 							{
 								System.out
-										.println("Attempted to remove object taht no longer exists.");
+										.println("Attempted to remove object that no longer exists.");
 							}
 						}
 						
+					}
+				}
+				
+				@Override
+				public void onBlockPhysicsChange(BlockPhysicsChangeEvent event)
+				{
+					for (Entity e : entityList.toArray(new Entity[0]))
+					{
+						if (e.getID().equals(event.getEntity().getID()))
+						{
+							e.setEntityGravity(event.getDirection());
+							break;
+						}
 					}
 				}
 			};
 			remoteDispatcher
 					.registerListener(Type.BLOCK_CREATE, remoteListener);
 			remoteDispatcher.registerListener(Type.BLOCK_DESTROYED,
+					remoteListener);
+			remoteDispatcher.registerListener(Type.BLOCK_PHYSICS_CHANGE,
 					remoteListener);
 		}
 		// MusicPlayer mp = new MusicPlayer(eventDispatcher);
@@ -711,19 +727,21 @@ public class BspDemo extends DemoApplication
 				final Entity entityB = (Entity) pm.getBody1();
 				if (entityA != null && entityB != null)
 				{
-					/*if (entityA.isActive() && entityB.isActive())
-					{
-						if (entityA.getID().equalsIgnoreCase("box")
-								&& entityB.getID().equalsIgnoreCase("box"))
-						{
-							// TODO block freeze event
-							entityA.freeze();
-							entityB.freeze();
-						}
-					}*/
+					/*
+					 * if (entityA.isActive() && entityB.isActive()) { if
+					 * (entityA.getID().equalsIgnoreCase("box") &&
+					 * entityB.getID().equalsIgnoreCase("box")) { // TODO block
+					 * freeze event entityA.freeze(); entityB.freeze(); } }
+					 */
 				}
 			}
 			
+		}
+		
+		@Override
+		public void onBlockPhysicsChange(BlockPhysicsChangeEvent event)
+		{
+			sendToRemote(event);
 		}
 		
 		public boolean setGravity(Entity target, Vector3f direction)
