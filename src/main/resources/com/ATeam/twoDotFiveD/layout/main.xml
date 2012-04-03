@@ -123,20 +123,21 @@
           <control id="dropDown1" name="dropDown" />
         </panel>
         <panel childLayout="horizontal" height="8px" />
-        <panel childLayout="horizontal">
-          <text id="dropDownLabel2" style="nifty-label" text="DropDown 2: " width="120px" align="left" textVAlign="center" textHAlign="left" />
-          <control id="dropDown2" name="dropDown" />
-        </panel>
+
         <panel childLayout="horizontal" height="8px" />
         <panel childLayout="horizontal">
-          <text text="Fo Shizzle: " style="nifty-label" width="120px" align="left" textVAlign="center" textHAlign="left" />
+          <text text="vSync" style="nifty-label" width="120px" align="left" textVAlign="center" textHAlign="left" />
           <control id="checkbox" name="checkbox" checked="false" />
-        </panel>    
+        </panel>
+        <panel childLayout="horizontal">
+          <text text="Full Screen" style="nifty-label" width="120px" align="left" textVAlign="center" textHAlign="left" />
+          <control id="checkbox" name="checkbox" checked="false" />
+        </panel>     
         <panel id="dynamic-parent" childLayout="vertical">
         </panel>
         <panel childLayout="horizontal" height="8px" />
         <panel childLayout="horizontal">
-          <text text="Listbox Static: " style="nifty-label" width="120px" align="left" textVAlign="center" textHAlign="left" />
+          <text text="Player Input" style="nifty-label" width="120px" align="left" textVAlign="center" textHAlign="left" />
           <control id="listBoxStatic" name="listBox" horizontal="off" width="*" height="100%" displayItems="3" />
         </panel>
         <panel childLayout="horizontal" height="8px" />
