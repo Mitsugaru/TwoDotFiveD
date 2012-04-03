@@ -397,7 +397,7 @@ public class BspDemo extends DemoApplication
 		demo.initPhysics();
 		demo.getDynamicsWorld()
 				.setDebugDrawer(new GLDebugDrawer(LWJGL.getGL()));
-		demo.debugMode = 1;
+		//demo.debugMode = 1;
 		LWJGL.main(args, 800, 600, "Bullet Physics Demo. http://bullet.sf.net",
 				demo);
 	}
@@ -632,6 +632,22 @@ public class BspDemo extends DemoApplication
 						.get((RigidBody) pm.getBody1());
 				if (entityA != null && entityB != null)
 				{
+					if(entityA.getID().equals("object2"))
+					{
+						entityA.getRigidBody().setAngularFactor(0f);
+						entityA.getRigidBody().setAngularVelocity(new Vector3f(0f, 0f, 0f));
+						entityA.getRigidBody().setLinearVelocity(new Vector3f(0f, 0f, 0f));
+						entityA.getRigidBody().setGravity(new Vector3f(0f, 10f, 0f));
+						System.out.println("OMG");
+					}
+					else if(entityB.getID().equals("object2"))
+					{
+						entityB.getRigidBody().setAngularFactor(0f);
+						entityB.getRigidBody().setAngularVelocity(new Vector3f(0f, 0f, 0f));
+						entityB.getRigidBody().setLinearVelocity(new Vector3f(0f, 0f, 0f));
+						entityB.getRigidBody().setGravity(new Vector3f(0f, 10f, 0f));
+						System.out.println("OMA");
+					}
 					// TODO also, when a block is collided, check if they need
 					// to be "refrozen"
 					if (entityA.isFrozen())
