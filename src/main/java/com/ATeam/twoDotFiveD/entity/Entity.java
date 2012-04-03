@@ -4,59 +4,47 @@ import java.io.Serializable;
 
 import javax.vecmath.Vector3f;
 
+import com.bulletphysics.collision.shapes.CollisionShape;
 import com.bulletphysics.dynamics.RigidBody;
+import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
+import com.bulletphysics.linearmath.MotionState;
 
-public class Entity implements Serializable
+public class Entity extends RigidBody implements Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 2363764575766376861L;
 	//TODO need local owner ID to differentiate which client made what Entity
 	private String		ID				= "UNKNOWN";
-	private RigidBody	rigidBody;
 	private String[]	description = {"NONE"};
 	private boolean		frozen			= false;
 	// Old state, for when we "freeze" a RigidBody by setting the following to
 	// zero
-	private Vector3f	gravity			= new Vector3f(0f, 0f, 0f);
-	private Vector3f	linearVelocity	= new Vector3f(0f, 0f, 0f);
-	private Vector3f	angularVeloctiy	= new Vector3f(0f, 0f, 0f);
-	private float angularFactor = 0f;
+	private Vector3f	entityGravity			= new Vector3f(0f, 0f, 0f);
+	private Vector3f	entityLinearVelocity	= new Vector3f(0f, 0f, 0f);
+	private Vector3f	entityAngularVeloctiy	= new Vector3f(0f, 0f, 0f);
+	private float entityAngularFactor = 0f;
 	private int cooldown = 0;
 	
 	// TODO implement
 	// Might need an array of images, images per face? IDK
 	private String		image;
 	
-	public Entity(String ID, RigidBody rigidBody, String image, String[] description)
+	public Entity(float mass, MotionState state, CollisionShape shape, Vector3f localInertia, String ID, String image, String[] description)
 	{
+		super(mass, state, shape, localInertia);
 		this.ID = ID;
-		this.rigidBody = rigidBody;
 		this.image = image;
-		if(description != null)
-		{
-			this.description = description;
-		}
+		this.description = description;
 	}
 	
-	public Entity(String ID, RigidBody rigidBody, String[] description)
+	public Entity(RigidBodyConstructionInfo info, String ID, String image, String[] description)
 	{
+		super(info);
 		this.ID = ID;
-		this.rigidBody = rigidBody;
-		if(description != null)
-		{
-			this.description = description;
-		}
-	}
-	
-	public Entity(String ID, RigidBody rigidBody, String image)
-	{
-		this.ID = ID;
-		this.rigidBody = rigidBody;
 		this.image = image;
-	}
-	
-	public Entity(String ID, RigidBody rigidBody)
-	{
-		this.ID = ID;
-		this.rigidBody = rigidBody;
+		this.description = description;
 	}
 	
 	public void freeze()
@@ -64,14 +52,14 @@ public class Entity implements Serializable
 		if (!frozen && cooldown <= 0)
 		{
 			// Save state
-			linearVelocity = rigidBody.getLinearVelocity(new Vector3f());
-			angularVeloctiy = rigidBody.getAngularVelocity(new Vector3f());
-			angularFactor = rigidBody.getAngularFactor();
+			entityLinearVelocity = this.getLinearVelocity(new Vector3f());
+			entityAngularVeloctiy = this.getAngularVelocity(new Vector3f());
+			entityAngularFactor = this.getAngularFactor();
 			// Freeze object movement
-			rigidBody.setLinearVelocity(new Vector3f(0f, 0f, 0f));
-			rigidBody.setGravity(new Vector3f(0f, 0f, 0f));
-			rigidBody.setAngularVelocity(new Vector3f(0f, 0f, 0f));
-			rigidBody.setAngularFactor(0f);
+			this.setLinearVelocity(new Vector3f(0f, 0f, 0f));
+			this.setGravity(new Vector3f(0f, 0f, 0f));
+			this.setAngularVelocity(new Vector3f(0f, 0f, 0f));
+			this.setAngularFactor(0f);
 			frozen = true;
 			cooldown = 5;
 		}
@@ -86,11 +74,11 @@ public class Entity implements Serializable
 		if(frozen)
 		{
 			//Resume movement
-			rigidBody.setLinearVelocity(linearVelocity);
-			rigidBody.setAngularVelocity(angularVeloctiy);
-			rigidBody.setAngularFactor(angularFactor);
-			rigidBody.setGravity(gravity);
-			rigidBody.activate();
+			this.setLinearVelocity(entityLinearVelocity);
+			this.setAngularVelocity(entityAngularVeloctiy);
+			this.setAngularFactor(entityAngularFactor);
+			this.setGravity(entityGravity);
+			this.activate();
 			frozen = false;
 			cooldown = 5;
 		}
@@ -101,24 +89,25 @@ public class Entity implements Serializable
 		return frozen;
 	}
 	
-	public void setGravity(Vector3f gravity)
+	public void setFrozen(boolean f)
 	{
-		this.gravity = gravity;
+		frozen = f;
 	}
 	
-	public Vector3f getGravity()
+	public void setEntityGravity(Vector3f gravity)
 	{
-		return gravity;
+		this.entityGravity = gravity;
+		this.setGravity(gravity);
+	}
+	
+	public Vector3f getEntityGravity()
+	{
+		return entityGravity;
 	}
 	
 	public String getID()
 	{
 		return ID;
-	}
-	
-	public RigidBody getRigidBody()
-	{
-		return rigidBody;
 	}
 	
 	public String getImage()
