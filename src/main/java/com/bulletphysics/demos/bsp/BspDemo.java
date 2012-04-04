@@ -391,7 +391,7 @@ public class BspDemo extends DemoApplication
 		demo = new BspDemo(LWJGL.getGL());
 		try
 		{
-			client = new chatClient(null, "137.155.2.153", "BASE",
+			client = new chatClient(null, "137.155.2.104", "SERVER",
 					remoteDispatcher);
 			if (client.connect())
 			{
@@ -428,6 +428,7 @@ public class BspDemo extends DemoApplication
 		eventDispatcher.registerListener(Type.BLOCK_COLLISION, blockListener);
 		eventDispatcher.registerListener(Type.BLOCK_COLLISION_RESOLVED,
 				blockListener);
+		eventDispatcher.registerListener(Type.BLOCK_PHYSICS_CHANGE, blockListener);
 		/**
 		 * Remote events
 		 */
