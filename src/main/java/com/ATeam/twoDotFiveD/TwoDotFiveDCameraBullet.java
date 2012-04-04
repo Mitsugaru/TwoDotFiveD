@@ -106,6 +106,8 @@ public class TwoDotFiveDCameraBullet extends DemoApplication{
 	private static int gJump = 0;
 	
 	private Vector3f globalTrans = new Vector3f();
+	
+	private RigidBody player;
 
     
     //texture
@@ -145,6 +147,8 @@ public class TwoDotFiveDCameraBullet extends DemoApplication{
 		
 		ghostObject = new PairCachingGhostObject();
 		ghostObject.setWorldTransform(startTransform);
+		
+		
 		sweepBP.getOverlappingPairCache().setInternalGhostPairCallback(new GhostPairCallback());
 		
 		BoxShape box = new BoxShape(new Vector3f(1f, 1f, 1f));
@@ -448,6 +452,8 @@ public class TwoDotFiveDCameraBullet extends DemoApplication{
 			for (int i = 0; i < numObjects; i++) {
 				CollisionObject colObj = dynamicsWorld.getCollisionObjectArray().getQuick(i);
 				RigidBody body = RigidBody.upcast(colObj);
+				
+
 
 				if (body != null && body.getMotionState() != null) {
 					DefaultMotionState myMotionState = (DefaultMotionState) body.getMotionState();
@@ -804,9 +810,25 @@ public class TwoDotFiveDCameraBullet extends DemoApplication{
 //    	System.out.println(cameraPosition.x + " " + cameraPosition.y + " " + cameraPosition.z + " ... " +
 //    						cameraTargetPosition.x + " " + cameraTargetPosition.y + " " + cameraTargetPosition.z + " ... " +
 //    						cameraUp.x + " " + cameraUp.y + " " + cameraUp.z);
-		gl.gluLookAt(cameraPosition.x, cameraPosition.y, cameraPosition.z,
-				cameraTargetPosition.x, cameraTargetPosition.y, cameraTargetPosition.z,
-				cameraUp.x, cameraUp.y, cameraUp.z);
+        gl.gluLookAt( cameraPosition.x
+            + RigidBody.upcast( ghostObject )
+                .getCenterOfMassPosition( new Vector3f() ).x,
+            cameraPosition.y
+                + RigidBody.upcast( ghostObject )
+                    .getCenterOfMassPosition( new Vector3f() ).y,
+            cameraPosition.z
+                + RigidBody.upcast( ghostObject )
+                    .getCenterOfMassPosition( new Vector3f() ).z,
+            RigidBody.upcast( ghostObject )
+                .getCenterOfMassPosition( new Vector3f() ).x,
+            RigidBody.upcast( ghostObject )
+                .getCenterOfMassPosition( new Vector3f() ).y,
+            RigidBody.upcast( ghostObject )
+                .getCenterOfMassPosition( new Vector3f() ).z,
+            cameraUp.x,
+            cameraUp.y,
+            cameraUp.z );
+		//gl.gluLookAt( eyex, eyey, eyez, RigidBody.upcast( ghostObject ).getCenterOfMassPosition( new Vector3f() ).x, centery, centerz, upx, upy, upz );
 	}
 	
 	@Override
