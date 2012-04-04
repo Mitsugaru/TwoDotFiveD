@@ -223,8 +223,8 @@ elevatorsmash4:
   mass: 1f 
 elevatorsmash5:
   shape: box
-  localscaling: 1.25 .25 2.5
-  origin: 83.75 1.5 -10
+  localscaling: 1.25 .25 1.25
+  origin: 83.75 1.5 -8
   mass: 1f
 elevatorshaftbackpathcieling:
   vertices:
@@ -301,6 +301,12 @@ sidewayselevator1:
   localscaling: 1.25 .25 1.25
   origin: -1.3 -25.25 3.75
   acceleration: -7f 0f 0f
+  mass: 1f
+sidewayselevator2:
+  shape: box
+  localscaling: 1.25 .25 1.25
+  origin: -20 -25.25 3.75
+  acceleration: 7f 0f 0f
   mass: 1f
 frustratedbridge:
   vertices:
