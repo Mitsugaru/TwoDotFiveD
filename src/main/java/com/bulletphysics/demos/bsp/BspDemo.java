@@ -783,16 +783,16 @@ public class BspDemo extends DemoApplication
                     if (( entityA.getID().equals( "sidewayselevator1" ) || entityB.getID()
                                     .equals( "sidewayselevator1" ) )
                                     && (entityA.getID()
-                                        .equals( "underelevatorplatform1" )
+                                        .equals( "sidewayselevator2" )
                                     || entityB.getID()
-                                        .equals( "underelevatorplatform1" ))){
-                        Vector3f reset = new Vector3f (-20f, -25.25f, 3.75f);
+                                        .equals( "sidewayselevator2" ))){
+                        //Vector3f reset = new Vector3f (0f, 0f, 0f);
                         if (entityA.getID().equals( "sidewayselevator1" )){
                             System.out.println(entityA.getID() +" "+ entityB.getID());
-                            //elevatorshiftxhigh(entityA, reset);
+                            elevatorshiftxhigh(entityA, entityA.getRigidBody().getCenterOfMassPosition( new Vector3f() ));
                         }else{
                             System.out.println(entityA.getID() +" "+ entityB.getID());
-                            //elevatorshiftxhigh(entityB, reset);
+                            elevatorshiftxhigh(entityB, entityB.getRigidBody().getCenterOfMassPosition( new Vector3f() ));
                         }                        
                     }
                     if (( entityA.getID().equals( "sidewayselevator1" ) || entityB.getID()
@@ -806,6 +806,32 @@ public class BspDemo extends DemoApplication
                             elevatorshiftxlow(entityA, reset);
                         }else{
                             elevatorshiftxlow(entityB, reset);
+                        }                        
+                    }
+                    if (( entityA.getID().equals( "sidewayselevator2" ) || entityB.getID()
+                                    .equals( "sidewayselevator2" ) )
+                                    && (entityA.getID()
+                                        .equals( "underelevatorplatform1" )
+                                    || entityB.getID()
+                                        .equals( "underelevatorplatform1" ))){
+                        Vector3f reset = new Vector3f (-20f, -25.25f, 3.75f);
+                        if (entityA.getID().equals( "sidewayselevator2" )){
+                            elevatorshiftxhigh(entityA, reset);
+                        }else{
+                            elevatorshiftxhigh(entityB, reset);
+                        }                        
+                    }
+                    if (( entityA.getID().equals( "sidewayselevator2" ) || entityB.getID()
+                                    .equals( "sidewayselevator2" ) )
+                                    && (entityA.getID()
+                                        .equals( "sidewayselevator1" )
+                                    || entityB.getID()
+                                        .equals( "sidewayselevator1" ))){
+                        //Vector3f reset = new Vector3f (0f, 0f, 0f);
+                        if (entityA.getID().equals( "sidewayselevator2" )){
+                            elevatorshiftxlow(entityA, entityA.getRigidBody().getCenterOfMassPosition( new Vector3f() ));
+                        }else{
+                            elevatorshiftxlow(entityB, entityB.getRigidBody().getCenterOfMassPosition( new Vector3f() ));
                         }                        
                     }
                     if (( entityA.getID().equals( "elevatorsmash2" ) || entityB.getID()
@@ -892,7 +918,7 @@ public class BspDemo extends DemoApplication
                                         .equals( "elevatorshaftbackpath" )
                                     || entityB.getID()
                                         .equals( "elevatorshaftbackpath" ))){
-                        Vector3f reset = new Vector3f (83.75f, -5f, -10f);
+                        Vector3f reset = new Vector3f (83.75f, -5f, -8f);
                         if (entityA.getID().equals( "elevatorsmash5" )){
                             elevatorshiftyhigh(entityA, reset);
                         }else{
@@ -905,7 +931,7 @@ public class BspDemo extends DemoApplication
                                         .equals( "elevatorshaftbackpathcieling" )
                                     || entityB.getID()
                                         .equals( "elevatorshaftbackpathcieling" ))){
-                        Vector3f reset = new Vector3f (83.75f, 1.5f, -10f);
+                        Vector3f reset = new Vector3f (83.75f, 1.5f, -8f);
                         if (entityA.getID().equals( "elevatorsmash5" )){
                             elevatorshiftylow(entityA, reset);
                         }else{
@@ -1090,6 +1116,7 @@ public class BspDemo extends DemoApplication
         body.translate( new Vector3f(v.x - vector.x , v.y - vector.y , v.z - vector.z) );
         body
             .setGravity( new Vector3f( 7f, 0f, 0f ) );
+        body.setLinearVelocity( new Vector3f( 7f, 0f, 0f ) );
     }
     
     private void elevatorshiftxlow(Entity a, Vector3f v){
@@ -1099,6 +1126,7 @@ public class BspDemo extends DemoApplication
         body.translate( new Vector3f(v.x - vector.x , v.y - vector.y , v.z - vector.z) );
         body
             .setGravity( new Vector3f( -7f, 0f, 0f ) );
+        body.setLinearVelocity( new Vector3f( -7f, 0f, 0f ) );
         
     }
     
@@ -1109,6 +1137,7 @@ public class BspDemo extends DemoApplication
         body.translate( new Vector3f(v.x - vector.x , v.y - vector.y , v.z - vector.z) );
         body
             .setGravity( new Vector3f( 0f, 7f, 0f ) );
+        body.setLinearVelocity( new Vector3f( 0f, 7f, 0f ) );
         
     }
     
@@ -1119,6 +1148,7 @@ public class BspDemo extends DemoApplication
         body.translate( new Vector3f(v.x - vector.x , v.y - vector.y , v.z - vector.z) );
         body
             .setGravity( new Vector3f( 0f, -7f, 0f ) );
+        body.setLinearVelocity( new Vector3f( 0f, -7f, 0f ) );
         
     }
     
