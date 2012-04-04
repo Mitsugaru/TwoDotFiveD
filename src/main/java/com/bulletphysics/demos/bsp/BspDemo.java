@@ -59,6 +59,7 @@ import com.bulletphysics.collision.dispatch.CollisionConfiguration;
 import com.bulletphysics.collision.dispatch.CollisionDispatcher;
 import com.bulletphysics.collision.dispatch.CollisionFlags;
 import com.bulletphysics.collision.dispatch.CollisionObject;
+import com.bulletphysics.collision.dispatch.CollisionObjectType;
 import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
 import com.bulletphysics.collision.dispatch.GhostPairCallback;
 import com.bulletphysics.collision.dispatch.PairCachingGhostObject;
@@ -181,6 +182,7 @@ public class BspDemo extends DemoApplication
         // Broadphase computes an conservative approximate list of colliding
         // pairs
         broadphase = new AxisSweep3( worldMin, worldMax, maxProxies );
+        broadphase.getOverlappingPairCache().setInternalGhostPairCallback(new GhostPairCallback());
         // broadphase = new SimpleBroadphase();
         // broadphase = new DbvtBroadphase();
         // btOverlappingPairCache* broadphase = new btSimpleBroadphase();
@@ -201,24 +203,6 @@ public class BspDemo extends DemoApplication
         BulletGlobals.setDeactivationTime( 0.1f );
         
         //here
-        Transform startTransform = new Transform();
-		startTransform.setIdentity();
-		startTransform.origin.set(84.0f, 50.0f, -10.0f);
-		
-		ghostObject = new PairCachingGhostObject();
-		ghostObject.setWorldTransform(startTransform);
-		//AxisSweep3 sweepBP = new AxisSweep3(worldMin, worldMax);
-
-		
-		broadphase.getOverlappingPairCache().setInternalGhostPairCallback(new GhostPairCallback());
-		
-		BoxShape box = new BoxShape(new Vector3f(1f, 1f, 1f));
-		ghostObject.setCollisionShape(box);
-		ghostObject.setCollisionFlags(CollisionFlags.CHARACTER_OBJECT);
-
-		character = new KinematicCharacterController(ghostObject, box, 1f);
-		dynamicsWorld.addCollisionObject(ghostObject, CollisionFilterGroups.CHARACTER_FILTER, (short)(CollisionFilterGroups.STATIC_FILTER | CollisionFilterGroups.DEFAULT_FILTER));
-		dynamicsWorld.addAction(character);
 
 		populate();
 
@@ -239,6 +223,43 @@ public class BspDemo extends DemoApplication
                 "Could not close InputStream for: scene.yml",
                 e );
         }
+        //Character
+        Transform startTransform = new Transform();
+		startTransform.setIdentity();
+		startTransform.origin.set(2.0f, 2.0f, 0.0f);
+		
+		ghostObject = new PairCachingGhostObject();
+		ghostObject.setWorldTransform(startTransform);
+		//AxisSweep3 sweepBP = new AxisSweep3(worldMin, worldMax);
+
+		
+		
+		
+		BoxShape box = new BoxShape(new Vector3f(1f, 1f, 1f));
+		ghostObject.setCollisionShape(box);
+		ghostObject.setCollisionFlags(CollisionFlags.KINEMATIC_OBJECT);
+
+		character = new KinematicCharacterController(ghostObject, box, 1f);
+		dynamicsWorld.addCollisionObject(ghostObject, CollisionFilterGroups.CHARACTER_FILTER, (short)(CollisionFilterGroups.STATIC_FILTER | CollisionFilterGroups.DEFAULT_FILTER));
+		dynamicsWorld.addAction(character);
+		for(CollisionObject o : dynamicsWorld.getCollisionObjectArray())
+		{
+			if(o.getCollisionShape().equals(ghostObject.getCollisionShape()))
+			{
+				RigidBody r =  RigidBody.upcast(o);
+				if(r == null)
+				{
+					System.out.println("null for character");
+				}
+				else
+				{
+					Entity e = new Entity("player", r);
+					entityList.put(r, e);
+				}
+					
+			}
+		}
+		
         /*
          * Transform startTransform = new Transform();
          * startTransform.setIdentity();
@@ -407,6 +428,10 @@ public class BspDemo extends DemoApplication
 			wireColor.set(1f, 0f, 0f);
 			for (int i = 0; i < numObjects; i++) {
 				CollisionObject colObj = dynamicsWorld.getCollisionObjectArray().getQuick(i);
+				if(colObj.getInternalType() == CollisionObjectType.GHOST_OBJECT)
+				{
+					System.out.println("player found");
+				}
 				RigidBody body = RigidBody.upcast(colObj);
 				
 				//System.out.println(colObj.getWorldTransform(new Transform()).origin);
