@@ -206,6 +206,26 @@ elevatorshaftbackpath:
   - 16.5 -1.0 6
   - 17 -1.0 6
   - 16.5 -1.1 6 
+elevatorsmash2:
+  shape: box
+  localscaling: 1.25 .25 2.5
+  origin: 83.75 1.5 20
+  mass: 1f 
+elevatorsmash3:
+  shape: box
+  localscaling: 1.25 .25 2.5
+  origin: 83.75 1.5 10
+  mass: 1f 
+elevatorsmash4:
+  shape: box
+  localscaling: 1.25 .25 2.5
+  origin: 83.75 1.5 0
+  mass: 1f 
+elevatorsmash5:
+  shape: box
+  localscaling: 1.25 .25 2.5
+  origin: 83.75 1.5 -10
+  mass: 1f
 elevatorshaftbackpathcieling:
   vertices:
   - 17 .4 -2.0
@@ -268,14 +288,14 @@ headingunder:
   - 1.0 -5.0 .5
 underelevatorplatform1:
   vertices:
-  - -5 -5.1 .5
-  - -5 -5.0 .5
-  - -4.5 -5.1 .5
-  - -4.5 -5.0 .5
-  - -5 -5.1 1
-  - -5 -5.0 1
   - -4.5 -5.1 1
   - -4.5 -5.0 1
+  - -5 -5.1 .5
+  - -5 -5.0 .5
+  - -5 -5.1 1
+  - -5 -5.0 1
+  - -4.5 -5.1 .5
+  - -4.5 -5.0 .5
 sidewayselevator1:
   shape: box
   localscaling: 1.25 .25 1.25
@@ -288,10 +308,10 @@ frustratedbridge:
   - -5 -5.0 .5
   - -4.5 -5.1 .5
   - -4.5 -5.0 .5
-  - -5 -10.1 -4
-  - -5 -10.0 -4
-  - -4.5 -10.1 -4
-  - -4.5 -10.0 -4
+  - -5 -10.1 -9
+  - -5 -10.0 -9
+  - -4.5 -10.1 -9
+  - -4.5 -10.0 -9
 bottomplatform:
   vertices:
   - -5 -10.1 -1

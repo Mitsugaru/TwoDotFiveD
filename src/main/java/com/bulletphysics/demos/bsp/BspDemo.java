@@ -786,13 +786,130 @@ public class BspDemo extends DemoApplication
                                         .equals( "underelevatorplatform1" )
                                     || entityB.getID()
                                         .equals( "underelevatorplatform1" ))){
-                        Vector3f reset = new Vector3f (-21f, -25.25f, 3.75f);
+                        Vector3f reset = new Vector3f (-20f, -25.25f, 3.75f);
                         if (entityA.getID().equals( "sidewayselevator1" )){
                             System.out.println(entityA.getID() +" "+ entityB.getID());
-                            elevatorshiftxhigh(entityA, reset);
+                            //elevatorshiftxhigh(entityA, reset);
                         }else{
                             System.out.println(entityA.getID() +" "+ entityB.getID());
-                            elevatorshiftxhigh(entityB, reset);
+                            //elevatorshiftxhigh(entityB, reset);
+                        }                        
+                    }
+                    if (( entityA.getID().equals( "sidewayselevator1" ) || entityB.getID()
+                                    .equals( "sidewayselevator1" ) )
+                                    && (entityA.getID()
+                                        .equals( "headingunder" )
+                                    || entityB.getID()
+                                        .equals( "headingunder" ))){
+                        Vector3f reset = new Vector3f (-1.3f, -25.25f, 3.75f);
+                        if (entityA.getID().equals( "sidewayselevator1" )){
+                            elevatorshiftxlow(entityA, reset);
+                        }else{
+                            elevatorshiftxlow(entityB, reset);
+                        }                        
+                    }
+                    if (( entityA.getID().equals( "elevatorsmash2" ) || entityB.getID()
+                                    .equals( "elevatorsmash2" ) )
+                                    && (entityA.getID()
+                                        .equals( "elevatorshaftbackpath" )
+                                    || entityB.getID()
+                                        .equals( "elevatorshaftbackpath" ))){
+                        Vector3f reset = new Vector3f (83.75f, -5f, 20f);
+                        if (entityA.getID().equals( "elevatorsmash2" )){
+                            elevatorshiftyhigh(entityA, reset);
+                        }else{
+                            elevatorshiftyhigh(entityB, reset);
+                        }                        
+                    }
+                    if (( entityA.getID().equals( "elevatorsmash2" ) || entityB.getID()
+                                    .equals( "elevatorsmash2" ) )
+                                    && (entityA.getID()
+                                        .equals( "elevatorshaftbackpathcieling" )
+                                    || entityB.getID()
+                                        .equals( "elevatorshaftbackpathcieling" ))){
+                        Vector3f reset = new Vector3f (83.75f, 1.5f, 20f);
+                        if (entityA.getID().equals( "elevatorsmash2" )){
+                            elevatorshiftylow(entityA, reset);
+                        }else{
+                            elevatorshiftylow(entityB, reset);
+                        }                        
+                    }
+                    if (( entityA.getID().equals( "elevatorsmash3" ) || entityB.getID()
+                                    .equals( "elevatorsmash3" ) )
+                                    && (entityA.getID()
+                                        .equals( "elevatorshaftbackpath" )
+                                    || entityB.getID()
+                                        .equals( "elevatorshaftbackpath" ))){
+                        Vector3f reset = new Vector3f (83.75f, -5f, 10f);
+                        if (entityA.getID().equals( "elevatorsmash3" )){
+                            elevatorshiftyhigh(entityA, reset);
+                        }else{
+                            elevatorshiftyhigh(entityB, reset);
+                        }                        
+                    }
+                    if (( entityA.getID().equals( "elevatorsmash3" ) || entityB.getID()
+                                    .equals( "elevatorsmash3" ) )
+                                    && (entityA.getID()
+                                        .equals( "elevatorshaftbackpathcieling" )
+                                    || entityB.getID()
+                                        .equals( "elevatorshaftbackpathcieling" ))){
+                        Vector3f reset = new Vector3f (83.75f, 1.5f, 10f);
+                        if (entityA.getID().equals( "elevatorsmash3" )){
+                            elevatorshiftylow(entityA, reset);
+                        }else{
+                            elevatorshiftylow(entityB, reset);
+                        }                        
+                    }
+                    if (( entityA.getID().equals( "elevatorsmash4" ) || entityB.getID()
+                                    .equals( "elevatorsmash4" ) )
+                                    && (entityA.getID()
+                                        .equals( "elevatorshaftbackpath" )
+                                    || entityB.getID()
+                                        .equals( "elevatorshaftbackpath" ))){
+                        Vector3f reset = new Vector3f (83.75f, -5f, 0f);
+                        if (entityA.getID().equals( "elevatorsmash4" )){
+                            elevatorshiftyhigh(entityA, reset);
+                        }else{
+                            elevatorshiftyhigh(entityB, reset);
+                        }                        
+                    }
+                    if (( entityA.getID().equals( "elevatorsmash4" ) || entityB.getID()
+                                    .equals( "elevatorsmash4" ) )
+                                    && (entityA.getID()
+                                        .equals( "elevatorshaftbackpathcieling" )
+                                    || entityB.getID()
+                                        .equals( "elevatorshaftbackpathcieling" ))){
+                        Vector3f reset = new Vector3f (83.75f, 1.5f, 0f);
+                        if (entityA.getID().equals( "elevatorsmash4" )){
+                            elevatorshiftylow(entityA, reset);
+                        }else{
+                            elevatorshiftylow(entityB, reset);
+                        }                        
+                    }
+                    if (( entityA.getID().equals( "elevatorsmash5" ) || entityB.getID()
+                                    .equals( "elevatorsmash5" ) )
+                                    && (entityA.getID()
+                                        .equals( "elevatorshaftbackpath" )
+                                    || entityB.getID()
+                                        .equals( "elevatorshaftbackpath" ))){
+                        Vector3f reset = new Vector3f (83.75f, -5f, -10f);
+                        if (entityA.getID().equals( "elevatorsmash5" )){
+                            elevatorshiftyhigh(entityA, reset);
+                        }else{
+                            elevatorshiftyhigh(entityB, reset);
+                        }                        
+                    }
+                    if (( entityA.getID().equals( "elevatorsmash5" ) || entityB.getID()
+                                    .equals( "elevatorsmash5" ) )
+                                    && (entityA.getID()
+                                        .equals( "elevatorshaftbackpathcieling" )
+                                    || entityB.getID()
+                                        .equals( "elevatorshaftbackpathcieling" ))){
+                        Vector3f reset = new Vector3f (83.75f, 1.5f, -10f);
+                        if (entityA.getID().equals( "elevatorsmash5" )){
+                            elevatorshiftylow(entityA, reset);
+                        }else{
+                            elevatorshiftylow(entityB, reset);
                         }                        
                     }
                     // TODO also, when a block is collided, check if they need
