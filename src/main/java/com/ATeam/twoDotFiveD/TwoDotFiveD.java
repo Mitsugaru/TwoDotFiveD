@@ -48,6 +48,9 @@ public class TwoDotFiveD
 		Nifty nifty = new Nifty(render, new OpenALSoundDevice(),
 				DisplayStuff.getInputSystem(), new AccurateTimeProvider());
 		nifty.fromXml(SPLASH_XML, "intro");
+		
+		NiftyGuiStuff g=new NiftyGuiStuff();
+		
 		// get the NiftyMouse interface that gives us access to all mouse
 		// cursor related stuff
 		NiftyMouse niftyMouse = nifty.getNiftyMouse();
@@ -107,6 +110,30 @@ public class TwoDotFiveD
 		TwoDotFiveD program = new TwoDotFiveD();
 		// Run/start instance
 		program.start();
+		  initLwjgl();
+		    render(createNifty());
 	}
+	
+	 private static void initLwjgl() {
+		    if (!de.niftygui.examples.LwjglInitHelper.initSubSystems("Nifty Controls Demonstation")) {
+		      System.exit(0);
+		    }
+		  }
+
+		  private static Nifty createNifty() {
+		    Nifty nifty = new Nifty(
+		        new LwjglRenderDevice(),
+		        new OpenALSoundDevice(),
+		        de.niftygui.examples.LwjglInitHelper.getInputSystem(),
+		        new AccurateTimeProvider());
+		    nifty.fromXml("controls/controls.xml", "start");
+		    return nifty;
+		  }
+
+		  private static void render(final Nifty nifty) {
+		    de.niftygui.examples.LwjglInitHelper.renderLoop(nifty, null);
+		    de.niftygui.examples.LwjglInitHelper.destroy();
+		  }
+	
 	
 }
