@@ -391,7 +391,7 @@ public class BspDemo extends DemoApplication
 		demo = new BspDemo(LWJGL.getGL());
 		try
 		{
-			client = new chatClient(null, "137.155.2.104", "SERVER",
+			client = new chatClient(null, "137.155.38.254", "ASDF",
 					remoteDispatcher);
 			if (client.connect())
 			{
@@ -667,12 +667,12 @@ public class BspDemo extends DemoApplication
 					if (entityA.isFrozen())
 					{
 						entityA.unfreeze();
-						entityA.translate(new Vector3f(0f, 5f, 0f));
+						//entityA.translate(new Vector3f(0f, 5f, 0f));
 					}
 					if (entityB.isFrozen())
 					{
 						entityB.unfreeze();
-						entityA.translate(new Vector3f(0f, 5f, 0f));
+						//entityA.translate(new Vector3f(0f, 5f, 0f));
 					}
 					// Entites are known and exist, so we can act upon them
 					if (entityA.getCollisionShape().getName()
@@ -685,7 +685,7 @@ public class BspDemo extends DemoApplication
 									entityA));
 							dynamicsWorld.removeCollisionObject(entityA);
 							entityList.remove(entityA);
-							entityB.translate(new Vector3f(5f, 0f, 0f));
+							//entityB.translate(new Vector3f(5f, 0f, 0f));
 						}
 					}
 					else if (entityB.getCollisionShape().getName()
@@ -696,7 +696,7 @@ public class BspDemo extends DemoApplication
 							eventDispatcher.notify(new BlockDestroyedEvent(
 									entityB));
 							dynamicsWorld.removeCollisionObject(entityB);
-							entityA.translate(new Vector3f(5f, 0f, 0f));
+							//entityA.translate(new Vector3f(5f, 0f, 0f));
 						}
 					}
 					else
