@@ -46,7 +46,7 @@ public class Config{
 	// Multiplayer settings
 	private String ip = "127.0.0.1"; // text indiviaul
 	private String id = "PLAYER"; // text
-	// Nifty
+
 
 
 	/**
