@@ -208,7 +208,7 @@ public class TwoDotFiveDBsp extends DemoApplication
         // using keys http://bulletphysics.org/Bullet/phpBB3/viewtopic.php?t=7592
         Transform startTransform = new Transform();
 		startTransform.setIdentity();
-		startTransform.origin.set(84.0f, 50.0f, -10.0f);
+		//startTransform.origin.set(84.0f, 50.0f, -10.0f);
 		
 		ghostObject = new PairCachingGhostObject();
 		ghostObject.setWorldTransform(startTransform);
@@ -1050,24 +1050,24 @@ public class TwoDotFiveDBsp extends DemoApplication
     public static void main( String[] args ) throws Exception
     {
         demo = new TwoDotFiveDBsp( LWJGL.getGL() );
-        try
-        {
-            client = new chatClient( null,
-                "137.155.2.153",
-                "BASE",
-                remoteDispatcher );
-            if ( client.connect() )
-            {
-                client.start();
-                connected = true;
-            }
-            Thread.sleep( 2000 );
-        }
-        catch ( Exception e )
-        {
-            // No networking
-            connected = false;
-        }
+//        try
+//        {
+//            client = new chatClient( null,
+//                "137.155.2.153",
+//                "BASE",
+//                remoteDispatcher );
+//            if ( client.connect() )
+//            {
+//                client.start();
+//                connected = true;
+//            }
+//            Thread.sleep( 2000 );
+//        }
+//        catch ( Exception e )
+//        {
+//            // No networking
+//            connected = false;
+//        }
         demo.initListener();
         demo.setup();
         demo.initPhysics();
