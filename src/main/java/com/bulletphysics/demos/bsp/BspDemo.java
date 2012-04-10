@@ -46,6 +46,7 @@ import com.ATeam.twoDotFiveD.event.block.BlockListener;
 import com.ATeam.twoDotFiveD.event.block.BlockPhysicsChangeEvent;
 import com.ATeam.twoDotFiveD.music.MusicPlayer;
 import com.ATeam.twoDotFiveD.udp.Client.EventPackage;
+import com.ATeam.twoDotFiveD.world.BspYamlConverter;
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.BulletStats;
 import com.bulletphysics.util.ObjectArrayList;
@@ -1049,24 +1050,24 @@ public class BspDemo extends DemoApplication
     public static void main( String[] args ) throws Exception
     {
         demo = new BspDemo( LWJGL.getGL() );
-//        try
-//        {
-//            client = new chatClient( null,
-//                "137.155.2.153",
-//                "BASE",
-//                remoteDispatcher );
-//            if ( client.connect() )
-//            {
-//                client.start();
-//                connected = true;
-//            }
-//            Thread.sleep( 2000 );
-//        }
-//        catch ( Exception e )
-//        {
-//            // No networking
-//            connected = false;
-//        }
+        try
+        {
+            client = new chatClient( null,
+                "137.155.2.153",
+                "BASE",
+                remoteDispatcher );
+            if ( client.connect() )
+            {
+                client.start();
+                connected = true;
+            }
+            Thread.sleep( 2000 );
+        }
+        catch ( Exception e )
+        {
+            // No networking
+            connected = false;
+        }
         demo.initListener();
         demo.setup();
         demo.initPhysics();

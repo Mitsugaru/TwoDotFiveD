@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 
 import com.ATeam.twoDotFiveD.debug.Logging;
+import com.ATeam.twoDotFiveD.world.BspYamlConverter;
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.util.ObjectArrayList;
 import com.bulletphysics.collision.broadphase.AxisSweep3;
@@ -42,8 +43,6 @@ import com.bulletphysics.collision.shapes.CapsuleShape;
 import com.bulletphysics.collision.shapes.CollisionShape;
 import com.bulletphysics.collision.shapes.ConvexHullShape;
 import com.bulletphysics.collision.shapes.ConvexShape;
-import com.bulletphysics.demos.bsp.BspConverter;
-import com.bulletphysics.demos.bsp.BspYamlConverter;
 import com.bulletphysics.demos.opengl.DemoApplication;
 import com.bulletphysics.demos.opengl.GLDebugDrawer;
 import com.bulletphysics.demos.opengl.IGL;
@@ -383,30 +382,6 @@ public class CharacterDemo extends DemoApplication {
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
-
-	private class BspToBulletConverter extends BspConverter {
-		@Override
-		public void addConvexVerticesCollider(ObjectArrayList<Vector3f> vertices) {
-			if (vertices.size() > 0) {
-				float mass = 0f;
-				Transform startTransform = new Transform();
-				// can use a shift
-				startTransform.setIdentity();
-				// JAVA NOTE: port change, we want y to be up.
-				startTransform.basis.rotX((float) -Math.PI / 2f);
-				startTransform.origin.set(0, -10, 0);
-				// startTransform.origin.set(0, 0, -10f);
-
-				// this create an internal copy of the vertices
-				CollisionShape shape = new ConvexHullShape(vertices);
-				collisionShapes.add(shape);
-
-				// btRigidBody* body = m_demoApp->localCreateRigidBody(mass,
-				// startTransform,shape);
-				localCreateRigidBody(mass, startTransform, shape);
-			}
-		}
-	}
 	
 	private class BspYamlToBulletConverter extends BspYamlConverter
 	{

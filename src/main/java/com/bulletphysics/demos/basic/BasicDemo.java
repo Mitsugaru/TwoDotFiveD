@@ -50,6 +50,7 @@ import static com.bulletphysics.demos.opengl.IGL.*;
  * 
  * @author jezek2
  */
+@Deprecated
 public class BasicDemo extends DemoApplication {
 
 	// create 125 (5x5x5) dynamic object
@@ -94,6 +95,7 @@ public class BasicDemo extends DemoApplication {
 		//glFlush();
 		//glutSwapBuffers();
 	}
+
 	@Override
 	public void displayCallback() {
 		gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -174,7 +176,6 @@ public class BasicDemo extends DemoApplication {
 			Transform startTransform = new Transform();
 			startTransform.setIdentity();
 
-			//-mass  = phasing
 			float mass = 1f;
 
 			// rigidbody is dynamic if and only if mass is non zero, otherwise static
@@ -189,9 +190,9 @@ public class BasicDemo extends DemoApplication {
 			float start_y = START_POS_Y;
 			float start_z = START_POS_Z - ARRAY_SIZE_Z / 2;
 
-			for (int k = 0; k < 5; k++) {
-				for (int i = 0; i < 5; i++) {
-					for (int j = 0; j < 5; j++) {
+			for (int k = 0; k < ARRAY_SIZE_Y; k++) {
+				for (int i = 0; i < ARRAY_SIZE_X; i++) {
+					for (int j = 0; j < ARRAY_SIZE_Z; j++) {
 						startTransform.origin.set(
 								2f * i + start_x,
 								10f + 2f * k + start_y,
