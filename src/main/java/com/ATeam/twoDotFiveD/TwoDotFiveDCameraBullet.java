@@ -19,6 +19,7 @@ import static com.bulletphysics.demos.opengl.IGL.GL_TRIANGLES;
 
 import javax.vecmath.Color3f;
 import javax.vecmath.Matrix3f;
+import javax.vecmath.Matrix4f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
@@ -126,7 +127,6 @@ public class TwoDotFiveDCameraBullet extends DemoApplication{
 	
 	
 	public void initPhysics(){
-
 		CollisionShape groundShape = new BoxShape(new Vector3f(10f, 0.001f, 10f));
 		collisionShapes.add(groundShape);
 		
@@ -143,7 +143,7 @@ public class TwoDotFiveDCameraBullet extends DemoApplication{
 		
 		Transform startTransform = new Transform();
 		startTransform.setIdentity();
-		startTransform.origin.set(0.0f, 4.0f, 0.0f);
+		startTransform.origin.set(4.0f, 4.0f, 0.0f);
 		
 		ghostObject = new PairCachingGhostObject();
 		ghostObject.setWorldTransform(startTransform);
@@ -326,7 +326,17 @@ public class TwoDotFiveDCameraBullet extends DemoApplication{
 //			dynamicsWorld.addRigidBody(body);
 //			body.setActivationState(RigidBody.ISLAND_SLEEPING);
 //		}
-		
+		for(CollisionObject o : dynamicsWorld.getCollisionObjectArray())
+		{
+			if(o.getCollisionShape().equals(ghostObject.getCollisionShape()))
+			{
+				//TODO WE FOUND IT OD UOUR STUFFF
+				System.out.println("stuff");
+				Transform t = o.getWorldTransform(new Transform());
+				System.out.println(t.getMatrix(new Matrix4f()).toString());
+				System.out.println("x: " + t.origin.x + " y: " + t.origin.y + " z: " + t.origin.z);
+			}
+		}
 		resetScene();		
 	}
 	@Override

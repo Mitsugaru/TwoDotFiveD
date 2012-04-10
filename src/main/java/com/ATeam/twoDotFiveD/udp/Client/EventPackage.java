@@ -9,16 +9,15 @@ import javax.vecmath.Vector3f;
 
 import com.ATeam.twoDotFiveD.entity.Entity;
 import com.ATeam.twoDotFiveD.event.Event;
-import com.ATeam.twoDotFiveD.event.Event.Type;
 import com.ATeam.twoDotFiveD.event.block.BlockCreateEvent;
 import com.ATeam.twoDotFiveD.event.block.BlockDestroyedEvent;
+import com.ATeam.twoDotFiveD.event.block.BlockPhysicsChangeEvent;
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.collision.shapes.CollisionShape;
 import com.bulletphysics.collision.shapes.ConeShape;
 import com.bulletphysics.collision.shapes.ConvexHullShape;
 import com.bulletphysics.collision.shapes.CylinderShape;
 import com.bulletphysics.collision.shapes.SphereShape;
-import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
 import com.bulletphysics.linearmath.DefaultMotionState;
 import com.bulletphysics.linearmath.Transform;
@@ -48,6 +47,8 @@ public class EventPackage implements Serializable
 	
 	public Event<?> getEvent() throws ClassNotFoundException
 	{
+		//Because we cannot have a null RigidBody, this is a default rigid body to be used for when we don't care about the rigidbody at all
+		final RigidBodyConstructionInfo baseInfo = new RigidBodyConstructionInfo(0, new DefaultMotionState(), new BoxShape(new Vector3f(1f, 1f, 1f)));
 		String className = (String)data.get("class");
 		if(className.contains("BlockCreateEvent"))
 		{
@@ -128,8 +129,10 @@ public class EventPackage implements Serializable
 			//System.out.println("Transform: " + startTransform.toString());
 			//System.out.println("Shape: " + c.toString());
 			//System.out.println("Inertia: " + inertia.toString());
+			final String ID = (String) data.get("entity.ID");
 			final RigidBodyConstructionInfo info = new RigidBodyConstructionInfo(mass, myMotionState, c, inertia);
-			RigidBody body = new RigidBody(info);
+			//TODO image?
+			Entity body = new Entity(info, ID, "", null);
 			body.setAngularFactor(((Float)data.get("entity.rigidbody.angularfactor")).floatValue());
 			String angular = (String) data.get("entity.rigidbody.angularvelocity");
 			angular = angular.replace("(", "");
@@ -152,17 +155,26 @@ public class EventPackage implements Serializable
 			final String[] gravityCut =  gravityString.split(" ");
 			final Vector3f gravity = new Vector3f(Float.parseFloat(gravityCut[0]), Float.parseFloat(gravityCut[1]), Float.parseFloat(gravityCut[2]));
 			//System.out.println("EP Gravity: " + gravity.toString());
-			body.setGravity(gravity);
-			final String ID = (String) data.get("entity.ID");
-			Entity e = new Entity(ID, body);
-			e.setGravity(gravity);
-			return(new BlockCreateEvent(e));
+			body.setEntityGravity(gravity);
+			return(new BlockCreateEvent(body));
 		}
 		else if(className.contains("BlockDestroyedEvent"))
 		{
 			//System.out.println("BlockDestroyedEvent package");
-			Entity e = new Entity((String) data.get("entity.ID"), null);
+			//TODO not sure if this will error out or not...
+			Entity e = new Entity(baseInfo, (String) data.get("entity.ID"), null, null);
 			return(new BlockDestroyedEvent(e));
+		}
+		else if(className.contains("BlockPhysicsChangeEvent"))
+		{
+			Entity e = new Entity(baseInfo, (String) data.get("entity.ID"), null, null);
+			String gravityString = (String) data.get("entity.direction");
+			gravityString = gravityString.replace("(", "");
+			gravityString = gravityString.replace(",","");
+			gravityString = gravityString.replace(")", "");
+			final String[] gravityCut =  gravityString.split(" ");
+			final Vector3f gravity = new Vector3f(Float.parseFloat(gravityCut[0]), Float.parseFloat(gravityCut[1]), Float.parseFloat(gravityCut[2]));
+			return(new BlockPhysicsChangeEvent(e, gravity));
 		}
 		else
 		{

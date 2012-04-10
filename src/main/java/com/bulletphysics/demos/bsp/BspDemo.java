@@ -25,10 +25,11 @@ package com.bulletphysics.demos.bsp;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 import java.util.logging.Level;
 
 import com.ATeam.twoDotFiveD.chatclient.chatClient;
@@ -45,6 +46,7 @@ import com.ATeam.twoDotFiveD.event.block.BlockListener;
 import com.ATeam.twoDotFiveD.event.block.BlockPhysicsChangeEvent;
 import com.ATeam.twoDotFiveD.music.MusicPlayer;
 import com.ATeam.twoDotFiveD.udp.Client.EventPackage;
+import com.ATeam.twoDotFiveD.world.BspYamlConverter;
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.BulletStats;
 import com.bulletphysics.util.ObjectArrayList;
@@ -108,11 +110,11 @@ import static com.bulletphysics.demos.opengl.IGL.*;
  * 
  * @author jezek2
  */
+@SuppressWarnings("unused")
 public class BspDemo extends DemoApplication
 {
 	public KinematicCharacterController character;
 	public PairCachingGhostObject ghostObject;
-	
 	private GLCam cam = new GLCam();
 	private GLCamera camera = new GLCamera();
 	GL_Vector ViewPoint;
@@ -131,6 +133,7 @@ public class BspDemo extends DemoApplication
     private static final float EXTRA_HEIGHT = -20f;
 
     // keep the collision shapes, for deletion/cleanup
+    //Need to set this back to set / hashset
     public Map<RigidBody, Entity> entityList = new HashMap<RigidBody, Entity>();
 
     public BroadphaseInterface broadphase;
@@ -226,7 +229,43 @@ public class BspDemo extends DemoApplication
 
     }
 
-
+    public synchronized Entity localCreateEntity(float mass,
+			Transform startTransform, CollisionShape shape, String ID,
+			String image, String[] description)
+	{
+		// rigidbody is dynamic if and only if mass is non zero, otherwise
+		// static
+		boolean isDynamic = (mass != 0f);
+		
+		Vector3f localInertia = new Vector3f(0f, 0f, 0f);
+		if (isDynamic)
+		{
+			shape.calculateLocalInertia(mass, localInertia);
+		}
+		
+		// using motionstate is recommended, it provides interpolation
+		// capabilities, and only synchronizes 'active' objects
+		DefaultMotionState myMotionState = new DefaultMotionState(
+				startTransform);
+		Entity e = new Entity(mass, myMotionState, shape, localInertia, ID,
+				image, description);
+		dynamicsWorld.addRigidBody(e);
+		
+		// Dynamic gravity for object
+		if (!bodyGravityType.equals("NORMAL"))
+		{
+			if (bodyGravityType.equals("ANTIGRAVITY"))
+			{
+				e.setGravity(new Vector3f(0f, 30f, 0f));
+			}
+			else if (bodyGravityType.equals("STASIS"))
+			{
+				e.setGravity(new Vector3f(0f, 0f, 0f));
+			}
+		}
+		return e;
+	}
+    
     public void populate()
     {
         try
@@ -704,7 +743,6 @@ public class BspDemo extends DemoApplication
 		}
 		}
 	}
-	
 
 //	@Override 
 //	public synchronized void specialKeyboard(int key, int x, int y, int modifiers) {
@@ -809,10 +847,12 @@ public class BspDemo extends DemoApplication
 			cam.handleRotKeysPan();
 			break;
 		}
+
 		case Keyboard.KEY_LEFT: {
 			cam.handleRotKeysPan();
 			break;
 		}
+
 		case Keyboard.KEY_RIGHT: {
 			cam.handleRotKeysPan();
 			break;
@@ -976,8 +1016,10 @@ public class BspDemo extends DemoApplication
 
             body.setCcdMotionThreshold( 1f );
             body.setCcdSweptSphereRadius( 0.2f );
-            Entity entity = new Entity( body.getCollisionShape().getName(),
-                body );
+            final Random r = new Random();
+            Entity entity = localCreateEntity(mass, startTransform,
+					shootBoxShape, shootBoxShape.getName() + r.nextFloat(),
+					null, null);
             // Dynamic gravity for object
             // TODO consolidate setgravity into one method, let entity set its
             // tied rigidbody gravity
@@ -985,22 +1027,19 @@ public class BspDemo extends DemoApplication
             {
                 if ( bodyGravityType.equals( "ANTIGRAVITY" ) )
                 {
-                    entity.getRigidBody()
-                        .setGravity( new Vector3f( 0f, 30f, 0f ) );
-                    entity.setGravity( new Vector3f( 0f, 30f, 0f ) );
+                    entity
+                        .setEntityGravity( new Vector3f( 0f, 30f, 0f ) );
                 }
                 else if ( bodyGravityType.equals( "STASIS" ) )
                 {
-                    entity.getRigidBody()
-                        .setGravity( new Vector3f( 0f, 0f, 0f ) );
-                    entity.setGravity( new Vector3f( 0f, 0f, 0f ) );
+                    entity
+                        .setEntityGravity( new Vector3f( 0f, 0f, 0f ) );
                 }
             }
             else
             {
-                entity.getRigidBody()
-                    .setGravity( dynamicsWorld.getGravity( new Vector3f() ) );
-                entity.setGravity( dynamicsWorld.getGravity( new Vector3f() ) );
+                entity
+                    .setEntityGravity( dynamicsWorld.getGravity( new Vector3f() ) );
             }
             entityList.put( body, entity );
             eventDispatcher.notify( new BlockCreateEvent( entity ) );
@@ -1011,24 +1050,24 @@ public class BspDemo extends DemoApplication
     public static void main( String[] args ) throws Exception
     {
         demo = new BspDemo( LWJGL.getGL() );
-//        try
-//        {
-//            client = new chatClient( null,
-//                "137.155.2.153",
-//                "BASE",
-//                remoteDispatcher );
-//            if ( client.connect() )
-//            {
-//                client.start();
-//                connected = true;
-//            }
-//            Thread.sleep( 2000 );
-//        }
-//        catch ( Exception e )
-//        {
-//            // No networking
-//            connected = false;
-//        }
+        try
+        {
+            client = new chatClient( null,
+                "137.155.2.153",
+                "BASE",
+                remoteDispatcher );
+            if ( client.connect() )
+            {
+                client.start();
+                connected = true;
+            }
+            Thread.sleep( 2000 );
+        }
+        catch ( Exception e )
+        {
+            // No networking
+            connected = false;
+        }
         demo.initListener();
         demo.setup();
         demo.initPhysics();
@@ -1068,7 +1107,6 @@ public class BspDemo extends DemoApplication
                 public void onBlockCreate( BlockCreateEvent event )
                 {
                     float mass = ( 1f / event.getEntity()
-                        .getRigidBody()
                         .getInvMass() );
                     // System.out.println("Event mass: " + mass);
                     // System.out.println("Event transform: " +
@@ -1076,33 +1114,25 @@ public class BspDemo extends DemoApplication
                     // Transform()).toString());
                     // System.out.println("Event CollisionShape: " +
                     // event.getEntity().getRigidBody().getCollisionShape().toString());
-                    RigidBody body = demo.localCreateRigidBody( mass,
-                        event.getEntity()
-                            .getRigidBody()
-                            .getWorldTransform( new Transform() ),
-                        event.getEntity().getRigidBody().getCollisionShape() );
-                    body.setAngularFactor( event.getEntity()
-                        .getRigidBody()
-                        .getAngularFactor() );
-                    body.setAngularVelocity( event.getEntity()
-                        .getRigidBody()
-                        .getAngularVelocity( new Vector3f() ) );
-                    body.setLinearVelocity( event.getEntity()
-                        .getRigidBody()
-                        .getLinearVelocity( new Vector3f() ) );
-                    body.setDamping( event.getEntity()
-                        .getRigidBody()
-                        .getLinearDamping(), event.getEntity()
-                        .getRigidBody()
-                        .getAngularDamping() );
-                    body.setGravity( event.getEntity().getGravity() );
+                    Entity entity = localCreateEntity(mass, event.getEntity()
+							.getWorldTransform(new Transform()), event
+							.getEntity().getCollisionShape(), event.getEntity()
+							.getID(), "", new String[] { "" });
+                    entity.setAngularFactor(event.getEntity()
+							.getAngularFactor());
+					entity.setAngularVelocity(event.getEntity()
+							.getAngularVelocity(new Vector3f()));
+					entity.setLinearVelocity(event.getEntity()
+							.getLinearVelocity(new Vector3f()));
+					entity.setDamping(event.getEntity().getLinearDamping(),
+							event.getEntity().getAngularDamping());
+					entity.setEntityGravity(event.getEntity()
+							.getEntityGravity());
                     // System.out.println("Remote gravity: "
                     // +event.getEntity().getGravity());
                     // System.out.println(event.getEntity().getRigidBody().getLinearVelocity(new
                     // Vector3f()).toString());
-                    Entity e = new Entity( event.getEntity().getID(), body );
-                    e.setGravity( event.getEntity().getGravity() );
-                    entityList.put( body, e );
+                    entityList.put( entity, entity );
                     // System.out.println("Added block");
                 }
 
@@ -1112,22 +1142,12 @@ public class BspDemo extends DemoApplication
                     BlockDestroyedEvent event )
                 {
                     // System.out.println("Received destroyed event");
-                    Entity removed = null;
                     for ( Entity e : entityList.values() )
                     {
                         if ( e.getID().equals( event.getEntity().getID() ) )
                         {
-                            removed = e;
-                            break;
-                        }
-                    }
-                    if ( removed != null )
-                    {
-                        // System.out.println("Found in list");
-                        removed = entityList.remove( removed.getRigidBody() );
-                        final CollisionShape shape = removed.getRigidBody()
-                            .getCollisionShape();
-                        CollisionObject toRemove = null;
+                            final CollisionShape shape = e.getCollisionShape();
+                            CollisionObject toRemove = null;
                         for ( CollisionObject o : dynamicsWorld.getCollisionObjectArray() )
                         {
                             if ( o.getCollisionShape().equals( shape ) )
@@ -1144,7 +1164,7 @@ public class BspDemo extends DemoApplication
                             {
                                 dynamicsWorld.removeCollisionObject( toRemove );
                             }
-                            catch ( NullPointerException e )
+                            catch ( NullPointerException n )
                             {
                                 System.out.println( "Attempted to remove object taht no longer exists." );
                             }
@@ -1153,7 +1173,8 @@ public class BspDemo extends DemoApplication
                                 System.out.println( "Attempted to remove object taht no longer exists." );
                             }
                         }
-
+                            break;
+                        }
                     }
                 }
             };
@@ -1169,106 +1190,82 @@ public class BspDemo extends DemoApplication
     // //////////////////////////////////////////////////////////////////////////
 
     public class BspYamlToBulletConverter extends BspYamlConverter
-    {
-
-        @Override
-        public synchronized void addConvexVerticesCollider(
-            String name,
-            ObjectArrayList<Vector3f> vertices,
-            float mass,
-            Vector3f acceleration,
-            String image,
-            String[] description )
-        {
-            Transform startTransform = new Transform();
-            // can use a shift
-            startTransform.setIdentity();
-            startTransform.origin.set( 0, 0, 0 );
-
-            // this create an internal copy of the vertices
-            CollisionShape shape = new ConvexHullShape( vertices );
-            RigidBody body = localCreateRigidBody( mass, startTransform, shape );
-            // body.setActivationState(RigidBody.ACTIVE_TAG);
-            final Transform center = new Transform();
-            center.setIdentity();
-            center.origin.set( 1f, 1f, 1f );
-            body.setCenterOfMassTransform( center );
-            addEntity( name, body, image, description, acceleration );
-        }
-
-
-        @Override
-        public void addShapeCollider(
-            String name,
-            String type,
-            Vector3f localscaling,
-            Vector3f transform,
-            float mass,
-            Vector3f acceleration,
-            String image,
-            String[] description )
-        {
-            CollisionShape shape = new BoxShape( new Vector3f( 1f, 1f, 1f ) );
-            if ( type.contains( "box" ) )
-            {
-                shape = new BoxShape( localscaling );
-            }
-            else if ( type.contains( "sphere" ) )
-            {
-                shape = new SphereShape( localscaling.x );
-            }
-            else if ( type.contains( "cylinder" ) )
-            {
-                shape = new CylinderShape( localscaling );
-            }
-            else if ( type.contains( "cone" ) )
-            {
-                shape = new ConeShape( localscaling.x, localscaling.y );
-            }
-            else
-            {
-                Logging.log.warning( "Unknown type '" + type + "' for shape: "
-                    + name );
-                return;
-            }
-            Transform origin = new Transform();
-            origin.setIdentity();
-            origin.origin.set( transform.x, transform.y, transform.z );
-            RigidBody body = localCreateRigidBody( mass, origin, shape );
-            addEntity( name, body, image, description, acceleration );
-        }
-
-
-        public void addEntity(
-            String name,
-            RigidBody body,
-            String image,
-            String[] description,
-            Vector3f acceleration )
-        {
-            Entity e = new Entity( null, null );
-            if ( description != null )
-            {
-                e = new Entity( name, body, image, description );
-            }
-            else
-            {
-                e = new Entity( name, body, image );
-            }
-            if ( acceleration != null )
-            {
-                body.setGravity( acceleration );
-                e.setGravity( acceleration );
-            }
-            else
-            {
-                // set default gravity;
-                e.setGravity( dynamicsWorld.getGravity( new Vector3f() ) );
-            }
-            entityList.put( body, e );
-            eventDispatcher.notify( new BlockCreateEvent( e ) );
-        }
-    }
+	{
+		
+		@Override
+		public synchronized void addConvexVerticesCollider(String name,
+				ObjectArrayList<Vector3f> vertices, float mass,
+				Vector3f acceleration, String image, String[] description)
+		{
+			Transform startTransform = new Transform();
+			// can use a shift
+			startTransform.setIdentity();
+			startTransform.origin.set(0, 0, 0);
+			
+			// this create an internal copy of the vertices
+			CollisionShape shape = new ConvexHullShape(vertices);
+			// body.setActivationState(RigidBody.ACTIVE_TAG);
+			final Transform center = new Transform();
+			center.setIdentity();
+			center.origin.set(1f, 1f, 1f);
+			addEntity(mass, center, shape, name, image, description,
+					acceleration);
+		}
+		
+		@Override
+		public void addShapeCollider(String name, String type,
+				Vector3f localscaling, Vector3f transform, float mass,
+				Vector3f acceleration, String image, String[] description)
+		{
+			CollisionShape shape = new BoxShape(new Vector3f(1f, 1f, 1f));
+			if (type.contains("box"))
+			{
+				shape = new BoxShape(localscaling);
+			}
+			else if (type.contains("sphere"))
+			{
+				shape = new SphereShape(localscaling.x);
+			}
+			else if (type.contains("cylinder"))
+			{
+				shape = new CylinderShape(localscaling);
+			}
+			else if (type.contains("cone"))
+			{
+				shape = new ConeShape(localscaling.x, localscaling.y);
+			}
+			else
+			{
+				Logging.log.warning("Unknown type '" + type + "' for shape: "
+						+ name);
+				return;
+			}
+			Transform origin = new Transform();
+			origin.setIdentity();
+			origin.origin.set(transform.x, transform.y, transform.z);
+			addEntity(mass, origin, shape, name, image, description,
+					acceleration);
+		}
+		
+		public void addEntity(float mass, Transform origin,
+				CollisionShape shape, String name, String image,
+				String[] description, Vector3f acceleration)
+		{
+			Entity e = localCreateEntity(mass, origin, shape, name, image,
+					description);
+			if (acceleration != null)
+			{
+				e.setEntityGravity(acceleration);
+			}
+			else
+			{
+				// set default gravity;
+				e.setGravity(dynamicsWorld.getGravity(new Vector3f()));
+			}
+			entityList.put(e, e);
+			eventDispatcher.notify(new BlockCreateEvent(e));
+		}
+	}
 
 
     public class BlockCollisionListener extends BlockListener
@@ -1335,11 +1332,10 @@ public class BspDemo extends DemoApplication
                             // entityA.getRigidBody().setAngularVelocity( new
                             // Vector3f(0f, 0f, 7f) );
                             entityA.freeze();
-                            final RigidBody body = entityA.getRigidBody();
-                            final Vector3f vector = body.getCenterOfMassPosition(new Vector3f() );
-                            body.translate( new Vector3f(80f - vector.x , -5f - vector.y , -11f - vector.z) );
-                            body
-                                .setGravity( new Vector3f( 0f, 7f, 0f ) );
+                            final Vector3f vector = entityA.getCenterOfMassPosition(new Vector3f() );
+                            entityA.translate( new Vector3f(80f - vector.x , -5f - vector.y , -11f - vector.z) );
+                            entityA
+                                .setEntityGravity( new Vector3f( 0f, 7f, 0f ) );
                             
                         }
                         else
@@ -1347,11 +1343,10 @@ public class BspDemo extends DemoApplication
                             // entityB.getRigidBody().setAngularVelocity( new
                             // Vector3f(0f, 0f, 7f) );
                             entityB.freeze();
-                            final RigidBody body = entityB.getRigidBody();
-                            final Vector3f vector = body.getCenterOfMassPosition(new Vector3f() );
-                            body.translate( new Vector3f(80f - vector.x , -5f - vector.y , -11f - vector.z) );
-                            body
-                                .setGravity( new Vector3f( 0f, 7f, 0f ) );
+                            final Vector3f vector = entityB.getCenterOfMassPosition(new Vector3f() );
+                            entityB.translate( new Vector3f(80f - vector.x , -5f - vector.y , -11f - vector.z) );
+                            entityA
+                                .setEntityGravity( new Vector3f( 0f, 7f, 0f ) );
                         }
                     }
                     if ( ( entityA.getID().equals( "elevatorsmash1" ) || entityB.getID()
@@ -1366,22 +1361,20 @@ public class BspDemo extends DemoApplication
                             // entityA.getRigidBody().setAngularVelocity( new
                             // Vector3f(0f, 0f, 7f) );
                             entityA.freeze();
-                            final RigidBody body = entityA.getRigidBody();
-                            final Vector3f vector = body.getCenterOfMassPosition(new Vector3f() );
-                            body.translate( new Vector3f(80f - vector.x , 1.5f - vector.y , -11f - vector.z) );
-                            body
-                                .setGravity( new Vector3f( 0f, -7f, 0f ) );
+                            final Vector3f vector = entityA.getCenterOfMassPosition(new Vector3f() );
+                            entityA.translate( new Vector3f(80f - vector.x , 1.5f - vector.y , -11f - vector.z) );
+                            entityA
+                                .setEntityGravity( new Vector3f( 0f, -7f, 0f ) );
                         }
                         else
                         {
                             // entityB.getRigidBody().setAngularVelocity( new
                             // Vector3f(0f, 0f, 7f) );
                             entityB.freeze();
-                            final RigidBody body = entityB.getRigidBody();
-                            final Vector3f vector = body.getCenterOfMassPosition(new Vector3f() );
-                            body.translate( new Vector3f(80f - vector.x , 1.5f - vector.y , -11f - vector.z) );
-                            body
-                                .setGravity( new Vector3f( 0f, -7f, 0f ) );
+                            final Vector3f vector = entityB.getCenterOfMassPosition(new Vector3f() );
+                            entityB.translate( new Vector3f(80f - vector.x , 1.5f - vector.y , -11f - vector.z) );
+                            entityB
+                                .setEntityGravity( new Vector3f( 0f, -7f, 0f ) );
                         }
                     }
                     if (( entityA.getID().equals( "sidewayselevator1" ) || entityB.getID()
@@ -1406,10 +1399,10 @@ public class BspDemo extends DemoApplication
                         //Vector3f reset = new Vector3f (0f, 0f, 0f);
                         if (entityA.getID().equals( "sidewayselevator1" )){
                             System.out.println(entityA.getID() +" "+ entityB.getID());
-                            elevatorshiftxhigh(entityA, entityA.getRigidBody().getCenterOfMassPosition( new Vector3f() ));
+                            elevatorshiftxhigh(entityA, entityA.getCenterOfMassPosition( new Vector3f() ));
                         }else{
                             System.out.println(entityA.getID() +" "+ entityB.getID());
-                            elevatorshiftxhigh(entityB, entityB.getRigidBody().getCenterOfMassPosition( new Vector3f() ));
+                            elevatorshiftxhigh(entityB, entityB.getCenterOfMassPosition( new Vector3f() ));
                         }                        
                     }
                     if (( entityA.getID().equals( "sidewayselevator1" ) || entityB.getID()
@@ -1446,9 +1439,9 @@ public class BspDemo extends DemoApplication
                                         .equals( "sidewayselevator1" ))){
                         //Vector3f reset = new Vector3f (0f, 0f, 0f);
                         if (entityA.getID().equals( "sidewayselevator2" )){
-                            elevatorshiftxlow(entityA, entityA.getRigidBody().getCenterOfMassPosition( new Vector3f() ));
+                            elevatorshiftxlow(entityA, entityA.getCenterOfMassPosition( new Vector3f() ));
                         }else{
-                            elevatorshiftxlow(entityB, entityB.getRigidBody().getCenterOfMassPosition( new Vector3f() ));
+                            elevatorshiftxlow(entityB, entityB.getCenterOfMassPosition( new Vector3f() ));
                         }                        
                     }
                     if (( entityA.getID().equals( "elevatorsmash2" ) || entityB.getID()
@@ -1572,7 +1565,7 @@ public class BspDemo extends DemoApplication
 //                            0f ) );
 //                    }
                     // Entites are known and exist, so we can act upon them
-                    if ( entityA.getRigidBody()
+                    if ( entityA
                         .getCollisionShape()
                         .getName()
                         .equalsIgnoreCase( "sphere" ) )
@@ -1581,14 +1574,14 @@ public class BspDemo extends DemoApplication
                         {
                             // entityA.setGravity(new Vector3f(0f, 30f, 0f));
                             eventDispatcher.notify( new BlockDestroyedEvent( entityA ) );
-                            dynamicsWorld.removeCollisionObject( entityA.getRigidBody() );
+                            dynamicsWorld.removeCollisionObject( entityA );
                             entityList.remove( entityA );
-                            entityB.getRigidBody().translate( new Vector3f( 5f,
+                            entityB.translate( new Vector3f( 5f,
                                 0f,
                                 0f ) );
                         }
                     }
-                    else if ( entityB.getRigidBody()
+                    else if ( entityB
                         .getCollisionShape()
                         .getName()
                         .equalsIgnoreCase( "sphere" ) )
@@ -1596,8 +1589,8 @@ public class BspDemo extends DemoApplication
                         if ( setGravity( entityA, new Vector3f( 0f, 30f, 0f ) ) )
                         {
                             eventDispatcher.notify( new BlockDestroyedEvent( entityB ) );
-                            dynamicsWorld.removeCollisionObject( entityB.getRigidBody() );
-                            entityA.getRigidBody().translate( new Vector3f( 5f,
+                            dynamicsWorld.removeCollisionObject( entityB );
+                            entityA.translate( new Vector3f( 5f,
                                 0f,
                                 0f ) );
                         }
@@ -1647,12 +1640,12 @@ public class BspDemo extends DemoApplication
 
         public boolean setGravity( Entity target, Vector3f direction )
         {
-            if ( !target.getRigidBody().isStaticObject() )
+            if ( !target.isStaticObject() )
             {
                 eventDispatcher.notify( new BlockPhysicsChangeEvent( target,
                     direction ) );
-                target.getRigidBody().setGravity( direction );
-                target.getRigidBody().activate();
+                target.setEntityGravity( direction );
+                target.activate();
 
                 return true;
             }
@@ -1728,64 +1721,58 @@ public class BspDemo extends DemoApplication
     
     private void elevatorshiftxhigh(Entity a, Vector3f v){
         a.freeze();
-        final RigidBody body = a.getRigidBody();
-        final Vector3f vector = body.getCenterOfMassPosition(new Vector3f() );
-        body.translate( new Vector3f(v.x - vector.x , v.y - vector.y , v.z - vector.z) );
-        body
-            .setGravity( new Vector3f( 7f, 0f, 0f ) );
-        body.setLinearVelocity( new Vector3f( 7f, 0f, 0f ) );
+        final Vector3f vector = a.getCenterOfMassPosition(new Vector3f() );
+        a.translate( new Vector3f(v.x - vector.x , v.y - vector.y , v.z - vector.z) );
+        a
+            .setEntityGravity( new Vector3f( 7f, 0f, 0f ) );
+        a.setLinearVelocity( new Vector3f( 7f, 0f, 0f ) );
     }
     
     private void elevatorshiftxlow(Entity a, Vector3f v){
         a.freeze();
-        final RigidBody body = a.getRigidBody();
-        final Vector3f vector = body.getCenterOfMassPosition(new Vector3f() );
-        body.translate( new Vector3f(v.x - vector.x , v.y - vector.y , v.z - vector.z) );
-        body
-            .setGravity( new Vector3f( -7f, 0f, 0f ) );
-        body.setLinearVelocity( new Vector3f( -7f, 0f, 0f ) );
+        final Vector3f vector = a.getCenterOfMassPosition(new Vector3f() );
+        a.translate( new Vector3f(v.x - vector.x , v.y - vector.y , v.z - vector.z) );
+        a
+            .setEntityGravity( new Vector3f( -7f, 0f, 0f ) );
+        a.setLinearVelocity( new Vector3f( -7f, 0f, 0f ) );
         
     }
     
     private void elevatorshiftyhigh(Entity a, Vector3f v){
         a.freeze();
-        final RigidBody body = a.getRigidBody();
-        final Vector3f vector = body.getCenterOfMassPosition(new Vector3f() );
-        body.translate( new Vector3f(v.x - vector.x , v.y - vector.y , v.z - vector.z) );
-        body
-            .setGravity( new Vector3f( 0f, 7f, 0f ) );
-        body.setLinearVelocity( new Vector3f( 0f, 7f, 0f ) );
+        final Vector3f vector = a.getCenterOfMassPosition(new Vector3f() );
+        a.translate( new Vector3f(v.x - vector.x , v.y - vector.y , v.z - vector.z) );
+        a
+            .setEntityGravity( new Vector3f( 0f, 7f, 0f ) );
+        a.setLinearVelocity( new Vector3f( 0f, 7f, 0f ) );
         
     }
     
     private void elevatorshiftylow(Entity a, Vector3f v){
         a.freeze();
-        final RigidBody body = a.getRigidBody();
-        final Vector3f vector = body.getCenterOfMassPosition(new Vector3f() );
-        body.translate( new Vector3f(v.x - vector.x , v.y - vector.y , v.z - vector.z) );
-        body
-            .setGravity( new Vector3f( 0f, -7f, 0f ) );
-        body.setLinearVelocity( new Vector3f( 0f, -7f, 0f ) );
+        final Vector3f vector = a.getCenterOfMassPosition(new Vector3f() );
+        a.translate( new Vector3f(v.x - vector.x , v.y - vector.y , v.z - vector.z) );
+        a
+            .setEntityGravity( new Vector3f( 0f, -7f, 0f ) );
+        a.setLinearVelocity( new Vector3f( 0f, -7f, 0f ) );
         
     }
     
     private void elevatorshiftzhigh(Entity a, Vector3f v){
         a.freeze();
-        final RigidBody body = a.getRigidBody();
-        final Vector3f vector = body.getCenterOfMassPosition(new Vector3f() );
-        body.translate( new Vector3f(v.x - vector.x , v.y - vector.y , v.z - vector.z) );
-        body
-            .setGravity( new Vector3f( 0f, 0f, 7f ) );
+        final Vector3f vector = a.getCenterOfMassPosition(new Vector3f() );
+        a.translate( new Vector3f(v.x - vector.x , v.y - vector.y , v.z - vector.z) );
+        a
+            .setEntityGravity( new Vector3f( 0f, 0f, 7f ) );
         
     }
     
     private void elevatorshiftzlow(Entity a, Vector3f v){
         a.freeze();
-        final RigidBody body = a.getRigidBody();
-        final Vector3f vector = body.getCenterOfMassPosition(new Vector3f() );
-        body.translate( new Vector3f(v.x - vector.x , v.y - vector.y , v.z - vector.z) );
-        body
-            .setGravity( new Vector3f( 0f, 0f, -7f ) );
+        final Vector3f vector = a.getCenterOfMassPosition(new Vector3f() );
+        a.translate( new Vector3f(v.x - vector.x , v.y - vector.y , v.z - vector.z) );
+        a
+            .setEntityGravity( new Vector3f( 0f, 0f, -7f ) );
         
     }
 
