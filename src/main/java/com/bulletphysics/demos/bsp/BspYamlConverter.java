@@ -128,8 +128,8 @@ public abstract class BspYamlConverter
 					try
 					{
 						final String[] l = localScaling.split(" ");
-						final Vector3f scale = new Vector3f(Float.parseFloat(l[0]), Float
-								.parseFloat(l[1]), Float.parseFloat(l[2]));
+						final Vector3f scale = new Vector3f(Float.parseFloat(l[0])*5f, Float
+								.parseFloat(l[1]) * 5f, Float.parseFloat(l[2])*5f);
 						final String origin = config.getString(rootPath + ".origin");
 						Vector3f originTransform = new Vector3f(0f, 0f, 0f);
 						if(origin != null)
