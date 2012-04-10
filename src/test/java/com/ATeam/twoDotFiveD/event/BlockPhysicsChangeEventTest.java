@@ -11,7 +11,7 @@ import com.ATeam.twoDotFiveD.entity.Entity;
 import com.ATeam.twoDotFiveD.event.block.BlockPhysicsChangeEvent;
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.collision.shapes.CollisionShape;
-import com.bulletphysics.dynamics.RigidBody;
+import com.bulletphysics.collision.shapes.SphereShape;
 import com.bulletphysics.linearmath.DefaultMotionState;
 
 import junit.framework.TestCase;
@@ -20,7 +20,6 @@ public class BlockPhysicsChangeEventTest extends TestCase
 {
 	private BlockPhysicsChangeEvent event;
 	private Entity entity;
-	private RigidBody rigidBody;
 	private Vector3f gravity = new Vector3f(0f, 10f, 0f);
 	
 	public BlockPhysicsChangeEventTest(String name)
@@ -28,8 +27,7 @@ public class BlockPhysicsChangeEventTest extends TestCase
 		super(name);
 		final DefaultMotionState state = new DefaultMotionState();
 		final CollisionShape shape = new BoxShape(new Vector3f(1f, 1f, 1f));
-		rigidBody = new RigidBody(1f, state, shape);
-		entity = new Entity("TEST", rigidBody, "imagePath", new String[]{"description", "line2"});
+		entity = new Entity(1f, state, shape, new Vector3f(0f, 0f, 0f), "TEST", "imagePath", new String[]{"description", "line2"});
 		entity.setGravity(gravity);
 		event = new BlockPhysicsChangeEvent(entity, gravity);
 	}
@@ -63,7 +61,9 @@ public class BlockPhysicsChangeEventTest extends TestCase
 	@Test
 	public void testModifyEntity()
 	{
-		entity = new Entity("TEST2", rigidBody);
+		final DefaultMotionState state = new DefaultMotionState();
+		final CollisionShape shape = new SphereShape(1f);
+		entity = new Entity(10f, state, shape, new Vector3f(0f, 0f, 0f), "TEST", "imagePath", new String[]{"description", "line2"});
 		assertFalse("Entity of an event should not be modified", event.getEntity().equals(entity));
 	}
 	

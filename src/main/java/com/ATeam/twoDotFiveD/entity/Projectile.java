@@ -3,7 +3,7 @@ package com.ATeam.twoDotFiveD.entity;
 import lib.lwjgl.glmodel.GL_Vector;
 
 
-public class Projectile extends dynamicEntity
+public class Projectile
 {
     // Damage might need to be double, but for simple things can be int
     private int damage;
@@ -32,7 +32,7 @@ public class Projectile extends dynamicEntity
         boolean splash,
         boolean reflective )
     {
-        super( position, size, ID, image );
+        //super( position, size, ID, image );
     }
 
 
