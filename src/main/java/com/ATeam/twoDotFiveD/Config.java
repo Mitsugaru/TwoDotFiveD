@@ -26,29 +26,28 @@ import de.lessvoid.nifty.screen.ScreenController;
  * @author Mitsugaru
  * 
  */
-// TODO make this a singleton?
-public class Config{
-	// Class variables
-	private File configFile = new File(System.getProperty("user.dir"));
-	private YamlConfiguration config = null;
-	private static final String fileSeparator = System
-			.getProperty("file.separator");
-	private boolean logEnabled = false;
-	private int logLimit = 20;
-	// Display settings
-	private boolean vSync = false;// check
-	private boolean fullScreen = false;// check
-	private int displayWidth = -1;// dropdown1
-	private int displayHeight = -1;// dropdown1 resoration
-	private int displayColorBits = -1;
-	private int displayFrequency = -1;// dropdown1
-	private int depthBufferBits = 24;
-	// Multiplayer settings
-	private String ip = "127.0.0.1"; // text indiviaul
-	private String id = "PLAYER"; // text
 
-
-
+public class Config
+{
+	//Class variables
+	private File				configFile			= new File(
+															System.getProperty("user.dir"));
+	private YamlConfiguration	config				= null;
+	private static final String	fileSeparator		= System.getProperty("file.separator");
+	public boolean				logEnabled			= false;
+	public int					logLimit			= 20;
+	//Display settings
+	public boolean				vSync				= false;//check
+	public boolean				fullScreen			= false;//check
+	public int					displayWidth		= -1;//dropdown1
+	public int					displayHeight		= -1;//dropdown1 resoration
+	public int					displayColorBits	= -1;
+	public int					displayFrequency	= -1;//dropdown1
+	public int					depthBufferBits		= 24;
+	//Multiplayer settings
+	public String ip = "127.0.0.1"; //text indiviaul
+	public String id = "PLAYER"; //text
+	
 	/**
 	 * Constructor that loads the config.yml from a given path.
 	 * 
