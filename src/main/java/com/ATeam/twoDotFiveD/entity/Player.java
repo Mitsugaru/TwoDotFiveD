@@ -3,7 +3,7 @@ package com.ATeam.twoDotFiveD.entity;
 import lib.lwjgl.glmodel.GL_Vector;
 
 
-public class Player extends dynamicEntity
+public class Player
 {
 
     private String name;
@@ -46,7 +46,7 @@ public class Player extends dynamicEntity
         String image,
         String name )
     {
-        super( position, size, iD, image );
+        //super( position, size, iD, image );
         // TODO add name, etc
     }
 
