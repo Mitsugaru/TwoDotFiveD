@@ -1,9 +1,15 @@
 package com.ATeam.twoDotFiveD.gui;
 
+import com.ATeam.twoDotFiveD.Config;
+
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.NiftyEventSubscriber;
+import de.lessvoid.nifty.controls.CheckBox;
 import de.lessvoid.nifty.controls.DropDown;
 import de.lessvoid.nifty.controls.TextField;
+import de.lessvoid.nifty.controls.TextFieldChangedEvent;
 import de.lessvoid.nifty.screen.Screen;
+import de.lessvoid.nifty.controls.Controller;
 import de.lessvoid.nifty.screen.ScreenController;
 
 //TODO implement
@@ -13,6 +19,7 @@ public class MainOptionController implements ScreenController {
 	private TextField optionsTextField;
 	private DropDown dropDown1;
 	private String dis;
+	Config config = new Config();
 
 	@Override
 	public void bind(Nifty newNifty, Screen newScreen) {
@@ -27,9 +34,24 @@ public class MainOptionController implements ScreenController {
 
 			dropDown1.selectItemByIndex(0);
 		}
-		
-		optionsTextField= screen.findNiftyControl("mainTextField", TextField.class);
-		dis=optionsTextField.getText();
+
+		optionsTextField = screen.findNiftyControl("ip", TextField.class);// makes
+																			// a
+																			// textfield
+		// passwordCharCheckBox =
+		// screen.findNiftyControl("passwordCharCheckBox",
+		// CheckBox.class);//checkbobx for fullsceen
+
+		// optionsTextField.setText("%%%%");
+
+	}
+
+	@NiftyEventSubscriber(id = "ip")
+	public void onoptionsTextFieldChanged(final String id,
+			final TextFieldChangedEvent event) {
+		dis = optionsTextField.getText();// reads from the text field
+	
+		displayText();
 	}
 
 	@Override
@@ -51,6 +73,22 @@ public class MainOptionController implements ScreenController {
 
 	private DropDown findDropDownControl(final String id) {
 		return screen.findNiftyControl(id, DropDown.class);
+	}
+
+	public void displayText() {
+		int disint = Integer.parseInt(dis);
+		int opt = dropDown1.getSelectedIndex();
+		
+		if (opt == 0) {
+			config.displayWidth = disint;
+			
+		} else if (opt == 1) {
+			config.displayHeight = disint;
+			
+		} else {
+			config.displayFrequency = disint;
+			
+		}
 	}
 
 }

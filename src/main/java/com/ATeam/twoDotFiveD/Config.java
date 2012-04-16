@@ -56,9 +56,12 @@ public class Config
 	 */
 	public Config(String path) {
 		init(path);
-		
 	}
 
+	//empty constructor used to get variables
+	public Config(){
+		
+	}
 	/**
 	 * Method to initialize variables and generate the config.yml with all
 	 * essential default values, if they are missing.

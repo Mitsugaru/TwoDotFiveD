@@ -158,6 +158,13 @@
 						align="left" textVAlign="center" textHAlign="left" />
 					<control id="ip" name="textfield" />
 				</panel>
+				
+				<panel childLayout="horizontal" height="80px">
+					<control name="button" label="Update" id="updatebu" align="left" valign="bottom"></control>
+					<control name="button" label="Back to Menu" id="backmenu"align="right" valign="bottom" ></control>
+				</panel>
+				
+				
 
 			</panel>
 		</layer>
