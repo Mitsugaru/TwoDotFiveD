@@ -608,7 +608,7 @@ public abstract class DemoApplication
 				 * remove all objects at once
 				 * //dynamicsWorld.removeRigidBody(rb); } } }
 				 */
-				System.out.println(BulletGlobals.getDeactivationTime());
+				//System.out.println(BulletGlobals.getDeactivationTime());
 				break;
 			}
 			case 'j':

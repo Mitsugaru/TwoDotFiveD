@@ -110,20 +110,28 @@ import static com.bulletphysics.demos.opengl.IGL.*;
  */
 public class BspDemo extends DemoApplication
 {
-	public KinematicCharacterController character;
-	public PairCachingGhostObject ghostObject;
-	
-	private GLCam cam = new GLCam();
-	private GLCamera camera = new GLCamera();
-	GL_Vector ViewPoint;
-	
-	private float characterScale = 2f;
+    public KinematicCharacterController character;
 
-	private static int gForward = 0;
-	private static int gBackward = 0;
-	private static int gLeft = 0;
-	private static int gRight = 0;
-	private static int gJump = 0;
+    public PairCachingGhostObject ghostObject;
+
+    private GLCam cam = new GLCam();
+
+    private GLCamera camera = new GLCamera();
+
+    GL_Vector ViewPoint;
+
+    private float characterScale = 2f;
+
+    private static int gForward = 0;
+
+    private static int gBackward = 0;
+
+    private static int gLeft = 0;
+
+    private static int gRight = 0;
+
+    private static int gJump = 0;
+
     private static BspDemo demo;
 
     private static final float CUBE_HALF_EXTENTS = 1;
@@ -150,8 +158,6 @@ public class BspDemo extends DemoApplication
     int count = 0;
 
     private static boolean connected = false;
-    
-    private RigidBody player;
 
 
     public BspDemo( IGL gl )
@@ -199,28 +205,28 @@ public class BspDemo extends DemoApplication
         // "exported.bsp.txt"));
         // populate();
         BulletGlobals.setDeactivationTime( 0.1f );
-        
-        //here
+
+        // here
         Transform startTransform = new Transform();
-		startTransform.setIdentity();
-		startTransform.origin.set(84.0f, 50.0f, -10.0f);
-		
-		ghostObject = new PairCachingGhostObject();
-		ghostObject.setWorldTransform(startTransform);
-		//AxisSweep3 sweepBP = new AxisSweep3(worldMin, worldMax);
+        startTransform.setIdentity();
+        startTransform.origin.set( 0f, 0f, 0f );
 
-		
-		broadphase.getOverlappingPairCache().setInternalGhostPairCallback(new GhostPairCallback());
-		
-		BoxShape box = new BoxShape(new Vector3f(1f, 1f, 1f));
-		ghostObject.setCollisionShape(box);
-		ghostObject.setCollisionFlags(CollisionFlags.CHARACTER_OBJECT);
+        ghostObject = new PairCachingGhostObject();
+        ghostObject.setWorldTransform( startTransform );
+        // AxisSweep3 sweepBP = new AxisSweep3(worldMin, worldMax);
 
-		character = new KinematicCharacterController(ghostObject, box, 1f);
-		dynamicsWorld.addCollisionObject(ghostObject, CollisionFilterGroups.CHARACTER_FILTER, (short)(CollisionFilterGroups.STATIC_FILTER | CollisionFilterGroups.DEFAULT_FILTER));
-		dynamicsWorld.addAction(character);
+        broadphase.getOverlappingPairCache()
+            .setInternalGhostPairCallback( new GhostPairCallback() );
 
-		populate();
+        BoxShape box = new BoxShape( new Vector3f( 1f, 1f, 1f ) );
+        ghostObject.setCollisionShape( box );
+        ghostObject.setCollisionFlags( CollisionFlags.CHARACTER_OBJECT );
+
+        character = new KinematicCharacterController( ghostObject, box, 1f );
+        dynamicsWorld.addCollisionObject( ghostObject,
+            CollisionFilterGroups.DEFAULT_FILTER,CollisionFilterGroups.ALL_FILTER );
+        dynamicsWorld.addAction( character );
+        populate();
 
     }
 
@@ -262,117 +268,135 @@ public class BspDemo extends DemoApplication
          * BlockCreateEvent(new // Entity("Box", body))); } } }
          */
         clientResetScene();
-        //resetScene();
+        // resetScene();
     }
-    
-    public void resetScene() {
-    	BulletStats.gNumDeepPenetrationChecks = 0;
-		BulletStats.gNumGjkChecks = 0;
 
-		int numObjects = 0;
-		if (dynamicsWorld != null) {
-			dynamicsWorld.stepSimulation(1f / 60f, 0);
-			numObjects = dynamicsWorld.getNumCollisionObjects();
-		}
 
-		for (int i = 0; i < numObjects; i++) {
-			CollisionObject colObj = dynamicsWorld.getCollisionObjectArray().getQuick(i);
-			RigidBody body = RigidBody.upcast(colObj);
-			if (body != null) {
-				if (body.getMotionState() != null) {
-					DefaultMotionState myMotionState = (DefaultMotionState) body.getMotionState();
-					myMotionState.graphicsWorldTrans.set(myMotionState.startWorldTrans);
-					colObj.setWorldTransform(myMotionState.graphicsWorldTrans);
-					colObj.setInterpolationWorldTransform(myMotionState.startWorldTrans);
-					colObj.activate();
-				}
-				// removed cached contact points
-				dynamicsWorld.getBroadphase().getOverlappingPairCache().cleanProxyFromPairs(colObj.getBroadphaseHandle(), dynamicsWorld.getDispatcher());
+    public void resetScene()
+    {
+        BulletStats.gNumDeepPenetrationChecks = 0;
+        BulletStats.gNumGjkChecks = 0;
 
-				body = RigidBody.upcast(colObj);
-				if (body != null && !body.isStaticObject()) {
-					RigidBody.upcast(colObj).setLinearVelocity(new Vector3f(0f, 0f, 0f));
-					RigidBody.upcast(colObj).setAngularVelocity(new Vector3f(0f, 0f, 0f));
-				}
-			}
-		}
+        int numObjects = 0;
+        if ( dynamicsWorld != null )
+        {
+            dynamicsWorld.stepSimulation( 1f / 60f, 0 );
+            numObjects = dynamicsWorld.getNumCollisionObjects();
+        }
+
+        for ( int i = 0; i < numObjects; i++ )
+        {
+            CollisionObject colObj = dynamicsWorld.getCollisionObjectArray()
+                .getQuick( i );
+            RigidBody body = RigidBody.upcast( colObj );
+            if ( body != null )
+            {
+                if ( body.getMotionState() != null )
+                {
+                    DefaultMotionState myMotionState = (DefaultMotionState)body.getMotionState();
+                    myMotionState.graphicsWorldTrans.set( myMotionState.startWorldTrans );
+                    colObj.setWorldTransform( myMotionState.graphicsWorldTrans );
+                    colObj.setInterpolationWorldTransform( myMotionState.startWorldTrans );
+                    colObj.activate();
+                }
+                // removed cached contact points
+                dynamicsWorld.getBroadphase()
+                    .getOverlappingPairCache()
+                    .cleanProxyFromPairs( colObj.getBroadphaseHandle(),
+                        dynamicsWorld.getDispatcher() );
+
+                body = RigidBody.upcast( colObj );
+                if ( body != null && !body.isStaticObject() )
+                {
+                    RigidBody.upcast( colObj )
+                        .setLinearVelocity( new Vector3f( 0f, 0f, 0f ) );
+                    RigidBody.upcast( colObj )
+                        .setAngularVelocity( new Vector3f( 0f, 0f, 0f ) );
+                }
+            }
+        }
     }
 
 
     @Override
     public synchronized void clientMoveAndDisplay()
     {
-    	gl.glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    	float dt = getDeltaTimeMicroseconds() * 0.000001f;
-    	float ms = getDeltaTimeMicroseconds();
-    	try
-    	{
-    		// TODO May need custom DynamicsWorld to catch exceptions per step
-    		int maxSimSubSteps = idle ? 1 : 2;
-    		if (idle) {
-    			ms = 1.0f / 420.f;
-    		}
+        gl.glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+        float dt = getDeltaTimeMicroseconds() * 0.000001f;
+        float ms = getDeltaTimeMicroseconds();
+        try
+        {
+            // TODO May need custom DynamicsWorld to catch exceptions per step
+            int maxSimSubSteps = idle ? 1 : 2;
+            if ( idle )
+            {
+                ms = 1.0f / 420.f;
+            }
 
-    		// set walkDirection for our character
-    		Transform xform = ghostObject.getWorldTransform(new Transform());
+            // set walkDirection for our character
+            Transform xform = ghostObject.getWorldTransform( new Transform() );
 
-    		Vector3f forwardDir = new Vector3f();
-    		xform.basis.getRow(2, forwardDir);
-    		//printf("forwardDir=%f,%f,%f\n",forwardDir[0],forwardDir[1],forwardDir[2]);
-    		Vector3f upDir = new Vector3f();
-    		xform.basis.getRow(1, upDir);
-    		Vector3f strafeDir = new Vector3f();
-    		xform.basis.getRow(0, strafeDir);
-    		forwardDir.normalize();
-    		upDir.normalize();
-    		strafeDir.normalize();
+            Vector3f forwardDir = new Vector3f();
+            xform.basis.getRow( 2, forwardDir );
+            // printf("forwardDir=%f,%f,%f\n",forwardDir[0],forwardDir[1],forwardDir[2]);
+            Vector3f upDir = new Vector3f();
+            xform.basis.getRow( 1, upDir );
+            Vector3f strafeDir = new Vector3f();
+            xform.basis.getRow( 0, strafeDir );
+            forwardDir.normalize();
+            upDir.normalize();
+            strafeDir.normalize();
 
-    		Vector3f walkDirection = new Vector3f(0.0f, 0.0f, 0.0f);
-    		float walkVelocity = 30;// 4 km/h -> 1.1 m/s
-    		float walkSpeed = walkVelocity * (dt) * characterScale;
+            Vector3f walkDirection = new Vector3f( 0.0f, 0.0f, 0.0f );
+            float walkVelocity = 30;// 4 km/h -> 1.1 m/s
+            float walkSpeed = walkVelocity * ( dt ) * characterScale;
 
-    		if (gLeft != 0) {
-    			walkDirection.sub(strafeDir);
-    		}
+            if ( gLeft != 0 )
+            {
+                walkDirection.sub( strafeDir );
+            }
 
-    		if (gRight != 0) {
-    			walkDirection.add(strafeDir);
-    		}
+            if ( gRight != 0 )
+            {
+                walkDirection.add( strafeDir );
+            }
 
-    		if (gForward != 0) {
-    			walkDirection.sub(forwardDir);
-    		}
+            if ( gForward != 0 )
+            {
+                walkDirection.sub( forwardDir );
+            }
 
-    		if (gBackward != 0) {
-    			walkDirection.add(forwardDir);
-    		}
-    		System.out.println("pre"+walkDirection);
-    		walkDirection.scale(walkSpeed);
-    		System.out.println("post"+walkDirection);
+            if ( gBackward != 0 )
+            {
+                walkDirection.add( forwardDir );
+            }
+            //System.out.println( "pre" + walkDirection );
+            walkDirection.scale( walkSpeed );
+            //System.out.println( "post" + walkDirection );
 
-    		character.setWalkDirection(walkDirection);
+            character.setWalkDirection( walkDirection );
 
+            // int numSimSteps = dynamicsWorld.stepSimulation(ms,
+            // maxSimSubSteps);
+            dynamicsWorld.stepSimulation( dt );
 
-
-    		//	int numSimSteps = dynamicsWorld.stepSimulation(ms, maxSimSubSteps);
-    		dynamicsWorld.stepSimulation( dt );
-
-    		// optional but useful: debug drawing
-    		dynamicsWorld.debugDrawWorld();
-    	}
+            // optional but useful: debug drawing
+            dynamicsWorld.debugDrawWorld();
+            //TODO CLIFF stuff
+        }
         catch ( NullPointerException e )
         {
-            System.out.println( "Simulation had null at some point" );
+            //System.out.println( "Simulation had null at some point" );
             // WARN this is very serious
             // TODO figure out how to fix this...
         }
         catch ( ArrayIndexOutOfBoundsException arr )
         {
-            System.out.println( "Index Out of Bounds in Simulation" );
+            //System.out.println( "Index Out of Bounds in Simulation" );
         }
 
         // optional but useful: debug drawing
-    	cam.resetClock();
+        cam.resetClock();
         dynamicsWorld.debugDrawWorld();
         renderme();
 
@@ -394,402 +418,491 @@ public class BspDemo extends DemoApplication
     }
 
     private StringBuilder buf = new StringBuilder();
-	private final Transform m = new Transform();
-	private Vector3f wireColor = new Vector3f();
-	protected Color3f TEXT_COLOR = new Color3f(0f, 0f, 0f);
-	
-    @Override
-	public void renderme() {
-		updateCamera();
 
-		if (dynamicsWorld != null) {
-			int numObjects = dynamicsWorld.getNumCollisionObjects();
-			wireColor.set(1f, 0f, 0f);
-			for (int i = 0; i < numObjects; i++) {
-				CollisionObject colObj = dynamicsWorld.getCollisionObjectArray().getQuick(i);
-				RigidBody body = RigidBody.upcast(colObj);
-				
-				//System.out.println(colObj.getWorldTransform(new Transform()).origin);
+    private final Transform m = new Transform();
 
-				if (body != null && body.getMotionState() != null) {
-					DefaultMotionState myMotionState = (DefaultMotionState) body.getMotionState();
-					m.set(myMotionState.graphicsWorldTrans);
-				}
-				else {
-					colObj.getWorldTransform(m);
-				}
-				//System.out.println(m.origin);
-				
-				
-				wireColor.set(1f, 1f, 0.5f); // wants deactivation
-				if ((i & 1) != 0) {
-					wireColor.set(0f, 0f, 1f);
-				}
+    private Vector3f wireColor = new Vector3f();
 
-				// color differently for active, sleeping, wantsdeactivation states
-				if (colObj.getActivationState() == 1) // active
-				{
-					if ((i & 1) != 0) {
-						//wireColor.add(new Vector3f(1f, 0f, 0f));
-						wireColor.x += 1f;
-					}
-					else {
-						//wireColor.add(new Vector3f(0.5f, 0f, 0f));
-						wireColor.x += 0.5f;
-					}
-				}
-				if (colObj.getActivationState() == 2) // ISLAND_SLEEPING
-				{
-					if ((i & 1) != 0) {
-						//wireColor.add(new Vector3f(0f, 1f, 0f));
-						wireColor.y += 1f;
-					}
-					else {
-						//wireColor.add(new Vector3f(0f, 0.5f, 0f));
-						wireColor.y += 0.5f;
-					}
-				}
+    protected Color3f TEXT_COLOR = new Color3f( 0f, 0f, 0f );
 
-				int a = 0;
-				GLShapeDrawer.drawOpenGL(gl, m, colObj.getCollisionShape(), wireColor, getDebugMode());
-			}
-			
-			
-
-			float xOffset = 10f;
-			float yStart = 20f;
-			float yIncr = 20f;
-
-			gl.glDisable(GL_LIGHTING);
-			gl.glColor3f(0f, 0f, 0f);
-
-			if ((debugMode & DebugDrawModes.NO_HELP_TEXT) == 0) {
-				setOrthographicProjection();
-
-				yStart = showProfileInfo(xOffset, yStart, yIncr);
-				
-								//#ifdef SHOW_NUM_DEEP_PENETRATIONS
-				buf.setLength(0);
-				buf.append("gNumDeepPenetrationChecks = ");
-				FastFormat.append(buf, BulletStats.gNumDeepPenetrationChecks);
-				drawString(buf, Math.round(xOffset), Math.round(yStart), TEXT_COLOR);
-				yStart += yIncr;
-
-				buf.setLength(0);
-				buf.append("gNumGjkChecks = ");
-				FastFormat.append(buf, BulletStats.gNumGjkChecks);
-				drawString(buf, Math.round(xOffset), Math.round(yStart), TEXT_COLOR);
-				yStart += yIncr;
-
-				buf.setLength(0);
-				buf.append("gNumSplitImpulseRecoveries = ");
-				FastFormat.append(buf, BulletStats.gNumSplitImpulseRecoveries);
-				drawString(buf, Math.round(xOffset), Math.round(yStart), TEXT_COLOR);
-				yStart += yIncr;
-
-				//buf = String.format("gNumAlignedAllocs = %d", BulletGlobals.gNumAlignedAllocs);
-				// TODO: BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
-				//yStart += yIncr;
-
-				//buf = String.format("gNumAlignedFree= %d", BulletGlobals.gNumAlignedFree);
-				// TODO: BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
-				//yStart += yIncr;
-
-				//buf = String.format("# alloc-free = %d", BulletGlobals.gNumAlignedAllocs - BulletGlobals.gNumAlignedFree);
-				// TODO: BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
-				//yStart += yIncr;
-
-				//enable BT_DEBUG_MEMORY_ALLOCATIONS define in Bullet/src/LinearMath/btAlignedAllocator.h for memory leak detection
-				//#ifdef BT_DEBUG_MEMORY_ALLOCATIONS
-				//glRasterPos3f(xOffset,yStart,0);
-				//sprintf(buf,"gTotalBytesAlignedAllocs = %d",gTotalBytesAlignedAllocs);
-				//BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
-				//yStart += yIncr;
-				//#endif //BT_DEBUG_MEMORY_ALLOCATIONS
-
-				if (getDynamicsWorld() != null) {
-					buf.setLength(0);
-					buf.append("# objects = ");
-					FastFormat.append(buf, getDynamicsWorld().getNumCollisionObjects());
-					drawString(buf, Math.round(xOffset), Math.round(yStart), TEXT_COLOR);
-					yStart += yIncr;
-
-					buf.setLength(0);
-					buf.append("# pairs = ");
-					FastFormat.append(buf, getDynamicsWorld().getBroadphase().getOverlappingPairCache().getNumOverlappingPairs());
-					drawString(buf, Math.round(xOffset), Math.round(yStart), TEXT_COLOR);
-					yStart += yIncr;
-
-				}
-				//#endif //SHOW_NUM_DEEP_PENETRATIONS
-
-				// JAVA NOTE: added
-				int free = (int)Runtime.getRuntime().freeMemory();
-				int total = (int)Runtime.getRuntime().totalMemory();
-				buf.setLength(0);
-				buf.append("heap = ");
-				FastFormat.append(buf, (float)(total - free) / (1024*1024));
-				buf.append(" / ");
-				FastFormat.append(buf, (float)(total) / (1024*1024));
-				buf.append(" MB");
-				drawString(buf, Math.round(xOffset), Math.round(yStart), TEXT_COLOR);
-				yStart += yIncr;
-
-				resetPerspectiveProjection();
-			}
-
-			gl.glEnable(GL_LIGHTING);
-		}
-
-		updateCamera();
-	}
-    
-    
-    public void setup() {
-        cam.setCamera(camera);
-        camera.setCamera(0f,0f,15f,  0f,0f,-1f, 0f,1f,0f);
-
-  	}
 
     @Override
-	public void updateCamera() {
-		
-		gl.glMatrixMode(GL_PROJECTION);
-		gl.glLoadIdentity();
-		//System.out.println(cameraTargetPosition);
-		float rele = ele * 0.01745329251994329547f; // rads per deg
-		float razi = azi * 0.01745329251994329547f; // rads per deg
+    public void renderme()
+    {
+        updateCamera();
 
-		Quat4f rot = new Quat4f();
-		QuaternionUtil.setRotation(rot, cameraUp, razi);
+        if ( dynamicsWorld != null )
+        {
+            int numObjects = dynamicsWorld.getNumCollisionObjects();
+            wireColor.set( 1f, 0f, 0f );
+            for ( int i = 0; i < numObjects; i++ )
+            {
+                CollisionObject colObj = dynamicsWorld.getCollisionObjectArray()
+                    .getQuick( i );
+                RigidBody body = RigidBody.upcast( colObj );
 
-		Vector3f eyePos = new Vector3f();
-		eyePos.set(0f, 0f, 0f);
-		VectorUtil.setCoord(eyePos, forwardAxis, -cameraDistance);
+                // System.out.println(colObj.getWorldTransform(new
+                // Transform()).origin);
 
-		Vector3f forward = new Vector3f();
-		forward.set(eyePos.x, eyePos.y, eyePos.z);
-		if (forward.lengthSquared() < BulletGlobals.FLT_EPSILON) {
-			forward.set(1f, 0f, 0f);
-		}
-		Vector3f right = new Vector3f();
-		right.cross(cameraUp, forward);
-		Quat4f roll = new Quat4f();
-		QuaternionUtil.setRotation(roll, right, -rele);
+                if ( body != null && body.getMotionState() != null )
+                {
+                    DefaultMotionState myMotionState = (DefaultMotionState)body.getMotionState();
+                    m.set( myMotionState.graphicsWorldTrans );
+                }
+                else
+                {
+                    colObj.getWorldTransform( m );
+                }
+                // System.out.println(m.origin);
 
-		Matrix3f tmpMat1 = new Matrix3f();
-		Matrix3f tmpMat2 = new Matrix3f();
-		tmpMat1.set(rot);
-		tmpMat2.set(roll);
-		tmpMat1.mul(tmpMat2);
-		tmpMat1.transform(eyePos);
+                wireColor.set( 1f, 1f, 0.5f ); // wants deactivation
+                if ( ( i & 1 ) != 0 )
+                {
+                    wireColor.set( 0f, 0f, 1f );
+                }
 
-		cameraPosition.set(eyePos);
+                // color differently for active, sleeping, wantsdeactivation
+                // states
+                if ( colObj.getActivationState() == 1 ) // active
+                {
+                    if ( ( i & 1 ) != 0 )
+                    {
+                        // wireColor.add(new Vector3f(1f, 0f, 0f));
+                        wireColor.x += 1f;
+                    }
+                    else
+                    {
+                        // wireColor.add(new Vector3f(0.5f, 0f, 0f));
+                        wireColor.x += 0.5f;
+                    }
+                }
+                if ( colObj.getActivationState() == 2 ) // ISLAND_SLEEPING
+                {
+                    if ( ( i & 1 ) != 0 )
+                    {
+                        // wireColor.add(new Vector3f(0f, 1f, 0f));
+                        wireColor.y += 1f;
+                    }
+                    else
+                    {
+                        // wireColor.add(new Vector3f(0f, 0.5f, 0f));
+                        wireColor.y += 0.5f;
+                    }
+                }
 
-		if (glutScreenWidth > glutScreenHeight) {
-			float aspect = glutScreenWidth / (float) glutScreenHeight;
-			gl.glFrustum(-aspect, aspect, -1.0, 1.0, 1.0, 10000.0);
-		}
-		else {
-			float aspect = glutScreenHeight / (float) glutScreenWidth;
-			gl.glFrustum(-1.0, 1.0, -aspect, aspect, 1.0, 10000.0);
-		}
+                int a = 0;
+                GLShapeDrawer.drawOpenGL( gl,
+                    m,
+                    colObj.getCollisionShape(),
+                    wireColor,
+                    getDebugMode() );
+            }
 
-		gl.glMatrixMode(GL_MODELVIEW);
-		gl.glLoadIdentity();
-		//System.out.println("camUP "+cameraUp);
-		
-    	cam.updatePan(cam.getDirection());
-    	ViewPoint = GL_Vector.add(camera.Position, camera.ViewDir);
-    	cameraPosition.x = camera.Position.x;
-    	cameraPosition.y = camera.Position.y;
-    	cameraPosition.z = camera.Position.z;
-    	cameraTargetPosition.x = ViewPoint.x;
-    	cameraTargetPosition.y = ViewPoint.y;
-    	cameraTargetPosition.z = ViewPoint.z;
-    	cameraUp.x = camera.UpVector.x;
-    	cameraUp.y = camera.UpVector.y;
-    	cameraUp.z = camera.UpVector.z;
-//    	cameraPosition.x += globalTrans.x;
-//    	cameraPosition.y += globalTrans.y;
-//    	cameraPosition.z += globalTrans.z;
-//		Transform characterWorldTrans = ghostObject.getWorldTransform(new Transform());
+            float xOffset = 10f;
+            float yStart = 20f;
+            float yIncr = 20f;
 
-//    	cameraTargetPosition.set(characterWorldTrans.origin);
-//    	System.out.println(cameraPosition.x + " " + cameraPosition.y + " " + cameraPosition.z + " ... " +
-//    						cameraTargetPosition.x + " " + cameraTargetPosition.y + " " + cameraTargetPosition.z + " ... " +
-//    						cameraUp.x + " " + cameraUp.y + " " + cameraUp.z);
-        
-    	for(CollisionObject o : dynamicsWorld.getCollisionObjectArray())
-		{
-			if(o.getCollisionShape().equals(ghostObject.getCollisionShape()))
-			{
-				
-				Transform t = o.getWorldTransform(new Transform());
-				System.out.println(t.origin);
-				gl.gluLookAt( cameraPosition.x + t.origin.x, cameraPosition.y + t.origin.y, cameraPosition.z + t.origin.z,
-			            t.origin.x, t.origin.y, t.origin.z,
-			            cameraUp.x, cameraUp.y, cameraUp.z );
-				break;
-			}
-		}
-    	
-		//gl.gluLookAt( eyex, eyey, eyez, RigidBody.upcast( ghostObject ).getCenterOfMassPosition( new Vector3f() ).x, centery, centerz, upx, upy, upz );
-	}
+            gl.glDisable( GL_LIGHTING );
+            gl.glColor3f( 0f, 0f, 0f );
+
+            if ( ( debugMode & DebugDrawModes.NO_HELP_TEXT ) == 0 )
+            {
+                setOrthographicProjection();
+
+                yStart = showProfileInfo( xOffset, yStart, yIncr );
+
+                // #ifdef SHOW_NUM_DEEP_PENETRATIONS
+                buf.setLength( 0 );
+                buf.append( "gNumDeepPenetrationChecks = " );
+                FastFormat.append( buf, BulletStats.gNumDeepPenetrationChecks );
+                drawString( buf,
+                    Math.round( xOffset ),
+                    Math.round( yStart ),
+                    TEXT_COLOR );
+                yStart += yIncr;
+
+                buf.setLength( 0 );
+                buf.append( "gNumGjkChecks = " );
+                FastFormat.append( buf, BulletStats.gNumGjkChecks );
+                drawString( buf,
+                    Math.round( xOffset ),
+                    Math.round( yStart ),
+                    TEXT_COLOR );
+                yStart += yIncr;
+
+                buf.setLength( 0 );
+                buf.append( "gNumSplitImpulseRecoveries = " );
+                FastFormat.append( buf, BulletStats.gNumSplitImpulseRecoveries );
+                drawString( buf,
+                    Math.round( xOffset ),
+                    Math.round( yStart ),
+                    TEXT_COLOR );
+                yStart += yIncr;
+
+                // buf = String.format("gNumAlignedAllocs = %d",
+                // BulletGlobals.gNumAlignedAllocs);
+                // TODO: BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
+                // yStart += yIncr;
+
+                // buf = String.format("gNumAlignedFree= %d",
+                // BulletGlobals.gNumAlignedFree);
+                // TODO: BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
+                // yStart += yIncr;
+
+                // buf = String.format("# alloc-free = %d",
+                // BulletGlobals.gNumAlignedAllocs -
+                // BulletGlobals.gNumAlignedFree);
+                // TODO: BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
+                // yStart += yIncr;
+
+                // enable BT_DEBUG_MEMORY_ALLOCATIONS define in
+                // Bullet/src/LinearMath/btAlignedAllocator.h for memory leak
+                // detection
+                // #ifdef BT_DEBUG_MEMORY_ALLOCATIONS
+                // glRasterPos3f(xOffset,yStart,0);
+                // sprintf(buf,"gTotalBytesAlignedAllocs = %d",gTotalBytesAlignedAllocs);
+                // BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
+                // yStart += yIncr;
+                // #endif //BT_DEBUG_MEMORY_ALLOCATIONS
+
+                if ( getDynamicsWorld() != null )
+                {
+                    buf.setLength( 0 );
+                    buf.append( "# objects = " );
+                    FastFormat.append( buf,
+                        getDynamicsWorld().getNumCollisionObjects() );
+                    drawString( buf,
+                        Math.round( xOffset ),
+                        Math.round( yStart ),
+                        TEXT_COLOR );
+                    yStart += yIncr;
+
+                    buf.setLength( 0 );
+                    buf.append( "# pairs = " );
+                    FastFormat.append( buf, getDynamicsWorld().getBroadphase()
+                        .getOverlappingPairCache()
+                        .getNumOverlappingPairs() );
+                    drawString( buf,
+                        Math.round( xOffset ),
+                        Math.round( yStart ),
+                        TEXT_COLOR );
+                    yStart += yIncr;
+
+                }
+                // #endif //SHOW_NUM_DEEP_PENETRATIONS
+
+                // JAVA NOTE: added
+                int free = (int)Runtime.getRuntime().freeMemory();
+                int total = (int)Runtime.getRuntime().totalMemory();
+                buf.setLength( 0 );
+                buf.append( "heap = " );
+                FastFormat.append( buf, (float)( total - free )
+                    / ( 1024 * 1024 ) );
+                buf.append( " / " );
+                FastFormat.append( buf, (float)( total ) / ( 1024 * 1024 ) );
+                buf.append( " MB" );
+                drawString( buf,
+                    Math.round( xOffset ),
+                    Math.round( yStart ),
+                    TEXT_COLOR );
+                yStart += yIncr;
+
+                resetPerspectiveProjection();
+            }
+
+            gl.glEnable( GL_LIGHTING );
+        }
+
+        updateCamera();
+    }
+
+
+    public void setup()
+    {
+        cam.setCamera( camera );
+        camera.setCamera( 0f, 0f, 15f, 0f, 0f, -1f, 0f, 1f, 0f );
+
+    }
+
 
     @Override
-	public void specialKeyboardUp(int key, int x, int y, int modifiers) {
-		switch (key) {
-		case Keyboard.KEY_W: {
-			if (cam.getQuadrant() == 1) {
-				gForward = 0;
-			}
-			if (cam.getQuadrant() == 2) {
-				gLeft = 0;
-			}
-			if (cam.getQuadrant() == 3) {
-				gBackward = 0;
-			}
-			if (cam.getQuadrant() == 4) {
-				gRight = 0;
-			}
-			break;
-		}
-		case Keyboard.KEY_S: {
-			if (cam.getQuadrant() == 1) {
-				gBackward = 0;
-			}
-			if (cam.getQuadrant() == 2) {
-				gRight = 0;
-			}
-			if (cam.getQuadrant() == 3) {
-				gForward = 0;
-			}
-			if (cam.getQuadrant() == 4) {
-				gLeft = 0;
-			}
-			break;
-		}
-		case Keyboard.KEY_A: {
-			if (cam.getQuadrant() == 1) {
-				gLeft = 0;
-			}
-			if (cam.getQuadrant() == 2) {
-				gBackward = 0;
-			}
-			if (cam.getQuadrant() == 3) {
-				gRight = 0;
-			}
-			if (cam.getQuadrant() == 4) {
-				gForward = 0;
-			}
-			break;
-		}
-		case Keyboard.KEY_D: {
-			if (cam.getQuadrant() == 1) {
-				gRight = 0;
-			}
-			if (cam.getQuadrant() == 2) {
-				gForward = 0;
-			}
-			if (cam.getQuadrant() == 3) {
-				gLeft = 0;
-			}
-			if (cam.getQuadrant() == 4) {
-				gBackward = 0;
-			}
-			break;
-		}
-		}
-	}
-	
+    public void updateCamera()
+    {
 
-//	@Override 
-//	public synchronized void specialKeyboard(int key, int x, int y, int modifiers) {
-//		switch (key) {
-//		case Keyboard.KEY_UP: {
-//			cam.handleRotKeysPan();
-//			break;
-//		}
-//		case Keyboard.KEY_DOWN: {
-//			cam.handleRotKeysPan();
-//			break;
-//		}
-//		case Keyboard.KEY_LEFT: {
-//			cam.handleRotKeysPan();
-//			break;
-//		}
-//		case Keyboard.KEY_RIGHT: {
-//			cam.handleRotKeysPan();
-//			break;
-//		}
-//		case Keyboard.KEY_W: {
-//			if (cam.getQuadrant() == 1) {
-//				gForward = 1;
-//			}
-//			if (cam.getQuadrant() == 2) {
-//				gLeft = 1;
-//			}
-//			if (cam.getQuadrant() == 3) {
-//				gBackward = 1;
-//			}
-//			if (cam.getQuadrant() == 4) {
-//				gRight = 1;
-//			}
-//			break;
-//		}
-//		case Keyboard.KEY_S: {
-//			if (cam.getQuadrant() == 1) {
-//				gBackward = 1;
-//			}
-//			if (cam.getQuadrant() == 2) {
-//				gRight = 1;
-//			}
-//			if (cam.getQuadrant() == 3) {
-//				gForward = 1;
-//			}
-//			if (cam.getQuadrant() == 4) {
-//				gLeft = 1;
-//			}
-//			break;
-//		}
-//		case Keyboard.KEY_A: {
-//			if (cam.getQuadrant() == 1) {
-//				gLeft = 1;
-//			}
-//			if (cam.getQuadrant() == 2) {
-//				gBackward = 1;
-//			}
-//			if (cam.getQuadrant() == 3) {
-//				gRight = 1;
-//			}
-//			if (cam.getQuadrant() == 4) {
-//				gForward = 1;
-//			}
-//			break;
-//		}
-//		case Keyboard.KEY_D: {
-//			if (cam.getQuadrant() == 1) {
-//				gRight = 1;
-//			}
-//			if (cam.getQuadrant() == 2) {
-//				gForward = 1;
-//			}
-//			if (cam.getQuadrant() == 3) {
-//				gLeft = 1;
-//			}
-//			if (cam.getQuadrant() == 4) {
-//				gBackward = 1;
-//			}
-//			break;
-//		}
-//
-//		default:
-//			super.specialKeyboard(key, x, y, modifiers);
-//			break;
-//		}
-//	}
-	
+        gl.glMatrixMode( GL_PROJECTION );
+        gl.glLoadIdentity();
+        // System.out.println(cameraTargetPosition);
+        float rele = ele * 0.01745329251994329547f; // rads per deg
+        float razi = azi * 0.01745329251994329547f; // rads per deg
+
+        Quat4f rot = new Quat4f();
+        QuaternionUtil.setRotation( rot, cameraUp, razi );
+
+        Vector3f eyePos = new Vector3f();
+        eyePos.set( 0f, 0f, 0f );
+        VectorUtil.setCoord( eyePos, forwardAxis, -cameraDistance );
+
+        Vector3f forward = new Vector3f();
+        forward.set( eyePos.x, eyePos.y, eyePos.z );
+        if ( forward.lengthSquared() < BulletGlobals.FLT_EPSILON )
+        {
+            forward.set( 1f, 0f, 0f );
+        }
+        Vector3f right = new Vector3f();
+        right.cross( cameraUp, forward );
+        Quat4f roll = new Quat4f();
+        QuaternionUtil.setRotation( roll, right, -rele );
+
+        Matrix3f tmpMat1 = new Matrix3f();
+        Matrix3f tmpMat2 = new Matrix3f();
+        tmpMat1.set( rot );
+        tmpMat2.set( roll );
+        tmpMat1.mul( tmpMat2 );
+        tmpMat1.transform( eyePos );
+
+        cameraPosition.set( eyePos );
+
+        if ( glutScreenWidth > glutScreenHeight )
+        {
+            float aspect = glutScreenWidth / (float)glutScreenHeight;
+            gl.glFrustum( -aspect, aspect, -1.0, 1.0, 1.0, 10000.0 );
+        }
+        else
+        {
+            float aspect = glutScreenHeight / (float)glutScreenWidth;
+            gl.glFrustum( -1.0, 1.0, -aspect, aspect, 1.0, 10000.0 );
+        }
+
+        gl.glMatrixMode( GL_MODELVIEW );
+        gl.glLoadIdentity();
+        // System.out.println("camUP "+cameraUp);
+
+        cam.updatePan( cam.getDirection() );
+        ViewPoint = GL_Vector.add( camera.Position, camera.ViewDir );
+        cameraPosition.x = camera.Position.x;
+        cameraPosition.y = camera.Position.y;
+        cameraPosition.z = camera.Position.z;
+        cameraTargetPosition.x = ViewPoint.x;
+        cameraTargetPosition.y = ViewPoint.y;
+        cameraTargetPosition.z = ViewPoint.z;
+        cameraUp.x = camera.UpVector.x;
+        cameraUp.y = camera.UpVector.y;
+        cameraUp.z = camera.UpVector.z;
+        // cameraPosition.x += globalTrans.x;
+        // cameraPosition.y += globalTrans.y;
+        // cameraPosition.z += globalTrans.z;
+        // Transform characterWorldTrans = ghostObject.getWorldTransform(new
+        // Transform());
+
+        // cameraTargetPosition.set(characterWorldTrans.origin);
+        // System.out.println(cameraPosition.x + " " + cameraPosition.y + " " +
+        // cameraPosition.z + " ... " +
+        // cameraTargetPosition.x + " " + cameraTargetPosition.y + " " +
+        // cameraTargetPosition.z + " ... " +
+        // cameraUp.x + " " + cameraUp.y + " " + cameraUp.z);
+
+        for ( CollisionObject o : dynamicsWorld.getCollisionObjectArray() )
+        {
+            if ( o.getCollisionShape().equals( ghostObject.getCollisionShape() ) )
+            {
+
+                Transform t = o.getWorldTransform( new Transform() );
+                //System.out.println( t.origin );
+                gl.gluLookAt( cameraPosition.x + t.origin.x,
+                    cameraPosition.y + t.origin.y,
+                    cameraPosition.z + t.origin.z,
+                    t.origin.x,
+                    t.origin.y,
+                    t.origin.z,
+                    cameraUp.x,
+                    cameraUp.y,
+                    cameraUp.z );
+                break;
+            }
+        }
+
+        // gl.gluLookAt( eyex, eyey, eyez, RigidBody.upcast( ghostObject
+        // ).getCenterOfMassPosition( new Vector3f() ).x, centery, centerz, upx,
+        // upy, upz );
+    }
+
+
+    @Override
+    public void specialKeyboardUp( int key, int x, int y, int modifiers )
+    {
+        switch ( key )
+        {
+            case Keyboard.KEY_W:
+            {
+                if ( cam.getQuadrant() == 1 )
+                {
+                    gForward = 0;
+                }
+                if ( cam.getQuadrant() == 2 )
+                {
+                    gLeft = 0;
+                }
+                if ( cam.getQuadrant() == 3 )
+                {
+                    gBackward = 0;
+                }
+                if ( cam.getQuadrant() == 4 )
+                {
+                    gRight = 0;
+                }
+                break;
+            }
+            case Keyboard.KEY_S:
+            {
+                if ( cam.getQuadrant() == 1 )
+                {
+                    gBackward = 0;
+                }
+                if ( cam.getQuadrant() == 2 )
+                {
+                    gRight = 0;
+                }
+                if ( cam.getQuadrant() == 3 )
+                {
+                    gForward = 0;
+                }
+                if ( cam.getQuadrant() == 4 )
+                {
+                    gLeft = 0;
+                }
+                break;
+            }
+            case Keyboard.KEY_A:
+            {
+                if ( cam.getQuadrant() == 1 )
+                {
+                    gLeft = 0;
+                }
+                if ( cam.getQuadrant() == 2 )
+                {
+                    gBackward = 0;
+                }
+                if ( cam.getQuadrant() == 3 )
+                {
+                    gRight = 0;
+                }
+                if ( cam.getQuadrant() == 4 )
+                {
+                    gForward = 0;
+                }
+                break;
+            }
+            case Keyboard.KEY_D:
+            {
+                if ( cam.getQuadrant() == 1 )
+                {
+                    gRight = 0;
+                }
+                if ( cam.getQuadrant() == 2 )
+                {
+                    gForward = 0;
+                }
+                if ( cam.getQuadrant() == 3 )
+                {
+                    gLeft = 0;
+                }
+                if ( cam.getQuadrant() == 4 )
+                {
+                    gBackward = 0;
+                }
+                break;
+            }
+        }
+    }
+
+
+    // @Override
+    // public synchronized void specialKeyboard(int key, int x, int y, int
+    // modifiers) {
+    // switch (key) {
+    // case Keyboard.KEY_UP: {
+    // cam.handleRotKeysPan();
+    // break;
+    // }
+    // case Keyboard.KEY_DOWN: {
+    // cam.handleRotKeysPan();
+    // break;
+    // }
+    // case Keyboard.KEY_LEFT: {
+    // cam.handleRotKeysPan();
+    // break;
+    // }
+    // case Keyboard.KEY_RIGHT: {
+    // cam.handleRotKeysPan();
+    // break;
+    // }
+    // case Keyboard.KEY_W: {
+    // if (cam.getQuadrant() == 1) {
+    // gForward = 1;
+    // }
+    // if (cam.getQuadrant() == 2) {
+    // gLeft = 1;
+    // }
+    // if (cam.getQuadrant() == 3) {
+    // gBackward = 1;
+    // }
+    // if (cam.getQuadrant() == 4) {
+    // gRight = 1;
+    // }
+    // break;
+    // }
+    // case Keyboard.KEY_S: {
+    // if (cam.getQuadrant() == 1) {
+    // gBackward = 1;
+    // }
+    // if (cam.getQuadrant() == 2) {
+    // gRight = 1;
+    // }
+    // if (cam.getQuadrant() == 3) {
+    // gForward = 1;
+    // }
+    // if (cam.getQuadrant() == 4) {
+    // gLeft = 1;
+    // }
+    // break;
+    // }
+    // case Keyboard.KEY_A: {
+    // if (cam.getQuadrant() == 1) {
+    // gLeft = 1;
+    // }
+    // if (cam.getQuadrant() == 2) {
+    // gBackward = 1;
+    // }
+    // if (cam.getQuadrant() == 3) {
+    // gRight = 1;
+    // }
+    // if (cam.getQuadrant() == 4) {
+    // gForward = 1;
+    // }
+    // break;
+    // }
+    // case Keyboard.KEY_D: {
+    // if (cam.getQuadrant() == 1) {
+    // gRight = 1;
+    // }
+    // if (cam.getQuadrant() == 2) {
+    // gForward = 1;
+    // }
+    // if (cam.getQuadrant() == 3) {
+    // gLeft = 1;
+    // }
+    // if (cam.getQuadrant() == 4) {
+    // gBackward = 1;
+    // }
+    // break;
+    // }
+    //
+    // default:
+    // super.specialKeyboard(key, x, y, modifiers);
+    // break;
+    // }
+    // }
+
     @Override
     public synchronized void specialKeyboard(
         int key,
@@ -799,83 +912,106 @@ public class BspDemo extends DemoApplication
     {
         switch ( key )
         {
-        case Keyboard.KEY_UP: {
-			cam.handleRotKeysPan();
-			break;
-		}
-		case Keyboard.KEY_DOWN: {
-			cam.handleRotKeysPan();
-			break;
-		}
-		case Keyboard.KEY_LEFT: {
-			cam.handleRotKeysPan();
-			break;
-		}
-		case Keyboard.KEY_RIGHT: {
-			cam.handleRotKeysPan();
-			break;
-		}
-		case Keyboard.KEY_W: {
-			if (cam.getQuadrant() == 1) {
-				gForward = 1;
-			}
-			if (cam.getQuadrant() == 2) {
-				gLeft = 1;
-			}
-			if (cam.getQuadrant() == 3) {
-				gBackward = 1;
-			}
-			if (cam.getQuadrant() == 4) {
-				gRight = 1;
-			}
-			break;
-		}
-		case Keyboard.KEY_S: {
-			if (cam.getQuadrant() == 1) {
-				gBackward = 1;
-			}
-			if (cam.getQuadrant() == 2) {
-				gRight = 1;
-			}
-			if (cam.getQuadrant() == 3) {
-				gForward = 1;
-			}
-			if (cam.getQuadrant() == 4) {
-				gLeft = 1;
-			}
-			break;
-		}
-		case Keyboard.KEY_A: {
-			if (cam.getQuadrant() == 1) {
-				gLeft = 1;
-			}
-			if (cam.getQuadrant() == 2) {
-				gBackward = 1;
-			}
-			if (cam.getQuadrant() == 3) {
-				gRight = 1;
-			}
-			if (cam.getQuadrant() == 4) {
-				gForward = 1;
-			}
-			break;
-		}
-		case Keyboard.KEY_D: {
-			if (cam.getQuadrant() == 1) {
-				gRight = 1;
-			}
-			if (cam.getQuadrant() == 2) {
-				gForward = 1;
-			}
-			if (cam.getQuadrant() == 3) {
-				gLeft = 1;
-			}
-			if (cam.getQuadrant() == 4) {
-				gBackward = 1;
-			}
-			break;
-		}
-
+            case Keyboard.KEY_UP:
+            {
+                cam.handleRotKeysPan();
+                break;
+            }
+            case Keyboard.KEY_DOWN:
+            {
+                cam.handleRotKeysPan();
+                break;
+            }
+            case Keyboard.KEY_LEFT:
+            {
+                cam.handleRotKeysPan();
+                break;
+            }
+            case Keyboard.KEY_RIGHT:
+            {
+                cam.handleRotKeysPan();
+                break;
+            }
+            case Keyboard.KEY_W:
+            {
+                if ( cam.getQuadrant() == 1 )
+                {
+                    gForward = 1;
+                }
+                if ( cam.getQuadrant() == 2 )
+                {
+                    gLeft = 1;
+                }
+                if ( cam.getQuadrant() == 3 )
+                {
+                    gBackward = 1;
+                }
+                if ( cam.getQuadrant() == 4 )
+                {
+                    gRight = 1;
+                }
+                break;
+            }
+            case Keyboard.KEY_S:
+            {
+                if ( cam.getQuadrant() == 1 )
+                {
+                    gBackward = 1;
+                }
+                if ( cam.getQuadrant() == 2 )
+                {
+                    gRight = 1;
+                }
+                if ( cam.getQuadrant() == 3 )
+                {
+                    gForward = 1;
+                }
+                if ( cam.getQuadrant() == 4 )
+                {
+                    gLeft = 1;
+                }
+                break;
+            }
+            case Keyboard.KEY_A:
+            {
+                if ( cam.getQuadrant() == 1 )
+                {
+                    gLeft = 1;
+                }
+                if ( cam.getQuadrant() == 2 )
+                {
+                    gBackward = 1;
+                }
+                if ( cam.getQuadrant() == 3 )
+                {
+                    gRight = 1;
+                }
+                if ( cam.getQuadrant() == 4 )
+                {
+                    gForward = 1;
+                }
+                break;
+            }
+            case Keyboard.KEY_D:
+            {
+                if ( cam.getQuadrant() == 1 )
+                {
+                    gRight = 1;
+                }
+                if ( cam.getQuadrant() == 2 )
+                {
+                    gForward = 1;
+                }
+                if ( cam.getQuadrant() == 3 )
+                {
+                    gLeft = 1;
+                }
+                if ( cam.getQuadrant() == 4 )
+                {
+                    gBackward = 1;
+                }
+                break;
+            }
 
             case Keyboard.KEY_R:
             {
@@ -904,11 +1040,13 @@ public class BspDemo extends DemoApplication
                     }
                     catch ( NullPointerException n )
                     {
-                        System.out.println( "Tried to remove object that is not there" );
+                        // System.out.println(
+                        // "Tried to remove object that is not there" );
                     }
                     catch ( ArrayIndexOutOfBoundsException b )
                     {
-                        System.out.println( "ArrayIndexOutOfBounds in simulation" );
+                        // System.out.println(
+                        // "ArrayIndexOutOfBounds in simulation" );
                     }
                 }
                 // repopulate world
@@ -1009,24 +1147,24 @@ public class BspDemo extends DemoApplication
     public static void main( String[] args ) throws Exception
     {
         demo = new BspDemo( LWJGL.getGL() );
-//        try
-//        {
-//            client = new chatClient( null,
-//                "137.155.2.153",
-//                "BASE",
-//                remoteDispatcher );
-//            if ( client.connect() )
-//            {
-//                client.start();
-//                connected = true;
-//            }
-//            Thread.sleep( 2000 );
-//        }
-//        catch ( Exception e )
-//        {
-//            // No networking
-//            connected = false;
-//        }
+//         try
+//         {
+//         client = new chatClient( null,
+//         "localhost",
+//         "BASED",
+//         remoteDispatcher );
+//         if ( client.connect() )
+//         {
+//         client.start();
+//         connected = true;
+//         }
+//         Thread.sleep( 2000 );
+//         }
+//         catch ( Exception e )
+//         {
+//         // No networking
+//         connected = false;
+//         }
         demo.initListener();
         demo.setup();
         demo.initPhysics();
@@ -1144,11 +1282,15 @@ public class BspDemo extends DemoApplication
                             }
                             catch ( NullPointerException e )
                             {
-                                System.out.println( "Attempted to remove object taht no longer exists." );
+                                // System.out.println(
+                                // "Attempted to remove object taht no longer exists."
+                                // );
                             }
                             catch ( ArrayIndexOutOfBoundsException a )
                             {
-                                System.out.println( "Attempted to remove object taht no longer exists." );
+                                // System.out.println(
+                                // "Attempted to remove object taht no longer exists."
+                                // );
                             }
                         }
 
@@ -1296,37 +1438,44 @@ public class BspDemo extends DemoApplication
                 final Entity entityB = entityList.get( (RigidBody)pm.getBody1() );
                 if ( entityA != null && entityB != null )
                 {
-//                    if ( entityA.getID().equals( "object2" ) )
-//                    {
-//                        entityA.getRigidBody().setAngularFactor( 0f );
-//                        entityA.getRigidBody()
-//                            .setAngularVelocity( new Vector3f( 0f, 0f, 0f ) );
-//                        entityA.getRigidBody()
-//                            .setLinearVelocity( new Vector3f( 0f, 0f, 0f ) );
-//                        entityA.getRigidBody().setGravity( new Vector3f( 0f,
-//                            10f,
-//                            0f ) );
-//                        System.out.println( "OMG" );
-//                    }
-//                    else if ( entityB.getID().equals( "object2" ) )
-//                    {
-//                        entityB.getRigidBody().setAngularFactor( 0f );
-//                        entityB.getRigidBody()
-//                            .setAngularVelocity( new Vector3f( 0f, 0f, 0f ) );
-//                        entityB.getRigidBody()
-//                            .setLinearVelocity( new Vector3f( 0f, 0f, 0f ) );
-//                        entityB.getRigidBody().setGravity( new Vector3f( 0f,
-//                            10f,
-//                            0f ) );
-//                        System.out.println( "OMA" );
-//                    }
+                    // if ( entityA.getID().equals( "object2" ) )
+                    // {
+                    // entityA.getRigidBody().setAngularFactor( 0f );
+                    // entityA.getRigidBody()
+                    // .setAngularVelocity( new Vector3f( 0f, 0f, 0f ) );
+                    // entityA.getRigidBody()
+                    // .setLinearVelocity( new Vector3f( 0f, 0f, 0f ) );
+                    // entityA.getRigidBody().setGravity( new Vector3f( 0f,
+                    // 10f,
+                    // 0f ) );
+                    // System.out.println( "OMG" );
+                    // }
+                    // else if ( entityB.getID().equals( "object2" ) )
+                    // {
+                    // entityB.getRigidBody().setAngularFactor( 0f );
+                    // entityB.getRigidBody()
+                    // .setAngularVelocity( new Vector3f( 0f, 0f, 0f ) );
+                    // entityB.getRigidBody()
+                    // .setLinearVelocity( new Vector3f( 0f, 0f, 0f ) );
+                    // entityB.getRigidBody().setGravity( new Vector3f( 0f,
+                    // 10f,
+                    // 0f ) );
+                    // System.out.println( "OMA" );
+                    // }
                     // TODO CLIFF STUFF
+                    if ( ( entityA.getRigidBody()
+                        .getCollisionShape()
+                        .equals( ghostObject.getCollisionShape() ) || 
+                        entityB.getRigidBody().getCollisionShape()
+                        .equals( ghostObject.getCollisionShape() ) ))
+                    {
+                        System.out.println("I can sense the player!");
+                    }
                     if ( ( entityA.getID().equals( "elevatorsmash1" ) || entityB.getID()
                         .equals( "elevatorsmash1" ) )
-                        &&( entityA.getID()
-                            .equals( "sidepathleftelevatorshaftfix" )
-                        || entityB.getID()
-                            .equals( "sidepathleftelevatorshaftfix" )) )
+                        && ( entityA.getID()
+                            .equals( "sidepathleftelevatorshaftfix" ) || entityB.getID()
+                            .equals( "sidepathleftelevatorshaftfix" ) ) )
                     {
                         if ( entityA.getID().equals( "elevatorsmash1" ) )
                         {
@@ -1334,11 +1483,11 @@ public class BspDemo extends DemoApplication
                             // Vector3f(0f, 0f, 7f) );
                             entityA.freeze();
                             final RigidBody body = entityA.getRigidBody();
-                            final Vector3f vector = body.getCenterOfMassPosition(new Vector3f() );
-                            body.translate( new Vector3f(80f - vector.x , -5f - vector.y , -11f - vector.z) );
-                            body
-                                .setGravity( new Vector3f( 0f, 7f, 0f ) );
-                            
+                            final Vector3f vector = body.getCenterOfMassPosition( new Vector3f() );
+                            body.translate( new Vector3f( 80f - vector.x, -5f
+                                - vector.y, -11f - vector.z ) );
+                            body.setGravity( new Vector3f( 0f, 7f, 0f ) );
+
                         }
                         else
                         {
@@ -1346,18 +1495,16 @@ public class BspDemo extends DemoApplication
                             // Vector3f(0f, 0f, 7f) );
                             entityB.freeze();
                             final RigidBody body = entityB.getRigidBody();
-                            final Vector3f vector = body.getCenterOfMassPosition(new Vector3f() );
-                            body.translate( new Vector3f(80f - vector.x , -5f - vector.y , -11f - vector.z) );
-                            body
-                                .setGravity( new Vector3f( 0f, 7f, 0f ) );
+                            final Vector3f vector = body.getCenterOfMassPosition( new Vector3f() );
+                            body.translate( new Vector3f( 80f - vector.x, -5f
+                                - vector.y, -11f - vector.z ) );
+                            body.setGravity( new Vector3f( 0f, 7f, 0f ) );
                         }
                     }
                     if ( ( entityA.getID().equals( "elevatorsmash1" ) || entityB.getID()
                         .equals( "elevatorsmash1" ) )
-                        && (entityA.getID()
-                            .equals( "elevatorshaftcieling" )
-                        || entityB.getID()
-                            .equals( "elevatorshaftcieling" )) )
+                        && ( entityA.getID().equals( "elevatorshaftcieling" ) || entityB.getID()
+                            .equals( "elevatorshaftcieling" ) ) )
                     {
                         if ( entityA.getID().equals( "elevatorsmash1" ) )
                         {
@@ -1365,10 +1512,11 @@ public class BspDemo extends DemoApplication
                             // Vector3f(0f, 0f, 7f) );
                             entityA.freeze();
                             final RigidBody body = entityA.getRigidBody();
-                            final Vector3f vector = body.getCenterOfMassPosition(new Vector3f() );
-                            body.translate( new Vector3f(80f - vector.x , 1.5f - vector.y , -11f - vector.z) );
-                            body
-                                .setGravity( new Vector3f( 0f, -7f, 0f ) );
+                            final Vector3f vector = body.getCenterOfMassPosition( new Vector3f() );
+                            body.translate( new Vector3f( 80f - vector.x,
+                                1.5f - vector.y,
+                                -11f - vector.z ) );
+                            body.setGravity( new Vector3f( 0f, -7f, 0f ) );
                         }
                         else
                         {
@@ -1376,199 +1524,236 @@ public class BspDemo extends DemoApplication
                             // Vector3f(0f, 0f, 7f) );
                             entityB.freeze();
                             final RigidBody body = entityB.getRigidBody();
-                            final Vector3f vector = body.getCenterOfMassPosition(new Vector3f() );
-                            body.translate( new Vector3f(80f - vector.x , 1.5f - vector.y , -11f - vector.z) );
-                            body
-                                .setGravity( new Vector3f( 0f, -7f, 0f ) );
+                            final Vector3f vector = body.getCenterOfMassPosition( new Vector3f() );
+                            body.translate( new Vector3f( 80f - vector.x,
+                                1.5f - vector.y,
+                                -11f - vector.z ) );
+                            body.setGravity( new Vector3f( 0f, -7f, 0f ) );
                         }
                     }
-                    if (( entityA.getID().equals( "sidewayselevator1" ) || entityB.getID()
-                                    .equals( "sidewayselevator1" ) )
-                                    && (entityA.getID()
-                                        .equals( "headingunder" )
-                                    || entityB.getID()
-                                        .equals( "headingunder" ))){
-                        Vector3f reset = new Vector3f (-1.3f, -25.25f, 3.75f);
-                        if (entityA.getID().equals( "sidewayselevator1" )){
-                            elevatorshiftxlow(entityA, reset);
-                        }else{
-                            elevatorshiftxlow(entityB, reset);
-                        }                        
+                    if ( ( entityA.getID().equals( "sidewayselevator1" ) || entityB.getID()
+                        .equals( "sidewayselevator1" ) )
+                        && ( entityA.getID().equals( "headingunder" ) || entityB.getID()
+                            .equals( "headingunder" ) ) )
+                    {
+                        Vector3f reset = new Vector3f( -1.3f, -25.25f, 3.75f );
+                        if ( entityA.getID().equals( "sidewayselevator1" ) )
+                        {
+                            elevatorshiftxlow( entityA, reset );
+                        }
+                        else
+                        {
+                            elevatorshiftxlow( entityB, reset );
+                        }
                     }
-                    if (( entityA.getID().equals( "sidewayselevator1" ) || entityB.getID()
-                                    .equals( "sidewayselevator1" ) )
-                                    && (entityA.getID()
-                                        .equals( "sidewayselevator2" )
-                                    || entityB.getID()
-                                        .equals( "sidewayselevator2" ))){
-                        //Vector3f reset = new Vector3f (0f, 0f, 0f);
-                        if (entityA.getID().equals( "sidewayselevator1" )){
-                            System.out.println(entityA.getID() +" "+ entityB.getID());
-                            elevatorshiftxhigh(entityA, entityA.getRigidBody().getCenterOfMassPosition( new Vector3f() ));
-                        }else{
-                            System.out.println(entityA.getID() +" "+ entityB.getID());
-                            elevatorshiftxhigh(entityB, entityB.getRigidBody().getCenterOfMassPosition( new Vector3f() ));
-                        }                        
+                    if ( ( entityA.getID().equals( "sidewayselevator1" ) || entityB.getID()
+                        .equals( "sidewayselevator1" ) )
+                        && ( entityA.getID().equals( "sidewayselevator2" ) || entityB.getID()
+                            .equals( "sidewayselevator2" ) ) )
+                    {
+                        // Vector3f reset = new Vector3f (0f, 0f, 0f);
+                        if ( entityA.getID().equals( "sidewayselevator1" ) )
+                        {
+                            // System.out.println(entityA.getID() +" "+
+                            // entityB.getID());
+                            elevatorshiftxhigh( entityA, entityA.getRigidBody()
+                                .getCenterOfMassPosition( new Vector3f() ) );
+                        }
+                        else
+                        {
+                            // System.out.println(entityA.getID() +" "+
+                            // entityB.getID());
+                            elevatorshiftxhigh( entityB, entityB.getRigidBody()
+                                .getCenterOfMassPosition( new Vector3f() ) );
+                        }
                     }
-                    if (( entityA.getID().equals( "sidewayselevator1" ) || entityB.getID()
-                                    .equals( "sidewayselevator1" ) )
-                                    && (entityA.getID()
-                                        .equals( "headingunder" )
-                                    || entityB.getID()
-                                        .equals( "headingunder" ))){
-                        Vector3f reset = new Vector3f (-1.3f, -25.25f, 3.75f);
-                        if (entityA.getID().equals( "sidewayselevator1" )){
-                            elevatorshiftxlow(entityA, reset);
-                        }else{
-                            elevatorshiftxlow(entityB, reset);
-                        }                        
+                    if ( ( entityA.getID().equals( "sidewayselevator1" ) || entityB.getID()
+                        .equals( "sidewayselevator1" ) )
+                        && ( entityA.getID().equals( "headingunder" ) || entityB.getID()
+                            .equals( "headingunder" ) ) )
+                    {
+                        Vector3f reset = new Vector3f( -1.3f, -25.25f, 3.75f );
+                        if ( entityA.getID().equals( "sidewayselevator1" ) )
+                        {
+                            elevatorshiftxlow( entityA, reset );
+                        }
+                        else
+                        {
+                            elevatorshiftxlow( entityB, reset );
+                        }
                     }
-                    if (( entityA.getID().equals( "sidewayselevator2" ) || entityB.getID()
-                                    .equals( "sidewayselevator2" ) )
-                                    && (entityA.getID()
-                                        .equals( "underelevatorplatform1" )
-                                    || entityB.getID()
-                                        .equals( "underelevatorplatform1" ))){
-                        Vector3f reset = new Vector3f (-20f, -25.25f, 3.75f);
-                        if (entityA.getID().equals( "sidewayselevator2" )){
-                            elevatorshiftxhigh(entityA, reset);
-                        }else{
-                            elevatorshiftxhigh(entityB, reset);
-                        }                        
+                    if ( ( entityA.getID().equals( "sidewayselevator2" ) || entityB.getID()
+                        .equals( "sidewayselevator2" ) )
+                        && ( entityA.getID().equals( "underelevatorplatform1" ) || entityB.getID()
+                            .equals( "underelevatorplatform1" ) ) )
+                    {
+                        Vector3f reset = new Vector3f( -20f, -25.25f, 3.75f );
+                        if ( entityA.getID().equals( "sidewayselevator2" ) )
+                        {
+                            elevatorshiftxhigh( entityA, reset );
+                        }
+                        else
+                        {
+                            elevatorshiftxhigh( entityB, reset );
+                        }
                     }
-                    if (( entityA.getID().equals( "sidewayselevator2" ) || entityB.getID()
-                                    .equals( "sidewayselevator2" ) )
-                                    && (entityA.getID()
-                                        .equals( "sidewayselevator1" )
-                                    || entityB.getID()
-                                        .equals( "sidewayselevator1" ))){
-                        //Vector3f reset = new Vector3f (0f, 0f, 0f);
-                        if (entityA.getID().equals( "sidewayselevator2" )){
-                            elevatorshiftxlow(entityA, entityA.getRigidBody().getCenterOfMassPosition( new Vector3f() ));
-                        }else{
-                            elevatorshiftxlow(entityB, entityB.getRigidBody().getCenterOfMassPosition( new Vector3f() ));
-                        }                        
+                    if ( ( entityA.getID().equals( "sidewayselevator2" ) || entityB.getID()
+                        .equals( "sidewayselevator2" ) )
+                        && ( entityA.getID().equals( "sidewayselevator1" ) || entityB.getID()
+                            .equals( "sidewayselevator1" ) ) )
+                    {
+                        // Vector3f reset = new Vector3f (0f, 0f, 0f);
+                        if ( entityA.getID().equals( "sidewayselevator2" ) )
+                        {
+                            elevatorshiftxlow( entityA, entityA.getRigidBody()
+                                .getCenterOfMassPosition( new Vector3f() ) );
+                        }
+                        else
+                        {
+                            elevatorshiftxlow( entityB, entityB.getRigidBody()
+                                .getCenterOfMassPosition( new Vector3f() ) );
+                        }
                     }
-                    if (( entityA.getID().equals( "elevatorsmash2" ) || entityB.getID()
-                                    .equals( "elevatorsmash2" ) )
-                                    && (entityA.getID()
-                                        .equals( "elevatorshaftbackpath" )
-                                    || entityB.getID()
-                                        .equals( "elevatorshaftbackpath" ))){
-                        Vector3f reset = new Vector3f (83.75f, -5f, 20f);
-                        if (entityA.getID().equals( "elevatorsmash2" )){
-                            elevatorshiftyhigh(entityA, reset);
-                        }else{
-                            elevatorshiftyhigh(entityB, reset);
-                        }                        
+                    if ( ( entityA.getID().equals( "elevatorsmash2" ) || entityB.getID()
+                        .equals( "elevatorsmash2" ) )
+                        && ( entityA.getID().equals( "elevatorshaftbackpath" ) || entityB.getID()
+                            .equals( "elevatorshaftbackpath" ) ) )
+                    {
+                        Vector3f reset = new Vector3f( 83.75f, -5f, 20f );
+                        if ( entityA.getID().equals( "elevatorsmash2" ) )
+                        {
+                            elevatorshiftyhigh( entityA, reset );
+                        }
+                        else
+                        {
+                            elevatorshiftyhigh( entityB, reset );
+                        }
                     }
-                    if (( entityA.getID().equals( "elevatorsmash2" ) || entityB.getID()
-                                    .equals( "elevatorsmash2" ) )
-                                    && (entityA.getID()
-                                        .equals( "elevatorshaftbackpathcieling" )
-                                    || entityB.getID()
-                                        .equals( "elevatorshaftbackpathcieling" ))){
-                        Vector3f reset = new Vector3f (83.75f, 1.5f, 20f);
-                        if (entityA.getID().equals( "elevatorsmash2" )){
-                            elevatorshiftylow(entityA, reset);
-                        }else{
-                            elevatorshiftylow(entityB, reset);
-                        }                        
+                    if ( ( entityA.getID().equals( "elevatorsmash2" ) || entityB.getID()
+                        .equals( "elevatorsmash2" ) )
+                        && ( entityA.getID()
+                            .equals( "elevatorshaftbackpathcieling" ) || entityB.getID()
+                            .equals( "elevatorshaftbackpathcieling" ) ) )
+                    {
+                        Vector3f reset = new Vector3f( 83.75f, 1.5f, 20f );
+                        if ( entityA.getID().equals( "elevatorsmash2" ) )
+                        {
+                            elevatorshiftylow( entityA, reset );
+                        }
+                        else
+                        {
+                            elevatorshiftylow( entityB, reset );
+                        }
                     }
-                    if (( entityA.getID().equals( "elevatorsmash3" ) || entityB.getID()
-                                    .equals( "elevatorsmash3" ) )
-                                    && (entityA.getID()
-                                        .equals( "elevatorshaftbackpath" )
-                                    || entityB.getID()
-                                        .equals( "elevatorshaftbackpath" ))){
-                        Vector3f reset = new Vector3f (83.75f, -5f, 10f);
-                        if (entityA.getID().equals( "elevatorsmash3" )){
-                            elevatorshiftyhigh(entityA, reset);
-                        }else{
-                            elevatorshiftyhigh(entityB, reset);
-                        }                        
+                    if ( ( entityA.getID().equals( "elevatorsmash3" ) || entityB.getID()
+                        .equals( "elevatorsmash3" ) )
+                        && ( entityA.getID().equals( "elevatorshaftbackpath" ) || entityB.getID()
+                            .equals( "elevatorshaftbackpath" ) ) )
+                    {
+                        Vector3f reset = new Vector3f( 83.75f, -5f, 10f );
+                        if ( entityA.getID().equals( "elevatorsmash3" ) )
+                        {
+                            elevatorshiftyhigh( entityA, reset );
+                        }
+                        else
+                        {
+                            elevatorshiftyhigh( entityB, reset );
+                        }
                     }
-                    if (( entityA.getID().equals( "elevatorsmash3" ) || entityB.getID()
-                                    .equals( "elevatorsmash3" ) )
-                                    && (entityA.getID()
-                                        .equals( "elevatorshaftbackpathcieling" )
-                                    || entityB.getID()
-                                        .equals( "elevatorshaftbackpathcieling" ))){
-                        Vector3f reset = new Vector3f (83.75f, 1.5f, 10f);
-                        if (entityA.getID().equals( "elevatorsmash3" )){
-                            elevatorshiftylow(entityA, reset);
-                        }else{
-                            elevatorshiftylow(entityB, reset);
-                        }                        
+                    if ( ( entityA.getID().equals( "elevatorsmash3" ) || entityB.getID()
+                        .equals( "elevatorsmash3" ) )
+                        && ( entityA.getID()
+                            .equals( "elevatorshaftbackpathcieling" ) || entityB.getID()
+                            .equals( "elevatorshaftbackpathcieling" ) ) )
+                    {
+                        Vector3f reset = new Vector3f( 83.75f, 1.5f, 10f );
+                        if ( entityA.getID().equals( "elevatorsmash3" ) )
+                        {
+                            elevatorshiftylow( entityA, reset );
+                        }
+                        else
+                        {
+                            elevatorshiftylow( entityB, reset );
+                        }
                     }
-                    if (( entityA.getID().equals( "elevatorsmash4" ) || entityB.getID()
-                                    .equals( "elevatorsmash4" ) )
-                                    && (entityA.getID()
-                                        .equals( "elevatorshaftbackpath" )
-                                    || entityB.getID()
-                                        .equals( "elevatorshaftbackpath" ))){
-                        Vector3f reset = new Vector3f (83.75f, -5f, 0f);
-                        if (entityA.getID().equals( "elevatorsmash4" )){
-                            elevatorshiftyhigh(entityA, reset);
-                        }else{
-                            elevatorshiftyhigh(entityB, reset);
-                        }                        
+                    if ( ( entityA.getID().equals( "elevatorsmash4" ) || entityB.getID()
+                        .equals( "elevatorsmash4" ) )
+                        && ( entityA.getID().equals( "elevatorshaftbackpath" ) || entityB.getID()
+                            .equals( "elevatorshaftbackpath" ) ) )
+                    {
+                        Vector3f reset = new Vector3f( 83.75f, -5f, 0f );
+                        if ( entityA.getID().equals( "elevatorsmash4" ) )
+                        {
+                            elevatorshiftyhigh( entityA, reset );
+                        }
+                        else
+                        {
+                            elevatorshiftyhigh( entityB, reset );
+                        }
                     }
-                    if (( entityA.getID().equals( "elevatorsmash4" ) || entityB.getID()
-                                    .equals( "elevatorsmash4" ) )
-                                    && (entityA.getID()
-                                        .equals( "elevatorshaftbackpathcieling" )
-                                    || entityB.getID()
-                                        .equals( "elevatorshaftbackpathcieling" ))){
-                        Vector3f reset = new Vector3f (83.75f, 1.5f, 0f);
-                        if (entityA.getID().equals( "elevatorsmash4" )){
-                            elevatorshiftylow(entityA, reset);
-                        }else{
-                            elevatorshiftylow(entityB, reset);
-                        }                        
+                    if ( ( entityA.getID().equals( "elevatorsmash4" ) || entityB.getID()
+                        .equals( "elevatorsmash4" ) )
+                        && ( entityA.getID()
+                            .equals( "elevatorshaftbackpathcieling" ) || entityB.getID()
+                            .equals( "elevatorshaftbackpathcieling" ) ) )
+                    {
+                        Vector3f reset = new Vector3f( 83.75f, 1.5f, 0f );
+                        if ( entityA.getID().equals( "elevatorsmash4" ) )
+                        {
+                            elevatorshiftylow( entityA, reset );
+                        }
+                        else
+                        {
+                            elevatorshiftylow( entityB, reset );
+                        }
                     }
-                    if (( entityA.getID().equals( "elevatorsmash5" ) || entityB.getID()
-                                    .equals( "elevatorsmash5" ) )
-                                    && (entityA.getID()
-                                        .equals( "elevatorshaftbackpath" )
-                                    || entityB.getID()
-                                        .equals( "elevatorshaftbackpath" ))){
-                        Vector3f reset = new Vector3f (83.75f, -5f, -8f);
-                        if (entityA.getID().equals( "elevatorsmash5" )){
-                            elevatorshiftyhigh(entityA, reset);
-                        }else{
-                            elevatorshiftyhigh(entityB, reset);
-                        }                        
+                    if ( ( entityA.getID().equals( "elevatorsmash5" ) || entityB.getID()
+                        .equals( "elevatorsmash5" ) )
+                        && ( entityA.getID().equals( "elevatorshaftbackpath" ) || entityB.getID()
+                            .equals( "elevatorshaftbackpath" ) ) )
+                    {
+                        Vector3f reset = new Vector3f( 83.75f, -5f, -8f );
+                        if ( entityA.getID().equals( "elevatorsmash5" ) )
+                        {
+                            elevatorshiftyhigh( entityA, reset );
+                        }
+                        else
+                        {
+                            elevatorshiftyhigh( entityB, reset );
+                        }
                     }
-                    if (( entityA.getID().equals( "elevatorsmash5" ) || entityB.getID()
-                                    .equals( "elevatorsmash5" ) )
-                                    && (entityA.getID()
-                                        .equals( "elevatorshaftbackpathcieling" )
-                                    || entityB.getID()
-                                        .equals( "elevatorshaftbackpathcieling" ))){
-                        Vector3f reset = new Vector3f (83.75f, 1.5f, -8f);
-                        if (entityA.getID().equals( "elevatorsmash5" )){
-                            elevatorshiftylow(entityA, reset);
-                        }else{
-                            elevatorshiftylow(entityB, reset);
-                        }                        
+                    if ( ( entityA.getID().equals( "elevatorsmash5" ) || entityB.getID()
+                        .equals( "elevatorsmash5" ) )
+                        && ( entityA.getID()
+                            .equals( "elevatorshaftbackpathcieling" ) || entityB.getID()
+                            .equals( "elevatorshaftbackpathcieling" ) ) )
+                    {
+                        Vector3f reset = new Vector3f( 83.75f, 1.5f, -8f );
+                        if ( entityA.getID().equals( "elevatorsmash5" ) )
+                        {
+                            elevatorshiftylow( entityA, reset );
+                        }
+                        else
+                        {
+                            elevatorshiftylow( entityB, reset );
+                        }
                     }
                     // TODO also, when a block is collided, check if they need
                     // to be "refrozen"
-//                    if ( entityA.isFrozen() )
-//                    {
-//                        entityA.unfreeze();
-//                        entityA.getRigidBody().translate( new Vector3f( 0f,
-//                            5f,
-//                            0f ) );
-//                    }
-//                    if ( entityB.isFrozen() )
-//                    {
-//                        entityB.unfreeze();
-//                        entityA.getRigidBody().translate( new Vector3f( 0f,
-//                            5f,
-//                            0f ) );
-//                    }
+                    // if ( entityA.isFrozen() )
+                    // {
+                    // entityA.unfreeze();
+                    // entityA.getRigidBody().translate( new Vector3f( 0f,
+                    // 5f,
+                    // 0f ) );
+                    // }
+                    // if ( entityB.isFrozen() )
+                    // {
+                    // entityB.unfreeze();
+                    // entityA.getRigidBody().translate( new Vector3f( 0f,
+                    // 5f,
+                    // 0f ) );
+                    // }
                     // Entites are known and exist, so we can act upon them
                     if ( entityA.getRigidBody()
                         .getCollisionShape()
@@ -1605,10 +1790,12 @@ public class BspDemo extends DemoApplication
                         // System.out.println("objA: " + entityA.getID()
                         // + " objB: " + entityB.getID());
                     }
+                    System.out.println(pm.getBody0().getClass().toString() + " " + pm.getBody1().getClass().toString());
                 }
                 else
                 {
                     // TODO Somehow it is known.... how to handle?
+                    System.out.println(pm.getBody0().getClass().toString() + " " + pm.getBody1().getClass().toString());
                 }
             }
         }
@@ -1626,17 +1813,17 @@ public class BspDemo extends DemoApplication
                 final Entity entityB = entityList.get( (RigidBody)pm.getBody1() );
                 if ( entityA != null && entityB != null )
                 {
-//                    if ( entityA.getRigidBody().isActive()
-//                        && entityB.getRigidBody().isActive() )
-//                    {
-//                        if ( entityA.getID().equalsIgnoreCase( "box" )
-//                            && entityB.getID().equalsIgnoreCase( "box" ) )
-//                        {
-//                            // TODO block freeze event
-//                            entityA.freeze();
-//                            entityB.freeze();
-//                        }
-//                    }
+                    // if ( entityA.getRigidBody().isActive()
+                    // && entityB.getRigidBody().isActive() )
+                    // {
+                    // if ( entityA.getID().equalsIgnoreCase( "box" )
+                    // && entityB.getID().equalsIgnoreCase( "box" ) )
+                    // {
+                    // // TODO block freeze event
+                    // entityA.freeze();
+                    // entityB.freeze();
+                    // }
+                    // }
                 }
             }
 
@@ -1723,68 +1910,80 @@ public class BspDemo extends DemoApplication
             super.releaseManifold( manifold );
         }
     }
-    
-    private void elevatorshiftxhigh(Entity a, Vector3f v){
+
+
+    private void elevatorshiftxhigh( Entity a, Vector3f v )
+    {
         a.freeze();
         final RigidBody body = a.getRigidBody();
-        final Vector3f vector = body.getCenterOfMassPosition(new Vector3f() );
-        body.translate( new Vector3f(v.x - vector.x , v.y - vector.y , v.z - vector.z) );
-        body
-            .setGravity( new Vector3f( 7f, 0f, 0f ) );
+        final Vector3f vector = body.getCenterOfMassPosition( new Vector3f() );
+        body.translate( new Vector3f( v.x - vector.x, v.y - vector.y, v.z
+            - vector.z ) );
+        body.setGravity( new Vector3f( 7f, 0f, 0f ) );
         body.setLinearVelocity( new Vector3f( 7f, 0f, 0f ) );
     }
-    
-    private void elevatorshiftxlow(Entity a, Vector3f v){
+
+
+    private void elevatorshiftxlow( Entity a, Vector3f v )
+    {
         a.freeze();
         final RigidBody body = a.getRigidBody();
-        final Vector3f vector = body.getCenterOfMassPosition(new Vector3f() );
-        body.translate( new Vector3f(v.x - vector.x , v.y - vector.y , v.z - vector.z) );
-        body
-            .setGravity( new Vector3f( -7f, 0f, 0f ) );
+        final Vector3f vector = body.getCenterOfMassPosition( new Vector3f() );
+        body.translate( new Vector3f( v.x - vector.x, v.y - vector.y, v.z
+            - vector.z ) );
+        body.setGravity( new Vector3f( -7f, 0f, 0f ) );
         body.setLinearVelocity( new Vector3f( -7f, 0f, 0f ) );
-        
+
     }
-    
-    private void elevatorshiftyhigh(Entity a, Vector3f v){
+
+
+    private void elevatorshiftyhigh( Entity a, Vector3f v )
+    {
         a.freeze();
         final RigidBody body = a.getRigidBody();
-        final Vector3f vector = body.getCenterOfMassPosition(new Vector3f() );
-        body.translate( new Vector3f(v.x - vector.x , v.y - vector.y , v.z - vector.z) );
-        body
-            .setGravity( new Vector3f( 0f, 7f, 0f ) );
+        final Vector3f vector = body.getCenterOfMassPosition( new Vector3f() );
+        body.translate( new Vector3f( v.x - vector.x, v.y - vector.y, v.z
+            - vector.z ) );
+        body.setGravity( new Vector3f( 0f, 7f, 0f ) );
         body.setLinearVelocity( new Vector3f( 0f, 7f, 0f ) );
-        
+
     }
-    
-    private void elevatorshiftylow(Entity a, Vector3f v){
+
+
+    private void elevatorshiftylow( Entity a, Vector3f v )
+    {
         a.freeze();
         final RigidBody body = a.getRigidBody();
-        final Vector3f vector = body.getCenterOfMassPosition(new Vector3f() );
-        body.translate( new Vector3f(v.x - vector.x , v.y - vector.y , v.z - vector.z) );
-        body
-            .setGravity( new Vector3f( 0f, -7f, 0f ) );
+        final Vector3f vector = body.getCenterOfMassPosition( new Vector3f() );
+        body.translate( new Vector3f( v.x - vector.x, v.y - vector.y, v.z
+            - vector.z ) );
+        body.setGravity( new Vector3f( 0f, -7f, 0f ) );
         body.setLinearVelocity( new Vector3f( 0f, -7f, 0f ) );
-        
+
     }
-    
-    private void elevatorshiftzhigh(Entity a, Vector3f v){
+
+
+    private void elevatorshiftzhigh( Entity a, Vector3f v )
+    {
         a.freeze();
         final RigidBody body = a.getRigidBody();
-        final Vector3f vector = body.getCenterOfMassPosition(new Vector3f() );
-        body.translate( new Vector3f(v.x - vector.x , v.y - vector.y , v.z - vector.z) );
-        body
-            .setGravity( new Vector3f( 0f, 0f, 7f ) );
-        
+        final Vector3f vector = body.getCenterOfMassPosition( new Vector3f() );
+        body.translate( new Vector3f( v.x - vector.x, v.y - vector.y, v.z
+            - vector.z ) );
+        body.setGravity( new Vector3f( 0f, 0f, 7f ) );
+
     }
-    
-    private void elevatorshiftzlow(Entity a, Vector3f v){
+
+
+    private void elevatorshiftzlow( Entity a, Vector3f v )
+    {
         a.freeze();
         final RigidBody body = a.getRigidBody();
-        final Vector3f vector = body.getCenterOfMassPosition(new Vector3f() );
-        body.translate( new Vector3f(v.x - vector.x , v.y - vector.y , v.z - vector.z) );
-        body
-            .setGravity( new Vector3f( 0f, 0f, -7f ) );
-        
+        final Vector3f vector = body.getCenterOfMassPosition( new Vector3f() );
+        body.translate( new Vector3f( v.x - vector.x, v.y - vector.y, v.z
+            - vector.z ) );
+        body.setGravity( new Vector3f( 0f, 0f, -7f ) );
+
     }
 
 }
