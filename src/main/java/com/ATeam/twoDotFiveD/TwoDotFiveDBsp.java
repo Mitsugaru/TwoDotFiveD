@@ -225,20 +225,7 @@ public class TwoDotFiveDBsp extends DemoApplication
 		dynamicsWorld.addRigidBody(player);
 		player.setActivationState(RigidBody.ISLAND_SLEEPING);
 		player.setWorldTransform(startTransform);
-		player.setFriction(1f);
-		//AxisSweep3 sweepBP = new AxisSweep3(worldMin, worldMax);
-
-		/*
-		broadphase.getOverlappingPairCache().setInternalGhostPairCallback(new GhostPairCallback());
-		
-		BoxShape box = new BoxShape(new Vector3f(1f, 1f, 1f));
-		ghostObject.setCollisionShape(box);
-		ghostObject.setCollisionFlags(CollisionFlags.CHARACTER_OBJECT);
-
-		character = new KinematicCharacterController(ghostObject, box, 1f);
-		dynamicsWorld.addCollisionObject(ghostObject, CollisionFilterGroups.CHARACTER_FILTER, (short)(CollisionFilterGroups.STATIC_FILTER | CollisionFilterGroups.DEFAULT_FILTER));
-		dynamicsWorld.addAction(character);
-		*/
+		player.setFriction(5f);
 
 		populate();
 
@@ -370,29 +357,11 @@ public class TwoDotFiveDBsp extends DemoApplication
     			ms = 1.0f / 420.f;
     		}
 
-    		// set walkDirection for our character
-//    		Transform xform = player.getWorldTransform(new Transform());
-//
-//    		Vector3f forwardDir = new Vector3f();
-//    		xform.basis.getRow(2, forwardDir);
-//    		//printf("forwardDir=%f,%f,%f\n",forwardDir[0],forwardDir[1],forwardDir[2]);
-//    		Vector3f upDir = new Vector3f();
-//    		xform.basis.getRow(1, upDir);
-//    		Vector3f strafeDir = new Vector3f();
-//    		xform.basis.getRow(0, strafeDir);
-//    		forwardDir.normalize();
-//    		upDir.normalize();
-//    		strafeDir.normalize();
-//
-//    		Vector3f walkDirection = new Vector3f(0.0f, 0.0f, 0.0f);
-//    		float walkVelocity = 30;// 4 km/h -> 1.1 m/s
-//    		float walkSpeed = walkVelocity * (dt) * characterScale;
-//
     		if (gLeft != 0) {
     			player.activate(true);
     			player.setLinearVelocity(new Vector3f(-10f, 0, 0));
     		}
-//
+
     		if (gRight != 0) {
     			player.activate(true);
     			player.setLinearVelocity(new Vector3f(10f, 0, 0));
@@ -408,20 +377,16 @@ public class TwoDotFiveDBsp extends DemoApplication
     			player.activate(true);
     			player.setLinearVelocity(new Vector3f(0,0,10));
     		}
+    		
+    		//TODO 
+    		//fix this ish
     		if (gJump != 0) {
     			player.activate(true);
-    			player.setLinearVelocity(new Vector3f(0, 1, 0));
+    			Vector3f curr = new Vector3f();
+    			player.getLinearVelocity(curr);
+    			Vector3f jump = new Vector3f(0,1,0);
+    			player.setLinearVelocity(new Vector3f(curr.x + jump.x, curr.y+ jump.y, curr.z + jump.z));
     		}
-    		
-//    		System.out.println("pre"+walkDirection);
-//    		walkDirection.scale(walkSpeed);
-//    		System.out.println("post"+walkDirection);
-//
-//    		character.setWalkDirection(walkDirection);
-
-
-
-    		//	int numSimSteps = dynamicsWorld.stepSimulation(ms, maxSimSubSteps);
     		dynamicsWorld.stepSimulation( dt );
 
     		// optional but useful: debug drawing
@@ -1797,8 +1762,7 @@ public class TwoDotFiveDBsp extends DemoApplication
         a.freeze();
         final Vector3f vector = a.getCenterOfMassPosition(new Vector3f() );
         a.translate( new Vector3f(v.x - vector.x , v.y - vector.y , v.z - vector.z) );
-        a
-            .setEntityGravity( new Vector3f( 0f, 0f, -7f ) );
+        a.setEntityGravity( new Vector3f( 0f, 0f, -7f ) );
         
     }
 
