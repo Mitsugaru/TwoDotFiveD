@@ -9,7 +9,7 @@
 	<packaging>jar</packaging>
 
 	<name>twoDotFiveD</name>
-	<url>http://maven.apache.org</url>
+	<url>http://mitsugaru.github.com/TwoDotFiveD/</url>
 
 	<scm>
 		<connection>scm:git:https://github.com/Mitsugaru/TwoDotFiveD.git</connection>
