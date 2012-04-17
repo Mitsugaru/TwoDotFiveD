@@ -14,12 +14,20 @@ import de.lessvoid.nifty.screen.ScreenController;
 
 //TODO implement
 public class MainOptionController implements ScreenController {
+	Config config = new Config();
 	Nifty nifty;
 	Screen screen;
+
+	//variables of the gui 
 	private TextField optionsTextField;
 	private DropDown dropDown1;
+
+	//getting info from gui to move to config
 	private String dis;
-	Config config = new Config();
+	int tempWidth=config.getDisplayWidth();
+	int tempHeight=config.getDisplayHeight();
+	int tempFreq=config.getDisplayFrequency();
+	
 
 	@Override
 	public void bind(Nifty newNifty, Screen newScreen) {
@@ -42,7 +50,6 @@ public class MainOptionController implements ScreenController {
 		// screen.findNiftyControl("passwordCharCheckBox",
 		// CheckBox.class);//checkbobx for fullsceen
 
-		// optionsTextField.setText("%%%%");
 
 	}
 
@@ -51,7 +58,7 @@ public class MainOptionController implements ScreenController {
 			final TextFieldChangedEvent event) {
 		dis = optionsTextField.getText();// reads from the text field
 	
-		displayText();
+		changeConfigVars();
 	}
 
 	@Override
@@ -75,7 +82,7 @@ public class MainOptionController implements ScreenController {
 		return screen.findNiftyControl(id, DropDown.class);
 	}
 
-	public void displayText() {
+	public void changeConfigVars() {
 		int disint = Integer.parseInt(dis);
 		int opt = dropDown1.getSelectedIndex();
 		
