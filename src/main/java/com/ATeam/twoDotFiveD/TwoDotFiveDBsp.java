@@ -375,23 +375,31 @@ public class TwoDotFiveDBsp extends DemoApplication
 
     		if (gLeft != 0) {
     			player.activate(true);
-    			player.setLinearVelocity(new Vector3f(-10f, 0, 0));
+                Vector3f curr = new Vector3f();
+                player.getLinearVelocity(curr );
+    			player.setLinearVelocity(new Vector3f(-10f, curr.y, curr.z));
     		}
 
     		if (gRight != 0) {
     			player.activate(true);
-    			player.setLinearVelocity(new Vector3f(10f, 0, 0));
+                Vector3f curr = new Vector3f();
+                player.getLinearVelocity(curr );
+    			player.setLinearVelocity(new Vector3f(10f, curr.y, curr.z));
     			
     		}
 
     		if (gForward != 0) {
     			player.activate(true);
-    			player.setLinearVelocity(new Vector3f(0,0,-10));
+                Vector3f curr = new Vector3f();
+                player.getLinearVelocity(curr );
+                player.setLinearVelocity(new Vector3f(curr.x,curr.y,-10f));
     		}
 
     		if (gBackward != 0) {
     			player.activate(true);
-    			player.setLinearVelocity(new Vector3f(0,0,10));
+    			Vector3f curr = new Vector3f();
+    			player.getLinearVelocity(curr );
+    			player.setLinearVelocity(new Vector3f(curr.x,curr.y,10f));
     		}
     		
     		//TODO 
@@ -400,9 +408,10 @@ public class TwoDotFiveDBsp extends DemoApplication
     			player.activate(true);
     			Vector3f curr = new Vector3f();
     			player.getLinearVelocity(curr);
-    			Vector3f jump = new Vector3f(0,1,0);
+    			if (curr.y <=.5){
+    			Vector3f jump = new Vector3f(0,10,0);
     			player.setLinearVelocity(new Vector3f(curr.x + jump.x, curr.y+ jump.y, curr.z + jump.z));
-    		}
+    		}}
     		dynamicsWorld.stepSimulation( dt );
 
     		// optional but useful: debug drawing
@@ -802,19 +811,18 @@ public class TwoDotFiveDBsp extends DemoApplication
     	    }
     	    one.origin.y = y;
     	    Transform two = elevator2.getWorldTransform( new Transform() );
-    	    two.origin.y = y;
+    	    two.origin.y = one.origin.y;
     	    Transform three = elevator3.getWorldTransform( new Transform() );
-            three.origin.y = y;
+            three.origin.y = one.origin.y;
     	    Transform four = elevator4.getWorldTransform( new Transform() );
-            four.origin.y = y;
+            four.origin.y = one.origin.y;
     	    Transform five = elevator5.getWorldTransform( new Transform() );
-            five.origin.y = y;
+            five.origin.y = one.origin.y;
             elevator1.setWorldTransform( one );
             elevator2.setWorldTransform( two );
             elevator3.setWorldTransform( three );
             elevator4.setWorldTransform( four );
             elevator5.setWorldTransform( five );
-            System.out.println(down + " " + y);
     	}
     	else{
             Transform one = elevator1.getWorldTransform( new Transform() );
@@ -836,7 +844,6 @@ public class TwoDotFiveDBsp extends DemoApplication
             elevator3.setWorldTransform( three );
             elevator4.setWorldTransform( four );
             elevator5.setWorldTransform( five ); 
-            System.out.println(down + " " + y);
     	}
     	
 		//gl.gluLookAt( eyex, eyey, eyez, RigidBody.upcast( ghostObject ).getCenterOfMassPosition( new Vector3f() ).x, centery, centerz, upx, upy, upz );

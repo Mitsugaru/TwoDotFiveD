@@ -151,22 +151,22 @@ elevatorsmash2:
   shape: box
   localscaling: 1.25 .25 2.5
   origin: 85 2.5 20
-#  mass: 1f 
+  mass: 1f 
 elevatorsmash3:
   shape: box
   localscaling: 1.25 .25 2.5
   origin: 85 2.5 10
-#  mass: 1f 
+  mass: 1f 
 elevatorsmash4:
   shape: box
   localscaling: 1.25 .25 2.5
   origin: 85 2.5 0
-#  mass: 1f 
+  mass: 1f 
 elevatorsmash5:
   shape: box
   localscaling: 1.25 .25 1.25
   origin: 85 2.5 -8
-#  mass: 1f
+  mass: 1f
 elevatorshaftbackpathcieling:
   vertices:
   - 17 .4 -2.0
