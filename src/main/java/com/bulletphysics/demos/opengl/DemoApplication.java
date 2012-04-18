@@ -1275,8 +1275,8 @@ public abstract class DemoApplication
 				}
 				try
 				{
-					GLShapeDrawer.drawOpenGL(gl, m, colObj.getCollisionShape(),
-						wireColor, getDebugMode());
+//					GLShapeDrawer.drawOpenGL(gl, m, colObj.getCollisionShape(),
+//						wireColor, getDebugMode());
 				}
 				catch(NullPointerException e)
 				{

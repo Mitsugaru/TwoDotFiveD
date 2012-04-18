@@ -83,7 +83,23 @@ public abstract class BspYamlConverter
 			{
 				// Ignore, as it probably has no description
 			}
-			String image = config.getString(rootPath + ".image");
+			Vector3f image = new Vector3f(1f, 1f, 1f);
+			try
+			{
+				String c = config.getString(rootPath + ".color");
+				if (c != null)
+				{
+					String[] bc = ((String) c).split(" ");
+					image = new Vector3f(Float.parseFloat(bc[0]),
+							Float.parseFloat(bc[1]), Float.parseFloat(bc[2]));
+				}
+			}
+			catch (NumberFormatException e)
+			{
+				Logging.log.log(Level.SEVERE,
+						"Failed to parse color for: " + rootPath, e);
+				acceleration = null;
+			}
 			if (list != null)
 			{
 				for (Object o : list)
@@ -162,9 +178,9 @@ public abstract class BspYamlConverter
 	
 	public abstract void addShapeCollider(String name, String type,
 			Vector3f localscaling, Vector3f transform, float mass, Vector3f acceleration,
-			String image, String[] description);
+			Vector3f image, String[] description);
 	
 	public abstract void addConvexVerticesCollider(String name,
 			ObjectArrayList<Vector3f> vertices, float mass,
-			Vector3f acceleration, String image, String[] description);
+			Vector3f acceleration, Vector3f image, String[] description);
 }
