@@ -134,7 +134,7 @@ public class TwoDotFiveDBsp extends DemoApplication
 
     // keep the collision shapes, for deletion/cleanup
     //Need to set this back to set / hashset
-    public Map<RigidBody, Entity> entityList = new HashMap<RigidBody, Entity>();
+    public static Map<RigidBody, Entity> entityList = new HashMap<RigidBody, Entity>();
 
     public BroadphaseInterface broadphase;
 
@@ -648,9 +648,9 @@ public class TwoDotFiveDBsp extends DemoApplication
 		{
 			if(o.equals(player))
 			{
-				System.out.println("player found");
+				//System.out.println("player found");
 				Transform t = o.getWorldTransform(new Transform());
-				System.out.println(t.origin);
+				//System.out.println(t.origin);
 				gl.gluLookAt( cameraPosition.x + t.origin.x, cameraPosition.y + t.origin.y, cameraPosition.z + t.origin.z,
 			            t.origin.x, t.origin.y, t.origin.z,
 			            cameraUp.x, cameraUp.y, cameraUp.z );
@@ -988,29 +988,30 @@ public class TwoDotFiveDBsp extends DemoApplication
                 shootBoxShape = new CylinderShape( new Vector3f( 1f, 1f, 1f ) );
             }
 
-            RigidBody body = this.localCreateRigidBody( mass,
+            /*RigidBody body = this.localCreateRigidBody( mass,
                 startTransform,
-                shootBoxShape );
+                shootBoxShape );*/
 
             Vector3f linVel = new Vector3f( destination.x - camPos.x,
                 destination.y - camPos.y,
                 destination.z - camPos.z );
             linVel.normalize();
             linVel.scale( ShootBoxInitialSpeed );
-            Transform worldTrans = body.getWorldTransform( new Transform() );
-            worldTrans.origin.set( camPos );
-            worldTrans.setRotation( new Quat4f( 0f, 0f, 0f, 1f ) );
-            body.setWorldTransform( worldTrans );
-
-            body.setLinearVelocity( linVel );
-            body.setAngularVelocity( new Vector3f( 0f, 0f, 0f ) );
-
-            body.setCcdMotionThreshold( 1f );
-            body.setCcdSweptSphereRadius( 0.2f );
+            
             final Random r = new Random();
             Entity entity = localCreateEntity(mass, startTransform,
 					shootBoxShape, shootBoxShape.getName() + r.nextFloat(),
 					null, null);
+            Transform worldTrans = entity.getWorldTransform( new Transform() );
+            worldTrans.origin.set( camPos );
+            worldTrans.setRotation( new Quat4f( 0f, 0f, 0f, 1f ) );
+            entity.setWorldTransform( worldTrans );
+
+            entity.setLinearVelocity( linVel );
+            entity.setAngularVelocity( new Vector3f( 0f, 0f, 0f ) );
+
+            entity.setCcdMotionThreshold( 1f );
+            entity.setCcdSweptSphereRadius( 0.2f );
             // Dynamic gravity for object
             // TODO consolidate setgravity into one method, let entity set its
             // tied rigidbody gravity
@@ -1032,7 +1033,7 @@ public class TwoDotFiveDBsp extends DemoApplication
                 entity
                     .setEntityGravity( dynamicsWorld.getGravity( new Vector3f() ) );
             }
-            entityList.put( body, entity );
+            entityList.put( entity, entity );
             eventDispatcher.notify( new BlockCreateEvent( entity ) );
         }
     }
@@ -1174,7 +1175,7 @@ public class TwoDotFiveDBsp extends DemoApplication
             remoteDispatcher.registerListener( Type.BLOCK_DESTROYED,
                 remoteListener );
         }
-        // MusicPlayer mp = new MusicPlayer(eventDispatcher);
+        MusicPlayer mp = new MusicPlayer(eventDispatcher);
     }
 
 
