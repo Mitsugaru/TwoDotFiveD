@@ -113,6 +113,12 @@ import static com.bulletphysics.demos.opengl.IGL.*;
 @SuppressWarnings("unused")
 public class TwoDotFiveDBsp extends DemoApplication
 {
+    Entity elevator1;
+    Entity elevator2;
+    Entity elevator3;
+    Entity elevator4;
+    Entity elevator5;
+    private boolean dead = false;
 	public KinematicCharacterController character;
 	public PairCachingGhostObject ghostObject;
 	private GLCam cam = new GLCam();
@@ -120,13 +126,14 @@ public class TwoDotFiveDBsp extends DemoApplication
 	GL_Vector ViewPoint;
 	
 	private float characterScale = 2f;
-
+	private boolean down = true;
 	private static int gForward = 0;
 	private static int gBackward = 0;
 	private static int gLeft = 0;
 	private static int gRight = 0;
 	private static int gJump = 0;
     private static TwoDotFiveDBsp demo;
+    private float dt;
 
     private static final float CUBE_HALF_EXTENTS = 1;
 
@@ -180,7 +187,7 @@ public class TwoDotFiveDBsp extends DemoApplication
         Vector3f worldMin = new Vector3f( -10f, -10f, -10f );
         Vector3f worldMax = new Vector3f( 10f, 10f, 10f );
         // maximum number of objects
-        final int maxProxies = 1024;
+        final int maxProxies = 10024;
         // Broadphase computes an conservative approximate list of colliding
         // pairs
         broadphase = new AxisSweep3( worldMin, worldMax, maxProxies );
@@ -346,16 +353,12 @@ public class TwoDotFiveDBsp extends DemoApplication
     public synchronized void clientMoveAndDisplay()
     {
     	gl.glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    	float dt = getDeltaTimeMicroseconds() * 0.000001f;
-    	float ms = getDeltaTimeMicroseconds();
+    	dt = getDeltaTimeMicroseconds() * 0.000001f;
     	try
     	{
     		player.activate(true);
     		// TODO May need custom DynamicsWorld to catch exceptions per step
     		int maxSimSubSteps = idle ? 1 : 2;
-    		if (idle) {
-    			ms = 1.0f / 420.f;
-    		}
 
     		if (gLeft != 0) {
     			player.activate(true);
@@ -642,21 +645,75 @@ public class TwoDotFiveDBsp extends DemoApplication
     	cameraUp.x = camera.UpVector.x;
     	cameraUp.y = camera.UpVector.y;
     	cameraUp.z = camera.UpVector.z;
-
+    	
         
     	for(CollisionObject o : dynamicsWorld.getCollisionObjectArray())
 		{
 			if(o.equals(player))
 			{
-				System.out.println("player found");
+				//System.out.println("player found");
 				Transform t = o.getWorldTransform(new Transform());
-				System.out.println(t.origin);
+				//System.out.println(t.origin);
 				gl.gluLookAt( cameraPosition.x + t.origin.x, cameraPosition.y + t.origin.y, cameraPosition.z + t.origin.z,
 			            t.origin.x, t.origin.y, t.origin.z,
 			            cameraUp.x, cameraUp.y, cameraUp.z );
+				if (t.origin.y < -30){
+				    //TODO do something...
+				    System.out.println("Fail condition!!");
+				    Vector3f splode = new Vector3f(0f,1f,0f);
+				    shootBox(splode);
+				}
+				if (t.origin.y < -31){
+                    t.origin.set( 1,2,1 );
+                    o.setWorldTransform( t );				    
+				}
 				break;
 			}
 		}
+    	if (down){
+    	    Transform one = elevator1.getWorldTransform( new Transform() );
+    	    float y = one.origin.y -(1f*dt);
+    	    if (y <= -3.5f){
+    	        down = false;
+    	    }
+    	    one.origin.y = y;
+    	    Transform two = elevator2.getWorldTransform( new Transform() );
+    	    two.origin.y = y;
+    	    Transform three = elevator3.getWorldTransform( new Transform() );
+            three.origin.y = y;
+    	    Transform four = elevator4.getWorldTransform( new Transform() );
+            four.origin.y = y;
+    	    Transform five = elevator5.getWorldTransform( new Transform() );
+            five.origin.y = y;
+            elevator1.setWorldTransform( one );
+            elevator2.setWorldTransform( two );
+            elevator3.setWorldTransform( three );
+            elevator4.setWorldTransform( four );
+            elevator5.setWorldTransform( five );
+            System.out.println(down + " " + y);
+    	}
+    	else{
+            Transform one = elevator1.getWorldTransform( new Transform() );
+            float y = one.origin.y +(1f*dt);
+            if (y >= 2.5f){
+                down = true;
+            }
+            one.origin.y = y;
+            Transform two = elevator2.getWorldTransform( new Transform() );
+            two.origin.y = y;
+            Transform three = elevator3.getWorldTransform( new Transform() );
+            three.origin.y = y;
+            Transform four = elevator4.getWorldTransform( new Transform() );
+            four.origin.y = y;
+            Transform five = elevator5.getWorldTransform( new Transform() );
+            five.origin.y = y;
+            elevator1.setWorldTransform( one );
+            elevator2.setWorldTransform( two );
+            elevator3.setWorldTransform( three );
+            elevator4.setWorldTransform( four );
+            elevator5.setWorldTransform( five ); 
+            System.out.println(down + " " + y);
+    	}
     	
 		//gl.gluLookAt( eyex, eyey, eyez, RigidBody.upcast( ghostObject ).getCenterOfMassPosition( new Vector3f() ).x, centery, centerz, upx, upy, upz );
 	}
@@ -966,7 +1023,10 @@ public class TwoDotFiveDBsp extends DemoApplication
             Transform startTransform = new Transform();
             startTransform.setIdentity();
             Vector3f camPos = new Vector3f( getCameraPosition() );
-            startTransform.origin.set( camPos );
+            // Fix stuff?
+            Vector3f shootfrom = player.getCenterOfMassPosition( new Vector3f() );
+            shootfrom.y = shootfrom.y + 1;
+            startTransform.origin.set( shootfrom );
 
             if ( shapeType.equals( "BOX" ) )
             {
@@ -998,7 +1058,8 @@ public class TwoDotFiveDBsp extends DemoApplication
             linVel.normalize();
             linVel.scale( ShootBoxInitialSpeed );
             Transform worldTrans = body.getWorldTransform( new Transform() );
-            worldTrans.origin.set( camPos );
+            // Trying to shoot block from player position
+            worldTrans.origin.set( shootfrom );
             worldTrans.setRotation( new Quat4f( 0f, 0f, 0f, 1f ) );
             body.setWorldTransform( worldTrans );
 
@@ -1244,6 +1305,21 @@ public class TwoDotFiveDBsp extends DemoApplication
 		{
 			Entity e = localCreateEntity(mass, origin, shape, name, image,
 					description);
+            if (name.equals( "elevatorsmash1" )){
+                elevator1 = e;
+            }
+            if (name.equals( "elevatorsmash2" )){
+                elevator2 = e;
+            }
+            if (name.equals( "elevatorsmash3" )){
+                elevator3 = e;
+            }
+            if (name.equals( "elevatorsmash4" )){
+                elevator4 = e;
+            }
+            if (name.equals( "elevatorsmash5" )){
+                elevator5 = e;
+            }
 			if (acceleration != null)
 			{
 				e.setEntityGravity(acceleration);
@@ -1389,10 +1465,10 @@ public class TwoDotFiveDBsp extends DemoApplication
                                         .equals( "sidewayselevator2" ))){
                         //Vector3f reset = new Vector3f (0f, 0f, 0f);
                         if (entityA.getID().equals( "sidewayselevator1" )){
-                            System.out.println(entityA.getID() +" "+ entityB.getID());
+                            //System.out.println(entityA.getID() +" "+ entityB.getID());
                             elevatorshiftxhigh(entityA, entityA.getCenterOfMassPosition( new Vector3f() ));
                         }else{
-                            System.out.println(entityA.getID() +" "+ entityB.getID());
+                            //System.out.println(entityA.getID() +" "+ entityB.getID());
                             elevatorshiftxhigh(entityB, entityB.getCenterOfMassPosition( new Vector3f() ));
                         }                        
                     }

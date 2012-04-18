@@ -81,62 +81,6 @@ mainroomceiling:
   - 5 4.1 -5
   - -5 4.1 5
   - -5 4.1 -5
-roofthings1:
-  shape: box
-  localscaling: 1.0 1.0 1.0
-  origin: 15 22 20
-#  vertices:
-#  - 3.5 4.5 4.5
-#  - 3.5 4.5 4
-#  - 3 4.5 4.5
-#  - 3 4.5 4
-#  - 3.5 4.1 4.5
-#  - 3.5 4.1 4
-#  - 3 4.1 4.5
-#  - 3 4.1 4
-  mass: 1f
-roofthings2:
-  shape: box
-  localscaling: 1.0 1.0 1.0
-  origin: 10 22 -15
-#  vertices:
-#  - -2.5 4.5 1.5
-#  - -2.5 4.5 1
-#  - -2 4.5 1.5
-#  - -2 4.5 1
-#  - -2.5 4.1 1.5
-#  - -2.5 4.1 1
-#  - -2 4.1 1.5
-#  - -2 4.1 1
-  mass: 1f
-roofthings3:
-  shape: box
-  localscaling: 1.0 1.0 1.0
-  origin: -20 22 -15
-#  vertices:
-#  - 4.5 4.5 -3.5
-#  - 4.5 4.5 -3
-#  - 4 4.5 -3.5
-#  - 4 4.5 -3
-#  - 4.5 4.11 -3.5
-#  - 4.5 4.11 -3
-#  - 4 4.11 -3.5
-#  - 4 4.11 -3
-  mass: 1f
-roofthings4:
-  shape: box
-  localscaling: 1.0 1.0 1.0
-  origin: -20 22 15
-#  vertices:
-#  - -4.5 4.5 -4.5
-#  - -4.5 4.5 -4
-#  - -4 4.5 -4.5
-#  - -4 4.5 -4
-#  - -4.5 4.1 -4.5
-#  - -4.5 4.1 -4
-#  - -4 4.1 -4.5
-#  - -4 4.1 -4
-  mass: 1f
 initialwalkway:
   vertices:
   - 5.1 -1.1 .5
@@ -187,15 +131,6 @@ elevatorshaftcieling:
   - 17 .5 -2.5
   - 17 .4 -2.0
   - 17 .5 -2.0
-elevatorsmash1:
-  shape: box
-#  localscaling: .5 .1 .5
-  localscaling: 1.25 .25 1.25
-#  origin: 16 .3 -2.5
-  origin: 80 1.5 -11.25
-#  acceleration: 0f -7f 0f
-  mass: 1f
-  
 elevatorshaftbackpath:
   vertices:
   - 17 -1.1 -2.0
@@ -206,26 +141,6 @@ elevatorshaftbackpath:
   - 16.5 -1.0 6
   - 17 -1.0 6
   - 16.5 -1.1 6 
-elevatorsmash2:
-  shape: box
-  localscaling: 1.25 .25 2.5
-  origin: 83.75 1.5 20
-  mass: 1f 
-elevatorsmash3:
-  shape: box
-  localscaling: 1.25 .25 2.5
-  origin: 83.75 1.5 10
-  mass: 1f 
-elevatorsmash4:
-  shape: box
-  localscaling: 1.25 .25 2.5
-  origin: 83.75 1.5 0
-  mass: 1f 
-elevatorsmash5:
-  shape: box
-  localscaling: 1.25 .25 1.25
-  origin: 83.75 1.5 -8
-  mass: 1f
 elevatorshaftbackpathcieling:
   vertices:
   - 17 .4 -2.0
@@ -296,18 +211,6 @@ underelevatorplatform1:
   - -5 -5.0 1
   - -4.5 -5.1 .5
   - -4.5 -5.0 .5
-sidewayselevator1:
-  shape: box
-  localscaling: 0.25 0.05 0.25
-  origin: -1.3 -25.25 3.75
-  acceleration: -7f 0f 0f
-  mass: 1f
-sidewayselevator2:
-  shape: box
-  localscaling: 1.25 .25 1.25
-  origin: -20 -25.25 3.75
-  acceleration: 7f 0f 0f
-  mass: 1f
 frustratedbridge:
   vertices:
   - -5 -5.1 .5
@@ -478,16 +381,6 @@ computerbank3:
   - 3 -.2 -4.9
   - -3 -.2 -3.5
   - -3 -.2 -4.9
-#thingforfun:
-#  vertices:
-#  - -20 -50 20
-#  - -20 -40 -30
-#  - -20 -30 40
-#  - -20 -10 50
-#  - -30 45 50
-#  - -35 55 -40
-#  - -40 35 30
-#  - -45 40 10
 superwall1:
   vertices:
   - -75 75 -75
