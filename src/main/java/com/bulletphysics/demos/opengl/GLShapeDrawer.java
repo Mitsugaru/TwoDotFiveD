@@ -98,7 +98,7 @@ public class GLShapeDrawer {
 	public static void drawOpenGL(IGL gl, Transform trans, CollisionShape shape, Vector3f color, int debugMode, Vector3f colorVector) {
 		ObjectPool<Transform> transformsPool = ObjectPool.get(Transform.class);
 		ObjectPool<Vector3f> vectorsPool = ObjectPool.get(Vector3f.class);
-		System.out.println("Vector in draw " + colorVector);
+		//System.out.println("Vector in draw " + colorVector);
 
 		//System.out.println("shape="+shape+" type="+BroadphaseNativeTypes.forValue(shape.getShapeType()));
 

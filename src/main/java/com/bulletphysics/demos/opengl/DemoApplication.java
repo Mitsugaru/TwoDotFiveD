@@ -445,14 +445,14 @@ public abstract class DemoApplication
 					debugMode |= DebugDrawModes.DRAW_FEATURES_TEXT;
 				}
 				break;
-			case 'a':
-			if ((debugMode & DebugDrawModes.DRAW_AABB) != 0) {
-			 debugMode = debugMode & (~DebugDrawModes.DRAW_AABB);
-			 }
-			 else {
-			 debugMode |= DebugDrawModes.DRAW_AABB;
-			 }
-			 break;
+//			case 'a':
+//			if ((debugMode & DebugDrawModes.DRAW_AABB) != 0) {
+//			 debugMode = debugMode & (~DebugDrawModes.DRAW_AABB);
+//			 }
+//			 else {
+//			 debugMode |= DebugDrawModes.DRAW_AABB;
+//			 }
+//			 break;
 			case 'c':
 				if ((debugMode & DebugDrawModes.DRAW_CONTACT_POINTS) != 0)
 				{
@@ -465,20 +465,20 @@ public abstract class DemoApplication
 				}
 				break;
 			
-			 case 'd':
-			 if ((debugMode & DebugDrawModes.NO_DEACTIVATION) != 0) {
-			 debugMode = debugMode & (~DebugDrawModes.NO_DEACTIVATION);
-			 }
-			 else {
-			 debugMode |= DebugDrawModes.NO_DEACTIVATION;
-			 }
-			 if ((debugMode & DebugDrawModes.NO_DEACTIVATION) != 0) {
-			 BulletGlobals.setDeactivationDisabled(true);
-			 }
-			 else {
-			 BulletGlobals.setDeactivationDisabled(false);
-			 }
-			 break;
+//			 case 'd':
+//			 if ((debugMode & DebugDrawModes.NO_DEACTIVATION) != 0) {
+//			 debugMode = debugMode & (~DebugDrawModes.NO_DEACTIVATION);
+//			 }
+//			 else {
+//			 debugMode |= DebugDrawModes.NO_DEACTIVATION;
+//			 }
+//			 if ((debugMode & DebugDrawModes.NO_DEACTIVATION) != 0) {
+//			 BulletGlobals.setDeactivationDisabled(true);
+//			 }
+//			 else {
+//			 BulletGlobals.setDeactivationDisabled(false);
+//			 }
+//			 break;
 			
 			case 'o':
 			{
@@ -490,7 +490,7 @@ public abstract class DemoApplication
 			// break;
 			// // case ' ' : newRandom(); break;
 			case ' ':
-				clientResetScene();
+				//clientResetScene();
 				break;
 			case '1':
 			{
@@ -608,7 +608,7 @@ public abstract class DemoApplication
 				 * remove all objects at once
 				 * //dynamicsWorld.removeRigidBody(rb); } } }
 				 */
-				System.out.println(BulletGlobals.getDeactivationTime());
+				//System.out.println(BulletGlobals.getDeactivationTime());
 				break;
 			}
 			case 'j':

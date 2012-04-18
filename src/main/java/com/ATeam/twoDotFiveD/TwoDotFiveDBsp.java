@@ -113,27 +113,29 @@ import static com.bulletphysics.demos.opengl.IGL.*;
  */
 @SuppressWarnings("unused")
 public class TwoDotFiveDBsp extends DemoApplication {
-	// texture handles
-	private int tex1 = 0;
-	private int tex2 = 0;
-	private int tex3 = 0;
-	private int tex4 = 0;
-	private int tex5 = 0;
-
-	private GLApp app = new GLApp();
-
+	Entity elevator1;
+	Entity elevator2;
+	Entity elevator3;
+	Entity elevator4;
+	Entity elevator5;
+	private boolean dead = false;
+	public KinematicCharacterController character;
+	public PairCachingGhostObject ghostObject;
 	private GLCam cam = new GLCam();
 	private GLCamera camera = new GLCamera();
+
 	GL_Vector ViewPoint;
 
 	private float characterScale = 2f;
-
+	private boolean down = true;
 	private static int gForward = 0;
 	private static int gBackward = 0;
 	private static int gLeft = 0;
 	private static int gRight = 0;
 	private static int gJump = 0;
+
 	private static TwoDotFiveDBsp demo;
+	private float dt;
 
 	private static final float CUBE_HALF_EXTENTS = 1;
 
@@ -141,8 +143,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 
 	// keep the collision shapes, for deletion/cleanup
 	// Need to set this back to set / hashset
-	public Map<RigidBody, Entity> entityList = new HashMap<RigidBody, Entity>();
-
+	public static Map<Entity, Entity> entityList = new HashMap<Entity, Entity>();
 	public BroadphaseInterface broadphase;
 
 	public CollisionDispatcher dispatcher;
@@ -172,29 +173,17 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		// forwardAxis = 1;
 
 		setCameraDistance(22f);
-		// Setup a Physics Simulation Environment
-
-		collisionConfiguration = new DefaultCollisionConfiguration();
-		// btCollisionShape* groundShape = new btBoxShape(btVector3(50,3,50));
-		dispatcher = new CollisionStuff(collisionConfiguration);
-		// the maximum size of the collision world. Make sure objects stay
-		// within these boundaries. Don't make the world AABB size too large, it
-		// will harm simulation quality and performance
 		Vector3f worldMin = new Vector3f(-10f, -10f, -10f);
 		Vector3f worldMax = new Vector3f(10f, 10f, 10f);
-		// maximum number of objects
-		final int maxProxies = 1024;
-		// Broadphase computes an conservative approximate list of colliding
-		// pairs
+
+		collisionConfiguration = new DefaultCollisionConfiguration();
+		dispatcher = new CollisionStuff(collisionConfiguration);
+		final int maxProxies = 10024;
 		broadphase = new AxisSweep3(worldMin, worldMax, maxProxies);
-		// broadphase = new SimpleBroadphase();
-		// broadphase = new DbvtBroadphase();
-		// btOverlappingPairCache* broadphase = new btSimpleBroadphase();
 		solver = new SequentialImpulseConstraintSolver();
 		// ConstraintSolver* solver = new OdeConstraintSolver;
 		dynamicsWorld = new DiscreteDynamicsWorld(dispatcher, broadphase,
 				solver, collisionConfiguration);
-
 		Vector3f gravity = new Vector3f();
 		gravity.negate(cameraUp);
 		gravity.scale(10f);
@@ -221,7 +210,6 @@ public class TwoDotFiveDBsp extends DemoApplication {
 				startTransform);
 		RigidBodyConstructionInfo rbInfo = new RigidBodyConstructionInfo(mass,
 				myMotionState, colShape, localInertia);
-
 		player = new RigidBody(rbInfo);
 		player.setActivationState(RigidBody.ISLAND_SLEEPING);
 
@@ -231,18 +219,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		player.setFriction(5f);
 
 		populate();
-
 	}
-
-//	public void setTextures() {
-//		for (Entity value : entityList.values()) {
-//			if (value != null) {
-//				if (value.getImage() != null) {
-//					Vector3f colorVec = value.getImage();
-//				}
-//			}
-//		}
-//	}
 
 	public synchronized Entity localCreateEntity(float mass,
 			Transform startTransform, CollisionShape shape, String ID,
@@ -340,7 +317,6 @@ public class TwoDotFiveDBsp extends DemoApplication {
 						.getOverlappingPairCache()
 						.cleanProxyFromPairs(colObj.getBroadphaseHandle(),
 								dynamicsWorld.getDispatcher());
-
 				body = RigidBody.upcast(colObj);
 				if (body != null && !body.isStaticObject()) {
 					RigidBody.upcast(colObj).setLinearVelocity(
@@ -355,35 +331,36 @@ public class TwoDotFiveDBsp extends DemoApplication {
 	@Override
 	public synchronized void clientMoveAndDisplay() {
 		gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		float dt = getDeltaTimeMicroseconds() * 0.000001f;
-		float ms = getDeltaTimeMicroseconds();
+		dt = getDeltaTimeMicroseconds() * 0.000001f;
 		try {
 			player.activate(true);
 			// TODO May need custom DynamicsWorld to catch exceptions per step
 			int maxSimSubSteps = idle ? 1 : 2;
-			if (idle) {
-				ms = 1.0f / 420.f;
-			}
-
 			if (gLeft != 0) {
 				player.activate(true);
-				player.setLinearVelocity(new Vector3f(-10f, 0, 0));
+				Vector3f curr = new Vector3f();
+				player.getLinearVelocity(curr);
+				player.setLinearVelocity(new Vector3f(-10f, curr.y, curr.z));
 			}
 
 			if (gRight != 0) {
 				player.activate(true);
-				player.setLinearVelocity(new Vector3f(10f, 0, 0));
+				Vector3f curr = new Vector3f();
+				player.getLinearVelocity(curr);
+				player.setLinearVelocity(new Vector3f(10f, curr.y, curr.z));
 
 			}
-
 			if (gForward != 0) {
 				player.activate(true);
-				player.setLinearVelocity(new Vector3f(0, 0, -10));
+				Vector3f curr = new Vector3f();
+				player.getLinearVelocity(curr);
+				player.setLinearVelocity(new Vector3f(curr.x, curr.y, -10f));
 			}
-
 			if (gBackward != 0) {
 				player.activate(true);
-				player.setLinearVelocity(new Vector3f(0, 0, 10));
+				Vector3f curr = new Vector3f();
+				player.getLinearVelocity(curr);
+				player.setLinearVelocity(new Vector3f(curr.x, curr.y, 10f));
 			}
 
 			// TODO
@@ -392,12 +369,14 @@ public class TwoDotFiveDBsp extends DemoApplication {
 				player.activate(true);
 				Vector3f curr = new Vector3f();
 				player.getLinearVelocity(curr);
-				Vector3f jump = new Vector3f(0, 1, 0);
-				player.setLinearVelocity(new Vector3f(curr.x + jump.x, curr.y
-						+ jump.y, curr.z + jump.z));
+				if (curr.y <= .5) {
+					Vector3f jump = new Vector3f(0, 10, 0);
+					player.setLinearVelocity(new Vector3f(curr.x + jump.x,
+							curr.y + jump.y, curr.z + jump.z));
+				}
+
 			}
 			dynamicsWorld.stepSimulation(dt);
-
 			// optional but useful: debug drawing
 			dynamicsWorld.debugDrawWorld();
 		} catch (NullPointerException e) {
@@ -444,7 +423,6 @@ public class TwoDotFiveDBsp extends DemoApplication {
 				CollisionObject colObj = dynamicsWorld
 						.getCollisionObjectArray().getQuick(i);
 				RigidBody body = RigidBody.upcast(colObj);
-
 				// System.out.println(colObj.getWorldTransform(new
 				// Transform()).origin);
 
@@ -456,12 +434,10 @@ public class TwoDotFiveDBsp extends DemoApplication {
 					colObj.getWorldTransform(m);
 				}
 				// System.out.println(m.origin);
-
 				wireColor.set(1f, 1f, 0.5f); // wants deactivation
 				if ((i & 1) != 0) {
 					wireColor.set(0f, 0f, 1f);
 				}
-
 				// color differently for active, sleeping, wantsdeactivation
 				// states
 				if (colObj.getActivationState() == 1) // active
@@ -487,17 +463,17 @@ public class TwoDotFiveDBsp extends DemoApplication {
 
 				Vector3f colorVec = new Vector3f();
 				for (Entity e : entityList.values()) {
-					if (e.getCollisionShape().equals(colObj.getCollisionShape())) {
+					if (e.getCollisionShape()
+							.equals(colObj.getCollisionShape())) {
 						colorVec = e.getImage();
-						//System.out.println(colorVec);
+						// System.out.println(colorVec);
 					}
 				}
-				//System.out.println(colorVec + "post get");
+				// System.out.println(colorVec + "post get");
 				int a = 0;
 				GLShapeDrawer.drawOpenGL(gl, m, colObj.getCollisionShape(),
 						wireColor, getDebugMode(), colorVec);
 			}
-
 			float xOffset = 10f;
 			float yStart = 20f;
 			float yIncr = 20f;
@@ -509,7 +485,6 @@ public class TwoDotFiveDBsp extends DemoApplication {
 				setOrthographicProjection();
 
 				yStart = showProfileInfo(xOffset, yStart, yIncr);
-
 				// #ifdef SHOW_NUM_DEEP_PENETRATIONS
 				buf.setLength(0);
 				buf.append("gNumDeepPenetrationChecks = ");
@@ -531,17 +506,14 @@ public class TwoDotFiveDBsp extends DemoApplication {
 				drawString(buf, Math.round(xOffset), Math.round(yStart),
 						TEXT_COLOR);
 				yStart += yIncr;
-
 				// buf = String.format("gNumAlignedAllocs = %d",
 				// BulletGlobals.gNumAlignedAllocs);
 				// TODO: BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
 				// yStart += yIncr;
-
 				// buf = String.format("gNumAlignedFree= %d",
 				// BulletGlobals.gNumAlignedFree);
 				// TODO: BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
 				// yStart += yIncr;
-
 				// buf = String.format("# alloc-free = %d",
 				// BulletGlobals.gNumAlignedAllocs -
 				// BulletGlobals.gNumAlignedFree);
@@ -579,7 +551,6 @@ public class TwoDotFiveDBsp extends DemoApplication {
 
 				}
 				// #endif //SHOW_NUM_DEEP_PENETRATIONS
-
 				// JAVA NOTE: added
 				int free = (int) Runtime.getRuntime().freeMemory();
 				int total = (int) Runtime.getRuntime().totalMemory();
@@ -610,7 +581,6 @@ public class TwoDotFiveDBsp extends DemoApplication {
 
 	@Override
 	public void updateCamera() {
-
 		gl.glMatrixMode(GL_PROJECTION);
 		gl.glLoadIdentity();
 		// System.out.println(cameraTargetPosition);
@@ -676,8 +646,59 @@ public class TwoDotFiveDBsp extends DemoApplication {
 						+ t.origin.y, cameraPosition.z + t.origin.z,
 						t.origin.x, t.origin.y, t.origin.z, cameraUp.x,
 						cameraUp.y, cameraUp.z);
+				if (t.origin.y < -30) {
+					// TODO do something...
+					System.out.println("Fail condition!!");
+					Vector3f splode = new Vector3f(0f, 1f, 0f);
+					shootBox(splode);
+				}
+				if (t.origin.y < -31) {
+					t.origin.set(1, 2, 1);
+					o.setWorldTransform(t);
+				}
 				break;
 			}
+		}
+		if (down) {
+			Transform one = elevator1.getWorldTransform(new Transform());
+			float y = one.origin.y - (1f * dt);
+			if (y <= -3.5f) {
+				down = false;
+			}
+			one.origin.y = y;
+			Transform two = elevator2.getWorldTransform(new Transform());
+			two.origin.y = one.origin.y;
+			Transform three = elevator3.getWorldTransform(new Transform());
+			three.origin.y = one.origin.y;
+			Transform four = elevator4.getWorldTransform(new Transform());
+			four.origin.y = one.origin.y;
+			Transform five = elevator5.getWorldTransform(new Transform());
+			five.origin.y = one.origin.y;
+			elevator1.setWorldTransform(one);
+			elevator2.setWorldTransform(two);
+			elevator3.setWorldTransform(three);
+			elevator4.setWorldTransform(four);
+			elevator5.setWorldTransform(five);
+		} else {
+			Transform one = elevator1.getWorldTransform(new Transform());
+			float y = one.origin.y + (1f * dt);
+			if (y >= 2.5f) {
+				down = true;
+			}
+			one.origin.y = y;
+			Transform two = elevator2.getWorldTransform(new Transform());
+			two.origin.y = y;
+			Transform three = elevator3.getWorldTransform(new Transform());
+			three.origin.y = y;
+			Transform four = elevator4.getWorldTransform(new Transform());
+			four.origin.y = y;
+			Transform five = elevator5.getWorldTransform(new Transform());
+			five.origin.y = y;
+			elevator1.setWorldTransform(one);
+			elevator2.setWorldTransform(two);
+			elevator3.setWorldTransform(three);
+			elevator4.setWorldTransform(four);
+			elevator5.setWorldTransform(five);
 		}
 
 		// gl.gluLookAt( eyex, eyey, eyez, RigidBody.upcast( ghostObject
@@ -754,93 +775,6 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		}
 		}
 	}
-
-	// @Override
-	// public synchronized void specialKeyboard(int key, int x, int y, int
-	// modifiers) {
-	// switch (key) {
-	// case Keyboard.KEY_UP: {
-	// cam.handleRotKeysPan();
-	// break;
-	// }
-	// case Keyboard.KEY_DOWN: {
-	// cam.handleRotKeysPan();
-	// break;
-	// }
-	// case Keyboard.KEY_LEFT: {
-	// cam.handleRotKeysPan();
-	// break;
-	// }
-	// case Keyboard.KEY_RIGHT: {
-	// cam.handleRotKeysPan();
-	// break;
-	// }
-	// case Keyboard.KEY_W: {
-	// if (cam.getQuadrant() == 1) {
-	// gForward = 1;
-	// }
-	// if (cam.getQuadrant() == 2) {
-	// gLeft = 1;
-	// }
-	// if (cam.getQuadrant() == 3) {
-	// gBackward = 1;
-	// }
-	// if (cam.getQuadrant() == 4) {
-	// gRight = 1;
-	// }
-	// break;
-	// }
-	// case Keyboard.KEY_S: {
-	// if (cam.getQuadrant() == 1) {
-	// gBackward = 1;
-	// }
-	// if (cam.getQuadrant() == 2) {
-	// gRight = 1;
-	// }
-	// if (cam.getQuadrant() == 3) {
-	// gForward = 1;
-	// }
-	// if (cam.getQuadrant() == 4) {
-	// gLeft = 1;
-	// }
-	// break;
-	// }
-	// case Keyboard.KEY_A: {
-	// if (cam.getQuadrant() == 1) {
-	// gLeft = 1;
-	// }
-	// if (cam.getQuadrant() == 2) {
-	// gBackward = 1;
-	// }
-	// if (cam.getQuadrant() == 3) {
-	// gRight = 1;
-	// }
-	// if (cam.getQuadrant() == 4) {
-	// gForward = 1;
-	// }
-	// break;
-	// }
-	// case Keyboard.KEY_D: {
-	// if (cam.getQuadrant() == 1) {
-	// gRight = 1;
-	// }
-	// if (cam.getQuadrant() == 2) {
-	// gForward = 1;
-	// }
-	// if (cam.getQuadrant() == 3) {
-	// gLeft = 1;
-	// }
-	// if (cam.getQuadrant() == 4) {
-	// gBackward = 1;
-	// }
-	// break;
-	// }
-	//
-	// default:
-	// super.specialKeyboard(key, x, y, modifiers);
-	// break;
-	// }
-	// }
 
 	@Override
 	public synchronized void specialKeyboard(int key, int x, int y,
@@ -971,42 +905,39 @@ public class TwoDotFiveDBsp extends DemoApplication {
 			Transform startTransform = new Transform();
 			startTransform.setIdentity();
 			Vector3f camPos = new Vector3f(getCameraPosition());
-			startTransform.origin.set(camPos);
+			// Fix stuff?
+			Vector3f shootfrom = player.getCenterOfMassPosition(new Vector3f());
+			shootfrom.y = shootfrom.y + 1;
+			startTransform.origin.set(shootfrom);
 
 			if (shapeType.equals("BOX")) {
 				shootBoxShape = new BoxShape(new Vector3f(1f, 1f, 1f));
 			} else if (shapeType.equals("SPHERE")) {
 				shootBoxShape = new SphereShape(1f);
 			} else if (shapeType.equals("TRIANGLE")) {
-				// TODO implement a pyramid
 				shootBoxShape = new ConeShape(1f, 3f);
-				// shootBoxShape = new TriangleShape(new Vector3f(1f, 1f, 1f),
-				// new Vector3f(1f, 0f, 0f), new Vector3f(0f, -1f, 0f));
 			} else if (shapeType.equals("CYLINDER")) {
 				shootBoxShape = new CylinderShape(new Vector3f(1f, 1f, 1f));
 			}
-
-			RigidBody body = this.localCreateRigidBody(mass, startTransform,
-					shootBoxShape);
 
 			Vector3f linVel = new Vector3f(destination.x - camPos.x,
 					destination.y - camPos.y, destination.z - camPos.z);
 			linVel.normalize();
 			linVel.scale(ShootBoxInitialSpeed);
-			Transform worldTrans = body.getWorldTransform(new Transform());
-			worldTrans.origin.set(camPos);
-			worldTrans.setRotation(new Quat4f(0f, 0f, 0f, 1f));
-			body.setWorldTransform(worldTrans);
-
-			body.setLinearVelocity(linVel);
-			body.setAngularVelocity(new Vector3f(0f, 0f, 0f));
-
-			body.setCcdMotionThreshold(1f);
-			body.setCcdSweptSphereRadius(0.2f);
 			final Random r = new Random();
 			Entity entity = localCreateEntity(mass, startTransform,
 					shootBoxShape, shootBoxShape.getName() + r.nextFloat(),
-					new Vector3f(0f, 0f, 1f), null);
+					new Vector3f(1f, 1f, 1f), null);
+			Transform worldTrans = entity.getWorldTransform(new Transform());
+			worldTrans.origin.set(shootfrom);
+			worldTrans.setRotation(new Quat4f(0f, 0f, 0f, 1f));
+			entity.setWorldTransform(worldTrans);
+
+			entity.setLinearVelocity(linVel);
+			entity.setAngularVelocity(new Vector3f(0f, 0f, 0f));
+
+			entity.setCcdMotionThreshold(1f);
+			entity.setCcdSweptSphereRadius(0.2f);
 			// Dynamic gravity for object
 			// TODO consolidate setgravity into one method, let entity set its
 			// tied rigidbody gravity
@@ -1020,7 +951,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 				entity.setEntityGravity(dynamicsWorld
 						.getGravity(new Vector3f()));
 			}
-			entityList.put(body, entity);
+			entityList.put(entity, entity);
 			eventDispatcher.notify(new BlockCreateEvent(entity));
 		}
 	}
@@ -1048,12 +979,11 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		demo.initListener();
 		demo.setup();
 		demo.initPhysics();
-		//demo.setTextures();
 		demo.getDynamicsWorld()
 				.setDebugDrawer(new GLDebugDrawer(LWJGL.getGL()));
 		// demo.debugMode = 1;
-		LWJGL.main(args, 800, 600, "Bullet Physics Demo. http://bullet.sf.net",
-				demo);
+		LWJGL.main(args, Config.displayWidth, Config.displayHeight,
+				"Bullet Physics Demo. http://bullet.sf.net", demo);
 	}
 
 	/**
@@ -1086,7 +1016,8 @@ public class TwoDotFiveDBsp extends DemoApplication {
 					Entity entity = localCreateEntity(mass, event.getEntity()
 							.getWorldTransform(new Transform()), event
 							.getEntity().getCollisionShape(), event.getEntity()
-							.getID(), new Vector3f(0.5f, 0.5f, 0.5f), new String[] { "" });
+							.getID(), new Vector3f(0.5f, 0.5f, 0.5f),
+							new String[] { "" });
 					entity.setAngularFactor(event.getEntity()
 							.getAngularFactor());
 					entity.setAngularVelocity(event.getEntity()
@@ -1144,7 +1075,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 			remoteDispatcher.registerListener(Type.BLOCK_DESTROYED,
 					remoteListener);
 		}
-		// MusicPlayer mp = new MusicPlayer(eventDispatcher);
+		MusicPlayer mp = new MusicPlayer(eventDispatcher);
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -1200,6 +1131,21 @@ public class TwoDotFiveDBsp extends DemoApplication {
 				String[] description, Vector3f acceleration) {
 			Entity e = localCreateEntity(mass, origin, shape, name, image,
 					description);
+			if (name.equals("elevatorsmash1")) {
+				elevator1 = e;
+			}
+			if (name.equals("elevatorsmash2")) {
+				elevator2 = e;
+			}
+			if (name.equals("elevatorsmash3")) {
+				elevator3 = e;
+			}
+			if (name.equals("elevatorsmash4")) {
+				elevator4 = e;
+			}
+			if (name.equals("elevatorsmash5")) {
+				elevator5 = e;
+			}
 			if (acceleration != null) {
 				e.setEntityGravity(acceleration);
 			} else {
@@ -1325,14 +1271,14 @@ public class TwoDotFiveDBsp extends DemoApplication {
 									.getID().equals("sidewayselevator2"))) {
 						// Vector3f reset = new Vector3f (0f, 0f, 0f);
 						if (entityA.getID().equals("sidewayselevator1")) {
-							System.out.println(entityA.getID() + " "
-									+ entityB.getID());
+							// System.out.println(entityA.getID() +" "+
+							// entityB.getID());
 							elevatorshiftxhigh(
 									entityA,
 									entityA.getCenterOfMassPosition(new Vector3f()));
 						} else {
-							System.out.println(entityA.getID() + " "
-									+ entityB.getID());
+							// System.out.println(entityA.getID() +" "+
+							// entityB.getID());
 							elevatorshiftxhigh(
 									entityB,
 									entityB.getCenterOfMassPosition(new Vector3f()));
@@ -1517,33 +1463,6 @@ public class TwoDotFiveDBsp extends DemoApplication {
 			}
 		}
 
-		@Override
-		public void onBlockCollisionResolved(BlockCollisionResolvedEvent event) {
-
-			final PersistentManifold pm = event.getPersistentManifold();
-			if (pm.getBody0() instanceof RigidBody
-					&& pm.getBody1() instanceof RigidBody) {
-				final Entity entityA = entityList
-						.get((RigidBody) pm.getBody0());
-				final Entity entityB = entityList
-						.get((RigidBody) pm.getBody1());
-				if (entityA != null && entityB != null) {
-					// if ( entityA.getRigidBody().isActive()
-					// && entityB.getRigidBody().isActive() )
-					// {
-					// if ( entityA.getID().equalsIgnoreCase( "box" )
-					// && entityB.getID().equalsIgnoreCase( "box" ) )
-					// {
-					// // TODO block freeze event
-					// entityA.freeze();
-					// entityB.freeze();
-					// }
-					// }
-				}
-			}
-
-		}
-
 		public boolean setGravity(Entity target, Vector3f direction) {
 			if (!target.isStaticObject()) {
 				eventDispatcher.notify(new BlockPhysicsChangeEvent(target,
@@ -1660,5 +1579,4 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		a.setEntityGravity(new Vector3f(0f, 0f, -7f));
 
 	}
-
 }
