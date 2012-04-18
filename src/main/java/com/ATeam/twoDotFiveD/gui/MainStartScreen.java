@@ -1,5 +1,6 @@
 package com.ATeam.twoDotFiveD.gui;
 
+import com.ATeam.twoDotFiveD.TwoDotFiveDBsp;
 import com.ATeam.twoDotFiveD.chatclient.chatClient;
 
 import de.lessvoid.nifty.EndNotify;
@@ -79,9 +80,10 @@ public class MainStartScreen implements ScreenController
 
     public void beginGame()
     {
-        nifty.fromXml( HUD_XML, "hud" );
+        //nifty.fromXml( HUD_XML, "hud" );
         // TODO check for existing game in progress and ask
-        DisplayStuff.setRenderNifty( true );
+       // DisplayStuff.setRenderNifty( true );
+	TwoDotFiveDBsp.nifty = false;
     }
 
 

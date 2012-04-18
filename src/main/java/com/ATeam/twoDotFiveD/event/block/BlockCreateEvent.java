@@ -41,10 +41,7 @@ public class BlockCreateEvent extends BlockEvent
 		//Entity
 		data.put("entity.ID", getEntity().getID());
 		//Image, if any
-		if(getEntity().getImage() != null)
-		{
-			data.put("entity.image", getEntity().getImage());
-		}
+			data.put("entity.image", getEntity().getImage().toString());
 		/**
 		 * Rigid body
 		 */
