@@ -201,7 +201,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		Transform startTransform = new Transform();
 		startTransform.setIdentity();
 		// startTransform.origin.set(84.0f, 50.0f, -10.0f);
-		CollisionShape colShape = new BoxShape(new Vector3f(1, 1, 1));
+		CollisionShape colShape = new BoxShape(new Vector3f(2, 2, 2));
 		float mass = 100f;
 		Vector3f localInertia = new Vector3f(0, 0, 0);
 		// colShape.calculateLocalInertia(mass, localInertia);
@@ -340,27 +340,27 @@ public class TwoDotFiveDBsp extends DemoApplication {
 				player.activate(true);
 				Vector3f curr = new Vector3f();
 				player.getLinearVelocity(curr);
-				player.setLinearVelocity(new Vector3f(-10f, curr.y, curr.z));
+				player.setLinearVelocity(new Vector3f(-20f, curr.y, curr.z));
 			}
 
 			if (gRight != 0) {
 				player.activate(true);
 				Vector3f curr = new Vector3f();
 				player.getLinearVelocity(curr);
-				player.setLinearVelocity(new Vector3f(10f, curr.y, curr.z));
+				player.setLinearVelocity(new Vector3f(20f, curr.y, curr.z));
 
 			}
 			if (gForward != 0) {
 				player.activate(true);
 				Vector3f curr = new Vector3f();
 				player.getLinearVelocity(curr);
-				player.setLinearVelocity(new Vector3f(curr.x, curr.y, -10f));
+				player.setLinearVelocity(new Vector3f(curr.x, curr.y, -20f));
 			}
 			if (gBackward != 0) {
 				player.activate(true);
 				Vector3f curr = new Vector3f();
 				player.getLinearVelocity(curr);
-				player.setLinearVelocity(new Vector3f(curr.x, curr.y, 10f));
+				player.setLinearVelocity(new Vector3f(curr.x, curr.y, 20f));
 			}
 
 			// TODO
