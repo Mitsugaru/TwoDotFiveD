@@ -132,7 +132,7 @@ public class EventPackage implements Serializable
 			final String ID = (String) data.get("entity.ID");
 			final RigidBodyConstructionInfo info = new RigidBodyConstructionInfo(mass, myMotionState, c, inertia);
 			//TODO image?
-			Entity body = new Entity(info, ID, "", null);
+			Entity body = new Entity(info, ID, new Vector3f(1f, 1f, 1f), null);
 			body.setAngularFactor(((Float)data.get("entity.rigidbody.angularfactor")).floatValue());
 			String angular = (String) data.get("entity.rigidbody.angularvelocity");
 			angular = angular.replace("(", "");

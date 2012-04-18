@@ -27,7 +27,7 @@ public class BlockPhysicsChangeEventTest extends TestCase
 		super(name);
 		final DefaultMotionState state = new DefaultMotionState();
 		final CollisionShape shape = new BoxShape(new Vector3f(1f, 1f, 1f));
-		entity = new Entity(1f, state, shape, new Vector3f(0f, 0f, 0f), "TEST", "imagePath", new String[]{"description", "line2"});
+		entity = new Entity(1f, state, shape, new Vector3f(0f, 0f, 0f), "TEST", new Vector3f(1f, 1f, 1f), new String[]{"description", "line2"});
 		entity.setGravity(gravity);
 		event = new BlockPhysicsChangeEvent(entity, gravity);
 	}
@@ -63,7 +63,7 @@ public class BlockPhysicsChangeEventTest extends TestCase
 	{
 		final DefaultMotionState state = new DefaultMotionState();
 		final CollisionShape shape = new SphereShape(1f);
-		entity = new Entity(10f, state, shape, new Vector3f(0f, 0f, 0f), "TEST", "imagePath", new String[]{"description", "line2"});
+		entity = new Entity(10f, state, shape, new Vector3f(0f, 0f, 0f), "TEST", new Vector3f(1f, 1f, 1f), new String[]{"description", "line2"});
 		assertFalse("Entity of an event should not be modified", event.getEntity().equals(entity));
 	}
 	

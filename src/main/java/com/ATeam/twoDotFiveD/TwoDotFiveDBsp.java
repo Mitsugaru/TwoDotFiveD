@@ -89,6 +89,7 @@ import com.bulletphysics.linearmath.QuaternionUtil;
 import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.linearmath.VectorUtil;
 
+import demo.lwjgl.basic.GLApp;
 import demo.lwjgl.basic.GLCam;
 import demo.lwjgl.basic.GLCamera;
 
@@ -100,6 +101,7 @@ import javax.vecmath.Vector3f;
 import lib.lwjgl.glmodel.GL_Vector;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
 
 import static com.bulletphysics.demos.opengl.IGL.*;
 
@@ -108,94 +110,71 @@ import static com.bulletphysics.demos.opengl.IGL.*;
  * BspDemo shows the convex collision detection, by converting a Quake BSP file
  * into convex objects and allowing interaction with boxes.
  * 
- * @author jezek2
+ * @author Vincent Deloso, Andrew Tucker,
  */
 @SuppressWarnings("unused")
-public class TwoDotFiveDBsp extends DemoApplication
-{
-    Entity elevator1;
 
-    Entity elevator2;
+public class TwoDotFiveDBsp extends DemoApplication {
+	Entity elevator1;
+	Entity elevator2;
+	Entity elevator3;
+	Entity elevator4;
+	Entity elevator5;
+	private boolean dead = false;
+	public KinematicCharacterController character;
+	public PairCachingGhostObject ghostObject;
+	private GLCam cam = new GLCam();
+	private GLCamera camera = new GLCamera();
 
-    Entity elevator3;
+	GL_Vector ViewPoint;
 
-    Entity elevator4;
+	private float characterScale = 2f;
+	private boolean down = true;
+	private static int gForward = 0;
+	private static int gBackward = 0;
+	private static int gLeft = 0;
+	private static int gRight = 0;
+	private static int gJump = 0;
 
-    Entity elevator5;
+	private static TwoDotFiveDBsp demo;
+	private float dt;
 
-    private boolean dead = false;
+	private static final float CUBE_HALF_EXTENTS = 1;
 
-    public KinematicCharacterController character;
+	private static final float EXTRA_HEIGHT = -20f;
 
-    public PairCachingGhostObject ghostObject;
+	// keep the collision shapes, for deletion/cleanup
+	// Need to set this back to set / hashset
+	public static Map<Entity, Entity> entityList = new HashMap<Entity, Entity>();
+	public BroadphaseInterface broadphase;
 
-    private GLCam cam = new GLCam();
+	public CollisionDispatcher dispatcher;
 
-    private GLCamera camera = new GLCamera();
+	public ConstraintSolver solver;
 
-    GL_Vector ViewPoint;
+	public DefaultCollisionConfiguration collisionConfiguration;
 
-    private float characterScale = 2f;
+	private static EventDispatcher eventDispatcher = new EventDispatcher();
 
-    private boolean down = true;
+	private static EventDispatcher remoteDispatcher = new EventDispatcher();
 
-    private static int gForward = 0;
+	private static chatClient client;
 
-    private static int gBackward = 0;
-
-    private static int gLeft = 0;
-
-    private static int gRight = 0;
-
-    private static int gJump = 0;
-
-    private static TwoDotFiveDBsp demo;
-
-    private float dt;
-
-    private static final float CUBE_HALF_EXTENTS = 1;
-
-    private static final float EXTRA_HEIGHT = -20f;
-
-    // keep the collision shapes, for deletion/cleanup
-    // Need to set this back to set / hashset
-    public static Map<Entity, Entity> entityList = new HashMap<Entity, Entity>();
-
-    public BroadphaseInterface broadphase;
-
-    public CollisionDispatcher dispatcher;
-
-    public ConstraintSolver solver;
-
-    public DefaultCollisionConfiguration collisionConfiguration;
-
-    private static EventDispatcher eventDispatcher = new EventDispatcher();
-
-    private static EventDispatcher remoteDispatcher = new EventDispatcher();
-
-    private static chatClient client;
-
-    int count = 0;
+	int count = 0;
 
     private static boolean connected = false;
 
     private Entity player;
 
+	public TwoDotFiveDBsp(IGL gl) {
+		super(gl);
+	}
 
-    public TwoDotFiveDBsp( IGL gl )
-    {
-        super( gl );
-    }
+	public synchronized void initPhysics() throws Exception {
+		// cameraUp.set(0f, 0f, 1f);
+		// forwardAxis = 1;
 
-
-    public synchronized void initPhysics() throws Exception
-    {
-        // cameraUp.set(0f, 0f, 1f);
-        // forwardAxis = 1;
-
-        setCameraDistance( 22f );
-        // Setup a Physics Simulation Environment
-
+		setCameraDistance(22f);
         collisionConfiguration = new DefaultCollisionConfiguration();
         // btCollisionShape* groundShape = new btBoxShape(btVector3(50,3,50));
         dispatcher = new CollisionStuff( collisionConfiguration );
@@ -247,7 +226,7 @@ public class TwoDotFiveDBsp extends DemoApplication
             colShape,
             localInertia,
             "PLAYER",
-            "",
+            new Vector3f(1f, 1f, 1f),
             new String[]{""} );
         dynamicsWorld.addRigidBody( player );
         player.setActivationState( RigidBody.ISLAND_SLEEPING );
@@ -276,7 +255,7 @@ public class TwoDotFiveDBsp extends DemoApplication
             startTransform1,
             colShape1,
             "elevatorsmash1",
-            "",
+            new Vector3f(1f, 0f, 0f),
             null );
         dynamicsWorld.addRigidBody( elevator1 );
         elevator1.setWorldTransform( startTransform1 );
@@ -293,7 +272,7 @@ public class TwoDotFiveDBsp extends DemoApplication
             startTransform2,
             colShape2,
             "elevatorsmash1",
-            "",
+            new Vector3f(1f, 0f, 0f),
             null );
         dynamicsWorld.addRigidBody( elevator2 );
         elevator2.setWorldTransform( startTransform2 );
@@ -310,7 +289,7 @@ public class TwoDotFiveDBsp extends DemoApplication
             startTransform3,
             colShape3,
             "elevatorsmash1",
-            "",
+            new Vector3f(1f, 0f, 0f),
             null );
         dynamicsWorld.addRigidBody( elevator3 );
         elevator3.setWorldTransform( startTransform3 );
@@ -327,7 +306,7 @@ public class TwoDotFiveDBsp extends DemoApplication
             startTransform4,
             colShape4,
             "elevatorsmash1",
-            "",
+            new Vector3f(1f, 0f, 0f),
             null );
         dynamicsWorld.addRigidBody( elevator4 );
         elevator4.setWorldTransform( startTransform4 );
@@ -344,7 +323,7 @@ public class TwoDotFiveDBsp extends DemoApplication
             startTransform5,
             colShape5,
             "elevatorsmash1",
-            "",
+            new Vector3f(1f, 0f, 0f),
             null );
         dynamicsWorld.addRigidBody( elevator5 );
         elevator5.setWorldTransform( startTransform5 );
@@ -358,7 +337,7 @@ public class TwoDotFiveDBsp extends DemoApplication
         Transform startTransform,
         CollisionShape shape,
         String ID,
-        String image,
+        Vector3f image,
         String[] description )
     {
         // rigidbody is dynamic if and only if mass is non zero, otherwise
@@ -485,192 +464,6 @@ public class TwoDotFiveDBsp extends DemoApplication
         }
     }
 
-
-    @Override
-    public synchronized void clientMoveAndDisplay()
-    {
-        gl.glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-        dt = getDeltaTimeMicroseconds() * 0.000001f;
-        try
-        {
-            player.activate( true );
-            // TODO May need custom DynamicsWorld to catch exceptions per step
-            int maxSimSubSteps = idle ? 1 : 2;
-
-            if ( gLeft != 0 )
-            {
-                player.activate( true );
-                Vector3f curr = new Vector3f();
-                player.getLinearVelocity( curr );
-                player.setLinearVelocity( new Vector3f( -10f, curr.y, curr.z ) );
-            }
-
-            if ( gRight != 0 )
-            {
-                player.activate( true );
-                Vector3f curr = new Vector3f();
-                player.getLinearVelocity( curr );
-                player.setLinearVelocity( new Vector3f( 10f, curr.y, curr.z ) );
-
-            }
-
-            if ( gForward != 0 )
-            {
-                player.activate( true );
-                Vector3f curr = new Vector3f();
-                player.getLinearVelocity( curr );
-                player.setLinearVelocity( new Vector3f( curr.x, curr.y, -10f ) );
-            }
-
-            if ( gBackward != 0 )
-            {
-                player.activate( true );
-                Vector3f curr = new Vector3f();
-                player.getLinearVelocity( curr );
-                player.setLinearVelocity( new Vector3f( curr.x, curr.y, 10f ) );
-            }
-
-            // TODO
-            // fix this ish
-            if ( gJump != 0 )
-            {
-                player.activate( true );
-                Vector3f curr = new Vector3f();
-                player.getLinearVelocity( curr );
-                if ( curr.y <= .5 )
-                {
-                    Vector3f jump = new Vector3f( 0, 10, 0 );
-                    player.setLinearVelocity( new Vector3f( curr.x + jump.x,
-                        curr.y + jump.y,
-                        curr.z + jump.z ) );
-                }
-            }
-            dynamicsWorld.stepSimulation( dt );
-
-            // optional but useful: debug drawing
-            dynamicsWorld.debugDrawWorld();
-        }
-        catch ( NullPointerException e )
-        {
-            System.out.println( "Simulation had null at some point" );
-            e.printStackTrace();
-            // WARN this is very serious
-            // TODO figure out how to fix this...
-        }
-        catch ( ArrayIndexOutOfBoundsException arr )
-        {
-            System.out.println( "Index Out of Bounds in Simulation" );
-        }
-
-        // optional but useful: debug drawing
-        cam.resetClock();
-        dynamicsWorld.debugDrawWorld();
-        renderme();
-
-        // glFlush();
-        // glutSwapBuffers();
-
-    }
-
-
-    @Override
-    public void displayCallback()
-    {
-        gl.glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
-        renderme();
-
-        // glFlush();
-        // glutSwapBuffers();
-    }
-
-    private StringBuilder buf = new StringBuilder();
-
-    private final Transform m = new Transform();
-
-    private Vector3f wireColor = new Vector3f();
-
-    protected Color3f TEXT_COLOR = new Color3f( 0f, 0f, 0f );
-
-
-    public synchronized void oldClientMoveAndDisplay()
-    {
-        gl.glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-        float dt = getDeltaTimeMicroseconds() * 0.000001f;
-        float ms = getDeltaTimeMicroseconds();
-        try
-        {
-            player.activate( true );
-            // TODO May need custom DynamicsWorld to catch exceptions per step
-            int maxSimSubSteps = idle ? 1 : 2;
-            if ( idle )
-            {
-                ms = 1.0f / 420.f;
-            }
-
-            if ( gLeft != 0 )
-            {
-                player.activate( true );
-                player.setLinearVelocity( new Vector3f( -10f, 0, 0 ) );
-            }
-
-            if ( gRight != 0 )
-            {
-                player.activate( true );
-                player.setLinearVelocity( new Vector3f( 10f, 0, 0 ) );
-
-            }
-
-            if ( gForward != 0 )
-            {
-                player.activate( true );
-                player.setLinearVelocity( new Vector3f( 0, 0, -10 ) );
-            }
-
-            if ( gBackward != 0 )
-            {
-                player.activate( true );
-                player.setLinearVelocity( new Vector3f( 0, 0, 10 ) );
-            }
-
-            // TODO
-            // fix this ish
-            if ( gJump != 0 )
-            {
-                player.activate( true );
-                Vector3f curr = new Vector3f();
-                player.getLinearVelocity( curr );
-                Vector3f jump = new Vector3f( 0, 1, 0 );
-                player.setLinearVelocity( new Vector3f( curr.x + jump.x, curr.y
-                    + jump.y, curr.z + jump.z ) );
-            }
-            dynamicsWorld.stepSimulation( dt );
-
-            // optional but useful: debug drawing
-            dynamicsWorld.debugDrawWorld();
-        }
-        catch ( NullPointerException e )
-        {
-            System.out.println( "Simulation had null at some point" );
-            // WARN this is very serious
-            // TODO figure out how to fix this...
-        }
-        catch ( ArrayIndexOutOfBoundsException arr )
-        {
-            System.out.println( "Index Out of Bounds in Simulation" );
-        }
-
-        // optional but useful: debug drawing
-        cam.resetClock();
-        dynamicsWorld.debugDrawWorld();
-        renderme();
-
-        // glFlush();
-        // glutSwapBuffers();
-
-    }
-
-
     @Override
     public void renderme()
     {
@@ -736,13 +529,20 @@ public class TwoDotFiveDBsp extends DemoApplication
                         wireColor.y += 0.5f;
                     }
                 }
+                
+                Vector3f colorVec = new Vector3f(0f, 0f, 0f);
+                for(Entity e : entityList.values()){
+                 if(e.getCollisionShape().equals( colObj.getCollisionShape() ))
+                 {
+                     colorVec = e.getImage();
+                }
 
                 int a = 0;
                 GLShapeDrawer.drawOpenGL( gl,
                     m,
                     colObj.getCollisionShape(),
                     wireColor,
-                    getDebugMode() );
+                    getDebugMode(), colorVec );
             }
 
             float xOffset = 10f;
@@ -862,15 +662,7 @@ public class TwoDotFiveDBsp extends DemoApplication
 
         updateCamera();
     }
-
-
-    public void setup()
-    {
-        cam.setCamera( camera );
-        camera.setCamera( 0f, 0f, 15f, 0f, 0f, -1f, 0f, 1f, 0f );
-
     }
-
 
     @Override
     public void updateCamera()
@@ -1029,385 +821,309 @@ public class TwoDotFiveDBsp extends DemoApplication
         // upy, upz );
     }
 
+	@Override
+	public synchronized void clientMoveAndDisplay() {
+		gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		dt = getDeltaTimeMicroseconds() * 0.000001f;
+		try {
+			player.activate(true);
+			// TODO May need custom DynamicsWorld to catch exceptions per step
+			int maxSimSubSteps = idle ? 1 : 2;
+			if (gLeft != 0) {
+				player.activate(true);
+				Vector3f curr = new Vector3f();
+				player.getLinearVelocity(curr);
+				player.setLinearVelocity(new Vector3f(-20f, curr.y, curr.z));
+			}
 
-    @Override
-    public void specialKeyboardUp( int key, int x, int y, int modifiers )
-    {
-        switch ( key )
-        {
-            case Keyboard.KEY_W:
-            {
-                if ( cam.getQuadrant() == 1 )
-                {
-                    gForward = 0;
-                }
-                if ( cam.getQuadrant() == 2 )
-                {
-                    gLeft = 0;
-                }
-                if ( cam.getQuadrant() == 3 )
-                {
-                    gBackward = 0;
-                }
-                if ( cam.getQuadrant() == 4 )
-                {
-                    gRight = 0;
-                }
-                break;
-            }
-            case Keyboard.KEY_S:
-            {
-                if ( cam.getQuadrant() == 1 )
-                {
-                    gBackward = 0;
-                }
-                if ( cam.getQuadrant() == 2 )
-                {
-                    gRight = 0;
-                }
-                if ( cam.getQuadrant() == 3 )
-                {
-                    gForward = 0;
-                }
-                if ( cam.getQuadrant() == 4 )
-                {
-                    gLeft = 0;
-                }
-                break;
-            }
-            case Keyboard.KEY_A:
-            {
-                if ( cam.getQuadrant() == 1 )
-                {
-                    gLeft = 0;
-                }
-                if ( cam.getQuadrant() == 2 )
-                {
-                    gBackward = 0;
-                }
-                if ( cam.getQuadrant() == 3 )
-                {
-                    gRight = 0;
-                }
-                if ( cam.getQuadrant() == 4 )
-                {
-                    gForward = 0;
-                }
-                break;
-            }
-            case Keyboard.KEY_D:
-            {
-                if ( cam.getQuadrant() == 1 )
-                {
-                    gRight = 0;
-                }
-                if ( cam.getQuadrant() == 2 )
-                {
-                    gForward = 0;
-                }
-                if ( cam.getQuadrant() == 3 )
-                {
-                    gLeft = 0;
-                }
-                if ( cam.getQuadrant() == 4 )
-                {
-                    gBackward = 0;
-                }
-                break;
-            }
-            case Keyboard.KEY_SPACE:
-            {
-                gJump = 0;
-                break;
-            }
-        }
-    }
+			if (gRight != 0) {
+				player.activate(true);
+				Vector3f curr = new Vector3f();
+				player.getLinearVelocity(curr);
+				player.setLinearVelocity(new Vector3f(20f, curr.y, curr.z));
 
+			}
+			if (gForward != 0) {
+				player.activate(true);
+				Vector3f curr = new Vector3f();
+				player.getLinearVelocity(curr);
+				player.setLinearVelocity(new Vector3f(curr.x, curr.y, -20f));
+			}
+			if (gBackward != 0) {
+				player.activate(true);
+				Vector3f curr = new Vector3f();
+				player.getLinearVelocity(curr);
+				player.setLinearVelocity(new Vector3f(curr.x, curr.y, 20f));
+			}
 
-    // @Override
-    // public synchronized void specialKeyboard(int key, int x, int y, int
-    // modifiers) {
-    // switch (key) {
-    // case Keyboard.KEY_UP: {
-    // cam.handleRotKeysPan();
-    // break;
-    // }
-    // case Keyboard.KEY_DOWN: {
-    // cam.handleRotKeysPan();
-    // break;
-    // }
-    // case Keyboard.KEY_LEFT: {
-    // cam.handleRotKeysPan();
-    // break;
-    // }
-    // case Keyboard.KEY_RIGHT: {
-    // cam.handleRotKeysPan();
-    // break;
-    // }
-    // case Keyboard.KEY_W: {
-    // if (cam.getQuadrant() == 1) {
-    // gForward = 1;
-    // }
-    // if (cam.getQuadrant() == 2) {
-    // gLeft = 1;
-    // }
-    // if (cam.getQuadrant() == 3) {
-    // gBackward = 1;
-    // }
-    // if (cam.getQuadrant() == 4) {
-    // gRight = 1;
-    // }
-    // break;
-    // }
-    // case Keyboard.KEY_S: {
-    // if (cam.getQuadrant() == 1) {
-    // gBackward = 1;
-    // }
-    // if (cam.getQuadrant() == 2) {
-    // gRight = 1;
-    // }
-    // if (cam.getQuadrant() == 3) {
-    // gForward = 1;
-    // }
-    // if (cam.getQuadrant() == 4) {
-    // gLeft = 1;
-    // }
-    // break;
-    // }
-    // case Keyboard.KEY_A: {
-    // if (cam.getQuadrant() == 1) {
-    // gLeft = 1;
-    // }
-    // if (cam.getQuadrant() == 2) {
-    // gBackward = 1;
-    // }
-    // if (cam.getQuadrant() == 3) {
-    // gRight = 1;
-    // }
-    // if (cam.getQuadrant() == 4) {
-    // gForward = 1;
-    // }
-    // break;
-    // }
-    // case Keyboard.KEY_D: {
-    // if (cam.getQuadrant() == 1) {
-    // gRight = 1;
-    // }
-    // if (cam.getQuadrant() == 2) {
-    // gForward = 1;
-    // }
-    // if (cam.getQuadrant() == 3) {
-    // gLeft = 1;
-    // }
-    // if (cam.getQuadrant() == 4) {
-    // gBackward = 1;
-    // }
-    // break;
-    // }
-    //
-    // default:
-    // super.specialKeyboard(key, x, y, modifiers);
-    // break;
-    // }
-    // }
+			// TODO
+			// fix this ish
+			if (gJump != 0) {
+				player.activate(true);
+				Vector3f curr = new Vector3f();
+				player.getLinearVelocity(curr);
+				if (curr.y <= .5) {
+					Vector3f jump = new Vector3f(0, 10, 0);
+					player.setLinearVelocity(new Vector3f(curr.x + jump.x,
+							curr.y + jump.y, curr.z + jump.z));
+				}
 
-    @Override
-    public synchronized void specialKeyboard(
-        int key,
-        int x,
-        int y,
-        int modifiers )
-    {
-        switch ( key )
-        {
-            case Keyboard.KEY_SPACE:
-            {
-                gJump = 1;
-                break;
-            }
-            case Keyboard.KEY_UP:
-            {
-                cam.handleRotKeysPan();
-                break;
-            }
-            case Keyboard.KEY_DOWN:
-            {
-                cam.handleRotKeysPan();
-                break;
-            }
+			}
+			dynamicsWorld.stepSimulation(dt);
+			// optional but useful: debug drawing
+			dynamicsWorld.debugDrawWorld();
+		} catch (NullPointerException e) {
+			System.out.println("Simulation had null at some point");
+			// WARN this is very serious
+			// TODO figure out how to fix this...
+		} catch (ArrayIndexOutOfBoundsException arr) {
+			System.out.println("Index Out of Bounds in Simulation");
+		}
 
-            case Keyboard.KEY_LEFT:
-            {
-                cam.handleRotKeysPan();
-                break;
-            }
+		// optional but useful: debug drawing
+		cam.resetClock();
+		dynamicsWorld.debugDrawWorld();
+		renderme();
 
-            case Keyboard.KEY_RIGHT:
-            {
-                cam.handleRotKeysPan();
-                break;
-            }
-            case Keyboard.KEY_W:
-            {
-                if ( cam.getQuadrant() == 1 )
-                {
-                    gForward = 1;
-                }
-                if ( cam.getQuadrant() == 2 )
-                {
-                    gLeft = 1;
-                }
-                if ( cam.getQuadrant() == 3 )
-                {
-                    gBackward = 1;
-                }
-                if ( cam.getQuadrant() == 4 )
-                {
-                    gRight = 1;
-                }
-                break;
-            }
-            case Keyboard.KEY_S:
-            {
-                if ( cam.getQuadrant() == 1 )
-                {
-                    gBackward = 1;
-                }
-                if ( cam.getQuadrant() == 2 )
-                {
-                    gRight = 1;
-                }
-                if ( cam.getQuadrant() == 3 )
-                {
-                    gForward = 1;
-                }
-                if ( cam.getQuadrant() == 4 )
-                {
-                    gLeft = 1;
-                }
-                break;
-            }
-            case Keyboard.KEY_A:
-            {
-                if ( cam.getQuadrant() == 1 )
-                {
-                    gLeft = 1;
-                }
-                if ( cam.getQuadrant() == 2 )
-                {
-                    gBackward = 1;
-                }
-                if ( cam.getQuadrant() == 3 )
-                {
-                    gRight = 1;
-                }
-                if ( cam.getQuadrant() == 4 )
-                {
-                    gForward = 1;
-                }
-                break;
-            }
-            case Keyboard.KEY_D:
-            {
-                if ( cam.getQuadrant() == 1 )
-                {
-                    gRight = 1;
-                }
-                if ( cam.getQuadrant() == 2 )
-                {
-                    gForward = 1;
-                }
-                if ( cam.getQuadrant() == 3 )
-                {
-                    gLeft = 1;
-                }
-                if ( cam.getQuadrant() == 4 )
-                {
-                    gBackward = 1;
-                }
-                break;
-            }
+		// glFlush();
+		// glutSwapBuffers();
 
-            case Keyboard.KEY_R:
-            {
-                // Remove all objects
-                for ( CollisionObject a : dynamicsWorld.getCollisionObjectArray()
-                    .toArray( new CollisionObject[0] ) )
-                {
-                    Entity e = null;
-                    for ( RigidBody r : entityList.keySet() )
-                    {
-                        if ( r.getCollisionShape()
-                            .equals( a.getCollisionShape() ) )
-                        {
-                            e = entityList.get( r );
-                            break;
-                        }
-                    }
-                    try
-                    {
-                        dynamicsWorld.removeCollisionObject( a );
-                        if ( e != null )
-                        {
-                            eventDispatcher.notify( new BlockDestroyedEvent( e ) );
-                            entityList.remove( e );
-                        }
-                    }
-                    catch ( NullPointerException n )
-                    {
-                        System.out.println( "Tried to remove object that is not there" );
-                    }
-                    catch ( ArrayIndexOutOfBoundsException b )
-                    {
-                        System.out.println( "ArrayIndexOutOfBounds in simulation" );
-                    }
-                }
-                // repopulate world
-                populate();
-                break;
-            }
-            default:
-            {
-                super.specialKeyboard( key, x, y, modifiers );
-                break;
-            }
-        }
-    }
+	}
 
+	@Override
+	public void displayCallback() {
+		gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    @Override
-    public synchronized void shootBox( Vector3f destination )
-    {
-        if ( dynamicsWorld != null )
-        {
-            float mass = 50f;
-            Transform startTransform = new Transform();
-            startTransform.setIdentity();
-            Vector3f camPos = new Vector3f( getCameraPosition() );
-            // Fix stuff?
-            Vector3f shootfrom = player.getCenterOfMassPosition( new Vector3f() );
-            shootfrom.y = shootfrom.y + 1;
-            startTransform.origin.set( shootfrom );
+		renderme();
 
-            if ( shapeType.equals( "BOX" ) )
-            {
-                shootBoxShape = new BoxShape( new Vector3f( 1f, 1f, 1f ) );
-            }
-            else if ( shapeType.equals( "SPHERE" ) )
-            {
-                shootBoxShape = new SphereShape( 1f );
-            }
-            else if ( shapeType.equals( "TRIANGLE" ) )
-            {
-                // TODO implement a pyramid
-                shootBoxShape = new ConeShape( 1f, 3f );
-                // shootBoxShape = new TriangleShape(new Vector3f(1f, 1f, 1f),
-                // new Vector3f(1f, 0f, 0f), new Vector3f(0f, -1f, 0f));
-            }
-            else if ( shapeType.equals( "CYLINDER" ) )
-            {
-                shootBoxShape = new CylinderShape( new Vector3f( 1f, 1f, 1f ) );
-            }
+		// glFlush();
+		// glutSwapBuffers();
+	}
+
+	private StringBuilder buf = new StringBuilder();
+	private final Transform m = new Transform();
+	private Vector3f wireColor = new Vector3f();
+	protected Color3f TEXT_COLOR = new Color3f(0f, 0f, 0f);
+
+	public void setup() {
+		cam.setCamera(camera);
+		camera.setCamera(0f, 0f, 15f, 0f, 0f, -1f, 0f, 1f, 0f);
+
+	}
+
+	@Override
+	public void specialKeyboardUp(int key, int x, int y, int modifiers) {
+		switch (key) {
+		case Keyboard.KEY_W: {
+			if (cam.getQuadrant() == 1) {
+				gForward = 0;
+			}
+			if (cam.getQuadrant() == 2) {
+				gLeft = 0;
+			}
+			if (cam.getQuadrant() == 3) {
+				gBackward = 0;
+			}
+			if (cam.getQuadrant() == 4) {
+				gRight = 0;
+			}
+			break;
+		}
+		case Keyboard.KEY_S: {
+			if (cam.getQuadrant() == 1) {
+				gBackward = 0;
+			}
+			if (cam.getQuadrant() == 2) {
+				gRight = 0;
+			}
+			if (cam.getQuadrant() == 3) {
+				gForward = 0;
+			}
+			if (cam.getQuadrant() == 4) {
+				gLeft = 0;
+			}
+			break;
+		}
+		case Keyboard.KEY_A: {
+			if (cam.getQuadrant() == 1) {
+				gLeft = 0;
+			}
+			if (cam.getQuadrant() == 2) {
+				gBackward = 0;
+			}
+			if (cam.getQuadrant() == 3) {
+				gRight = 0;
+			}
+			if (cam.getQuadrant() == 4) {
+				gForward = 0;
+			}
+			break;
+		}
+		case Keyboard.KEY_D: {
+			if (cam.getQuadrant() == 1) {
+				gRight = 0;
+			}
+			if (cam.getQuadrant() == 2) {
+				gForward = 0;
+			}
+			if (cam.getQuadrant() == 3) {
+				gLeft = 0;
+			}
+			if (cam.getQuadrant() == 4) {
+				gBackward = 0;
+			}
+			break;
+		}
+		case Keyboard.KEY_SPACE: {
+			gJump = 0;
+			break;
+		}
+		}
+	}
+
+	@Override
+	public synchronized void specialKeyboard(int key, int x, int y,
+			int modifiers) {
+		switch (key) {
+		case Keyboard.KEY_SPACE: {
+			gJump = 1;
+			break;
+		}
+		case Keyboard.KEY_UP: {
+			cam.handleRotKeysPan();
+			break;
+		}
+		case Keyboard.KEY_DOWN: {
+			cam.handleRotKeysPan();
+			break;
+		}
+
+		case Keyboard.KEY_LEFT: {
+			cam.handleRotKeysPan();
+			break;
+		}
+
+		case Keyboard.KEY_RIGHT: {
+			cam.handleRotKeysPan();
+			break;
+		}
+		case Keyboard.KEY_W: {
+			if (cam.getQuadrant() == 1) {
+				gForward = 1;
+			}
+			if (cam.getQuadrant() == 2) {
+				gLeft = 1;
+			}
+			if (cam.getQuadrant() == 3) {
+				gBackward = 1;
+			}
+			if (cam.getQuadrant() == 4) {
+				gRight = 1;
+			}
+			break;
+		}
+		case Keyboard.KEY_S: {
+			if (cam.getQuadrant() == 1) {
+				gBackward = 1;
+			}
+			if (cam.getQuadrant() == 2) {
+				gRight = 1;
+			}
+			if (cam.getQuadrant() == 3) {
+				gForward = 1;
+			}
+			if (cam.getQuadrant() == 4) {
+				gLeft = 1;
+			}
+			break;
+		}
+		case Keyboard.KEY_A: {
+			if (cam.getQuadrant() == 1) {
+				gLeft = 1;
+			}
+			if (cam.getQuadrant() == 2) {
+				gBackward = 1;
+			}
+			if (cam.getQuadrant() == 3) {
+				gRight = 1;
+			}
+			if (cam.getQuadrant() == 4) {
+				gForward = 1;
+			}
+			break;
+		}
+		case Keyboard.KEY_D: {
+			if (cam.getQuadrant() == 1) {
+				gRight = 1;
+			}
+			if (cam.getQuadrant() == 2) {
+				gForward = 1;
+			}
+			if (cam.getQuadrant() == 3) {
+				gLeft = 1;
+			}
+			if (cam.getQuadrant() == 4) {
+				gBackward = 1;
+			}
+			break;
+		}
+
+		case Keyboard.KEY_R: {
+			// Remove all objects
+			for (CollisionObject a : dynamicsWorld.getCollisionObjectArray()
+					.toArray(new CollisionObject[0])) {
+				Entity e = null;
+				for (RigidBody r : entityList.keySet()) {
+					if (r.getCollisionShape().equals(a.getCollisionShape())) {
+						e = entityList.get(r);
+						break;
+					}
+				}
+				try {
+					dynamicsWorld.removeCollisionObject(a);
+					if (e != null) {
+						eventDispatcher.notify(new BlockDestroyedEvent(e));
+						entityList.remove(e);
+					}
+				} catch (NullPointerException n) {
+					System.out
+							.println("Tried to remove object that is not there");
+				} catch (ArrayIndexOutOfBoundsException b) {
+					System.out.println("ArrayIndexOutOfBounds in simulation");
+				}
+			}
+			// repopulate world
+			populate();
+			break;
+		}
+		default: {
+			super.specialKeyboard(key, x, y, modifiers);
+			break;
+		}
+		}
+	}
+	
+	@Override
+	public synchronized void shootBox(Vector3f destination) {
+		if (dynamicsWorld != null) {
+			float mass = 50f;
+			Transform startTransform = new Transform();
+			startTransform.setIdentity();
+			Vector3f camPos = new Vector3f(getCameraPosition());
+			// Fix stuff?
+			Vector3f shootfrom = player.getCenterOfMassPosition(new Vector3f());
+			shootfrom.y = shootfrom.y + 1;
+			startTransform.origin.set(shootfrom);
+
+			if (shapeType.equals("BOX")) {
+				shootBoxShape = new BoxShape(new Vector3f(1f, 1f, 1f));
+			} else if (shapeType.equals("SPHERE")) {
+				shootBoxShape = new SphereShape(1f);
+			} else if (shapeType.equals("TRIANGLE")) {
+				shootBoxShape = new ConeShape(1f, 3f);
+			} else if (shapeType.equals("CYLINDER")) {
+				shootBoxShape = new CylinderShape(new Vector3f(1f, 1f, 1f));
+			}
 
             Vector3f linVel = new Vector3f( destination.x - camPos.x,
                 destination.y - camPos.y,
@@ -1419,7 +1135,7 @@ public class TwoDotFiveDBsp extends DemoApplication
                 startTransform,
                 shootBoxShape,
                 shootBoxShape.getName() + r.nextFloat(),
-                null,
+                new Vector3f(1f, 1f, 1f),
                 null );
             Transform worldTrans = entity.getWorldTransform( new Transform() );
             worldTrans.origin.set( shootfrom );
@@ -1525,7 +1241,7 @@ public class TwoDotFiveDBsp extends DemoApplication
                         event.getEntity().getWorldTransform( new Transform() ),
                         event.getEntity().getCollisionShape(),
                         event.getEntity().getID(),
-                        "",
+                        event.getEntity().getImage(),
                         new String[] { "" } );
                     entity.setAngularFactor( event.getEntity()
                         .getAngularFactor() );
@@ -1607,7 +1323,7 @@ public class TwoDotFiveDBsp extends DemoApplication
             ObjectArrayList<Vector3f> vertices,
             float mass,
             Vector3f acceleration,
-            String image,
+            Vector3f image,
             String[] description )
         {
             Transform startTransform = new Transform();
@@ -1639,7 +1355,7 @@ public class TwoDotFiveDBsp extends DemoApplication
             Vector3f transform,
             float mass,
             Vector3f acceleration,
-            String image,
+            Vector3f image,
             String[] description )
         {
             CollisionShape shape = new BoxShape( new Vector3f( 1f, 1f, 1f ) );
@@ -1683,7 +1399,7 @@ public class TwoDotFiveDBsp extends DemoApplication
             Transform origin,
             CollisionShape shape,
             String name,
-            String image,
+            Vector3f image,
             String[] description,
             Vector3f acceleration )
         {
@@ -1693,26 +1409,6 @@ public class TwoDotFiveDBsp extends DemoApplication
                 name,
                 image,
                 description );
-            if ( name.equals( "elevatorsmash1" ) )
-            {
-                elevator1 = e;
-            }
-            if ( name.equals( "elevatorsmash2" ) )
-            {
-                elevator2 = e;
-            }
-            if ( name.equals( "elevatorsmash3" ) )
-            {
-                elevator3 = e;
-            }
-            if ( name.equals( "elevatorsmash4" ) )
-            {
-                elevator4 = e;
-            }
-            if ( name.equals( "elevatorsmash5" ) )
-            {
-                elevator5 = e;
-            }
             if ( acceleration != null )
             {
                 e.setEntityGravity( acceleration );
@@ -1727,300 +1423,156 @@ public class TwoDotFiveDBsp extends DemoApplication
         }
     }
 
+	public class BlockCollisionListener extends BlockListener {
+		@Override
+		public void onBlockCreate(BlockCreateEvent event) {
+			sendToRemote(event);
+		}
 
-    public class BlockCollisionListener extends BlockListener
-    {
-        @Override
-        public void onBlockCreate( BlockCreateEvent event )
-        {
-            sendToRemote( event );
-        }
+		@Override
+		public void onBlockDestroyed(BlockDestroyedEvent event) {
+			sendToRemote(event);
+		}
 
+		@Override
+		public synchronized void onBlockCollision(BlockCollisionEvent event) {
+			final PersistentManifold pm = event.getPersistentManifold();
+			if (pm.getBody0() instanceof RigidBody
+					&& pm.getBody1() instanceof RigidBody) {
+				final Entity entityA = entityList
+						.get((RigidBody) pm.getBody0());
+				final Entity entityB = entityList
+						.get((RigidBody) pm.getBody1());
+				if (entityA != null && entityB != null) {
+					// if ( entityA.getID().equals( "object2" ) )
+					// {
+					// entityA.getRigidBody().setAngularFactor( 0f );
+					// entityA.getRigidBody()
+					// .setAngularVelocity( new Vector3f( 0f, 0f, 0f ) );
+					// entityA.getRigidBody()
+					// .setLinearVelocity( new Vector3f( 0f, 0f, 0f ) );
+					// entityA.getRigidBody().setGravity( new Vector3f( 0f,
+					// 10f,
+					// 0f ) );
+					// System.out.println( "OMG" );
+					// }
+					// else if ( entityB.getID().equals( "object2" ) )
+					// {
+					// entityB.getRigidBody().setAngularFactor( 0f );
+					// entityB.getRigidBody()
+					// .setAngularVelocity( new Vector3f( 0f, 0f, 0f ) );
+					// entityB.getRigidBody()
+					// .setLinearVelocity( new Vector3f( 0f, 0f, 0f ) );
+					// entityB.getRigidBody().setGravity( new Vector3f( 0f,
+					// 10f,
+					// 0f ) );
+					// System.out.println( "OMA" );
+					// }
+					// TODO also, when a block is collided, check if they need
+					// to be "refrozen"
+					// if ( entityA.isFrozen() )
+					// {
+					// entityA.unfreeze();
+					// entityA.getRigidBody().translate( new Vector3f( 0f,
+					// 5f,
+					// 0f ) );
+					// }
+					// if ( entityB.isFrozen() )
+					// {
+					// entityB.unfreeze();
+					// entityA.getRigidBody().translate( new Vector3f( 0f,
+					// 5f,
+					// 0f ) );
+					// }
+					// Entites are known and exist, so we can act upon them
+					if (entityA.getCollisionShape().getName()
+							.equalsIgnoreCase("sphere")) {
+						if (setGravity(entityB, new Vector3f(0f, 30f, 0f))) {
+							// entityA.setGravity(new Vector3f(0f, 30f, 0f));
+							eventDispatcher.notify(new BlockDestroyedEvent(
+									entityA));
+							dynamicsWorld.removeCollisionObject(entityA);
+							entityList.remove(entityA);
+							entityB.translate(new Vector3f(5f, 0f, 0f));
+						}
+					} else if (entityB.getCollisionShape().getName()
+							.equalsIgnoreCase("sphere")) {
+						if (setGravity(entityA, new Vector3f(0f, 30f, 0f))) {
+							eventDispatcher.notify(new BlockDestroyedEvent(
+									entityB));
+							dynamicsWorld.removeCollisionObject(entityB);
+							entityA.translate(new Vector3f(5f, 0f, 0f));
+						}
+					} else {
+						// System.out.println("objA: " + entityA.getID()
+						// + " objB: " + entityB.getID());
+					}
+				} else {
+					// TODO Somehow it is known.... how to handle?
+				}
+			}
+		}
 
-        @Override
-        public void onBlockDestroyed( BlockDestroyedEvent event )
-        {
-            sendToRemote( event );
-        }
+		public boolean setGravity(Entity target, Vector3f direction) {
+			if (!target.isStaticObject()) {
+				eventDispatcher.notify(new BlockPhysicsChangeEvent(target,
+						direction));
+				target.setEntityGravity(direction);
+				target.activate();
+				return true;
+			}
+			return false;
+		}
+		
+		public void sendToRemote(Event<?> event) {
+			if (connected) {
+				try {
+					final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					final ObjectOutputStream oos = new ObjectOutputStream(baos);
+					oos.writeObject(new EventPackage(event));
+					oos.flush();
+					byte[] data = baos.toByteArray();
+					// System.out.println(data.length);
+					client.sendMessage(data);
+					oos.close();
+					baos.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 
+	public class CollisionStuff extends CollisionDispatcher {
+	    
+	    public CollisionStuff(CollisionConfiguration arg0)
+	    {
+	        super(arg0);
+	    }
 
-        @Override
-        public synchronized void onBlockCollision( BlockCollisionEvent event )
-        {
-            final PersistentManifold pm = event.getPersistentManifold();
-            if ( pm.getBody0() instanceof RigidBody
-                && pm.getBody1() instanceof RigidBody )
-            {
-                final Entity entityA = entityList.get( (RigidBody)pm.getBody0() );
-                final Entity entityB = entityList.get( (RigidBody)pm.getBody1() );
+		/**
+		 * Called when a new collision between objects occurred
+		 */
+		@Override
+		public PersistentManifold getNewManifold(Object b0, Object b1) {
+			// TODO maybe check and negate if one of the objects is frozen?
+			// don't know the effect it would cause
+			final PersistentManifold pm = super.getNewManifold(b0, b1);
+			// Throw event
+			eventDispatcher.notify(new BlockCollisionEvent(pm));
+			return pm;
+		}
 
-                final RigidBody a = (RigidBody)pm.getBody0();
-                final RigidBody b = (RigidBody)pm.getBody1();
-                if ( entityA != null && entityB != null )
-                {
-                    //System.out.println( "Entity A: " + entityA.getID() + " Entity B: " + entityB.getID() );
-                    if ( entityA.getID().equals( "elevatorsmash1" )
-                        || entityB.getID().equals( "elevatorsmash1" ) )
-                    {
-                        System.out.println( "I collided with elevator" );
-                    }
-
-                    // if ( entityA.getID().equals( "object2" ) )
-                    // {
-                    // entityA.getRigidBody().setAngularFactor( 0f );
-                    // entityA.getRigidBody()
-                    // .setAngularVelocity( new Vector3f( 0f, 0f, 0f ) );
-                    // entityA.getRigidBody()
-                    // .setLinearVelocity( new Vector3f( 0f, 0f, 0f ) );
-                    // entityA.getRigidBody().setGravity( new Vector3f( 0f,
-                    // 10f,
-                    // 0f ) );
-                    // System.out.println( "OMG" );
-                    // }
-                    // else if ( entityB.getID().equals( "object2" ) )
-                    // {
-                    // entityB.getRigidBody().setAngularFactor( 0f );
-                    // entityB.getRigidBody()
-                    // .setAngularVelocity( new Vector3f( 0f, 0f, 0f ) );
-                    // entityB.getRigidBody()
-                    // .setLinearVelocity( new Vector3f( 0f, 0f, 0f ) );
-                    // entityB.getRigidBody().setGravity( new Vector3f( 0f,
-                    // 10f,
-                    // 0f ) );
-                    // System.out.println( "OMA" );
-                    // }
-                    // TODO CLIFF STUFF
-                    // TODO also, when a block is collided, check if they need
-                    // to be "refrozen"
-                    // if ( entityA.isFrozen() )
-                    // {
-                    // entityA.unfreeze();
-                    // entityA.getRigidBody().translate( new Vector3f( 0f,
-                    // 5f,
-                    // 0f ) );
-                    // }
-                    // if ( entityB.isFrozen() )
-                    // {
-                    // entityB.unfreeze();
-                    // entityA.getRigidBody().translate( new Vector3f( 0f,
-                    // 5f,
-                    // 0f ) );
-                    // }
-                    // Entites are known and exist, so we can act upon them
-                    if ( entityA.getCollisionShape()
-                        .getName()
-                        .equalsIgnoreCase( "sphere" ) )
-                    {
-                        if ( setGravity( entityB, new Vector3f( 0f, 30f, 0f ) ) )
-                        {
-                            // entityA.setGravity(new Vector3f(0f, 30f, 0f));
-                            eventDispatcher.notify( new BlockDestroyedEvent( entityA ) );
-                            dynamicsWorld.removeCollisionObject( entityA );
-                            entityList.remove( entityA );
-                            entityB.translate( new Vector3f( 5f, 0f, 0f ) );
-                        }
-                    }
-                    else if ( entityB.getCollisionShape()
-                        .getName()
-                        .equalsIgnoreCase( "sphere" ) )
-                    {
-                        if ( setGravity( entityA, new Vector3f( 0f, 30f, 0f ) ) )
-                        {
-                            eventDispatcher.notify( new BlockDestroyedEvent( entityB ) );
-                            dynamicsWorld.removeCollisionObject( entityB );
-                            entityA.translate( new Vector3f( 5f, 0f, 0f ) );
-                        }
-                    }
-                    else
-                    {
-                        // System.out.println("objA: " + entityA.getID()
-                        // + " objB: " + entityB.getID());
-                    }
-                }
-                else
-                {
-                    // TODO Somehow it is known.... how to handle?
-                }
-            }
-        }
-
-
-        @Override
-        public void onBlockCollisionResolved( BlockCollisionResolvedEvent event )
-        {
-
-            final PersistentManifold pm = event.getPersistentManifold();
-            if ( pm.getBody0() instanceof RigidBody
-                && pm.getBody1() instanceof RigidBody )
-            {
-                final Entity entityA = entityList.get( (RigidBody)pm.getBody0() );
-                final Entity entityB = entityList.get( (RigidBody)pm.getBody1() );
-                if ( entityA != null && entityB != null )
-                {
-                    // if ( entityA.getRigidBody().isActive()
-                    // && entityB.getRigidBody().isActive() )
-                    // {
-                    // if ( entityA.getID().equalsIgnoreCase( "box" )
-                    // && entityB.getID().equalsIgnoreCase( "box" ) )
-                    // {
-                    // // TODO block freeze event
-                    // entityA.freeze();
-                    // entityB.freeze();
-                    // }
-                    // }
-                }
-            }
-
-        }
-
-
-        public boolean setGravity( Entity target, Vector3f direction )
-        {
-            if ( !target.isStaticObject() )
-            {
-                eventDispatcher.notify( new BlockPhysicsChangeEvent( target,
-                    direction ) );
-                target.setEntityGravity( direction );
-                target.activate();
-
-                return true;
-            }
-            return false;
-        }
-
-
-        public void sendToRemote( Event<?> event )
-        {
-            if ( connected )
-            {
-                try
-                {
-                    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    final ObjectOutputStream oos = new ObjectOutputStream( baos );
-                    oos.writeObject( new EventPackage( event ) );
-                    oos.flush();
-                    byte[] data = baos.toByteArray();
-                    // System.out.println(data.length);
-                    client.sendMessage( data );
-                    oos.close();
-                    baos.close();
-                }
-                catch ( IOException e )
-                {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-
-    public class CollisionStuff extends CollisionDispatcher
-    {
-
-        /*
-         * Standard constructor
-         */
-        public CollisionStuff( CollisionConfiguration arg0 )
-        {
-            super( arg0 );
-        }
-
-
-        /**
-         * Called when a new collision between objects occurred
-         */
-        @Override
-        public PersistentManifold getNewManifold( Object b0, Object b1 )
-        {
-            // TODO maybe check and negate if one of the objects is frozen?
-            // don't know the effect it would cause
-            final PersistentManifold pm = super.getNewManifold( b0, b1 );
-            // Throw event
-            eventDispatcher.notify( new BlockCollisionEvent( pm ) );
-            return pm;
-        }
-
-
-        /**
-         * Called when a collision has been resolved: when the objects are no
-         * longer in contact
-         */
-        @Override
-        public void releaseManifold( PersistentManifold manifold )
-        {
-            // Throw event
-            eventDispatcher.notify( new BlockCollisionResolvedEvent( manifold ) );
-            super.releaseManifold( manifold );
-        }
-    }
-
-
-    private void elevatorshiftxhigh( Entity a, Vector3f v )
-    {
-        a.freeze();
-        final Vector3f vector = a.getCenterOfMassPosition( new Vector3f() );
-        a.translate( new Vector3f( v.x - vector.x, v.y - vector.y, v.z
-            - vector.z ) );
-        a.setEntityGravity( new Vector3f( 7f, 0f, 0f ) );
-        a.setLinearVelocity( new Vector3f( 7f, 0f, 0f ) );
-    }
-
-
-    private void elevatorshiftxlow( Entity a, Vector3f v )
-    {
-        a.freeze();
-        final Vector3f vector = a.getCenterOfMassPosition( new Vector3f() );
-        a.translate( new Vector3f( v.x - vector.x, v.y - vector.y, v.z
-            - vector.z ) );
-        a.setEntityGravity( new Vector3f( -7f, 0f, 0f ) );
-        a.setLinearVelocity( new Vector3f( -7f, 0f, 0f ) );
-
-    }
-
-
-    private void elevatorshiftyhigh( Entity a, Vector3f v )
-    {
-        a.freeze();
-        final Vector3f vector = a.getCenterOfMassPosition( new Vector3f() );
-        a.translate( new Vector3f( v.x - vector.x, v.y - vector.y, v.z
-            - vector.z ) );
-        a.setEntityGravity( new Vector3f( 0f, 7f, 0f ) );
-        a.setLinearVelocity( new Vector3f( 0f, 7f, 0f ) );
-
-    }
-
-
-    private void elevatorshiftylow( Entity a, Vector3f v )
-    {
-        a.freeze();
-        final Vector3f vector = a.getCenterOfMassPosition( new Vector3f() );
-        a.translate( new Vector3f( v.x - vector.x, v.y - vector.y, v.z
-            - vector.z ) );
-        a.setEntityGravity( new Vector3f( 0f, -7f, 0f ) );
-        a.setLinearVelocity( new Vector3f( 0f, -7f, 0f ) );
-
-    }
-
-
-    private void elevatorshiftzhigh( Entity a, Vector3f v )
-    {
-        a.freeze();
-        final Vector3f vector = a.getCenterOfMassPosition( new Vector3f() );
-        a.translate( new Vector3f( v.x - vector.x, v.y - vector.y, v.z
-            - vector.z ) );
-        a.setEntityGravity( new Vector3f( 0f, 0f, 7f ) );
-
-    }
-
-
-    private void elevatorshiftzlow( Entity a, Vector3f v )
-    {
-        a.freeze();
-        final Vector3f vector = a.getCenterOfMassPosition( new Vector3f() );
-        a.translate( new Vector3f( v.x - vector.x, v.y - vector.y, v.z
-            - vector.z ) );
-        a.setEntityGravity( new Vector3f( 0f, 0f, -7f ) );
-
-    }
+		/**
+		 * Called when a collision has been resolved: when the objects are no
+		 * longer in contact
+		 */
+		@Override
+		public void releaseManifold(PersistentManifold manifold) {
+			// Throw event
+			eventDispatcher.notify(new BlockCollisionResolvedEvent(manifold));
+			super.releaseManifold(manifold);
+		}
+	}
 }

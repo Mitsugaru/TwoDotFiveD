@@ -140,14 +140,14 @@ public class CharacterDemo extends DemoApplication {
 		 */
 
 		//new BspToBulletConverter().convertBsp(getClass().getResourceAsStream("/com/bulletphysics/demos/bsp/exported.bsp.txt"));
-		try
-        {
-            new BspYamlToBulletConverter().convertBspYaml(getClass().getResourceAsStream("scene.yml"));
-        }
-        catch(IOException e)
-        {
-            Logging.log.log(Level.SEVERE, "Could not close InputStream for: scene.yml", e);
-        }
+//		try
+//        {
+//            new BspYamlToBulletConverter().convertBspYaml(getClass().getResourceAsStream("scene.yml"));
+//        }
+//        catch(IOException e)
+//        {
+//            Logging.log.log(Level.SEVERE, "Could not close InputStream for: scene.yml", e);
+//        }
 		dynamicsWorld.addCollisionObject(ghostObject, CollisionFilterGroups.CHARACTER_FILTER, (short)(CollisionFilterGroups.STATIC_FILTER | CollisionFilterGroups.DEFAULT_FILTER));
 
 		dynamicsWorld.addAction(character);
@@ -383,38 +383,38 @@ public class CharacterDemo extends DemoApplication {
 
 	// //////////////////////////////////////////////////////////////////////////
 	
-	private class BspYamlToBulletConverter extends BspYamlConverter
-	{
-
-		@Override
-		public void addConvexVerticesCollider(String name, ObjectArrayList<Vector3f> vertices, float mass, Vector3f acceleration, String image, String[] description)
-		{
-			Transform startTransform = new Transform();
-			// can use a shift
-			startTransform.setIdentity();
-			startTransform.origin.set(0, 0, -10f);
-			
-			// this create an internal copy of the vertices
-			CollisionShape shape = new ConvexHullShape(vertices);
-			collisionShapes.add(shape);
-			
-			// btRigidBody* body = m_demoApp->localCreateRigidBody(mass,
-			// startTransform,shape);
-			RigidBody body = localCreateRigidBody(mass, startTransform, shape);
-			if(acceleration != null)
-			{
-				body.setGravity(acceleration);
-			}
-		}
-
-		@Override
-		public void addShapeCollider(String name, String type,
-				Vector3f localscaling, Vector3f transform, float mass, Vector3f acceleration,
-				String image, String[] description)
-		{
-			// TODO Auto-generated method stub
-			
-		}
-		
-	}
+//	private class BspYamlToBulletConverter extends BspYamlConverter
+//	{
+//
+//		@Override
+//		public void addConvexVerticesCollider(String name, ObjectArrayList<Vector3f> vertices, float mass, Vector3f acceleration, String image, String[] description)
+//		{
+//			Transform startTransform = new Transform();
+//			// can use a shift
+//			startTransform.setIdentity();
+//			startTransform.origin.set(0, 0, -10f);
+//			
+//			// this create an internal copy of the vertices
+//			CollisionShape shape = new ConvexHullShape(vertices);
+//			collisionShapes.add(shape);
+//			
+//			// btRigidBody* body = m_demoApp->localCreateRigidBody(mass,
+//			// startTransform,shape);
+//			RigidBody body = localCreateRigidBody(mass, startTransform, shape);
+//			if(acceleration != null)
+//			{
+//				body.setGravity(acceleration);
+//			}
+//		}
+//
+//		@Override
+//		public void addShapeCollider(String name, String type,
+//				Vector3f localscaling, Vector3f transform, float mass, Vector3f acceleration,
+//				String image, String[] description)
+//		{
+//			// TODO Auto-generated method stub
+//			
+//		}
+//		
+//	}
 }

@@ -95,9 +95,10 @@ public class GLShapeDrawer {
 
 	private static float[] glMat = new float[16];
 	
-	public static void drawOpenGL(IGL gl, Transform trans, CollisionShape shape, Vector3f color, int debugMode) {
+	public static void drawOpenGL(IGL gl, Transform trans, CollisionShape shape, Vector3f color, int debugMode, Vector3f colorVector) {
 		ObjectPool<Transform> transformsPool = ObjectPool.get(Transform.class);
 		ObjectPool<Vector3f> vectorsPool = ObjectPool.get(Vector3f.class);
+		//System.out.println("Vector in draw " + colorVector);
 
 		//System.out.println("shape="+shape+" type="+BroadphaseNativeTypes.forValue(shape.getShapeType()));
 
@@ -136,8 +137,8 @@ public class GLShapeDrawer {
 
 			//glPushMatrix();
 
-			//gl.glEnable(GL_COLOR_MATERIAL);
-			//gl.glColor3f(color.x, color.y, color.z);
+			gl.glEnable(GL_COLOR_MATERIAL);
+			gl.glColor3f(colorVector.x, colorVector.y, colorVector.z);
 
 			boolean useWireframeFallback = true;
 
@@ -151,6 +152,7 @@ public class GLShapeDrawer {
 						BoxShape boxShape = (BoxShape) shape;
 						Vector3f halfExtent = boxShape.getHalfExtentsWithMargin(vectorsPool.get());
 						gl.glScalef(2f * halfExtent.x, 2f * halfExtent.y, 2f * halfExtent.z);
+					
 						gl.drawCube(1f);
 						vectorsPool.release(halfExtent);
 						useWireframeFallback = false;
@@ -160,7 +162,7 @@ public class GLShapeDrawer {
 						SphereShape sphereShape = (SphereShape) shape;
 						float radius = sphereShape.getMargin(); // radius doesn't include the margin, so draw with margin
 						// TODO: glutSolidSphere(radius,10,10);
-						//sphere.draw(radius, 8, 8);
+						//sphere.draw(radius, 8, 8); 
 						gl.drawSphere(radius, 10, 10);
 						/*
 						glPointSize(10f);
@@ -227,6 +229,7 @@ public class GLShapeDrawer {
 						pt3.sub(planeOrigin, pt3);
 						
 						gl.glBegin(gl.GL_LINES);
+						
 						gl.glVertex3f(pt0.x,pt0.y,pt0.z);
 						gl.glVertex3f(pt1.x,pt1.y,pt1.z);
 						gl.glVertex3f(pt2.x,pt2.y,pt2.z);
