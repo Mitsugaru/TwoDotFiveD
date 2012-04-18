@@ -87,13 +87,13 @@ public class MainOptionController implements ScreenController {
 		int opt = dropDown1.getSelectedIndex();
 		
 		if (opt == 0) {
-			config.displayWidth = disint;
+			Config.displayWidth = disint;
 			
 		} else if (opt == 1) {
-			config.displayHeight = disint;
+			Config.displayHeight = disint;
 			
 		} else {
-			config.displayFrequency = disint;
+			Config.displayFrequency = disint;
 			
 		}
 	}
