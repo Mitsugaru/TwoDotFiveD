@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 
 import com.ATeam.twoDotFiveD.debug.*;
-import com.ATeam.twoDotFiveD.event.EventDispatcher;
+//import com.ATeam.twoDotFiveD.event.EventDispatcher;
 import com.ATeam.twoDotFiveD.gui.DisplayStuff;
 
 import de.lessvoid.nifty.Nifty;
@@ -19,7 +19,7 @@ public class TwoDotFiveD {
 			+ System.getProperty("file.separator") + ".TwoDotFiveD";
 	public static Logging logger = new Logging(homeDir);
 	public static Config config = new Config(homeDir);
-	private static EventDispatcher dispatcher = new EventDispatcher();
+	//private static EventDispatcher dispatcher = new EventDispatcher();
 	private static final String SPLASH_XML = "com/ATeam/twoDotFiveD/layout/splash.xml";
 	private static final String MOUSE_CURSOR = "nifty-cursor.png";
 

@@ -13,13 +13,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.ATeam.twoDotFiveD.debug.Logging;
 
-import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.controls.DropDown;
-import de.lessvoid.nifty.controls.dynamic.PanelCreator;
-import de.lessvoid.nifty.elements.Element;
-import de.lessvoid.nifty.screen.Screen;
-import de.lessvoid.nifty.screen.ScreenController;
-
 /**
  * Handles the default config.yml for the program.
  * 
@@ -120,15 +113,15 @@ public class Config
 			// Save
 			config.save(configFile);
 			// Load variables from config
-			this.vSync = config.getBoolean("window.vSync", false);
-			this.fullScreen = config.getBoolean("window.fullScreen", false);
-			this.displayWidth = config.getInt("window.displayWidth", -1);
-			this.displayHeight = config.getInt("window.displayHeight", -1);
-			this.displayColorBits = config
+			Config.vSync = config.getBoolean("window.vSync", false);
+			Config.fullScreen = config.getBoolean("window.fullScreen", false);
+			Config.displayWidth = config.getInt("window.displayWidth", -1);
+			Config.displayHeight = config.getInt("window.displayHeight", -1);
+			Config.displayColorBits = config
 					.getInt("window.displayColorBits", -1);
-			this.displayFrequency = config
+			Config.displayFrequency = config
 					.getInt("window.displayFrequency", -1);
-			this.depthBufferBits = config.getInt("window.depthBufferBits", 24);
+			Config.depthBufferBits = config.getInt("window.depthBufferBits", 24);
 			// Check bounds
 			checkBounds();
 		}
@@ -188,8 +181,8 @@ public class Config
 		{
 			config.load(configFile);
 			// Load variables from config
-			this.vSync = config.getBoolean("window.vSync", false);
-			this.fullScreen = config.getBoolean("window.fullScreen", false);
+			Config.vSync = config.getBoolean("window.vSync", false);
+			Config.fullScreen = config.getBoolean("window.fullScreen", false);
 			// Check bounds
 			checkBounds();
 		}
@@ -220,55 +213,4 @@ public class Config
 					"[Config] Config has invalid configuration!", e);
 		}
 	}
-	
-	/**
-	 * Get config value of window.vSync
-	 * 
-	 * @return If vsync is enabled
-	 */
-	public boolean getVSync()
-	{
-		return vSync;
-	}
-	
-	/**
-	 * Get config value of window.fullscreen
-	 * 
-	 * @return If Fullscreen is enabled
-	 */
-	public boolean getFullScreen()
-	{
-		return fullScreen;
-	}
-	
-	public boolean getLogEnabled()
-	{
-		return logEnabled;
-	}
-	
-	public int getDisplayWidth()
-	{
-		return displayWidth;
-	}
-	
-	public int getDisplayHeight()
-	{
-		return displayHeight;
-	}
-	
-	public int getDisplayColorBits()
-	{
-		return displayColorBits;
-	}
-	
-	public int getDisplayFrequency()
-	{
-		return displayFrequency;
-	}
-	
-	public int getDepthBufferBits()
-	{
-		return depthBufferBits;
-	}
-	
 }
