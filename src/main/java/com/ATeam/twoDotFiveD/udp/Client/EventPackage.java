@@ -13,6 +13,7 @@ import com.ATeam.twoDotFiveD.event.block.BlockCreateEvent;
 import com.ATeam.twoDotFiveD.event.block.BlockDestroyedEvent;
 import com.ATeam.twoDotFiveD.event.block.BlockPhysicsChangeEvent;
 import com.ATeam.twoDotFiveD.event.player.PlayerMoveEvent;
+import com.ATeam.twoDotFiveD.event.player.PlayerQuitEvent;
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.collision.shapes.CollisionShape;
 import com.bulletphysics.collision.shapes.ConeShape;
@@ -220,7 +221,14 @@ public class EventPackage implements Serializable {
 	    final Transform startTransform = new Transform(transformMatrix);
 	    PlayerMoveEvent playerMoveEvent = new PlayerMoveEvent(e, startTransform);
 	    return playerMoveEvent;
-	} else {
+	}else if (className.contains("PlayerQuitEvent")) {
+	    // System.out.println("BlockDestroyedEvent package");
+	    // TODO not sure if this will error out or not...
+	    Entity e = new Entity(baseInfo, (String) data.get("entity.ID"),
+		    null, null);
+	    return (new PlayerQuitEvent(e));
+	}
+	else {
 	    // TODO do something?
 	    return (new BlockCreateEvent(null));
 	}

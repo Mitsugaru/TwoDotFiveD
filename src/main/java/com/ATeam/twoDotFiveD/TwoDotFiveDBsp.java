@@ -108,8 +108,7 @@ import static com.bulletphysics.demos.opengl.IGL.*;
 
 
 /**
- * BspDemo shows the convex collision detection, by converting a Quake BSP file
- * into convex objects and allowing interaction with boxes.
+ * Modifed demo from JBullet to suit the game needs and logic.
  * 
  * @author Vincent Deloso, Andrew Tucker,
  */
