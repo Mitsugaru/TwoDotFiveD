@@ -124,7 +124,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 
     float movespeed = 10f;
     private boolean dead = false;
-    
+
     private GLCam cam = new GLCam();
     private GLCamera camera = new GLCamera();
     GL_Vector ViewPoint;
@@ -154,7 +154,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
     private static chatClient client;
     int count = 0;
     private static boolean connected = false;
-    
+
     private Entity player;
     public static final String homeDir = System.getProperty("user.home")
 	    + System.getProperty("file.separator") + ".TwoDotFiveD";
@@ -164,6 +164,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
     public TwoDotFiveDBsp(IGL gl) {
 	super(gl);
     }
+
     public synchronized void initPhysics() throws Exception {
 	// cameraUp.set(0f, 0f, 1f);
 	// forwardAxis = 1;
@@ -219,7 +220,9 @@ public class TwoDotFiveDBsp extends DemoApplication {
 	makeboxes();
 	populate();
     }
+
     public static boolean nifty = true;
+
     private void makeboxes() {
 	Transform startTransform1 = new Transform();
 	startTransform1.setIdentity();
@@ -524,6 +527,32 @@ public class TwoDotFiveDBsp extends DemoApplication {
     @Override
     public void renderme() {
 	if (!nifty) {
+	    float[] light_ambient = new float[] { 0.2f, 0.2f, 0.2f, 1.0f };
+	    float[] light_diffuse = new float[] { 1.0f, 1.0f, 1.0f, 1.0f };
+	    float[] light_specular = new float[] { 1.0f, 1.0f, 1.0f, 1.0f };
+	    /* light_position is NOT default value */
+	    float[] light_position0 = new float[] { 1.0f, 10.0f, 1.0f, 0.0f };
+	    float[] light_position1 = new float[] { -1.0f, -10.0f, -1.0f, 0.0f };
+
+	    gl.glLight(GL_LIGHT0, GL_AMBIENT, light_ambient);
+	    gl.glLight(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+	    gl.glLight(GL_LIGHT0, GL_SPECULAR, light_specular);
+	    gl.glLight(GL_LIGHT0, GL_POSITION, light_position0);
+
+	    gl.glLight(GL_LIGHT1, GL_AMBIENT, light_ambient);
+	    gl.glLight(GL_LIGHT1, GL_DIFFUSE, light_diffuse);
+	    gl.glLight(GL_LIGHT1, GL_SPECULAR, light_specular);
+	    gl.glLight(GL_LIGHT1, GL_POSITION, light_position1);
+
+	    gl.glEnable(GL_LIGHTING);
+	    gl.glEnable(GL_LIGHT0);
+	    gl.glEnable(GL_LIGHT1);
+
+	    gl.glShadeModel(GL_SMOOTH);
+	    gl.glEnable(GL_DEPTH_TEST);
+	    gl.glDepthFunc(GL_LESS);
+
+	    gl.glClearColor(0.7f, 0.7f, 0.7f, 0f);
 	    updateCamera();
 
 	    if (dynamicsWorld != null) {
@@ -1208,7 +1237,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 	    addEntity(mass, origin, shape, name, image, description,
 		    acceleration);
 	}
-	
+
 	public void addEntity(float mass, Transform origin,
 		CollisionShape shape, String name, Vector3f image,
 		String[] description, Vector3f acceleration) {
