@@ -125,7 +125,6 @@ public class TwoDotFiveDBsp extends DemoApplication {
     float movespeed = 10f;
     private boolean dead = false;
 
-    private GLCam cam = new GLCam();
     private GLCamera camera = new GLCamera();
     GL_Vector ViewPoint;
     private boolean down = true;
@@ -134,7 +133,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
     private static int gLeft = 0;
     private static int gRight = 0;
     private static int gJump = 0;
-
+    private GLCam cam = new GLCam();
     private static TwoDotFiveDBsp demo;
     private float dt;
     private static final float CUBE_HALF_EXTENTS = 1;
@@ -150,11 +149,10 @@ public class TwoDotFiveDBsp extends DemoApplication {
 
     private static EventDispatcher eventDispatcher = new EventDispatcher();
     private static EventDispatcher remoteDispatcher = new EventDispatcher();
-
     private static chatClient client;
     int count = 0;
-    private static boolean connected = false;
 
+    private static boolean connected = false;
     private Entity player;
     public static final String homeDir = System.getProperty("user.home")
 	    + System.getProperty("file.separator") + ".TwoDotFiveD";
@@ -242,7 +240,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		new Vector3f(1.25f, .25f, 1.25f));
 	startTransform2.origin.set(85f, 2.5f, 20);
 	elevator2 = localCreateEntity(mass, startTransform2, colShape2,
-		"elevatorsmash1", new Vector3f(1f, 0f, 0f), null);
+		"elevatorsmash2", new Vector3f(1f, 0f, 0f), null);
 	dynamicsWorld.addRigidBody(elevator2);
 	elevator2.setWorldTransform(startTransform2);
 	elevator2.setFriction(5f);
@@ -253,7 +251,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		new Vector3f(1.25f, .25f, 1.25f));
 	startTransform3.origin.set(85f, 2.5f, 10);
 	elevator3 = localCreateEntity(mass, startTransform3, colShape3,
-		"elevatorsmash1", new Vector3f(1f, 0f, 0f), null);
+		"elevatorsmash3", new Vector3f(1f, 0f, 0f), null);
 	dynamicsWorld.addRigidBody(elevator3);
 	elevator3.setWorldTransform(startTransform3);
 	elevator3.setFriction(5f);
@@ -264,7 +262,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		new Vector3f(1.25f, .25f, 1.25f));
 	startTransform4.origin.set(85f, 2.5f, 0);
 	elevator4 = localCreateEntity(mass, startTransform4, colShape4,
-		"elevatorsmash1", new Vector3f(1f, 0f, 0f), null);
+		"elevatorsmash4", new Vector3f(1f, 0f, 0f), null);
 	dynamicsWorld.addRigidBody(elevator4);
 	elevator4.setWorldTransform(startTransform4);
 	elevator4.setFriction(5f);
@@ -276,7 +274,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		new Vector3f(1.25f, .25f, 1.25f));
 	startTransform5.origin.set(85f, 2.5f, -8);
 	elevator5 = localCreateEntity(mass, startTransform5, colShape5,
-		"elevatorsmash1", new Vector3f(1f, 0f, 0f), null);
+		"elevatorsmash15", new Vector3f(1f, 0f, 0f), null);
 	dynamicsWorld.addRigidBody(elevator5);
 	elevator5.setWorldTransform(startTransform5);
 	elevator5.setFriction(5f);
@@ -289,7 +287,6 @@ public class TwoDotFiveDBsp extends DemoApplication {
 	// rigidbody is dynamic if and only if mass is non zero, otherwise
 	// static
 	boolean isDynamic = (mass != 0f);
-
 	Vector3f localInertia = new Vector3f(0f, 0f, 0f);
 	if (isDynamic) {
 	    shape.calculateLocalInertia(mass, localInertia);
@@ -357,6 +354,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 			.getOverlappingPairCache()
 			.cleanProxyFromPairs(colObj.getBroadphaseHandle(),
 				dynamicsWorld.getDispatcher());
+
 		body = RigidBody.upcast(colObj);
 		if (body != null && !body.isStaticObject()) {
 		    RigidBody.upcast(colObj).setLinearVelocity(
@@ -507,246 +505,6 @@ public class TwoDotFiveDBsp extends DemoApplication {
 	// gl.gluLookAt( eyex, eyey, eyez, RigidBody.upcast( ghostObject
 	// ).getCenterOfMassPosition( new Vector3f() ).x, centery, centerz, upx,
 	// upy, upz );
-    }
-
-    @Override
-    public void displayCallback() {
-	gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	renderme();
-
-	// glFlush();
-	// glutSwapBuffers();
-    }
-
-    private StringBuilder buf = new StringBuilder();
-    private final Transform m = new Transform();
-    private Vector3f wireColor = new Vector3f();
-    protected Color3f TEXT_COLOR = new Color3f(0f, 0f, 0f);
-
-    @Override
-    public void renderme() {
-	if (!nifty) {
-	    float[] light_ambient = new float[] { 0.2f, 0.2f, 0.2f, 1.0f };
-	    float[] light_diffuse = new float[] { 1.0f, 1.0f, 1.0f, 1.0f };
-	    float[] light_specular = new float[] { 1.0f, 1.0f, 1.0f, 1.0f };
-	    /* light_position is NOT default value */
-	    float[] light_position0 = new float[] { 1.0f, 10.0f, 1.0f, 0.0f };
-	    float[] light_position1 = new float[] { -1.0f, -10.0f, -1.0f, 0.0f };
-
-	    gl.glLight(GL_LIGHT0, GL_AMBIENT, light_ambient);
-	    gl.glLight(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-	    gl.glLight(GL_LIGHT0, GL_SPECULAR, light_specular);
-	    gl.glLight(GL_LIGHT0, GL_POSITION, light_position0);
-
-	    gl.glLight(GL_LIGHT1, GL_AMBIENT, light_ambient);
-	    gl.glLight(GL_LIGHT1, GL_DIFFUSE, light_diffuse);
-	    gl.glLight(GL_LIGHT1, GL_SPECULAR, light_specular);
-	    gl.glLight(GL_LIGHT1, GL_POSITION, light_position1);
-
-	    gl.glEnable(GL_LIGHTING);
-	    gl.glEnable(GL_LIGHT0);
-	    gl.glEnable(GL_LIGHT1);
-
-	    gl.glShadeModel(GL_SMOOTH);
-	    gl.glEnable(GL_DEPTH_TEST);
-	    gl.glDepthFunc(GL_LESS);
-
-	    gl.glClearColor(0.7f, 0.7f, 0.7f, 0f);
-	    updateCamera();
-
-	    if (dynamicsWorld != null) {
-		int numObjects = dynamicsWorld.getNumCollisionObjects();
-		wireColor.set(1f, 0f, 0f);
-		for (int i = 0; i < numObjects; i++) {
-		    CollisionObject colObj = dynamicsWorld
-			    .getCollisionObjectArray().getQuick(i);
-		    RigidBody body = RigidBody.upcast(colObj);
-		    // System.out.println(colObj.getWorldTransform(new
-		    // Transform()).origin);
-
-		    if (body != null && body.getMotionState() != null) {
-			DefaultMotionState myMotionState = (DefaultMotionState) body
-				.getMotionState();
-			m.set(myMotionState.graphicsWorldTrans);
-		    } else {
-			colObj.getWorldTransform(m);
-		    }
-		    // System.out.println(m.origin);
-		    wireColor.set(1f, 1f, 0.5f); // wants deactivation
-		    if ((i & 1) != 0) {
-			wireColor.set(0f, 0f, 1f);
-		    }
-		    // color differently for active, sleeping, wantsdeactivation
-		    // states
-		    if (colObj.getActivationState() == 1) // active
-		    {
-			if ((i & 1) != 0) {
-			    // wireColor.add(new Vector3f(1f, 0f, 0f));
-			    wireColor.x += 1f;
-			} else {
-			    // wireColor.add(new Vector3f(0.5f, 0f, 0f));
-			    wireColor.x += 0.5f;
-			}
-		    }
-		    if (colObj.getActivationState() == 2) // ISLAND_SLEEPING
-		    {
-			if ((i & 1) != 0) {
-			    // wireColor.add(new Vector3f(0f, 1f, 0f));
-			    wireColor.y += 1f;
-			} else {
-			    // wireColor.add(new Vector3f(0f, 0.5f, 0f));
-			    wireColor.y += 0.5f;
-			}
-		    }
-
-		    Vector3f colorVec = new Vector3f();
-		    for (Entity e : entityList.values()) {
-			if (e.getCollisionShape().equals(
-				colObj.getCollisionShape())) {
-			    colorVec = e.getImage();
-			    // System.out.println(colorVec);
-			}
-		    }
-		    // System.out.println(colorVec + "post get");
-		    int a = 0;
-		    GLShapeDrawer.drawOpenGL(gl, m, colObj.getCollisionShape(),
-			    wireColor, getDebugMode(), colorVec);
-		}
-		float xOffset = 10f;
-		float yStart = 20f;
-		float yIncr = 20f;
-
-		gl.glDisable(GL_LIGHTING);
-		gl.glColor3f(0f, 0f, 0f);
-
-		if ((debugMode & DebugDrawModes.NO_HELP_TEXT) == 0) {
-		    setOrthographicProjection();
-
-		    yStart = showProfileInfo(xOffset, yStart, yIncr);
-		    // #ifdef SHOW_NUM_DEEP_PENETRATIONS
-		    buf.setLength(0);
-		    buf.append("gNumDeepPenetrationChecks = ");
-		    FastFormat.append(buf,
-			    BulletStats.gNumDeepPenetrationChecks);
-		    drawString(buf, Math.round(xOffset), Math.round(yStart),
-			    TEXT_COLOR);
-		    yStart += yIncr;
-
-		    buf.setLength(0);
-		    buf.append("gNumGjkChecks = ");
-		    FastFormat.append(buf, BulletStats.gNumGjkChecks);
-		    drawString(buf, Math.round(xOffset), Math.round(yStart),
-			    TEXT_COLOR);
-		    yStart += yIncr;
-
-		    buf.setLength(0);
-		    buf.append("gNumSplitImpulseRecoveries = ");
-		    FastFormat.append(buf,
-			    BulletStats.gNumSplitImpulseRecoveries);
-		    drawString(buf, Math.round(xOffset), Math.round(yStart),
-			    TEXT_COLOR);
-		    yStart += yIncr;
-		    // buf = String.format("gNumAlignedAllocs = %d",
-		    // BulletGlobals.gNumAlignedAllocs);
-		    // TODO: BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
-		    // yStart += yIncr;
-		    // buf = String.format("gNumAlignedFree= %d",
-		    // BulletGlobals.gNumAlignedFree);
-		    // TODO: BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
-		    // yStart += yIncr;
-		    // buf = String.format("# alloc-free = %d",
-		    // BulletGlobals.gNumAlignedAllocs -
-		    // BulletGlobals.gNumAlignedFree);
-		    // TODO: BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
-		    // yStart += yIncr;
-
-		    // enable BT_DEBUG_MEMORY_ALLOCATIONS define in
-		    // Bullet/src/LinearMath/btAlignedAllocator.h for memory
-		    // leak
-		    // detection
-		    // #ifdef BT_DEBUG_MEMORY_ALLOCATIONS
-		    // glRasterPos3f(xOffset,yStart,0);
-		    // sprintf(buf,"gTotalBytesAlignedAllocs = %d",gTotalBytesAlignedAllocs);
-		    // BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
-		    // yStart += yIncr;
-		    // #endif //BT_DEBUG_MEMORY_ALLOCATIONS
-
-		    if (getDynamicsWorld() != null) {
-			buf.setLength(0);
-			buf.append("# objects = ");
-			FastFormat.append(buf, getDynamicsWorld()
-				.getNumCollisionObjects());
-			drawString(buf, Math.round(xOffset),
-				Math.round(yStart), TEXT_COLOR);
-			yStart += yIncr;
-
-			buf.setLength(0);
-			buf.append("# pairs = ");
-			FastFormat.append(buf, getDynamicsWorld()
-				.getBroadphase().getOverlappingPairCache()
-				.getNumOverlappingPairs());
-			drawString(buf, Math.round(xOffset),
-				Math.round(yStart), TEXT_COLOR);
-			yStart += yIncr;
-
-		    }
-		    // #endif //SHOW_NUM_DEEP_PENETRATIONS
-		    // JAVA NOTE: added
-		    int free = (int) Runtime.getRuntime().freeMemory();
-		    int total = (int) Runtime.getRuntime().totalMemory();
-		    buf.setLength(0);
-		    buf.append("heap = ");
-		    FastFormat.append(buf, (float) (total - free)
-			    / (1024 * 1024));
-		    buf.append(" / ");
-		    FastFormat.append(buf, (float) (total) / (1024 * 1024));
-		    buf.append(" MB");
-		    drawString(buf, Math.round(xOffset), Math.round(yStart),
-			    TEXT_COLOR);
-		    yStart += yIncr;
-
-		    resetPerspectiveProjection();
-		}
-
-		gl.glEnable(GL_LIGHTING);
-	    }
-
-	    updateCamera();
-	} else {
-	    /**
-	     * Render nifty
-	     */
-	    GL11.glMatrixMode(GL11.GL_PROJECTION);
-	    GL11.glLoadIdentity();
-	    GL11.glOrtho(0, 800, 600, 0, -9999, 9999);
-
-	    GL11.glMatrixMode(GL11.GL_MODELVIEW);
-	    GL11.glLoadIdentity();
-
-	    // Prepare Rendermode
-	    GL11.glDisable(GL11.GL_DEPTH_TEST);
-	    GL11.glEnable(GL11.GL_BLEND);
-	    GL11.glDisable(GL11.GL_CULL_FACE);
-
-	    GL11.glEnable(GL11.GL_ALPHA_TEST);
-	    GL11.glAlphaFunc(GL11.GL_NOTEQUAL, 0);
-
-	    GL11.glDisable(GL11.GL_LIGHTING);
-	    GL11.glDisable(GL11.GL_TEXTURE_2D);
-
-	    GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	    GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-	    GL11.glEnable(GL11.GL_TEXTURE_2D);
-	    LWJGL.nifty.update();
-	    LWJGL.nifty.render(true);
-	}
-    }
-
-    public void setup() {
-	cam.setCamera(camera);
-	camera.setCamera(0f, 0f, 15f, 0f, 0f, -1f, 0f, 1f, 0f);
-
     }
 
     @Override
@@ -998,15 +756,291 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		    System.out.println("ArrayIndexOutOfBounds in simulation");
 		}
 	    }
+	}
+	    if (down) {
+		elevator1.setLinearVelocity(new Vector3f(0, 0, 0));
+		elevator2.setLinearVelocity(new Vector3f(0, 0, 0));
+		elevator3.setLinearVelocity(new Vector3f(0, 0, 0));
+		elevator4.setLinearVelocity(new Vector3f(0, 0, 0));
+		elevator5.setLinearVelocity(new Vector3f(0, 0, 0));
+		Transform one = elevator1.getWorldTransform(new Transform());
+		one.origin.set(80f, y, -10f);
+		Transform two = elevator2.getWorldTransform(new Transform());
+		two.origin.set(85f, y, 20f);
+		Transform three = elevator3.getWorldTransform(new Transform());
+		three.origin.set(85f, y, 10f);
+		Transform four = elevator4.getWorldTransform(new Transform());
+		four.origin.set(85f, y, 0f);
+		Transform five = elevator5.getWorldTransform(new Transform());
+		five.origin.set(85f, y, -8f);
+		elevator1.setWorldTransform(one);
+		elevator2.setWorldTransform(two);
+		elevator3.setWorldTransform(three);
+		elevator4.setWorldTransform(four);
+		elevator5.setWorldTransform(five);
+	    } else {
+		elevator1.setLinearVelocity(new Vector3f(0, 0, 0));
+		elevator2.setLinearVelocity(new Vector3f(0, 0, 0));
+		elevator3.setLinearVelocity(new Vector3f(0, 0, 0));
+		elevator4.setLinearVelocity(new Vector3f(0, 0, 0));
+		elevator5.setLinearVelocity(new Vector3f(0, 0, 0));
+		Transform one = elevator1.getWorldTransform(new Transform());
+		one.origin.set(80f, y, -10f);
+		Transform two = elevator2.getWorldTransform(new Transform());
+		two.origin.set(85f, y, 20f);
+		Transform three = elevator3.getWorldTransform(new Transform());
+		three.origin.set(85f, y, 10f);
+		Transform four = elevator4.getWorldTransform(new Transform());
+		four.origin.set(85f, y, 0f);
+		Transform five = elevator5.getWorldTransform(new Transform());
+		five.origin.set(85f, y, -8f);
+		elevator1.setWorldTransform(one);
+		elevator2.setWorldTransform(two);
+		elevator3.setWorldTransform(three);
+		elevator4.setWorldTransform(four);
+		elevator5.setWorldTransform(five);
+	    }
 	    // repopulate world
 	    populate();
 	    break;
 	}
-	default: {
-	    super.specialKeyboard(key, x, y, modifiers);
-	    break;
+
+	// gl.gluLookAt( eyex, eyey, eyez, RigidBody.upcast( ghostObject
+	// ).getCenterOfMassPosition( new Vector3f() ).x, centery, centerz, upx,
+	// upy, upz );
+    }
+
+    @Override
+    public void displayCallback() {
+	gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	renderme();
+
+	// glFlush();
+	// glutSwapBuffers();
+    }
+
+    private StringBuilder buf = new StringBuilder();
+    private final Transform m = new Transform();
+    private Vector3f wireColor = new Vector3f();
+    protected Color3f TEXT_COLOR = new Color3f(0f, 0f, 0f);
+
+    @Override
+    public void renderme() {
+	if (!nifty) {
+	    float[] light_ambient = new float[] { 0.2f, 0.2f, 0.2f, 1.0f };
+	    float[] light_diffuse = new float[] { 1.0f, 1.0f, 1.0f, 1.0f };
+	    float[] light_specular = new float[] { 1.0f, 1.0f, 1.0f, 1.0f };
+	    /* light_position is NOT default value */
+	    float[] light_position0 = new float[] { 1.0f, 10.0f, 1.0f, 0.0f };
+	    float[] light_position1 = new float[] { -1.0f, -10.0f, -1.0f, 0.0f };
+
+	    gl.glLight(GL_LIGHT0, GL_AMBIENT, light_ambient);
+	    gl.glLight(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+	    gl.glLight(GL_LIGHT0, GL_SPECULAR, light_specular);
+	    gl.glLight(GL_LIGHT0, GL_POSITION, light_position0);
+
+	    gl.glLight(GL_LIGHT1, GL_AMBIENT, light_ambient);
+	    gl.glLight(GL_LIGHT1, GL_DIFFUSE, light_diffuse);
+	    gl.glLight(GL_LIGHT1, GL_SPECULAR, light_specular);
+	    gl.glLight(GL_LIGHT1, GL_POSITION, light_position1);
+
+	    gl.glEnable(GL_LIGHTING);
+	    gl.glEnable(GL_LIGHT0);
+	    gl.glEnable(GL_LIGHT1);
+
+	    gl.glShadeModel(GL_SMOOTH);
+	    gl.glEnable(GL_DEPTH_TEST);
+	    gl.glDepthFunc(GL_LESS);
+
+	    gl.glClearColor(0.7f, 0.7f, 0.7f, 0f);
+	    updateCamera();
+
+	    if (dynamicsWorld != null) {
+		int numObjects = dynamicsWorld.getNumCollisionObjects();
+		wireColor.set(1f, 0f, 0f);
+		for (int i = 0; i < numObjects; i++) {
+		    CollisionObject colObj = dynamicsWorld
+			    .getCollisionObjectArray().getQuick(i);
+		    RigidBody body = RigidBody.upcast(colObj);
+		    // System.out.println(colObj.getWorldTransform(new
+		    // Transform()).origin);
+		    colObj.getWorldTransform(m);
+		    // System.out.println(m.origin);
+		    wireColor.set(1f, 1f, 0.5f); // wants deactivation
+		    if ((i & 1) != 0) {
+			wireColor.set(0f, 0f, 1f);
+		    }
+		    // color differently for active, sleeping, wantsdeactivation
+		    // states
+		    if (colObj.getActivationState() == 1) // active
+		    {
+			if ((i & 1) != 0) {
+			    // wireColor.add(new Vector3f(1f, 0f, 0f));
+			    wireColor.x += 1f;
+			} else {
+			    // wireColor.add(new Vector3f(0.5f, 0f, 0f));
+			    wireColor.x += 0.5f;
+			}
+		    }
+		    if (colObj.getActivationState() == 2) // ISLAND_SLEEPING
+		    {
+			if ((i & 1) != 0) {
+			    // wireColor.add(new Vector3f(0f, 1f, 0f));
+			    wireColor.y += 1f;
+			} else {
+			    // wireColor.add(new Vector3f(0f, 0.5f, 0f));
+			    wireColor.y += 0.5f;
+			}
+		    }
+
+		    Vector3f colorVec = new Vector3f();
+		    for (Entity e : entityList.values()) {
+			if (e.getCollisionShape().equals(
+				colObj.getCollisionShape())) {
+			    colorVec = e.getImage();
+			    // System.out.println(colorVec);
+			}
+		    }
+		    // System.out.println(colorVec + "post get");
+		    int a = 0;
+		    GLShapeDrawer.drawOpenGL(gl, m, colObj.getCollisionShape(),
+			    wireColor, getDebugMode(), colorVec);
+		}
+		float xOffset = 10f;
+		float yStart = 20f;
+		float yIncr = 20f;
+
+		gl.glDisable(GL_LIGHTING);
+		gl.glColor3f(0f, 0f, 0f);
+
+		if ((debugMode & DebugDrawModes.NO_HELP_TEXT) == 0) {
+		    setOrthographicProjection();
+
+		    yStart = showProfileInfo(xOffset, yStart, yIncr);
+		    // #ifdef SHOW_NUM_DEEP_PENETRATIONS
+		    buf.setLength(0);
+		    buf.append("gNumDeepPenetrationChecks = ");
+		    FastFormat.append(buf,
+			    BulletStats.gNumDeepPenetrationChecks);
+		    drawString(buf, Math.round(xOffset), Math.round(yStart),
+			    TEXT_COLOR);
+		    yStart += yIncr;
+
+		    buf.setLength(0);
+		    buf.append("gNumGjkChecks = ");
+		    FastFormat.append(buf, BulletStats.gNumGjkChecks);
+		    drawString(buf, Math.round(xOffset), Math.round(yStart),
+			    TEXT_COLOR);
+		    yStart += yIncr;
+
+		    buf.setLength(0);
+		    buf.append("gNumSplitImpulseRecoveries = ");
+		    FastFormat.append(buf,
+			    BulletStats.gNumSplitImpulseRecoveries);
+		    drawString(buf, Math.round(xOffset), Math.round(yStart),
+			    TEXT_COLOR);
+		    yStart += yIncr;
+		    // buf = String.format("gNumAlignedAllocs = %d",
+		    // BulletGlobals.gNumAlignedAllocs);
+		    // TODO: BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
+		    // yStart += yIncr;
+		    // buf = String.format("gNumAlignedFree= %d",
+		    // BulletGlobals.gNumAlignedFree);
+		    // TODO: BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
+		    // yStart += yIncr;
+		    // buf = String.format("# alloc-free = %d",
+		    // BulletGlobals.gNumAlignedAllocs -
+		    // BulletGlobals.gNumAlignedFree);
+		    // TODO: BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
+		    // yStart += yIncr;
+
+		    // enable BT_DEBUG_MEMORY_ALLOCATIONS define in
+		    // Bullet/src/LinearMath/btAlignedAllocator.h for memory
+		    // leak
+		    // detection
+		    // #ifdef BT_DEBUG_MEMORY_ALLOCATIONS
+		    // glRasterPos3f(xOffset,yStart,0);
+		    // sprintf(buf,"gTotalBytesAlignedAllocs = %d",gTotalBytesAlignedAllocs);
+		    // BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
+		    // yStart += yIncr;
+		    // #endif //BT_DEBUG_MEMORY_ALLOCATIONS
+
+		    if (getDynamicsWorld() != null) {
+			buf.setLength(0);
+			buf.append("# objects = ");
+			FastFormat.append(buf, getDynamicsWorld()
+				.getNumCollisionObjects());
+			drawString(buf, Math.round(xOffset),
+				Math.round(yStart), TEXT_COLOR);
+			yStart += yIncr;
+
+			buf.setLength(0);
+			buf.append("# pairs = ");
+			FastFormat.append(buf, getDynamicsWorld()
+				.getBroadphase().getOverlappingPairCache()
+				.getNumOverlappingPairs());
+			drawString(buf, Math.round(xOffset),
+				Math.round(yStart), TEXT_COLOR);
+			yStart += yIncr;
+
+		    }
+		    // #endif //SHOW_NUM_DEEP_PENETRATIONS
+		    // JAVA NOTE: added
+		    int free = (int) Runtime.getRuntime().freeMemory();
+		    int total = (int) Runtime.getRuntime().totalMemory();
+		    buf.setLength(0);
+		    buf.append("heap = ");
+		    FastFormat.append(buf, (float) (total - free)
+			    / (1024 * 1024));
+		    buf.append(" / ");
+		    FastFormat.append(buf, (float) (total) / (1024 * 1024));
+		    buf.append(" MB");
+		    drawString(buf, Math.round(xOffset), Math.round(yStart),
+			    TEXT_COLOR);
+		    yStart += yIncr;
+
+		    resetPerspectiveProjection();
+		}
+
+		gl.glEnable(GL_LIGHTING);
+	    }
+
+	    updateCamera();
+	} else {
+	    /**
+	     * Render nifty
+	     */
+	    GL11.glMatrixMode(GL11.GL_PROJECTION);
+	    GL11.glLoadIdentity();
+	    GL11.glOrtho(0, 800, 600, 0, -9999, 9999);
+
+	    GL11.glMatrixMode(GL11.GL_MODELVIEW);
+	    GL11.glLoadIdentity();
+
+	    // Prepare Rendermode
+	    GL11.glDisable(GL11.GL_DEPTH_TEST);
+	    GL11.glEnable(GL11.GL_BLEND);
+	    GL11.glDisable(GL11.GL_CULL_FACE);
+
+	    GL11.glEnable(GL11.GL_ALPHA_TEST);
+	    GL11.glAlphaFunc(GL11.GL_NOTEQUAL, 0);
+
+	    GL11.glDisable(GL11.GL_LIGHTING);
+	    GL11.glDisable(GL11.GL_TEXTURE_2D);
+
+	    GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	    GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+	    GL11.glEnable(GL11.GL_TEXTURE_2D);
+	    LWJGL.nifty.update();
+	    LWJGL.nifty.render(true);
 	}
-	}
+    }
+
+    public void setup() {
+	cam.setCamera(camera);
+	camera.setCamera(0f, 0f, 15f, 0f, 0f, -1f, 0f, 1f, 0f);
+
     }
 
     @Override
@@ -1065,6 +1099,70 @@ public class TwoDotFiveDBsp extends DemoApplication {
 	    entityList.put(entity, entity);
 	    eventDispatcher.notify(new BlockCreateEvent(entity));
 	    removeStuff.add(entity);
+	}
+    }
+
+    // //////////////////////////////////////////////////////////////////////////
+
+    public class BspYamlToBulletConverter extends BspYamlConverter {
+
+	@Override
+	public synchronized void addConvexVerticesCollider(String name,
+		ObjectArrayList<Vector3f> vertices, float mass,
+		Vector3f acceleration, Vector3f image, String[] description) {
+	    Transform startTransform = new Transform();
+	    // can use a shift
+	    startTransform.setIdentity();
+	    startTransform.origin.set(0, 0, 0);
+
+	    // this create an internal copy of the vertices
+	    CollisionShape shape = new ConvexHullShape(vertices);
+	    // body.setActivationState(RigidBody.ACTIVE_TAG);
+	    final Transform center = new Transform();
+	    center.setIdentity();
+	    center.origin.set(1f, 1f, 1f);
+	    addEntity(mass, center, shape, name, image, description,
+		    acceleration);
+	}
+
+	@Override
+	public void addShapeCollider(String name, String type,
+		Vector3f localscaling, Vector3f transform, float mass,
+		Vector3f acceleration, Vector3f image, String[] description) {
+	    CollisionShape shape = new BoxShape(new Vector3f(1f, 1f, 1f));
+	    if (type.contains("box")) {
+		shape = new BoxShape(localscaling);
+	    } else if (type.contains("sphere")) {
+		shape = new SphereShape(localscaling.x);
+	    } else if (type.contains("cylinder")) {
+		shape = new CylinderShape(localscaling);
+	    } else if (type.contains("cone")) {
+		shape = new ConeShape(localscaling.x, localscaling.y);
+	    } else {
+		Logging.log.warning("Unknown type '" + type + "' for shape: "
+			+ name);
+		return;
+	    }
+	    Transform origin = new Transform();
+	    origin.setIdentity();
+	    origin.origin.set(transform.x, transform.y, transform.z);
+	    addEntity(mass, origin, shape, name, image, description,
+		    acceleration);
+	}
+
+	public void addEntity(float mass, Transform origin,
+		CollisionShape shape, String name, Vector3f image,
+		String[] description, Vector3f acceleration) {
+	    Entity e = localCreateEntity(mass, origin, shape, name, image,
+		    description);
+	    if (acceleration != null) {
+		e.setEntityGravity(acceleration);
+	    } else {
+		// set default gravity;
+		e.setGravity(dynamicsWorld.getGravity(new Vector3f()));
+	    }
+	    entityList.put(e, e);
+	    eventDispatcher.notify(new BlockCreateEvent(e));
 	}
     }
 
@@ -1188,70 +1286,6 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		    remoteListener);
 	}
 	MusicPlayer mp = new MusicPlayer(eventDispatcher);
-    }
-
-    // //////////////////////////////////////////////////////////////////////////
-
-    public class BspYamlToBulletConverter extends BspYamlConverter {
-
-	@Override
-	public synchronized void addConvexVerticesCollider(String name,
-		ObjectArrayList<Vector3f> vertices, float mass,
-		Vector3f acceleration, Vector3f image, String[] description) {
-	    Transform startTransform = new Transform();
-	    // can use a shift
-	    startTransform.setIdentity();
-	    startTransform.origin.set(0, 0, 0);
-
-	    // this create an internal copy of the vertices
-	    CollisionShape shape = new ConvexHullShape(vertices);
-	    // body.setActivationState(RigidBody.ACTIVE_TAG);
-	    final Transform center = new Transform();
-	    center.setIdentity();
-	    center.origin.set(1f, 1f, 1f);
-	    addEntity(mass, center, shape, name, image, description,
-		    acceleration);
-	}
-
-	@Override
-	public void addShapeCollider(String name, String type,
-		Vector3f localscaling, Vector3f transform, float mass,
-		Vector3f acceleration, Vector3f image, String[] description) {
-	    CollisionShape shape = new BoxShape(new Vector3f(1f, 1f, 1f));
-	    if (type.contains("box")) {
-		shape = new BoxShape(localscaling);
-	    } else if (type.contains("sphere")) {
-		shape = new SphereShape(localscaling.x);
-	    } else if (type.contains("cylinder")) {
-		shape = new CylinderShape(localscaling);
-	    } else if (type.contains("cone")) {
-		shape = new ConeShape(localscaling.x, localscaling.y);
-	    } else {
-		Logging.log.warning("Unknown type '" + type + "' for shape: "
-			+ name);
-		return;
-	    }
-	    Transform origin = new Transform();
-	    origin.setIdentity();
-	    origin.origin.set(transform.x, transform.y, transform.z);
-	    addEntity(mass, origin, shape, name, image, description,
-		    acceleration);
-	}
-
-	public void addEntity(float mass, Transform origin,
-		CollisionShape shape, String name, Vector3f image,
-		String[] description, Vector3f acceleration) {
-	    Entity e = localCreateEntity(mass, origin, shape, name, image,
-		    description);
-	    if (acceleration != null) {
-		e.setEntityGravity(acceleration);
-	    } else {
-		// set default gravity;
-		e.setGravity(dynamicsWorld.getGravity(new Vector3f()));
-	    }
-	    entityList.put(e, e);
-	    eventDispatcher.notify(new BlockCreateEvent(e));
-	}
     }
 
     public class BlockCollisionListener extends BlockListener {

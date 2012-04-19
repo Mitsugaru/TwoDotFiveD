@@ -20,6 +20,7 @@ import com.ATeam.twoDotFiveD.debug.Logging;
  * 
  */
 
+
 public class Config {
     // Class variables
     private File configFile = new File(System.getProperty("user.dir"));
