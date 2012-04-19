@@ -255,7 +255,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 	dynamicsWorld.addRigidBody(elevator3);
 	elevator3.setWorldTransform(startTransform3);
 	elevator3.setFriction(5f);
-
+	entityList.put(elevator3, elevator3);
 	Transform startTransform4 = new Transform();
 	startTransform4.setIdentity();
 	CollisionShape colShape4 = new BoxShape(
@@ -267,7 +267,6 @@ public class TwoDotFiveDBsp extends DemoApplication {
 	elevator4.setWorldTransform(startTransform4);
 	elevator4.setFriction(5f);
 	entityList.put(elevator4, elevator4);
-
 	Transform startTransform5 = new Transform();
 	startTransform5.setIdentity();
 	CollisionShape colShape5 = new BoxShape(
@@ -1319,7 +1318,8 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		    // entityA.getRigidBody().setGravity( new Vector3f( 0f,
 		    // 10f,
 		    // 0f ) );
-		    // System.out.println( "OMG" );
+		    System.out.println( "OMG" );
+		    System.out.println("Entitya: " + entityA.getID() + " EntityB: "+ entityB.getID());
 		    // }
 		    // else if ( entityB.getID().equals( "object2" ) )
 		    // {
