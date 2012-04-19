@@ -122,7 +122,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
     Entity elevator4;
 
     Entity elevator5;
-
+    float movespeed = 10f;
     private boolean dead = false;
 
     public KinematicCharacterController character;
@@ -219,12 +219,6 @@ public class TwoDotFiveDBsp extends DemoApplication {
 	// "exported.bsp.txt"));
 	// populate();
 	BulletGlobals.setDeactivationTime(0.1f);
-
-	// here
-	// TODO replace ghost object with rigid body and player can manipulate
-	// that
-	// using keys
-	// http://bulletphysics.org/Bullet/phpBB3/viewtopic.php?t=7592
 	Transform startTransform = new Transform();
 	startTransform.setIdentity();
 	// startTransform.origin.set(84.0f, 50.0f, -10.0f);
@@ -353,28 +347,6 @@ public class TwoDotFiveDBsp extends DemoApplication {
 	    Logging.log.log(Level.SEVERE,
 		    "Could not close InputStream for: scene.yml", e);
 	}
-	/*
-	 * Transform startTransform = new Transform();
-	 * startTransform.setIdentity();
-	 * 
-	 * float start_x = 0 - 5 / 2; float start_y = 0; float start_z = 0 - 5 /
-	 * 2; final ObjectArrayList<Vector3f> points = new
-	 * ObjectArrayList<Vector3f>(); points.add(new Vector3f(0f, 0f, 0f));
-	 * points.add(new Vector3f(0f, 0f, 2f)); points.add(new Vector3f(0f, 2f,
-	 * 0f)); points.add(new Vector3f(0f, 2f, 2f)); points.add(new
-	 * Vector3f(2f, 0f, 0f)); points.add(new Vector3f(2f, 0f, 2f));
-	 * points.add(new Vector3f(2f, 2f, 0f)); points.add(new Vector3f(2f, 2f,
-	 * 2f)); final CollisionShape shape = new ConvexHullShape(points); for
-	 * (int k = 0; k < 4; k++) { for (int i = 0; i < 4; i++) { for (int j =
-	 * 0; j < 4; j++) { startTransform.origin.set(2f * i + start_x, 10f + 2f
-	 * * k + start_y, 2f * j + start_z); RigidBody body =
-	 * localCreateRigidBody(1f, startTransform, shape); // TODO figure out
-	 * why setting the center of mass transform // doesn't want to work
-	 * Transform center = new Transform(); center.setIdentity();
-	 * center.origin.set(0.5f, 0.5f, 0.5f);
-	 * body.setCenterOfMassTransform(center); // eventDispatcher.notify(new
-	 * BlockCreateEvent(new // Entity("Box", body))); } } }
-	 */
 	clientResetScene();
 	// resetScene();
     }
@@ -524,33 +496,6 @@ public class TwoDotFiveDBsp extends DemoApplication {
 			TEXT_COLOR);
 		yStart += yIncr;
 
-		// buf = String.format("gNumAlignedAllocs = %d",
-		// BulletGlobals.gNumAlignedAllocs);
-		// TODO: BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
-		// yStart += yIncr;
-
-		// buf = String.format("gNumAlignedFree= %d",
-		// BulletGlobals.gNumAlignedFree);
-		// TODO: BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
-		// yStart += yIncr;
-
-		// buf = String.format("# alloc-free = %d",
-		// BulletGlobals.gNumAlignedAllocs -
-		// BulletGlobals.gNumAlignedFree);
-		// TODO: BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
-		// yStart += yIncr;
-
-		// enable BT_DEBUG_MEMORY_ALLOCATIONS define in
-		// Bullet/src/LinearMath/btAlignedAllocator.h for memory
-		// leak
-		// detection
-		// #ifdef BT_DEBUG_MEMORY_ALLOCATIONS
-		// glRasterPos3f(xOffset,yStart,0);
-		// sprintf(buf,"gTotalBytesAlignedAllocs = %d",gTotalBytesAlignedAllocs);
-		// BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
-		// yStart += yIncr;
-		// #endif //BT_DEBUG_MEMORY_ALLOCATIONS
-
 		if (getDynamicsWorld() != null) {
 		    buf.setLength(0);
 		    buf.append("# objects = ");
@@ -663,7 +608,6 @@ public class TwoDotFiveDBsp extends DemoApplication {
 			t.origin.x, t.origin.y, t.origin.z, cameraUp.x,
 			cameraUp.y, cameraUp.z);
 		if (t.origin.y < -30) {
-		    // TODO do something...
 		    System.out.println("Fail condition!!");
 		    Vector3f splode = new Vector3f(0f, 1f, 0f);
 		    shootBox(splode);
@@ -744,31 +688,28 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		player.activate(true);
 		Vector3f curr = new Vector3f();
 		player.getLinearVelocity(curr);
-		player.setLinearVelocity(new Vector3f(-20f, curr.y, curr.z));
+		player.setLinearVelocity(new Vector3f(-movespeed, curr.y, curr.z));
 	    }
 
 	    if (gRight != 0) {
 		player.activate(true);
 		Vector3f curr = new Vector3f();
 		player.getLinearVelocity(curr);
-		player.setLinearVelocity(new Vector3f(20f, curr.y, curr.z));
+		player.setLinearVelocity(new Vector3f(movespeed, curr.y, curr.z));
 
 	    }
 	    if (gForward != 0) {
 		player.activate(true);
 		Vector3f curr = new Vector3f();
 		player.getLinearVelocity(curr);
-		player.setLinearVelocity(new Vector3f(curr.x, curr.y, -20f));
+		player.setLinearVelocity(new Vector3f(curr.x, curr.y, -movespeed));
 	    }
 	    if (gBackward != 0) {
 		player.activate(true);
 		Vector3f curr = new Vector3f();
 		player.getLinearVelocity(curr);
-		player.setLinearVelocity(new Vector3f(curr.x, curr.y, 20f));
+		player.setLinearVelocity(new Vector3f(curr.x, curr.y, movespeed));
 	    }
-
-	    // TODO
-	    // fix this ish
 	    if (gJump != 0) {
 		player.activate(true);
 		Vector3f curr = new Vector3f();
@@ -1375,7 +1316,6 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		    oos.close();
 		    baos.close();
 		} catch (IOException e) {
-		    // TODO Auto-generated catch block
 		    e.printStackTrace();
 		}
 	    }
