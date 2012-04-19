@@ -29,11 +29,9 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.PixelFormat;
 
 import com.ATeam.twoDotFiveD.TwoDotFiveDBsp;
-import com.ATeam.twoDotFiveD.gui.DisplayStuff;
 
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.renderer.lwjgl.input.LwjglInputSystem;
@@ -47,6 +45,7 @@ import de.lessvoid.nifty.spi.time.impl.AccurateTimeProvider;
  */
 public class LWJGL {
 
+    @SuppressWarnings("unused")
     private static boolean redisplay = false;
     private static LwjglGL gl = new LwjglGL();
     private static final String SPLASH_XML = "com/ATeam/twoDotFiveD/layout/splash.xml";
