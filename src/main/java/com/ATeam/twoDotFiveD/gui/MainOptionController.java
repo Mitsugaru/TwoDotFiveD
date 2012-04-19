@@ -12,7 +12,6 @@ import de.lessvoid.nifty.screen.ScreenController;
 
 //TODO implement
 public class MainOptionController implements ScreenController {
-	Config config = new Config();
 	Nifty nifty;
 	Screen screen;
 
