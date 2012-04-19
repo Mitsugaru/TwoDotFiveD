@@ -6,7 +6,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
-import com.ATeam.twoDotFiveD.Player;
 import com.ATeam.twoDotFiveD.chatServer.clientHandler;
 
 

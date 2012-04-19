@@ -2,11 +2,11 @@ package com.ATeam.twoDotFiveD;
 
 
 
-import java.awt.Color;
+//import java.awt.Color;
 import java.nio.FloatBuffer;
 
 import org.lwjgl.opengl.*;
-import org.lwjgl.input.*;
+//import org.lwjgl.input.*;
 import org.lwjgl.util.glu.*;
 
 import com.ATeam.twoDotFiveD.block.Block;
@@ -33,7 +33,7 @@ public class TwoDotFiveDCameraDemo extends GLApp {
 	//added since demo to Dr. Game
 	GL_Vector worldChangeVector;
 	GL_Vector playerPosition;
-	Player player = new Player();
+	//Player player = new Player();
 
 
 	//hardcoded blocks
@@ -185,11 +185,11 @@ public class TwoDotFiveDCameraDemo extends GLApp {
     public void draw() {
     	//a bit wonky and obtuse -- may want to find a better way to do this
     	//ORDER IS IMPORTANT
-    	player.handleMovementKeys(cam.getDirection(), cam.getQuadrant());
-    	player.setWorldChangeVector();
-    	worldChangeVector = player.getWorldChangeVector();
-    	System.out.println("world change vector " + worldChangeVector);
-    	playerPosition = player.getPosition();
+    	//player.handleMovementKeys(cam.getDirection(), cam.getQuadrant());
+    	//player.setWorldChangeVector();
+    	//worldChangeVector = player.getWorldChangeVector();
+    	//System.out.println("world change vector " + worldChangeVector);
+    	//playerPosition = player.getPosition();
 
     	
     	degrees += 90f * GLApp.getSecondsPerFrame();

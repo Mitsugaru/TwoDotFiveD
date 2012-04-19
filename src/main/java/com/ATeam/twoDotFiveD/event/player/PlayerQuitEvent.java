@@ -1,10 +1,10 @@
 package com.ATeam.twoDotFiveD.event.player;
 
-import com.ATeam.twoDotFiveD.entity.Player;
+import com.ATeam.twoDotFiveD.entity.Entity;
 
 public class PlayerQuitEvent extends PlayerEvent {
 
-	public PlayerQuitEvent(Player player) {
+	public PlayerQuitEvent(Entity player) {
 		super(Type.PLAYER_QUIT, player);
 		// TODO Auto-generated constructor stub
 	}

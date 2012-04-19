@@ -1,10 +1,10 @@
 package com.ATeam.twoDotFiveD.event.player;
 
-import com.ATeam.twoDotFiveD.entity.Player;
+import com.ATeam.twoDotFiveD.entity.Entity;
 import com.ATeam.twoDotFiveD.event.Event;
 
 public class PlayerEvent extends Event<PlayerListener>{
-	protected Player player;
+	protected Entity player;
 
 	/**
 	 * Constructor
@@ -12,7 +12,7 @@ public class PlayerEvent extends Event<PlayerListener>{
 	 * @param Event type
 	 * @param Player associated with event
 	 */
-	public PlayerEvent(final Event.Type type, final Player player)
+	public PlayerEvent(final Event.Type type, final Entity player)
 	{
 		super(type);
 		this.player = player;
@@ -23,7 +23,7 @@ public class PlayerEvent extends Event<PlayerListener>{
 	 *
 	 * @return Player
 	 */
-	public Player getPlayer()
+	public Entity getPlayer()
 	{
 		return player;
 	}

@@ -54,7 +54,6 @@ import com.bulletphysics.collision.shapes.ShapeHull;
 import com.bulletphysics.collision.shapes.SphereShape;
 import com.bulletphysics.collision.shapes.StaticPlaneShape;
 import com.bulletphysics.collision.shapes.TriangleCallback;
-import com.bulletphysics.demos.basic.BasicDemo;
 import com.bulletphysics.demos.opengl.DemoApplication;
 import com.bulletphysics.demos.opengl.FastFormat;
 import com.bulletphysics.demos.opengl.GLDebugDrawer;
