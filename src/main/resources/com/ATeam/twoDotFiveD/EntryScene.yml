@@ -195,11 +195,12 @@ elevatorshaftcieling:
   - 17 .5 -2.5
   - 17 .4 -2.0
   - 17 .5 -2.0
-elevatorsmash1:
-  shape: box
-  localscaling: 1.25 .25 1.25
-  origin: 80 2.5 -10
-  mass: 1f
+#elevatorsmash1:
+#  shape: box
+#  localscaling: 1.25 .25 1.25
+#  origin: 80 2.5 -10
+#  mass: 600f
+#  acceleration: 0f 0f 0f
   
 elevatorshaftbackpath:
   vertices:
@@ -211,26 +212,30 @@ elevatorshaftbackpath:
   - 16.5 -1.0 6
   - 17 -1.0 6
   - 16.5 -1.1 6 
-elevatorsmash2:
-  shape: box
-  localscaling: 1.25 .25 2.5
-  origin: 85 2.5 20
-  mass: 1f 
-elevatorsmash3:
-  shape: box
-  localscaling: 1.25 .25 2.5
-  origin: 85 2.5 10
-  mass: 1f 
-elevatorsmash4:
-  shape: box
-  localscaling: 1.25 .25 2.5
-  origin: 85 2.5 0
-  mass: 1f 
-elevatorsmash5:
-  shape: box
-  localscaling: 1.25 .25 1.25
-  origin: 85 2.5 -8
-  mass: 1f
+#elevatorsmash2:
+#  shape: box
+#  localscaling: 1.25 .25 2.5
+#  origin: 85 2.5 20
+#  mass: 600f 
+#  acceleration: 0f 0f 0f
+#elevatorsmash3:
+#  shape: box
+#  localscaling: 1.25 .25 2.5
+#  origin: 85 2.5 10
+#  mass: 600f 
+#  acceleration: 0f 0f 0f
+#elevatorsmash4:
+#  shape: box
+#  localscaling: 1.25 .25 2.5
+#  origin: 85 2.5 0
+#  mass: 600f 
+#  acceleration: 0f 0f 0f
+#elevatorsmash5:
+#  shape: box
+#  localscaling: 1.25 .25 1.25
+#  origin: 85 2.5 -8
+#  mass: 600f
+#  acceleration: 0f 0f 0f
 elevatorshaftbackpathcieling:
   vertices:
   - 17 .4 -2.0

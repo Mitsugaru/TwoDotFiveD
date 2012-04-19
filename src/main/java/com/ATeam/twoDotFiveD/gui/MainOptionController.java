@@ -4,31 +4,30 @@ import com.ATeam.twoDotFiveD.Config;
 
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyEventSubscriber;
-import de.lessvoid.nifty.controls.CheckBox;
 import de.lessvoid.nifty.controls.DropDown;
 import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.controls.TextFieldChangedEvent;
 import de.lessvoid.nifty.screen.Screen;
-import de.lessvoid.nifty.controls.Controller;
 import de.lessvoid.nifty.screen.ScreenController;
 
 //TODO implement
 public class MainOptionController implements ScreenController {
-	Config config = new Config();
 	Nifty nifty;
 	Screen screen;
 
 	//variables of the gui 
 	private TextField optionsTextField;
+	@SuppressWarnings("rawtypes")
 	private DropDown dropDown1;
 
 	//getting info from gui to move to config
 	private String dis;
-	int tempWidth=config.getDisplayWidth();
-	int tempHeight=config.getDisplayHeight();
-	int tempFreq=config.getDisplayFrequency();
+	int tempWidth=Config.displayWidth;
+	int tempHeight=Config.displayHeight;
+	int tempFreq=Config.displayFrequency;
 	
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void bind(Nifty newNifty, Screen newScreen) {
 		screen = newScreen;
@@ -78,6 +77,7 @@ public class MainOptionController implements ScreenController {
 		// start the game and do some more stuff...
 	}
 
+	@SuppressWarnings("rawtypes")
 	private DropDown findDropDownControl(final String id) {
 		return screen.findNiftyControl(id, DropDown.class);
 	}

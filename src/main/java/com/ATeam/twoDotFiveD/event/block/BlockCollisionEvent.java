@@ -1,13 +1,6 @@
 package com.ATeam.twoDotFiveD.event.block;
 
-import javax.vecmath.Vector3f;
-import com.ATeam.twoDotFiveD.music.*;
-import com.ATeam.twoDotFiveD.block.Block;
-import com.ATeam.twoDotFiveD.event.player.PlayerListener;
-import com.bulletphysics.collision.narrowphase.ManifoldPoint;
 import com.bulletphysics.collision.narrowphase.PersistentManifold;
-import com.bulletphysics.collision.shapes.SphereShape;
-import com.bulletphysics.dynamics.RigidBody;
 
 public class BlockCollisionEvent extends BlockEvent
 {

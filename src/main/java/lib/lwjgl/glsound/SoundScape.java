@@ -117,7 +117,7 @@ public class SoundScape {
     }
     
     public static void exit(int arg) {
-    	System.out.println("SoundScape: got error # " + arg);
+    	//System.out.println("SoundScape: got error # " + arg);
     	//System.exit(arg);
     }
 
@@ -389,7 +389,7 @@ public class SoundScape {
     static int allocateSoundData() {
         // check that create() was run first
         if (ALcreated == false) {
-            System.out.println("SoundScape.allocateSoundData() error: OpenAL has not been initialized -- call SoundScape.create() first!");
+            //System.out.println("SoundScape.allocateSoundData() error: OpenAL has not been initialized -- call SoundScape.create() first!");
         }
         IntBuffer soundDataHandle = allocInts(1);
         // al generate buffers and sources

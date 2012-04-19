@@ -1,14 +1,9 @@
 package com.ATeam.twoDotFiveD.event.block;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.ATeam.twoDotFiveD.block.Block;
 import com.ATeam.twoDotFiveD.entity.Entity;
 import com.ATeam.twoDotFiveD.event.Event;
 
-public class BlockEvent extends Event<BlockListener> implements Serializable{
+public class BlockEvent extends Event<BlockListener>{
 	private Entity entity;
 	
 	/**

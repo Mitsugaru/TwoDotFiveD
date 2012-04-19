@@ -161,7 +161,7 @@ public class MusicPlayer
 		ths[i] = new MusicPlayerRun();
 		ths[i].start();// start a thread
 		ths[i].setSong(sound.get(i));
-		System.out.println(sound.get(i));
+		//System.out.println(sound.get(i));
 	}
 	
 	public static void getSound()
@@ -190,7 +190,7 @@ public class MusicPlayer
 			FileReader reader = new FileReader("Sounds.txt");
 			Scanner scanner = new Scanner(reader);
 			vol = scanner.nextFloat();
-			System.out.println(vol);
+			//System.out.println(vol);
 			scanner.close();
 		}
 		catch (IOException e)
@@ -213,7 +213,7 @@ public class MusicPlayer
 		{
 		}
 		ths2.changePitch(pit);
-		System.out.println(pit);
+		//System.out.println(pit);
 	}
 	
 }

@@ -5,7 +5,6 @@ import java.util.Map;
 
 import javax.vecmath.Vector3f;
 
-import com.ATeam.twoDotFiveD.block.Block;
 import com.ATeam.twoDotFiveD.entity.Entity;
 
 public class BlockPhysicsChangeEvent extends BlockEvent {

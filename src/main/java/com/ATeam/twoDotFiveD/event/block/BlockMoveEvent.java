@@ -1,6 +1,5 @@
 package com.ATeam.twoDotFiveD.event.block;
 
-import com.ATeam.twoDotFiveD.block.Block;
 import com.ATeam.twoDotFiveD.entity.Entity;
 
 public class BlockMoveEvent extends BlockEvent {
