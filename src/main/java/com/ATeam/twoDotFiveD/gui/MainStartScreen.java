@@ -83,6 +83,7 @@ public class MainStartScreen implements ScreenController
         //nifty.fromXml( HUD_XML, "hud" );
         // TODO check for existing game in progress and ask
        // DisplayStuff.setRenderNifty( true );
+	nifty.unsubscribeScreen(screen);
 	TwoDotFiveDBsp.nifty = false;
     }
 
