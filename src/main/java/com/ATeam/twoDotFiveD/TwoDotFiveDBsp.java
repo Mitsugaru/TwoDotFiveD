@@ -1181,7 +1181,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 	demo = new TwoDotFiveDBsp(LWJGL.getGL());
 	demo.initListener();
 	try {
-	    client = new chatClient(null, "192.168.1.14", Config.id,
+	    client = new chatClient(null, "137.155.2.104", Config.id,
 		    remoteDispatcher);
 	    if (client.connect()) {
 		client.start();
