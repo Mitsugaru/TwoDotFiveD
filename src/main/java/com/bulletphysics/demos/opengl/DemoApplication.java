@@ -107,7 +107,7 @@ public abstract class DemoApplication {
     protected int glutScreenWidth = 0;
     protected int glutScreenHeight = 0;
 
-    protected float ShootBoxInitialSpeed = 40f;
+    protected float ShootBoxInitialSpeed = 100f;
 
     protected boolean stepping = true;
     protected boolean singleStep = false;
