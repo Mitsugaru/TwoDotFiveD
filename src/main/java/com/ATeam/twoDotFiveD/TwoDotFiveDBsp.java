@@ -1221,144 +1221,139 @@ public class TwoDotFiveDBsp extends DemoApplication {
 	/**
 	 * Remote events
 	 */
-	if (connected) {
-	    BlockListener remoteBlockListener = new BlockListener() {
-		@Override
-		public void onBlockCreate(BlockCreateEvent event) {
-		    float mass = (1f / event.getEntity().getInvMass());
-		    // System.out.println("Event mass: " + mass);
-		    // System.out.println("Event transform: " +
-		    // event.getEntity().getRigidBody().getWorldTransform(new
-		    // Transform()).toString());
-		    // System.out.println("Event CollisionShape: " +
-		    // event.getEntity().getRigidBody().getCollisionShape().toString());
-		    Entity entity = localCreateEntity(mass, event.getEntity()
-			    .getWorldTransform(new Transform()), event
-			    .getEntity().getCollisionShape(), event.getEntity()
-			    .getID(), event.getEntity().getImage(),
-			    new String[] { "" });
-		    entity.setAngularFactor(event.getEntity()
-			    .getAngularFactor());
-		    entity.setAngularVelocity(event.getEntity()
-			    .getAngularVelocity(new Vector3f()));
-		    entity.setLinearVelocity(event.getEntity()
-			    .getLinearVelocity(new Vector3f()));
-		    entity.setDamping(event.getEntity().getLinearDamping(),
-			    event.getEntity().getAngularDamping());
-		    entity.setEntityGravity(event.getEntity()
-			    .getEntityGravity());
-		    // System.out.println("Remote gravity: "
-		    // +event.getEntity().getGravity());
-		    // System.out.println(event.getEntity().getRigidBody().getLinearVelocity(new
-		    // Vector3f()).toString());
-		    entityList.put(entity, entity);
-		    // System.out.println("Added block");
-		}
+	BlockListener remoteBlockListener = new BlockListener() {
+	    @Override
+	    public void onBlockCreate(BlockCreateEvent event) {
+		float mass = (1f / event.getEntity().getInvMass());
+		// System.out.println("Event mass: " + mass);
+		// System.out.println("Event transform: " +
+		// event.getEntity().getRigidBody().getWorldTransform(new
+		// Transform()).toString());
+		// System.out.println("Event CollisionShape: " +
+		// event.getEntity().getRigidBody().getCollisionShape().toString());
+		Entity entity = localCreateEntity(mass, event.getEntity()
+			.getWorldTransform(new Transform()), event.getEntity()
+			.getCollisionShape(), event.getEntity().getID(), event
+			.getEntity().getImage(), new String[] { "" });
+		entity.setAngularFactor(event.getEntity().getAngularFactor());
+		entity.setAngularVelocity(event.getEntity().getAngularVelocity(
+			new Vector3f()));
+		entity.setLinearVelocity(event.getEntity().getLinearVelocity(
+			new Vector3f()));
+		entity.setDamping(event.getEntity().getLinearDamping(), event
+			.getEntity().getAngularDamping());
+		entity.setEntityGravity(event.getEntity().getEntityGravity());
+		// System.out.println("Remote gravity: "
+		// +event.getEntity().getGravity());
+		// System.out.println(event.getEntity().getRigidBody().getLinearVelocity(new
+		// Vector3f()).toString());
+		entityList.put(entity, entity);
+		// System.out.println("Added block");
+	    }
 
-		@Override
-		public synchronized void onBlockDestroyed(
-			BlockDestroyedEvent event) {
-		    // System.out.println("Received destroyed event");
-		    // for (Entity e : entityList.values()) {
-		    // if (e.getID().equals(event.getEntity().getID())) {
-		    // final CollisionShape shape = e.getCollisionShape();
-		    // CollisionObject toRemove = null;
-		    // for (CollisionObject o : dynamicsWorld
-		    // .getCollisionObjectArray()) {
-		    // if (o.getCollisionShape().equals(shape)) {
-		    // // System.out.println("found in dynamics world");
-		    // toRemove = o;
-		    // break;
-		    // }
-		    // }
-		    // if (toRemove != null) {
-		    // // System.out.println("Removed");
-		    // try {
-		    // dynamicsWorld
-		    // .removeCollisionObject(toRemove);
-		    // } catch (NullPointerException n) {
-		    // System.out
-		    // .println("Attempted to remove object taht no longer exists.");
-		    // } catch (ArrayIndexOutOfBoundsException a) {
-		    // System.out
-		    // .println("Attempted to remove object taht no longer exists.");
-		    // }
-		    // }
-		    // break;
-		    // }
-		    // }
-		}
-	    };
-	    PlayerListener remotePlayerListener = new PlayerListener() {
-		@Override
-		public void onPlayerMove(PlayerMoveEvent event) {
-		    for (Entity e : playerList) {
-			if (e.getID().equals(event.getPlayer().getID())) {
-			    e.setWorldTransform(event.getTransform());
-			    break;
-			}
+	    @Override
+	    public synchronized void onBlockDestroyed(BlockDestroyedEvent event) {
+		// System.out.println("Received destroyed event");
+		// for (Entity e : entityList.values()) {
+		// if (e.getID().equals(event.getEntity().getID())) {
+		// final CollisionShape shape = e.getCollisionShape();
+		// CollisionObject toRemove = null;
+		// for (CollisionObject o : dynamicsWorld
+		// .getCollisionObjectArray()) {
+		// if (o.getCollisionShape().equals(shape)) {
+		// // System.out.println("found in dynamics world");
+		// toRemove = o;
+		// break;
+		// }
+		// }
+		// if (toRemove != null) {
+		// // System.out.println("Removed");
+		// try {
+		// dynamicsWorld
+		// .removeCollisionObject(toRemove);
+		// } catch (NullPointerException n) {
+		// System.out
+		// .println("Attempted to remove object taht no longer exists.");
+		// } catch (ArrayIndexOutOfBoundsException a) {
+		// System.out
+		// .println("Attempted to remove object taht no longer exists.");
+		// }
+		// }
+		// break;
+		// }
+		// }
+	    }
+	};
+	PlayerListener remotePlayerListener = new PlayerListener() {
+	    @Override
+	    public void onPlayerMove(PlayerMoveEvent event) {
+		for (Entity e : playerList) {
+		    if (e.getID().equals(event.getPlayer().getID())) {
+			System.out
+				.println("Found entity for player move event");
+			e.setWorldTransform(event.getTransform());
+			break;
 		    }
 		}
+	    }
 
-		@Override
-		public void onPlayerJoin(PlayerJoinEvent event) {
-		    System.out.println("Got player join event");
-		    boolean has = false;
-		    for (Entity e : playerList) {
-			if (e.getID().equals(event.getPlayer().getID())) {
-			    has = true;
-			}
-		    }
-		    if (!has) {
-			float mass = (1f / event.getPlayer().getInvMass());
-			Vector3f localInertia = new Vector3f(0, 0, 0);
-			// colShape.calculateLocalInertia(mass, localInertia);
-			DefaultMotionState myMotionState = new DefaultMotionState(
-				event.getPlayer().getWorldTransform(
-					new Transform()));
-			Entity remotePlayer = new Entity(mass, myMotionState, event.getPlayer()
-				.getCollisionShape(), localInertia,
-				event.getPlayer()
-				.getID(), event.getPlayer().getImage(), new String[] { "" });
-			dynamicsWorld.addRigidBody(remotePlayer);
-			remotePlayer.setActivationState(RigidBody.ISLAND_SLEEPING);
-			entityList.put(remotePlayer, remotePlayer);
-			playerList.add(remotePlayer);
-			// Forward ourselves to remote as well
-			eventDispatcher.notify(new PlayerJoinEvent(player));
+	    @Override
+	    public void onPlayerJoin(PlayerJoinEvent event) {
+		System.out.println("Got player join event");
+		boolean has = false;
+		for (Entity e : playerList) {
+		    if (e.getID().equals(event.getPlayer().getID())) {
+			has = true;
 		    }
 		}
+		if (!has) {
+		    float mass = (1f / event.getPlayer().getInvMass());
+		    Vector3f localInertia = new Vector3f(0, 0, 0);
+		    // colShape.calculateLocalInertia(mass, localInertia);
+		    DefaultMotionState myMotionState = new DefaultMotionState(
+			    event.getPlayer()
+				    .getWorldTransform(new Transform()));
+		    Entity remotePlayer = new Entity(mass, myMotionState, event
+			    .getPlayer().getCollisionShape(), localInertia,
+			    event.getPlayer().getID(), event.getPlayer()
+				    .getImage(), new String[] { "" });
+		    dynamicsWorld.addRigidBody(remotePlayer);
+		    remotePlayer.setActivationState(RigidBody.ISLAND_SLEEPING);
+		    entityList.put(remotePlayer, remotePlayer);
+		    playerList.add(remotePlayer);
+		    // Forward ourselves to remote as well
+		    eventDispatcher.notify(new PlayerJoinEvent(player));
+		}
+	    }
 
-		@Override
-		public void onPlayerQuit(PlayerQuitEvent event) {
-		    System.out.println("Got player quit event");
-		    for (Entity e : playerList) {
-			if (e.getID().equals(event.getPlayer().getID())) {
-			    removeStuff.add(0, e);
-			    break;
-			}
+	    @Override
+	    public void onPlayerQuit(PlayerQuitEvent event) {
+		System.out.println("Got player quit event");
+		for (Entity e : playerList) {
+		    if (e.getID().equals(event.getPlayer().getID())) {
+			removeStuff.add(0, e);
+			break;
 		    }
 		}
-	    };
-	    remoteDispatcher.registerListener(Type.BLOCK_CREATE,
-		    remoteBlockListener);
-	    remoteDispatcher.registerListener(Type.BLOCK_DESTROYED,
-		    remoteBlockListener);
-	    remoteDispatcher.registerListener(Type.PLAYER_JOIN,
-		    remotePlayerListener);
-	    remoteDispatcher.registerListener(Type.PLAYER_MOVE,
-		    remotePlayerListener);
-	    remoteDispatcher.registerListener(Type.PLAYER_QUIT,
-		    remotePlayerListener);
-	}
-	//MusicPlayer mp = new MusicPlayer(eventDispatcher);
+	    }
+	};
+	remoteDispatcher.registerListener(Type.BLOCK_CREATE,
+		remoteBlockListener);
+	remoteDispatcher.registerListener(Type.BLOCK_DESTROYED,
+		remoteBlockListener);
+	remoteDispatcher.registerListener(Type.PLAYER_JOIN,
+		remotePlayerListener);
+	remoteDispatcher.registerListener(Type.PLAYER_MOVE,
+		remotePlayerListener);
+	remoteDispatcher.registerListener(Type.PLAYER_QUIT,
+		remotePlayerListener);
+	// MusicPlayer mp = new MusicPlayer(eventDispatcher);
     }
 
     public class LocalPlayerListener extends PlayerListener {
-	
+
 	@Override
-	public void onPlayerJoin(PlayerJoinEvent event)
-	{
+	public void onPlayerJoin(PlayerJoinEvent event) {
 	    sendToRemote(event);
 	}
 
