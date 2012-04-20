@@ -564,7 +564,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 	    dynamicsWorld.stepSimulation(dt);
 	    Transform t = player.getWorldTransform(new Transform());
 	    eventDispatcher.notify(new PlayerMoveEvent(player, t));
-	    System.out.println(t.getMatrix(new Matrix4f()).toString());
+	    //System.out.println(t.getMatrix(new Matrix4f()).toString());
 	    // optional but useful: debug drawing
 	    dynamicsWorld.debugDrawWorld();
 	} catch (NullPointerException e) {
@@ -1292,6 +1292,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 	    @Override
 	    public void onPlayerMove(PlayerMoveEvent event) {
 		for (Entity e : playerList) {
+			System.out.println("event: " + event.getPlayer().getID() + " e: " + e.getID());
 		    if (e.getID().equals(event.getPlayer().getID())) {
 			System.out
 				.println("Found entity for player move event");
