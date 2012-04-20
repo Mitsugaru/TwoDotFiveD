@@ -212,7 +212,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		DefaultMotionState myMotionState = new DefaultMotionState(
 				startTransform);
 		player = new Entity(mass, myMotionState, colShape, localInertia,
-				Config.id, new Vector3f(1f, 1f, 1f), new String[] { "" });
+				Config.id, new Vector3f(0f, 1f, 0f), new String[] { "" });
 		dynamicsWorld.addRigidBody(player);
 		player.setActivationState(RigidBody.ISLAND_SLEEPING);
 		entityList.put(player, player);
@@ -1470,7 +1470,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 									entityA));
 							dynamicsWorld.removeCollisionObject(entityA);
 							entityList.remove(entityA);
-							entityB.translate(new Vector3f(5f, 0f, 0f));
+							//entityB.translate(new Vector3f(5f, 0f, 0f));
 						}
 					} else if (entityB.getCollisionShape().getName()
 							.equalsIgnoreCase("sphere")) {
@@ -1478,7 +1478,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 							eventDispatcher.notify(new BlockDestroyedEvent(
 									entityB));
 							dynamicsWorld.removeCollisionObject(entityB);
-							entityA.translate(new Vector3f(5f, 0f, 0f));
+							//entityA.translate(new Vector3f(5f, 0f, 0f));
 						}
 					} else {
 						// System.out.println("objA: " + entityA.getID()
