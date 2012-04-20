@@ -1084,18 +1084,18 @@ public class TwoDotFiveDBsp extends DemoApplication {
 
 					// not yet hooked up again after refactoring...
 
-					s = "5 = normal gravity";
+					s = "2 = normal gravity";
 					drawString(s, Math.round(xOffset), Math.round(yStart),
 							TEXT_COLOR);
 					yStart += yIncr;
 
-					s = "6 = anti-gravity";
+					s = "3 = anti-gravity";
 					drawString(s, Math.round(xOffset), Math.round(yStart),
 							TEXT_COLOR);
 					yStart += yIncr;
 
 					// JAVA NOTE: added
-					s = "7 = null gravity";
+					s = "4 = null gravity";
 					drawString(s, Math.round(xOffset), Math.round(yStart),
 							TEXT_COLOR);
 					yStart += yIncr;
@@ -1104,7 +1104,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 					drawString(s, Math.round(xOffset), Math.round(yStart),
 							TEXT_COLOR);
 					yStart += yIncr;
-					s = "J = change box type to ANTI-GRAV SPHERE";
+					s = "J = change box type to SPHERE";
 					drawString(s, Math.round(xOffset), Math.round(yStart),
 							TEXT_COLOR);
 					yStart += yIncr;
@@ -1636,7 +1636,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 					// 0f ) );
 					// }
 					// Entites are known and exist, so we can act upon them
-					if (entityA.getCollisionShape().getName()
+					/*if (entityA.getCollisionShape().getName()
 							.equalsIgnoreCase("sphere")) {
 						if (setGravity(entityB, new Vector3f(0f, 30f, 0f))) {
 							// entityA.setGravity(new Vector3f(0f, 30f, 0f));
@@ -1672,7 +1672,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 							removeStuff.add(entityB);
 							// entityA.translate(new Vector3f(5f, 0f, 0f));
 						}
-					} /*
+					} 
 					 * else if (entityA.getID().equals(player.getID())) { if
 					 * (entityB.getImage().equals(new Vector3f(1f, 0f, 0f))) {
 					 * Vector3f splode = new Vector3f(0f, 1f, 0f); for (int i =
@@ -1687,8 +1687,8 @@ public class TwoDotFiveDBsp extends DemoApplication {
 					 * entity.setEntityGravity(new Vector3f(0f, 0f, 0f)); //
 					 * eventDispatcher // .notify(new BlockPhysicsChangeEvent(
 					 * // entity, // new Vector3f(0f, 0f, 0f))); } } }
-					 */else {
-					}
+					 else {
+					}*/
 					// System.out.println("objA: " + entityA.getID()
 					// + " objB: " + entityB.getID());
 				} else {
