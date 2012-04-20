@@ -26,6 +26,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -378,10 +379,14 @@ public class TwoDotFiveDBsp extends DemoApplication {
 
 	@Override
 	public void updateCamera() {
-		for(Map.Entry<Entity, Vector3f> entry : entityPhysicsList.entrySet())
-		{
-			entry.getKey().setEntityGravity(entry.getValue());
-			entry.getKey().activate();
+		try {
+			for (Map.Entry<Entity, Vector3f> entry : entityPhysicsList
+					.entrySet()) {
+				entry.getKey().setEntityGravity(entry.getValue());
+				entry.getKey().activate();
+			}
+		} catch (ConcurrentModificationException c) {
+			// Ignore
 		}
 		entityPhysicsList.clear();
 		while (removeStuff.size() > maxboxes) {
@@ -1633,10 +1638,10 @@ public class TwoDotFiveDBsp extends DemoApplication {
 							for (int i = 0; i < 7; i++) {
 								Entity entity = shootEntityBox(splode);
 								entity.setEntityGravity(new Vector3f(0f, 0f, 0f));
-//								eventDispatcher
-//										.notify(new BlockPhysicsChangeEvent(
-//												entity,
-//												new Vector3f(0f, 0f, 0f)));
+								// eventDispatcher
+								// .notify(new BlockPhysicsChangeEvent(
+								// entity,
+								// new Vector3f(0f, 0f, 0f)));
 							}
 						}
 					} else if (entityB == player) {
@@ -1645,10 +1650,10 @@ public class TwoDotFiveDBsp extends DemoApplication {
 							for (int i = 0; i < 7; i++) {
 								Entity entity = shootEntityBox(splode);
 								entity.setEntityGravity(new Vector3f(0f, 0f, 0f));
-//								eventDispatcher
-//										.notify(new BlockPhysicsChangeEvent(
-//												entity,
-//												new Vector3f(0f, 0f, 0f)));
+								// eventDispatcher
+								// .notify(new BlockPhysicsChangeEvent(
+								// entity,
+								// new Vector3f(0f, 0f, 0f)));
 							}
 						}
 					} else {
