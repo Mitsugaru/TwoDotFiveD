@@ -606,6 +606,10 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		lastKey = 0;
 
 		switch (key) {
+		case '.': {
+		    shootEntityBox(getCameraTargetPosition());
+		    break;
+		}
 		case '5': {
 			for (final CollisionObject o : dynamicsWorld
 					.getCollisionObjectArray()) {
