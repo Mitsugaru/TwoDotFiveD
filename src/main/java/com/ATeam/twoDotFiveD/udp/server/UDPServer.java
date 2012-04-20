@@ -5,6 +5,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 
 import com.ATeam.twoDotFiveD.chatServer.clientHandler;
 
@@ -47,16 +48,16 @@ public class UDPServer implements Runnable {
 	@Override
 	public void run() {
 		byte[] receiveData = new byte[2560];
-		System.out.println("UDP PORT"+port);
+		//System.out.println("UDP PORT"+port);
 		DatagramPacket receivePacket;
 		byte id;
 		clientHandler pntr;
 		try {
-			System.out.println("Server Ready");
+			//System.out.println("Server Ready");
 			while(run)
 			{
 				receivePacket = new DatagramPacket(receiveData, receiveData.length);
-				System.out.println("Listen");
+				//System.out.println("Listen");
 				socket.receive(receivePacket);
 
 				id=(byte) (receiveData[0]&0x0F);
@@ -65,18 +66,25 @@ public class UDPServer implements Runnable {
 				pntr = getByID(id);
 				if(!pntr.initialized()){
 					pntr.init(receivePacket.getAddress(), receivePacket.getPort());
-					System.out.println("init:"+pntr.getID());
+					//System.out.println("init:"+pntr.getID());
 				}
+				try
+				{
 				if(receiveData[1]!=(byte) 0xFF){
 					for(clientHandler c :clients){
 						//System.out.println(c.getname()+":"+c.getID());
 						if((!c.equals(pntr))){
 							if(c.initialized()){
-								System.out.println("Relayed message from:"+pntr.getID()+" to:"+c.getID());
+								//System.out.println("Relayed message from:"+pntr.getID()+" to:"+c.getID());
 								socket.send(c.message(receiveData));
 							}
 						}
 					}
+				}
+				}
+				catch(ConcurrentModificationException c)
+				{
+					//IGNORE
 				}
 				//				switch((byte) (receiveData[0]&0xC0)){
 				//
