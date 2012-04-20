@@ -20,7 +20,6 @@ import com.ATeam.twoDotFiveD.debug.Logging;
  * 
  */
 
-
 public class Config {
     // Class variables
     private File configFile = new File(System.getProperty("user.dir"));
@@ -81,6 +80,8 @@ public class Config {
 	    final Map<String, Object> defaults = new HashMap<String, Object>();
 	    // Central place to put program info, such as version
 	    defaults.put("version", "0.01");
+	    defaults.put("info.player", "PLAYER");
+	    defaults.put("info.ip", "127.0.0.1");
 	    defaults.put("window.vSync", false);
 	    defaults.put("window.fullScreen", false);
 	    defaults.put("window.displayWidth", 800);
@@ -99,16 +100,18 @@ public class Config {
 	    // Save
 	    config.save(configFile);
 	    // Load variables from config
-	    Config.vSync = config.getBoolean("window.vSync", false);
-	    Config.fullScreen = config.getBoolean("window.fullScreen", false);
-	    Config.displayWidth = config.getInt("window.displayWidth", -1);
-	    Config.displayHeight = config.getInt("window.displayHeight", -1);
-	    Config.displayColorBits = config.getInt("window.displayColorBits",
+	    vSync = config.getBoolean("window.vSync", false);
+	    fullScreen = config.getBoolean("window.fullScreen", false);
+	    displayWidth = config.getInt("window.displayWidth", -1);
+	    displayHeight = config.getInt("window.displayHeight", -1);
+	    displayColorBits = config.getInt("window.displayColorBits",
 		    -1);
-	    Config.displayFrequency = config.getInt("window.displayFrequency",
+	    displayFrequency = config.getInt("window.displayFrequency",
 		    -1);
-	    Config.depthBufferBits = config
+	    depthBufferBits = config
 		    .getInt("window.depthBufferBits", 24);
+	    id = config.getString("info.player", "PLAYER");
+	    ip = config.getString("info.ip", "127.0.0.1");
 	    // Check bounds
 	    checkBounds();
 	} catch (IOException e1) {
@@ -132,6 +135,8 @@ public class Config {
      */
     public void save() {
 	try {
+	    setProperty("info.player", id);
+	    setProperty("info.ip", ip);
 	    config.save(configFile);
 	} catch (IOException e) {
 	    Logging.log.log(Level.SEVERE, "Failed to save config file.", e);
@@ -157,8 +162,8 @@ public class Config {
 	try {
 	    config.load(configFile);
 	    // Load variables from config
-	    Config.vSync = config.getBoolean("window.vSync", false);
-	    Config.fullScreen = config.getBoolean("window.fullScreen", false);
+	    vSync = config.getBoolean("window.vSync", false);
+	    fullScreen = config.getBoolean("window.fullScreen", false);
 	    // Check bounds
 	    checkBounds();
 	} catch (FileNotFoundException e) {
