@@ -214,7 +214,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		DefaultMotionState myMotionState = new DefaultMotionState(
 				startTransform);
 		player = new Entity(mass, myMotionState, colShape, localInertia,
-				"mac0", new Vector3f(0f, 1f, 0f), new String[] { "" });
+				"mac3", new Vector3f(0f, 1f, 0f), new String[] { "" });
 		dynamicsWorld.addRigidBody(player);
 		player.setActivationState(RigidBody.ISLAND_SLEEPING);
 		entityList.put(player, player);
@@ -1130,7 +1130,6 @@ public class TwoDotFiveDBsp extends DemoApplication {
 
 				gl.glEnable(GL_LIGHTING);
 			}
-
 			updateCamera();
 		} else {
 			/**
@@ -1192,7 +1191,23 @@ public class TwoDotFiveDBsp extends DemoApplication {
 			Vector3f camPos = new Vector3f(getCameraPosition());
 			// Fix stuff?
 			Vector3f shootfrom = player.getCenterOfMassPosition(new Vector3f());
-			shootfrom.y = shootfrom.y + 3;
+			if (cam.getQuadrant()==1) {
+				shootfrom.z = shootfrom.z-1.5f;
+				shootfrom.y = shootfrom.y + 1.5f;
+			}
+			if (cam.getQuadrant()==2) {
+				shootfrom.x = shootfrom.x-1.5f;
+				shootfrom.y = shootfrom.y + 1.5f;
+			}
+			if (cam.getQuadrant()==3) {
+				shootfrom.z = shootfrom.z+1.5f;
+				shootfrom.y = shootfrom.y + 1.5f;
+			}
+			if (cam.getQuadrant()==4) {
+				shootfrom.x = shootfrom.x+1.5f;
+				shootfrom.y = shootfrom.y + 1.5f;
+			}
+			
 			startTransform.origin.set(shootfrom);
 
 			if (shapeType.equals("BOX")) {
@@ -1312,7 +1327,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		demo = new TwoDotFiveDBsp(LWJGL.getGL());
 		demo.initListener();
 		try {
-			client = new chatClient(null, "137.155.2.104", "mac0",
+			client = new chatClient(null, "137.155.2.104", "mac3",
 					remoteDispatcher);
 			if (client.connect()) {
 				client.start();
