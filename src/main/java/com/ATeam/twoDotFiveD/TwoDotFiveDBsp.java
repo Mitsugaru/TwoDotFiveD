@@ -1292,7 +1292,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 	    @Override
 	    public void onPlayerMove(PlayerMoveEvent event) {
 		for (Entity e : playerList) {
-			System.out.println("event: " + event.getPlayer().getID() + " e: " + e.getID());
+			//System.out.println("event: " + event.getPlayer().getID() + " e: " + e.getID());
 		    if (e.getID().equals(event.getPlayer().getID())) {
 			System.out
 				.println("Found entity for player move event");
