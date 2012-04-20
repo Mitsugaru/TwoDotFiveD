@@ -1591,16 +1591,52 @@ public class TwoDotFiveDBsp extends DemoApplication {
 							dynamicsWorld.removeCollisionObject(entityB);
 							// entityA.translate(new Vector3f(5f, 0f, 0f));
 						}
+					} else if (entityA.getCollisionShape().getName()
+							.equalsIgnoreCase("cylinder")) {
+						if (setGravity(entityB, new Vector3f(0f, -30f, 0f))) {
+							// entityA.setGravity(new Vector3f(0f, 30f, 0f));
+							eventDispatcher.notify(new BlockDestroyedEvent(
+									entityA));
+							dynamicsWorld.removeCollisionObject(entityA);
+							entityList.remove(entityA);
+							// entityB.translate(new Vector3f(5f, 0f, 0f));
+						}
+					} else if (entityB.getCollisionShape().getName()
+							.equalsIgnoreCase("cylinder")) {
+						if (setGravity(entityA, new Vector3f(0f, -30f, 0f))) {
+							eventDispatcher.notify(new BlockDestroyedEvent(
+									entityB));
+							dynamicsWorld.removeCollisionObject(entityB);
+							// entityA.translate(new Vector3f(5f, 0f, 0f));
+						}
+					} else if (entityA.getCollisionShape().getName()
+							.equalsIgnoreCase("cone")) {
+						if (setGravity(entityB, new Vector3f(0f, 0f, 0f))) {
+							// entityA.setGravity(new Vector3f(0f, 30f, 0f));
+							eventDispatcher.notify(new BlockDestroyedEvent(
+									entityA));
+							dynamicsWorld.removeCollisionObject(entityA);
+							entityList.remove(entityA);
+							// entityB.translate(new Vector3f(5f, 0f, 0f));
+						}
+					} else if (entityB.getCollisionShape().getName()
+							.equalsIgnoreCase("cone")) {
+						if (setGravity(entityA, new Vector3f(0f, 0f, 0f))) {
+							eventDispatcher.notify(new BlockDestroyedEvent(
+									entityB));
+							dynamicsWorld.removeCollisionObject(entityB);
+							// entityA.translate(new Vector3f(5f, 0f, 0f));
+						}
 					} else if (entityA == player) {
 						if (entityB.getImage().equals(new Vector3f(1f, 0f, 0f))) {
 							Vector3f splode = new Vector3f(0f, 1f, 0f);
 							for (int i = 0; i < 7; i++) {
 								Entity entity = shootEntityBox(splode);
 								entity.setEntityGravity(new Vector3f(0f, 0f, 0f));
-								eventDispatcher
-										.notify(new BlockPhysicsChangeEvent(
-												entity,
-												new Vector3f(0f, 0f, 0f)));
+//								eventDispatcher
+//										.notify(new BlockPhysicsChangeEvent(
+//												entity,
+//												new Vector3f(0f, 0f, 0f)));
 							}
 						}
 					} else if (entityB == player) {
@@ -1609,10 +1645,10 @@ public class TwoDotFiveDBsp extends DemoApplication {
 							for (int i = 0; i < 7; i++) {
 								Entity entity = shootEntityBox(splode);
 								entity.setEntityGravity(new Vector3f(0f, 0f, 0f));
-								eventDispatcher
-										.notify(new BlockPhysicsChangeEvent(
-												entity,
-												new Vector3f(0f, 0f, 0f)));
+//								eventDispatcher
+//										.notify(new BlockPhysicsChangeEvent(
+//												entity,
+//												new Vector3f(0f, 0f, 0f)));
 							}
 						}
 					} else {
