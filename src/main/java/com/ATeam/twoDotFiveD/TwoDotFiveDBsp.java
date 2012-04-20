@@ -389,10 +389,14 @@ public class TwoDotFiveDBsp extends DemoApplication {
 			// Ignore
 		}
 		entityPhysicsList.clear();
-		while (removeStuff.size() > maxboxes) {
-			entityList.remove(removeStuff.get(0));
-			dynamicsWorld.removeCollisionObject(removeStuff.get(0));
-			removeStuff.remove(0);
+		try {
+			while (removeStuff.size() > maxboxes) {
+				entityList.remove(removeStuff.get(0));
+				dynamicsWorld.removeCollisionObject(removeStuff.get(0));
+				removeStuff.remove(0);
+			}
+		} catch (ArrayIndexOutOfBoundsException a) {
+			// IGNORE
 		}
 		gl.glMatrixMode(GL_PROJECTION);
 		gl.glLoadIdentity();
@@ -607,8 +611,8 @@ public class TwoDotFiveDBsp extends DemoApplication {
 
 		switch (key) {
 		case '.': {
-		    shootEntityBox(getCameraTargetPosition());
-		    break;
+			shootEntityBox(getCameraTargetPosition());
+			break;
 		}
 		case '5': {
 			for (final CollisionObject o : dynamicsWorld
@@ -1457,9 +1461,8 @@ public class TwoDotFiveDBsp extends DemoApplication {
 					}
 					// Forward ourselves to remote as well
 				}
-				if(player != null)
-				{
-				eventDispatcher.notify(new PlayerJoinEvent(player));
+				if (player != null) {
+					eventDispatcher.notify(new PlayerJoinEvent(player));
 				}
 			}
 
