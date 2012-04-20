@@ -1177,7 +1177,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		e.setGravity(dynamicsWorld.getGravity(new Vector3f()));
 	    }
 	    entityList.put(e, e);
-	    eventDispatcher.notify(new BlockCreateEvent(e));
+	    //eventDispatcher.notify(new BlockCreateEvent(e));
 	}
     }
 
