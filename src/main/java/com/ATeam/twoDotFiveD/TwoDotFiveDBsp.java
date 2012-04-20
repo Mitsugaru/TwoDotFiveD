@@ -1622,7 +1622,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 							dynamicsWorld.removeCollisionObject(entityB);
 							// entityA.translate(new Vector3f(5f, 0f, 0f));
 						}
-					} else if (entityA.getID().equals(player.getID())) {
+					} /*else if (entityA.getID().equals(player.getID())) {
 						if (entityB.getImage().equals(new Vector3f(1f, 0f, 0f))) {
 							Vector3f splode = new Vector3f(0f, 1f, 0f);
 							for (int i = 0; i < 7; i++) {
@@ -1646,7 +1646,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 								// new Vector3f(0f, 0f, 0f)));
 							}
 						}
-					} else {
+					}*/ else {
 					}
 					// System.out.println("objA: " + entityA.getID()
 					// + " objB: " + entityB.getID());
