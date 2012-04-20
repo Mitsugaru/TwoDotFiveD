@@ -448,7 +448,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 				if (t.origin.y < -60) {
 					// System.out.println("Fail condition!!");
 					Vector3f splode = new Vector3f(0f, 1f, 0f);
-					shootBox(splode);
+					shootEntityBox(splode);
 				}
 				if (t.origin.y < -65) {
 					t.origin.set(1, 2, 1);
@@ -1127,8 +1127,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 
 	}
 
-	@Override
-	public synchronized void shootBox(Vector3f destination) {
+	public synchronized Entity shootEntityBox(Vector3f destination) {
 		if (dynamicsWorld != null) {
 			float mass = 50f;
 			Transform startTransform = new Transform();
@@ -1183,7 +1182,9 @@ public class TwoDotFiveDBsp extends DemoApplication {
 			entityList.put(entity, entity);
 			eventDispatcher.notify(new BlockCreateEvent(entity));
 			removeStuff.add(entity);
+			return entity;
 		}
+		return null;
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -1287,7 +1288,8 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		eventDispatcher.registerListener(Type.BLOCK_COLLISION, blockListener);
 		eventDispatcher.registerListener(Type.BLOCK_COLLISION_RESOLVED,
 				blockListener);
-		eventDispatcher.registerListener(Type.BLOCK_PHYSICS_CHANGE, blockListener);
+		eventDispatcher.registerListener(Type.BLOCK_PHYSICS_CHANGE,
+				blockListener);
 		LocalPlayerListener playerListener = new LocalPlayerListener();
 		eventDispatcher.registerListener(Type.PLAYER_JOIN, playerListener);
 		eventDispatcher.registerListener(Type.PLAYER_MOVE, playerListener);
@@ -1357,14 +1359,11 @@ public class TwoDotFiveDBsp extends DemoApplication {
 				// }
 				// }
 			}
-			
+
 			@Override
-			public void onBlockPhysicsChange(BlockPhysicsChangeEvent event)
-			{
-				for(Entity e : entityList.keySet())
-				{
-					if(e.getID().equals(event.getEntity().getID()))
-					{
+			public void onBlockPhysicsChange(BlockPhysicsChangeEvent event) {
+				for (Entity e : entityList.keySet()) {
+					if (e.getID().equals(event.getEntity().getID())) {
 						e.setEntityGravity(event.getDirection());
 						e.activate();
 						break;
@@ -1491,10 +1490,9 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		public void onBlockDestroyed(BlockDestroyedEvent event) {
 			sendToRemote(event);
 		}
-		
+
 		@Override
-		public void onBlockPhysicsChange(BlockPhysicsChangeEvent event)
-		{
+		public void onBlockPhysicsChange(BlockPhysicsChangeEvent event) {
 			sendToRemote(event);
 		}
 
@@ -1569,10 +1567,36 @@ public class TwoDotFiveDBsp extends DemoApplication {
 							dynamicsWorld.removeCollisionObject(entityB);
 							// entityA.translate(new Vector3f(5f, 0f, 0f));
 						}
+					} else if (entityA == player) {
+						System.out.println("player A");
+						if (entityB.getImage().equals(new Vector3f(1f, 0f, 0f))) {
+							Vector3f splode = new Vector3f(0f, 1f, 0f);
+							for (int i = 0; i < 7; i++) {
+								Entity entity = shootEntityBox(splode);
+								entity.setEntityGravity(new Vector3f(0f, 0f, 0f));
+								eventDispatcher
+										.notify(new BlockPhysicsChangeEvent(
+												entity,
+												new Vector3f(0f, 0f, 0f)));
+							}
+						}
+					} else if (entityB == player) {
+						System.out.println("player B");
+						if (entityA.getImage().equals(new Vector3f(1f, 0f, 0f))) {
+							Vector3f splode = new Vector3f(0f, 1f, 0f);
+							for (int i = 0; i < 7; i++) {
+								Entity entity = shootEntityBox(splode);
+								entity.setEntityGravity(new Vector3f(0f, 0f, 0f));
+								eventDispatcher
+										.notify(new BlockPhysicsChangeEvent(
+												entity,
+												new Vector3f(0f, 0f, 0f)));
+							}
+						}
 					} else {
-						// System.out.println("objA: " + entityA.getID()
-						// + " objB: " + entityB.getID());
 					}
+					// System.out.println("objA: " + entityA.getID()
+					// + " objB: " + entityB.getID());
 				} else {
 					// TODO Somehow it is known.... how to handle?
 				}
