@@ -147,6 +147,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 	// keep the collision shapes, for deletion/cleanup
 	// Need to set this back to set / list
 	public static Map<Entity, Entity> entityList = new HashMap<Entity, Entity>();
+	public static Map<Entity, Vector3f> entityPhysicsList = new HashMap<Entity, Vector3f>();
 	public static Set<Entity> playerList = new HashSet<Entity>();
 	public BroadphaseInterface broadphase;
 	public CollisionDispatcher dispatcher;
@@ -377,6 +378,12 @@ public class TwoDotFiveDBsp extends DemoApplication {
 
 	@Override
 	public void updateCamera() {
+		for(Map.Entry<Entity, Vector3f> entry : entityPhysicsList.entrySet())
+		{
+			entry.getKey().setEntityGravity(entry.getValue());
+			entry.getKey().activate();
+		}
+		entityPhysicsList.clear();
 		while (removeStuff.size() > maxboxes) {
 			entityList.remove(removeStuff.get(0));
 			dynamicsWorld.removeCollisionObject(removeStuff.get(0));
@@ -1383,8 +1390,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 			public void onBlockPhysicsChange(BlockPhysicsChangeEvent event) {
 				for (Entity e : entityList.keySet()) {
 					if (e.getID().equals(event.getEntity().getID())) {
-						e.setEntityGravity(event.getDirection());
-						e.activate();
+						entityPhysicsList.put(e, event.getDirection());
 						break;
 					}
 				}
