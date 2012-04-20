@@ -602,7 +602,7 @@ public abstract class DemoApplication {
 	    zoomOut();
 	    break;
 	case Keyboard.KEY_HOME:
-	    toggleIdle();
+	    
 	    break;
 	default:
 	    // std::cout << "unused (special) key : " << key << std::endl;
@@ -928,10 +928,10 @@ public abstract class DemoApplication {
 	updateCamera();
     }
 
-    private void displayProfileString(float xOffset, float yStart,
-	    CharSequence message) {
-	drawString(message, Math.round(xOffset), Math.round(yStart), TEXT_COLOR);
-    }
+//    private void displayProfileString(float xOffset, float yStart,
+//	    CharSequence message) {
+//	drawString(message, Math.round(xOffset), Math.round(yStart), TEXT_COLOR);
+//    }
 
     private static double time_since_reset = 0f;
 
@@ -953,18 +953,7 @@ public abstract class DemoApplication {
 		    : profileIterator.getCurrentParentTotalTime();
 
 	    {
-		buf.setLength(0);
-		buf.append("--- Profiling: ");
-		buf.append(profileIterator.getCurrentParentName());
-		buf.append(" (total running time: ");
-		FastFormat.append(buf, (float) parent_time, 3);
-		buf.append(" ms) ---");
-		displayProfileString(xOffset, yStart, buf);
-		yStart += yIncr;
-		String s = "press number (1,2...) to display child timings, or 0 to go up to parent";
-		displayProfileString(xOffset, yStart, s);
-		yStart += yIncr;
-	    }
+			    }
 
 	    double accumulated_time = 0.f;
 
@@ -975,44 +964,9 @@ public abstract class DemoApplication {
 		double fraction = parent_time > BulletGlobals.FLT_EPSILON ? (current_total_time / parent_time) * 100
 			: 0f;
 
-		buf.setLength(0);
-		FastFormat.append(buf, ++i);
-		buf.append(" -- ");
-		buf.append(profileIterator.getCurrentName());
-		buf.append(" (");
-		FastFormat.append(buf, (float) fraction, 2);
-		buf.append(" %) :: ");
-		FastFormat
-			.append(buf,
-				(float) (current_total_time / (double) frames_since_reset),
-				3);
-		buf.append(" ms / frame (");
-		FastFormat.append(buf, profileIterator.getCurrentTotalCalls());
-		buf.append(" calls)");
+		}
 
-		displayProfileString(xOffset, yStart, buf);
-		yStart += yIncr;
-		totalTime += current_total_time;
-	    }
-
-	    buf.setLength(0);
-	    buf.append("Unaccounted (");
-	    FastFormat
-		    .append(buf,
-			    (float) (parent_time > BulletGlobals.FLT_EPSILON ? ((parent_time - accumulated_time) / parent_time) * 100
-				    : 0.f), 3);
-	    buf.append(" %) :: ");
-	    FastFormat.append(buf, (float) (parent_time - accumulated_time), 3);
-	    buf.append(" ms");
-
-	    displayProfileString(xOffset, yStart, buf);
-	    yStart += yIncr;
-
-	    String s = "-------------------------------------------------";
-	    displayProfileString(xOffset, yStart, s);
-	    yStart += yIncr;
-
-	}
+	   }
 
 	return yStart;
     }
@@ -1123,65 +1077,6 @@ public abstract class DemoApplication {
 		// }
 		// #endif //USE_QUICKPROF
 
-		String s = "mouse to interact";
-		drawString(s, Math.round(xOffset), Math.round(yStart),
-			TEXT_COLOR);
-		yStart += yIncr;
-
-		// JAVA NOTE: added
-		s = "LMB=drag, RMB=shoot box, MIDDLE=apply impulse";
-		drawString(s, Math.round(xOffset), Math.round(yStart),
-			TEXT_COLOR);
-		yStart += yIncr;
-
-		s = "space to reset";
-		drawString(s, Math.round(xOffset), Math.round(yStart),
-			TEXT_COLOR);
-		yStart += yIncr;
-
-		s = "cursor keys and z,x to navigate";
-		drawString(s, Math.round(xOffset), Math.round(yStart),
-			TEXT_COLOR);
-		yStart += yIncr;
-
-		s = "i to toggle simulation, s single step";
-		drawString(s, Math.round(xOffset), Math.round(yStart),
-			TEXT_COLOR);
-		yStart += yIncr;
-
-		s = "q to quit";
-		drawString(s, Math.round(xOffset), Math.round(yStart),
-			TEXT_COLOR);
-		yStart += yIncr;
-
-		s = ". to shoot box or trimesh (MovingConcaveDemo)";
-		drawString(s, Math.round(xOffset), Math.round(yStart),
-			TEXT_COLOR);
-		yStart += yIncr;
-
-		// not yet hooked up again after refactoring...
-
-		s = "d to toggle deactivation";
-		drawString(s, Math.round(xOffset), Math.round(yStart),
-			TEXT_COLOR);
-		yStart += yIncr;
-
-		s = "g to toggle mesh animation (ConcaveDemo)";
-		drawString(s, Math.round(xOffset), Math.round(yStart),
-			TEXT_COLOR);
-		yStart += yIncr;
-
-		// JAVA NOTE: added
-		s = "e to spawn new body (GenericJointDemo)";
-		drawString(s, Math.round(xOffset), Math.round(yStart),
-			TEXT_COLOR);
-		yStart += yIncr;
-
-		s = "h to toggle help text";
-		drawString(s, Math.round(xOffset), Math.round(yStart),
-			TEXT_COLOR);
-		yStart += yIncr;
-
 		// buf = "p to toggle profiling (+results to file)";
 		// drawString(buf, Math.round(xOffset), Math.round(yStart),
 		// TEXT_COLOR);
@@ -1197,95 +1092,16 @@ public abstract class DemoApplication {
 
 		// glRasterPos3f(xOffset, yStart, 0);
 		// buf = String.format(%10.2f", ShootBoxInitialSpeed);
-		buf.setLength(0);
-		buf.append("+- shooting speed = ");
-		FastFormat.append(buf, ShootBoxInitialSpeed);
-		drawString(buf, Math.round(xOffset), Math.round(yStart),
-			TEXT_COLOR);
-		yStart += yIncr;
-
-		// #ifdef SHOW_NUM_DEEP_PENETRATIONS
-		buf.setLength(0);
-		buf.append("gNumDeepPenetrationChecks = ");
-		FastFormat.append(buf, BulletStats.gNumDeepPenetrationChecks);
-		drawString(buf, Math.round(xOffset), Math.round(yStart),
-			TEXT_COLOR);
-		yStart += yIncr;
-
-		buf.setLength(0);
-		buf.append("gNumGjkChecks = ");
-		FastFormat.append(buf, BulletStats.gNumGjkChecks);
-		drawString(buf, Math.round(xOffset), Math.round(yStart),
-			TEXT_COLOR);
-		yStart += yIncr;
-
-		buf.setLength(0);
-		buf.append("gNumSplitImpulseRecoveries = ");
-		FastFormat.append(buf, BulletStats.gNumSplitImpulseRecoveries);
-		drawString(buf, Math.round(xOffset), Math.round(yStart),
-			TEXT_COLOR);
-		yStart += yIncr;
-
-		// buf = String.format("gNumAlignedAllocs = %d",
-		// BulletGlobals.gNumAlignedAllocs);
-		// TODO: BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
-		// yStart += yIncr;
-
-		// buf = String.format("gNumAlignedFree= %d",
-		// BulletGlobals.gNumAlignedFree);
-		// TODO: BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
-		// yStart += yIncr;
-
-		// buf = String.format("# alloc-free = %d",
-		// BulletGlobals.gNumAlignedAllocs -
-		// BulletGlobals.gNumAlignedFree);
-		// TODO: BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
-		// yStart += yIncr;
-
-		// enable BT_DEBUG_MEMORY_ALLOCATIONS define in
-		// Bullet/src/LinearMath/btAlignedAllocator.h for memory leak
-		// detection
-		// #ifdef BT_DEBUG_MEMORY_ALLOCATIONS
-		// glRasterPos3f(xOffset,yStart,0);
-		// sprintf(buf,"gTotalBytesAlignedAllocs = %d",gTotalBytesAlignedAllocs);
-		// BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
-		// yStart += yIncr;
-		// #endif //BT_DEBUG_MEMORY_ALLOCATIONS
-
+		
 		if (getDynamicsWorld() != null) {
-		    buf.setLength(0);
-		    buf.append("# objects = ");
-		    FastFormat.append(buf, getDynamicsWorld()
-			    .getNumCollisionObjects());
-		    drawString(buf, Math.round(xOffset), Math.round(yStart),
-			    TEXT_COLOR);
-		    yStart += yIncr;
-
-		    buf.setLength(0);
-		    buf.append("# pairs = ");
-		    FastFormat
-			    .append(buf, getDynamicsWorld().getBroadphase()
-				    .getOverlappingPairCache()
-				    .getNumOverlappingPairs());
-		    drawString(buf, Math.round(xOffset), Math.round(yStart),
-			    TEXT_COLOR);
-		    yStart += yIncr;
-
+		    
 		}
 		// #endif //SHOW_NUM_DEEP_PENETRATIONS
 
 		// JAVA NOTE: added
 		int free = (int) Runtime.getRuntime().freeMemory();
 		int total = (int) Runtime.getRuntime().totalMemory();
-		buf.setLength(0);
-		buf.append("heap = ");
-		FastFormat.append(buf, (float) (total - free) / (1024 * 1024));
-		buf.append(" / ");
-		FastFormat.append(buf, (float) (total) / (1024 * 1024));
-		buf.append(" MB");
-		drawString(buf, Math.round(xOffset), Math.round(yStart),
-			TEXT_COLOR);
-		yStart += yIncr;
+		
 
 		resetPerspectiveProjection();
 	    }
