@@ -236,7 +236,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		float mass = 0f;
 		startTransform1.origin.set(80f, 2.5f, -10);
 		elevator1 = localCreateEntity(mass, startTransform1, colShape1,
-				"elevatorsmash1", new Vector3f(1f, 0f, 0f), null);
+				"elevatorsmash1", new Vector3f(1f, 0f, 0f), null, false);
 		dynamicsWorld.addRigidBody(elevator1);
 		elevator1.setWorldTransform(startTransform1);
 		elevator1.setFriction(5f);
@@ -247,7 +247,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 				new Vector3f(1.25f, .25f, 1.25f));
 		startTransform2.origin.set(85f, 2.5f, 20);
 		elevator2 = localCreateEntity(mass, startTransform2, colShape2,
-				"elevatorsmash2", new Vector3f(1f, 0f, 0f), null);
+				"elevatorsmash2", new Vector3f(1f, 0f, 0f), null, false);
 		dynamicsWorld.addRigidBody(elevator2);
 		elevator2.setWorldTransform(startTransform2);
 		elevator2.setFriction(5f);
@@ -258,7 +258,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 				new Vector3f(1.25f, .25f, 1.25f));
 		startTransform3.origin.set(85f, 2.5f, 10);
 		elevator3 = localCreateEntity(mass, startTransform3, colShape3,
-				"elevatorsmash3", new Vector3f(1f, 0f, 0f), null);
+				"elevatorsmash3", new Vector3f(1f, 0f, 0f), null, false);
 		dynamicsWorld.addRigidBody(elevator3);
 		elevator3.setWorldTransform(startTransform3);
 		elevator3.setFriction(5f);
@@ -269,7 +269,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 				new Vector3f(1.25f, .25f, 1.25f));
 		startTransform4.origin.set(85f, 2.5f, 0);
 		elevator4 = localCreateEntity(mass, startTransform4, colShape4,
-				"elevatorsmash4", new Vector3f(1f, 0f, 0f), null);
+				"elevatorsmash4", new Vector3f(1f, 0f, 0f), null, false);
 		dynamicsWorld.addRigidBody(elevator4);
 		elevator4.setWorldTransform(startTransform4);
 		elevator4.setFriction(5f);
@@ -280,7 +280,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 				new Vector3f(1.25f, .25f, 1.25f));
 		startTransform5.origin.set(85f, 2.5f, -8);
 		elevator5 = localCreateEntity(mass, startTransform5, colShape5,
-				"elevatorsmash15", new Vector3f(1f, 0f, 0f), null);
+				"elevatorsmash15", new Vector3f(1f, 0f, 0f), null, false);
 		dynamicsWorld.addRigidBody(elevator5);
 		elevator5.setWorldTransform(startTransform5);
 		elevator5.setFriction(5f);
@@ -289,7 +289,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 
 	public synchronized Entity localCreateEntity(float mass,
 			Transform startTransform, CollisionShape shape, String ID,
-			Vector3f image, String[] description) {
+			Vector3f image, String[] description, boolean volitale) {
 		// rigidbody is dynamic if and only if mass is non zero, otherwise
 		// static
 		boolean isDynamic = (mass != 0f);
@@ -313,6 +313,9 @@ public class TwoDotFiveDBsp extends DemoApplication {
 			} else if (bodyGravityType.equals("STASIS")) {
 				e.setGravity(new Vector3f(0f, 0f, 0f));
 			}
+		}
+		if (volitale) {
+			removeStuff.add(e);
 		}
 		return e;
 	}
@@ -1171,7 +1174,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 			final Random r = new Random();
 			Entity entity = localCreateEntity(mass, startTransform,
 					shootBoxShape, shootBoxShape.getName() + r.nextFloat(),
-					new Vector3f(1f, 1f, 1f), null);
+					new Vector3f(1f, 1f, 1f), null, true);
 			Transform worldTrans = entity.getWorldTransform(new Transform());
 			worldTrans.origin.set(shootfrom);
 			worldTrans.setRotation(new Quat4f(0f, 0f, 0f, 1f));
@@ -1255,7 +1258,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 				CollisionShape shape, String name, Vector3f image,
 				String[] description, Vector3f acceleration) {
 			Entity e = localCreateEntity(mass, origin, shape, name, image,
-					description);
+					description, false);
 			if (acceleration != null) {
 				e.setEntityGravity(acceleration);
 			} else {
@@ -1326,7 +1329,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 				Entity entity = localCreateEntity(mass, event.getEntity()
 						.getWorldTransform(new Transform()), event.getEntity()
 						.getCollisionShape(), event.getEntity().getID(), event
-						.getEntity().getImage(), new String[] { "" });
+						.getEntity().getImage(), new String[] { "" }, true);
 				entity.setAngularFactor(event.getEntity().getAngularFactor());
 				entity.setAngularVelocity(event.getEntity().getAngularVelocity(
 						new Vector3f()));
