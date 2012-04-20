@@ -54,6 +54,7 @@ public class EventPackage implements Serializable {
 		0, new DefaultMotionState(), new BoxShape(new Vector3f(1f, 1f,
 			1f)));
 	String className = (String) data.get("class");
+	System.out.println(className);
 	if (className.contains("BlockCreateEvent")) {
 	    final float mass = ((Float) data
 		    .get("entity.rigidbody.rigidbodyconstructioninfo.mass"))

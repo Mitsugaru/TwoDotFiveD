@@ -1354,6 +1354,12 @@ public class TwoDotFiveDBsp extends DemoApplication {
     }
 
     public class LocalPlayerListener extends PlayerListener {
+	
+	@Override
+	public void onPlayerJoin(PlayerJoinEvent event)
+	{
+	    sendToRemote(event);
+	}
 
 	@Override
 	public void onPlayerMove(PlayerMoveEvent event) {
