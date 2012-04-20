@@ -446,7 +446,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 						t.origin.x, t.origin.y, t.origin.z, cameraUp.x,
 						cameraUp.y, cameraUp.z);
 				if (t.origin.y < -60) {
-					//System.out.println("Fail condition!!");
+					// System.out.println("Fail condition!!");
 					Vector3f splode = new Vector3f(0f, 1f, 0f);
 					shootBox(splode);
 				}
@@ -583,6 +583,75 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		// glFlush();
 		// glutSwapBuffers();
 
+	}
+
+	@Override
+	public synchronized void keyboardCallback(char key, int x, int y,
+			int modifiers) {
+		lastKey = 0;
+
+		switch (key) {
+		case '5': {
+			for (final CollisionObject o : dynamicsWorld
+					.getCollisionObjectArray()) {
+				if (o instanceof Entity) {
+					final Entity rb = (Entity) o;
+					rb.setEntityGravity(new Vector3f(0f, -10f, 0f));
+					eventDispatcher.notify(new BlockPhysicsChangeEvent(rb,
+							new Vector3f(0f, -10f, 0f)));
+					// Don't call activate if you do not want non-activated
+					// objects
+					// via the setGravity call
+					rb.activate();
+				}
+			}
+			break;
+		}
+		case '6': {
+			for (final CollisionObject o : dynamicsWorld
+					.getCollisionObjectArray()) {
+				if (o instanceof Entity) {
+					final Entity rb = (Entity) o;
+					rb.setEntityGravity(new Vector3f(0f, 10f, 0f));
+					eventDispatcher.notify(new BlockPhysicsChangeEvent(rb,
+							new Vector3f(0f, 10f, 0f)));
+					rb.activate();
+				}
+			}
+			break;
+		}
+		case '7': {
+			for (final CollisionObject o : dynamicsWorld
+					.getCollisionObjectArray()) {
+				if (o instanceof Entity) {
+					final Entity rb = (Entity) o;
+					rb.setEntityGravity(new Vector3f(0f, 0f, 0f));
+					eventDispatcher.notify(new BlockPhysicsChangeEvent(rb,
+							new Vector3f(0f, 0f, 0f)));
+					rb.activate();
+				}
+			}
+			break;
+		}
+		case '8': {
+			for (final CollisionObject o : dynamicsWorld
+					.getCollisionObjectArray()) {
+				if (o instanceof Entity) {
+					final Entity rb = (Entity) o;
+					rb.setLinearVelocity(new Vector3f(0f, 0f, 0f));
+					rb.setAngularVelocity(new Vector3f(0f, 0f, 0f));
+					rb.setAngularFactor(0f);
+					rb.setEntityGravity(new Vector3f(0f, 0f, 0f));
+					eventDispatcher.notify(new BlockPhysicsChangeEvent(rb,
+							new Vector3f(0f, 0f, 0f)));
+				}
+			}
+			break;
+		}
+		default: {
+			super.keyboardCallback(key, x, y, modifiers);
+		}
+		}
 	}
 
 	@Override
@@ -1341,8 +1410,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 						break;
 					}
 				}
-				if(player != null)
-				{
+				if (player != null) {
 					playerList.remove(player);
 				}
 			}
@@ -1469,7 +1537,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 									entityA));
 							dynamicsWorld.removeCollisionObject(entityA);
 							entityList.remove(entityA);
-							//entityB.translate(new Vector3f(5f, 0f, 0f));
+							// entityB.translate(new Vector3f(5f, 0f, 0f));
 						}
 					} else if (entityB.getCollisionShape().getName()
 							.equalsIgnoreCase("sphere")) {
@@ -1477,7 +1545,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 							eventDispatcher.notify(new BlockDestroyedEvent(
 									entityB));
 							dynamicsWorld.removeCollisionObject(entityB);
-							//entityA.translate(new Vector3f(5f, 0f, 0f));
+							// entityA.translate(new Vector3f(5f, 0f, 0f));
 						}
 					} else {
 						// System.out.println("objA: " + entityA.getID()
