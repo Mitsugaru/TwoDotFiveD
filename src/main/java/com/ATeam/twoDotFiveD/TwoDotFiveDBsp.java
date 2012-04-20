@@ -445,12 +445,12 @@ public class TwoDotFiveDBsp extends DemoApplication {
 						+ t.origin.y, cameraPosition.z + t.origin.z,
 						t.origin.x, t.origin.y, t.origin.z, cameraUp.x,
 						cameraUp.y, cameraUp.z);
-				if (t.origin.y < -30) {
-					System.out.println("Fail condition!!");
+				if (t.origin.y < -60) {
+					//System.out.println("Fail condition!!");
 					Vector3f splode = new Vector3f(0f, 1f, 0f);
 					shootBox(splode);
 				}
-				if (t.origin.y < -31) {
+				if (t.origin.y < -65) {
 					t.origin.set(1, 2, 1);
 					o.setWorldTransform(t);
 				}
