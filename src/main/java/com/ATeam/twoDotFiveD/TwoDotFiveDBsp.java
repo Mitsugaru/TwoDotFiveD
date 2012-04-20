@@ -1365,6 +1365,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 					if(e.getID().equals(event.getEntity().getID()))
 					{
 						e.setEntityGravity(event.getDirection());
+						e.activate();
 						break;
 					}
 				}
