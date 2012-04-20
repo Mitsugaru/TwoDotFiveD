@@ -607,8 +607,8 @@ public class TwoDotFiveDBsp extends DemoApplication {
 
 		switch (key) {
 		case '.': {
-		    shootEntityBox(getCameraTargetPosition());
-		    break;
+			shootEntityBox(getCameraTargetPosition());
+			break;
 		}
 		case '5': {
 			for (final CollisionObject o : dynamicsWorld
@@ -1456,7 +1456,9 @@ public class TwoDotFiveDBsp extends DemoApplication {
 					}
 					// Forward ourselves to remote as well
 				}
-				eventDispatcher.notify(new PlayerJoinEvent(player));
+				if (player != null) {
+					eventDispatcher.notify(new PlayerJoinEvent(player));
+				}
 			}
 
 			@Override
