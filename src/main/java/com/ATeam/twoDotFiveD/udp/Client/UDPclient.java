@@ -9,6 +9,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import com.ATeam.twoDotFiveD.TwoDotFiveDBsp;
 import com.ATeam.twoDotFiveD.event.EventDispatcher;
 import com.ATeam.twoDotFiveD.gui.MainStartScreen;
 
@@ -121,8 +122,12 @@ public class UDPclient implements Runnable {
 			receiveData);
 		ObjectInputStream oos = new ObjectInputStream(baos);
 		EventPackage event = (EventPackage) oos.readObject();
-		if (eventdispatcher != null) {
-		    eventdispatcher.notify(event.getEvent());
+		if (TwoDotFiveDBsp.remoteDispatcher != null) {
+		    TwoDotFiveDBsp.remoteDispatcher.notify(event.getEvent());
+		}
+		else
+		{
+		    System.out.println("Dispatcher was null?");
 		}
 		oos.close();
 		baos.close();

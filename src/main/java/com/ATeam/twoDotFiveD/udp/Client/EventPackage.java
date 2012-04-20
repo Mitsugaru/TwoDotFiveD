@@ -379,9 +379,7 @@ public class EventPackage implements Serializable {
 			(float[]) (data
 				.get("entity.rigidbody.motionstate.transform")));
 		final Transform startTransform = new Transform(transformMatrix);
-		PlayerMoveEvent playerMoveEvent = new PlayerMoveEvent(e,
-			startTransform);
-		return playerMoveEvent;
+		return new PlayerMoveEvent(e, startTransform);
 	    } else if (className.contains("PlayerQuitEvent")) {
 		// System.out.println("BlockDestroyedEvent package");
 		// TODO not sure if this will error out or not...
