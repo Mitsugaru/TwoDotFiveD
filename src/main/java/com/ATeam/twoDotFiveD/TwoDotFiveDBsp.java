@@ -1287,6 +1287,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		eventDispatcher.registerListener(Type.BLOCK_COLLISION, blockListener);
 		eventDispatcher.registerListener(Type.BLOCK_COLLISION_RESOLVED,
 				blockListener);
+		eventDispatcher.registerListener(Type.BLOCK_PHYSICS_CHANGE, blockListener);
 		LocalPlayerListener playerListener = new LocalPlayerListener();
 		eventDispatcher.registerListener(Type.PLAYER_JOIN, playerListener);
 		eventDispatcher.registerListener(Type.PLAYER_MOVE, playerListener);
@@ -1356,6 +1357,19 @@ public class TwoDotFiveDBsp extends DemoApplication {
 				// }
 				// }
 			}
+			
+			@Override
+			public void onBlockPhysicsChange(BlockPhysicsChangeEvent event)
+			{
+				for(Entity e : entityList.keySet())
+				{
+					if(e.getID().equals(event.getEntity().getID()))
+					{
+						e.setEntityGravity(event.getDirection());
+						break;
+					}
+				}
+			}
 		};
 		PlayerListener remotePlayerListener = new PlayerListener() {
 			@Override
@@ -1418,7 +1432,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		};
 		remoteDispatcher.registerListener(Type.BLOCK_CREATE,
 				remoteBlockListener);
-		remoteDispatcher.registerListener(Type.BLOCK_DESTROYED,
+		remoteDispatcher.registerListener(Type.BLOCK_PHYSICS_CHANGE,
 				remoteBlockListener);
 		remoteDispatcher.registerListener(Type.PLAYER_JOIN,
 				remotePlayerListener);
@@ -1474,6 +1488,12 @@ public class TwoDotFiveDBsp extends DemoApplication {
 
 		@Override
 		public void onBlockDestroyed(BlockDestroyedEvent event) {
+			sendToRemote(event);
+		}
+		
+		@Override
+		public void onBlockPhysicsChange(BlockPhysicsChangeEvent event)
+		{
 			sendToRemote(event);
 		}
 
