@@ -214,7 +214,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		DefaultMotionState myMotionState = new DefaultMotionState(
 				startTransform);
 		player = new Entity(mass, myMotionState, colShape, localInertia,
-				Config.id, new Vector3f(0f, 1f, 0f), new String[] { "" });
+				"mac4", new Vector3f(0f, 1f, 0f), new String[] { "" });
 		dynamicsWorld.addRigidBody(player);
 		player.setActivationState(RigidBody.ISLAND_SLEEPING);
 		entityList.put(player, player);
@@ -994,12 +994,16 @@ public class TwoDotFiveDBsp extends DemoApplication {
 					}
 
 					Vector3f colorVec = new Vector3f();
-					for (Entity e : entityList.values()) {
-						if (e.getCollisionShape().equals(
-								colObj.getCollisionShape())) {
-							colorVec = e.getImage();
-							// System.out.println(colorVec);
+					try {
+						for (Entity e : entityList.values()) {
+							if (e.getCollisionShape().equals(
+									colObj.getCollisionShape())) {
+								colorVec = e.getImage();
+								// System.out.println(colorVec);
+							}
 						}
+					} catch (ConcurrentModificationException n) {
+						// Ignore
 					}
 					// System.out.println(colorVec + "post get");
 					int a = 0;
@@ -1286,7 +1290,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		demo = new TwoDotFiveDBsp(LWJGL.getGL());
 		demo.initListener();
 		try {
-			client = new chatClient(null, "137.155.2.104", Config.id,
+			client = new chatClient(null, "137.155.2.104", "mac4",
 					remoteDispatcher);
 			if (client.connect()) {
 				client.start();
