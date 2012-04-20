@@ -834,95 +834,95 @@ public class TwoDotFiveDBsp extends DemoApplication {
 			break;
 		}
 
-//		case Keyboard.KEY_R: {
-//			// Remove all objects
-//			for (CollisionObject a : dynamicsWorld.getCollisionObjectArray()
-//					.toArray(new CollisionObject[0])) {
-//				Entity e = null;
-//				for (RigidBody r : entityList.keySet()) {
-//					if (r.getCollisionShape().equals(a.getCollisionShape())) {
-//						e = entityList.get(r);
-//						break;
-//					}
-//				}
-//				try {
-//					dynamicsWorld.removeCollisionObject(a);
-//					if (e != null) {
-//						eventDispatcher.notify(new BlockDestroyedEvent(e));
-//						entityList.remove(e);
-//					}
-//				} catch (NullPointerException n) {
-//					System.out
-//							.println("Tried to remove object that is not there");
-//				} catch (ArrayIndexOutOfBoundsException b) {
-//					System.out.println("ArrayIndexOutOfBounds in simulation");
-//				}
-//			}
-//			if (down) {
-//				elevator1.setLinearVelocity(new Vector3f(0, 0, 0));
-//				elevator2.setLinearVelocity(new Vector3f(0, 0, 0));
-//				elevator3.setLinearVelocity(new Vector3f(0, 0, 0));
-//				elevator4.setLinearVelocity(new Vector3f(0, 0, 0));
-//				elevator5.setLinearVelocity(new Vector3f(0, 0, 0));
-//				Transform one = elevator1.getWorldTransform(new Transform());
-//				one.origin.set(80f, y, -10f);
-//				Transform two = elevator2.getWorldTransform(new Transform());
-//				two.origin.set(85f, y, 20f);
-//				Transform three = elevator3.getWorldTransform(new Transform());
-//				three.origin.set(85f, y, 10f);
-//				Transform four = elevator4.getWorldTransform(new Transform());
-//				four.origin.set(85f, y, 0f);
-//				Transform five = elevator5.getWorldTransform(new Transform());
-//				five.origin.set(85f, y, -8f);
-//				elevator1.setWorldTransform(one);
-//				elevator2.setWorldTransform(two);
-//				elevator3.setWorldTransform(three);
-//				elevator4.setWorldTransform(four);
-//				elevator5.setWorldTransform(five);
-//			} else {
-//				elevator1.setLinearVelocity(new Vector3f(0, 0, 0));
-//				elevator2.setLinearVelocity(new Vector3f(0, 0, 0));
-//				elevator3.setLinearVelocity(new Vector3f(0, 0, 0));
-//				elevator4.setLinearVelocity(new Vector3f(0, 0, 0));
-//				elevator5.setLinearVelocity(new Vector3f(0, 0, 0));
-//				Transform one = elevator1.getWorldTransform(new Transform());
-//				one.origin.set(80f, y, -10f);
-//				Transform two = elevator2.getWorldTransform(new Transform());
-//				two.origin.set(85f, y, 20f);
-//				Transform three = elevator3.getWorldTransform(new Transform());
-//				three.origin.set(85f, y, 10f);
-//				Transform four = elevator4.getWorldTransform(new Transform());
-//				four.origin.set(85f, y, 0f);
-//				Transform five = elevator5.getWorldTransform(new Transform());
-//				five.origin.set(85f, y, -8f);
-//				elevator1.setWorldTransform(one);
-//				elevator2.setWorldTransform(two);
-//				elevator3.setWorldTransform(three);
-//				elevator4.setWorldTransform(four);
-//				elevator5.setWorldTransform(five);
-//			}
-//			// repopulate world
-//			populate();
-//		}
-//		case Keyboard.KEY_Q: {
-//			eventDispatcher.notify(new PlayerQuitEvent(player));
-//			break;
-//		}
+		// case Keyboard.KEY_R: {
+		// // Remove all objects
+		// for (CollisionObject a : dynamicsWorld.getCollisionObjectArray()
+		// .toArray(new CollisionObject[0])) {
+		// Entity e = null;
+		// for (RigidBody r : entityList.keySet()) {
+		// if (r.getCollisionShape().equals(a.getCollisionShape())) {
+		// e = entityList.get(r);
+		// break;
+		// }
+		// }
+		// try {
+		// dynamicsWorld.removeCollisionObject(a);
+		// if (e != null) {
+		// eventDispatcher.notify(new BlockDestroyedEvent(e));
+		// entityList.remove(e);
+		// }
+		// } catch (NullPointerException n) {
+		// System.out
+		// .println("Tried to remove object that is not there");
+		// } catch (ArrayIndexOutOfBoundsException b) {
+		// System.out.println("ArrayIndexOutOfBounds in simulation");
+		// }
+		// }
+		// if (down) {
+		// elevator1.setLinearVelocity(new Vector3f(0, 0, 0));
+		// elevator2.setLinearVelocity(new Vector3f(0, 0, 0));
+		// elevator3.setLinearVelocity(new Vector3f(0, 0, 0));
+		// elevator4.setLinearVelocity(new Vector3f(0, 0, 0));
+		// elevator5.setLinearVelocity(new Vector3f(0, 0, 0));
+		// Transform one = elevator1.getWorldTransform(new Transform());
+		// one.origin.set(80f, y, -10f);
+		// Transform two = elevator2.getWorldTransform(new Transform());
+		// two.origin.set(85f, y, 20f);
+		// Transform three = elevator3.getWorldTransform(new Transform());
+		// three.origin.set(85f, y, 10f);
+		// Transform four = elevator4.getWorldTransform(new Transform());
+		// four.origin.set(85f, y, 0f);
+		// Transform five = elevator5.getWorldTransform(new Transform());
+		// five.origin.set(85f, y, -8f);
+		// elevator1.setWorldTransform(one);
+		// elevator2.setWorldTransform(two);
+		// elevator3.setWorldTransform(three);
+		// elevator4.setWorldTransform(four);
+		// elevator5.setWorldTransform(five);
+		// } else {
+		// elevator1.setLinearVelocity(new Vector3f(0, 0, 0));
+		// elevator2.setLinearVelocity(new Vector3f(0, 0, 0));
+		// elevator3.setLinearVelocity(new Vector3f(0, 0, 0));
+		// elevator4.setLinearVelocity(new Vector3f(0, 0, 0));
+		// elevator5.setLinearVelocity(new Vector3f(0, 0, 0));
+		// Transform one = elevator1.getWorldTransform(new Transform());
+		// one.origin.set(80f, y, -10f);
+		// Transform two = elevator2.getWorldTransform(new Transform());
+		// two.origin.set(85f, y, 20f);
+		// Transform three = elevator3.getWorldTransform(new Transform());
+		// three.origin.set(85f, y, 10f);
+		// Transform four = elevator4.getWorldTransform(new Transform());
+		// four.origin.set(85f, y, 0f);
+		// Transform five = elevator5.getWorldTransform(new Transform());
+		// five.origin.set(85f, y, -8f);
+		// elevator1.setWorldTransform(one);
+		// elevator2.setWorldTransform(two);
+		// elevator3.setWorldTransform(three);
+		// elevator4.setWorldTransform(four);
+		// elevator5.setWorldTransform(five);
+		// }
+		// // repopulate world
+		// populate();
+		// }
+		// case Keyboard.KEY_Q: {
+		// eventDispatcher.notify(new PlayerQuitEvent(player));
+		// break;
+		// }
 		case Keyboard.KEY_RCONTROL: {
 			if (cam.getQuadrant() == 1) {
-				shootEntityBox(new Vector3f(0,0,1));
+				shootEntityBox(new Vector3f(0, 0, 1));
 				break;
 			}
 			if (cam.getQuadrant() == 2) {
-				shootEntityBox(new Vector3f(-1,0,0));
+				shootEntityBox(new Vector3f(-1, 0, 0));
 				break;
 			}
 			if (cam.getQuadrant() == 3) {
-				shootEntityBox(new Vector3f(0,0,-1));
+				shootEntityBox(new Vector3f(0, 0, -1));
 				break;
 			}
 			if (cam.getQuadrant() == 4) {
-				shootEntityBox(new Vector3f(1,0,0));
+				shootEntityBox(new Vector3f(1, 0, 0));
 				break;
 			}
 			break;
@@ -1048,86 +1048,83 @@ public class TwoDotFiveDBsp extends DemoApplication {
 					setOrthographicProjection();
 					String s = "";
 					drawString(s, Math.round(xOffset), Math.round(yStart),
-						TEXT_COLOR);
+							TEXT_COLOR);
 					yStart += yIncr;
 
 					// JAVA NOTE: added
 					s = "CONTROLS:";
 					drawString(s, Math.round(xOffset), Math.round(yStart),
-						TEXT_COLOR);
+							TEXT_COLOR);
 					yStart += yIncr;
 
 					s = "WASD Keys = Movement";
 					drawString(s, Math.round(xOffset), Math.round(yStart),
-						TEXT_COLOR);
+							TEXT_COLOR);
 					yStart += yIncr;
 
 					s = "Arrow Keys = Camera";
 					drawString(s, Math.round(xOffset), Math.round(yStart),
-						TEXT_COLOR);
+							TEXT_COLOR);
 					yStart += yIncr;
 
 					s = "SPACE = Jump";
 					drawString(s, Math.round(xOffset), Math.round(yStart),
-						TEXT_COLOR);
+							TEXT_COLOR);
 					yStart += yIncr;
 
 					s = "CONTROL/RMB = Shoot Box";
 					drawString(s, Math.round(xOffset), Math.round(yStart),
-						TEXT_COLOR);
+							TEXT_COLOR);
 					yStart += yIncr;
 
 					s = "ADVANCED:";
 					drawString(s, Math.round(xOffset), Math.round(yStart),
-						TEXT_COLOR);
+							TEXT_COLOR);
 					yStart += yIncr;
 
 					// not yet hooked up again after refactoring...
 
 					s = "5 = normal gravity";
 					drawString(s, Math.round(xOffset), Math.round(yStart),
-						TEXT_COLOR);
+							TEXT_COLOR);
 					yStart += yIncr;
 
 					s = "6 = anti-gravity";
 					drawString(s, Math.round(xOffset), Math.round(yStart),
-						TEXT_COLOR);
+							TEXT_COLOR);
 					yStart += yIncr;
 
 					// JAVA NOTE: added
 					s = "7 = null gravity";
 					drawString(s, Math.round(xOffset), Math.round(yStart),
-						TEXT_COLOR);
+							TEXT_COLOR);
 					yStart += yIncr;
 
 					s = "U = change box type to BOX";
 					drawString(s, Math.round(xOffset), Math.round(yStart),
-						TEXT_COLOR);
+							TEXT_COLOR);
 					yStart += yIncr;
 					s = "J = change box type to ANTI-GRAV SPHERE";
 					drawString(s, Math.round(xOffset), Math.round(yStart),
-						TEXT_COLOR);
+							TEXT_COLOR);
 					yStart += yIncr;
 					s = "K = change box type to CYLINDER";
 					drawString(s, Math.round(xOffset), Math.round(yStart),
-						TEXT_COLOR);
+							TEXT_COLOR);
 					yStart += yIncr;
 					s = "; = change box type to CONE";
 					drawString(s, Math.round(xOffset), Math.round(yStart),
-						TEXT_COLOR);
+							TEXT_COLOR);
 					yStart += yIncr;
 
-
-					
-					
 					if (getDynamicsWorld() != null) {
-						
+
 					}
 					// #endif //SHOW_NUM_DEEP_PENETRATIONS
 					// JAVA NOTE: added
 					int free = (int) Runtime.getRuntime().freeMemory();
 					int total = (int) Runtime.getRuntime().totalMemory();
-					
+
 					resetPerspectiveProjection();
 				}
 
@@ -1382,23 +1379,30 @@ public class TwoDotFiveDBsp extends DemoApplication {
 				// Transform()).toString());
 				// System.out.println("Event CollisionShape: " +
 				// event.getEntity().getRigidBody().getCollisionShape().toString());
-				Entity entity = localCreateEntity(mass, event.getEntity()
-						.getWorldTransform(new Transform()), event.getEntity()
-						.getCollisionShape(), event.getEntity().getID(), event
-						.getEntity().getImage(), new String[] { "" }, true);
-				entity.setAngularFactor(event.getEntity().getAngularFactor());
-				entity.setAngularVelocity(event.getEntity().getAngularVelocity(
-						new Vector3f()));
-				entity.setLinearVelocity(event.getEntity().getLinearVelocity(
-						new Vector3f()));
-				entity.setDamping(event.getEntity().getLinearDamping(), event
-						.getEntity().getAngularDamping());
-				entity.setEntityGravity(event.getEntity().getEntityGravity());
-				// System.out.println("Remote gravity: "
-				// +event.getEntity().getGravity());
-				// System.out.println(event.getEntity().getRigidBody().getLinearVelocity(new
-				// Vector3f()).toString());
-				entityList.put(entity, entity);
+				try {
+					Entity entity = localCreateEntity(mass, event.getEntity()
+							.getWorldTransform(new Transform()), event
+							.getEntity().getCollisionShape(), event.getEntity()
+							.getID(), event.getEntity().getImage(),
+							new String[] { "" }, true);
+					entity.setAngularFactor(event.getEntity()
+							.getAngularFactor());
+					entity.setAngularVelocity(event.getEntity()
+							.getAngularVelocity(new Vector3f()));
+					entity.setLinearVelocity(event.getEntity()
+							.getLinearVelocity(new Vector3f()));
+					entity.setDamping(event.getEntity().getLinearDamping(),
+							event.getEntity().getAngularDamping());
+					entity.setEntityGravity(event.getEntity()
+							.getEntityGravity());
+					// System.out.println("Remote gravity: "
+					// +event.getEntity().getGravity());
+					// System.out.println(event.getEntity().getRigidBody().getLinearVelocity(new
+					// Vector3f()).toString());
+					entityList.put(entity, entity);
+				} catch (NullPointerException e) {
+
+				}
 				// System.out.println("Added block");
 			}
 
