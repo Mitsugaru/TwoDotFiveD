@@ -994,12 +994,16 @@ public class TwoDotFiveDBsp extends DemoApplication {
 					}
 
 					Vector3f colorVec = new Vector3f();
-					for (Entity e : entityList.values()) {
-						if (e.getCollisionShape().equals(
-								colObj.getCollisionShape())) {
-							colorVec = e.getImage();
-							// System.out.println(colorVec);
+					try {
+						for (Entity e : entityList.values()) {
+							if (e.getCollisionShape().equals(
+									colObj.getCollisionShape())) {
+								colorVec = e.getImage();
+								// System.out.println(colorVec);
+							}
 						}
+					} catch (ConcurrentModificationException n) {
+						// Ignore
 					}
 					// System.out.println(colorVec + "post get");
 					int a = 0;
