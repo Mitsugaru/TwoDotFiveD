@@ -1163,7 +1163,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 
 	public synchronized Entity shootEntityBox(Vector3f destination) {
 		if (dynamicsWorld != null) {
-			float mass = 50f;
+			float mass = 150f;
 			Transform startTransform = new Transform();
 			startTransform.setIdentity();
 			Vector3f camPos = new Vector3f(getCameraPosition());
