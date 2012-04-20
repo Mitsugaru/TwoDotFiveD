@@ -1449,8 +1449,8 @@ public class TwoDotFiveDBsp extends DemoApplication {
 					entityList.put(remotePlayer, remotePlayer);
 					playerList.add(remotePlayer);
 					// Forward ourselves to remote as well
-					eventDispatcher.notify(new PlayerJoinEvent(player));
 				}
+				eventDispatcher.notify(new PlayerJoinEvent(player));
 			}
 
 			@Override
