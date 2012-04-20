@@ -214,7 +214,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		DefaultMotionState myMotionState = new DefaultMotionState(
 				startTransform);
 		player = new Entity(mass, myMotionState, colShape, localInertia,
-				Config.id, new Vector3f(0f, 1f, 0f), new String[] { "" });
+				"mac3", new Vector3f(0f, 1f, 0f), new String[] { "" });
 		dynamicsWorld.addRigidBody(player);
 		player.setActivationState(RigidBody.ISLAND_SLEEPING);
 		entityList.put(player, player);
