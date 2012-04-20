@@ -1425,7 +1425,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 
 			@Override
 			public void onPlayerJoin(PlayerJoinEvent event) {
-				//System.out.println("Got player join event");
+				// System.out.println("Got player join event");
 				boolean has = false;
 				for (Entity e : playerList) {
 					if (e.getID().equals(event.getPlayer().getID())) {
@@ -1443,10 +1443,13 @@ public class TwoDotFiveDBsp extends DemoApplication {
 							.getPlayer().getCollisionShape(), localInertia,
 							event.getPlayer().getID(), event.getPlayer()
 									.getImage(), new String[] { "" });
-					dynamicsWorld.addRigidBody(remotePlayer);
-					remotePlayer.setActivationState(RigidBody.ISLAND_SLEEPING);
-					entityList.put(remotePlayer, remotePlayer);
-					playerList.add(remotePlayer);
+					if (dynamicsWorld != null) {
+						dynamicsWorld.addRigidBody(remotePlayer);
+						remotePlayer
+								.setActivationState(RigidBody.ISLAND_SLEEPING);
+						entityList.put(remotePlayer, remotePlayer);
+						playerList.add(remotePlayer);
+					}
 					// Forward ourselves to remote as well
 				}
 				eventDispatcher.notify(new PlayerJoinEvent(player));
@@ -1592,7 +1595,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 							// entityA.setGravity(new Vector3f(0f, 30f, 0f));
 							eventDispatcher.notify(new BlockDestroyedEvent(
 									entityA));
-							//dynamicsWorld.removeCollisionObject(entityA);
+							// dynamicsWorld.removeCollisionObject(entityA);
 							removeStuff.add(entityA);
 							// entityB.translate(new Vector3f(5f, 0f, 0f));
 						}
@@ -1611,7 +1614,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 							eventDispatcher.notify(new BlockDestroyedEvent(
 									entityA));
 							removeStuff.add(entityA);
-							//entityList.remove(entityA);
+							// entityList.remove(entityA);
 							// entityB.translate(new Vector3f(5f, 0f, 0f));
 						}
 					} else if (entityB.getCollisionShape().getName()
@@ -1622,31 +1625,22 @@ public class TwoDotFiveDBsp extends DemoApplication {
 							removeStuff.add(entityB);
 							// entityA.translate(new Vector3f(5f, 0f, 0f));
 						}
-					} /*else if (entityA.getID().equals(player.getID())) {
-						if (entityB.getImage().equals(new Vector3f(1f, 0f, 0f))) {
-							Vector3f splode = new Vector3f(0f, 1f, 0f);
-							for (int i = 0; i < 7; i++) {
-								Entity entity = shootEntityBox(splode);
-								entity.setEntityGravity(new Vector3f(0f, 0f, 0f));
-								// eventDispatcher
-								// .notify(new BlockPhysicsChangeEvent(
-								// entity,
-								// new Vector3f(0f, 0f, 0f)));
-							}
-						}
-					} else if (entityB.getID().equals(player.getID())) {
-						if (entityA.getImage().equals(new Vector3f(1f, 0f, 0f))) {
-							Vector3f splode = new Vector3f(0f, 1f, 0f);
-							for (int i = 0; i < 7; i++) {
-								Entity entity = shootEntityBox(splode);
-								entity.setEntityGravity(new Vector3f(0f, 0f, 0f));
-								// eventDispatcher
-								// .notify(new BlockPhysicsChangeEvent(
-								// entity,
-								// new Vector3f(0f, 0f, 0f)));
-							}
-						}
-					}*/ else {
+					} /*
+					 * else if (entityA.getID().equals(player.getID())) { if
+					 * (entityB.getImage().equals(new Vector3f(1f, 0f, 0f))) {
+					 * Vector3f splode = new Vector3f(0f, 1f, 0f); for (int i =
+					 * 0; i < 7; i++) { Entity entity = shootEntityBox(splode);
+					 * entity.setEntityGravity(new Vector3f(0f, 0f, 0f)); //
+					 * eventDispatcher // .notify(new BlockPhysicsChangeEvent(
+					 * // entity, // new Vector3f(0f, 0f, 0f))); } } } else if
+					 * (entityB.getID().equals(player.getID())) { if
+					 * (entityA.getImage().equals(new Vector3f(1f, 0f, 0f))) {
+					 * Vector3f splode = new Vector3f(0f, 1f, 0f); for (int i =
+					 * 0; i < 7; i++) { Entity entity = shootEntityBox(splode);
+					 * entity.setEntityGravity(new Vector3f(0f, 0f, 0f)); //
+					 * eventDispatcher // .notify(new BlockPhysicsChangeEvent(
+					 * // entity, // new Vector3f(0f, 0f, 0f))); } } }
+					 */else {
 					}
 					// System.out.println("objA: " + entityA.getID()
 					// + " objB: " + entityB.getID());
