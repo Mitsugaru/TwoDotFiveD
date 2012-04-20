@@ -830,78 +830,97 @@ public class TwoDotFiveDBsp extends DemoApplication {
 			break;
 		}
 
-		case Keyboard.KEY_R: {
-			// Remove all objects
-			for (CollisionObject a : dynamicsWorld.getCollisionObjectArray()
-					.toArray(new CollisionObject[0])) {
-				Entity e = null;
-				for (RigidBody r : entityList.keySet()) {
-					if (r.getCollisionShape().equals(a.getCollisionShape())) {
-						e = entityList.get(r);
-						break;
-					}
-				}
-				try {
-					dynamicsWorld.removeCollisionObject(a);
-					if (e != null) {
-						eventDispatcher.notify(new BlockDestroyedEvent(e));
-						entityList.remove(e);
-					}
-				} catch (NullPointerException n) {
-					System.out
-							.println("Tried to remove object that is not there");
-				} catch (ArrayIndexOutOfBoundsException b) {
-					System.out.println("ArrayIndexOutOfBounds in simulation");
-				}
+//		case Keyboard.KEY_R: {
+//			// Remove all objects
+//			for (CollisionObject a : dynamicsWorld.getCollisionObjectArray()
+//					.toArray(new CollisionObject[0])) {
+//				Entity e = null;
+//				for (RigidBody r : entityList.keySet()) {
+//					if (r.getCollisionShape().equals(a.getCollisionShape())) {
+//						e = entityList.get(r);
+//						break;
+//					}
+//				}
+//				try {
+//					dynamicsWorld.removeCollisionObject(a);
+//					if (e != null) {
+//						eventDispatcher.notify(new BlockDestroyedEvent(e));
+//						entityList.remove(e);
+//					}
+//				} catch (NullPointerException n) {
+//					System.out
+//							.println("Tried to remove object that is not there");
+//				} catch (ArrayIndexOutOfBoundsException b) {
+//					System.out.println("ArrayIndexOutOfBounds in simulation");
+//				}
+//			}
+//			if (down) {
+//				elevator1.setLinearVelocity(new Vector3f(0, 0, 0));
+//				elevator2.setLinearVelocity(new Vector3f(0, 0, 0));
+//				elevator3.setLinearVelocity(new Vector3f(0, 0, 0));
+//				elevator4.setLinearVelocity(new Vector3f(0, 0, 0));
+//				elevator5.setLinearVelocity(new Vector3f(0, 0, 0));
+//				Transform one = elevator1.getWorldTransform(new Transform());
+//				one.origin.set(80f, y, -10f);
+//				Transform two = elevator2.getWorldTransform(new Transform());
+//				two.origin.set(85f, y, 20f);
+//				Transform three = elevator3.getWorldTransform(new Transform());
+//				three.origin.set(85f, y, 10f);
+//				Transform four = elevator4.getWorldTransform(new Transform());
+//				four.origin.set(85f, y, 0f);
+//				Transform five = elevator5.getWorldTransform(new Transform());
+//				five.origin.set(85f, y, -8f);
+//				elevator1.setWorldTransform(one);
+//				elevator2.setWorldTransform(two);
+//				elevator3.setWorldTransform(three);
+//				elevator4.setWorldTransform(four);
+//				elevator5.setWorldTransform(five);
+//			} else {
+//				elevator1.setLinearVelocity(new Vector3f(0, 0, 0));
+//				elevator2.setLinearVelocity(new Vector3f(0, 0, 0));
+//				elevator3.setLinearVelocity(new Vector3f(0, 0, 0));
+//				elevator4.setLinearVelocity(new Vector3f(0, 0, 0));
+//				elevator5.setLinearVelocity(new Vector3f(0, 0, 0));
+//				Transform one = elevator1.getWorldTransform(new Transform());
+//				one.origin.set(80f, y, -10f);
+//				Transform two = elevator2.getWorldTransform(new Transform());
+//				two.origin.set(85f, y, 20f);
+//				Transform three = elevator3.getWorldTransform(new Transform());
+//				three.origin.set(85f, y, 10f);
+//				Transform four = elevator4.getWorldTransform(new Transform());
+//				four.origin.set(85f, y, 0f);
+//				Transform five = elevator5.getWorldTransform(new Transform());
+//				five.origin.set(85f, y, -8f);
+//				elevator1.setWorldTransform(one);
+//				elevator2.setWorldTransform(two);
+//				elevator3.setWorldTransform(three);
+//				elevator4.setWorldTransform(four);
+//				elevator5.setWorldTransform(five);
+//			}
+//			// repopulate world
+//			populate();
+//		}
+//		case Keyboard.KEY_Q: {
+//			eventDispatcher.notify(new PlayerQuitEvent(player));
+//			break;
+//		}
+		case Keyboard.KEY_RCONTROL: {
+			if (cam.getQuadrant() == 1) {
+				shootEntityBox(new Vector3f(0,0,1));
+				break;
 			}
-			if (down) {
-				elevator1.setLinearVelocity(new Vector3f(0, 0, 0));
-				elevator2.setLinearVelocity(new Vector3f(0, 0, 0));
-				elevator3.setLinearVelocity(new Vector3f(0, 0, 0));
-				elevator4.setLinearVelocity(new Vector3f(0, 0, 0));
-				elevator5.setLinearVelocity(new Vector3f(0, 0, 0));
-				Transform one = elevator1.getWorldTransform(new Transform());
-				one.origin.set(80f, y, -10f);
-				Transform two = elevator2.getWorldTransform(new Transform());
-				two.origin.set(85f, y, 20f);
-				Transform three = elevator3.getWorldTransform(new Transform());
-				three.origin.set(85f, y, 10f);
-				Transform four = elevator4.getWorldTransform(new Transform());
-				four.origin.set(85f, y, 0f);
-				Transform five = elevator5.getWorldTransform(new Transform());
-				five.origin.set(85f, y, -8f);
-				elevator1.setWorldTransform(one);
-				elevator2.setWorldTransform(two);
-				elevator3.setWorldTransform(three);
-				elevator4.setWorldTransform(four);
-				elevator5.setWorldTransform(five);
-			} else {
-				elevator1.setLinearVelocity(new Vector3f(0, 0, 0));
-				elevator2.setLinearVelocity(new Vector3f(0, 0, 0));
-				elevator3.setLinearVelocity(new Vector3f(0, 0, 0));
-				elevator4.setLinearVelocity(new Vector3f(0, 0, 0));
-				elevator5.setLinearVelocity(new Vector3f(0, 0, 0));
-				Transform one = elevator1.getWorldTransform(new Transform());
-				one.origin.set(80f, y, -10f);
-				Transform two = elevator2.getWorldTransform(new Transform());
-				two.origin.set(85f, y, 20f);
-				Transform three = elevator3.getWorldTransform(new Transform());
-				three.origin.set(85f, y, 10f);
-				Transform four = elevator4.getWorldTransform(new Transform());
-				four.origin.set(85f, y, 0f);
-				Transform five = elevator5.getWorldTransform(new Transform());
-				five.origin.set(85f, y, -8f);
-				elevator1.setWorldTransform(one);
-				elevator2.setWorldTransform(two);
-				elevator3.setWorldTransform(three);
-				elevator4.setWorldTransform(four);
-				elevator5.setWorldTransform(five);
+			if (cam.getQuadrant() == 2) {
+				shootEntityBox(new Vector3f(-1,0,0));
+				break;
 			}
-			// repopulate world
-			populate();
-		}
-		case Keyboard.KEY_Q: {
-			eventDispatcher.notify(new PlayerQuitEvent(player));
+			if (cam.getQuadrant() == 3) {
+				shootEntityBox(new Vector3f(0,0,-1));
+				break;
+			}
+			if (cam.getQuadrant() == 4) {
+				shootEntityBox(new Vector3f(1,0,0));
+				break;
+			}
 			break;
 		}
 		default:
@@ -1023,90 +1042,88 @@ public class TwoDotFiveDBsp extends DemoApplication {
 
 				if ((debugMode & DebugDrawModes.NO_HELP_TEXT) == 0) {
 					setOrthographicProjection();
-
-					yStart = showProfileInfo(xOffset, yStart, yIncr);
-					// #ifdef SHOW_NUM_DEEP_PENETRATIONS
-					buf.setLength(0);
-					buf.append("gNumDeepPenetrationChecks = ");
-					FastFormat.append(buf,
-							BulletStats.gNumDeepPenetrationChecks);
-					drawString(buf, Math.round(xOffset), Math.round(yStart),
-							TEXT_COLOR);
+					String s = "";
+					drawString(s, Math.round(xOffset), Math.round(yStart),
+						TEXT_COLOR);
 					yStart += yIncr;
 
-					buf.setLength(0);
-					buf.append("gNumGjkChecks = ");
-					FastFormat.append(buf, BulletStats.gNumGjkChecks);
-					drawString(buf, Math.round(xOffset), Math.round(yStart),
-							TEXT_COLOR);
+					// JAVA NOTE: added
+					s = "CONTROLS:";
+					drawString(s, Math.round(xOffset), Math.round(yStart),
+						TEXT_COLOR);
 					yStart += yIncr;
 
-					buf.setLength(0);
-					buf.append("gNumSplitImpulseRecoveries = ");
-					FastFormat.append(buf,
-							BulletStats.gNumSplitImpulseRecoveries);
-					drawString(buf, Math.round(xOffset), Math.round(yStart),
-							TEXT_COLOR);
+					s = "WASD Keys = Movement";
+					drawString(s, Math.round(xOffset), Math.round(yStart),
+						TEXT_COLOR);
 					yStart += yIncr;
-					// buf = String.format("gNumAlignedAllocs = %d",
-					// BulletGlobals.gNumAlignedAllocs);
-					// TODO: BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
-					// yStart += yIncr;
-					// buf = String.format("gNumAlignedFree= %d",
-					// BulletGlobals.gNumAlignedFree);
-					// TODO: BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
-					// yStart += yIncr;
-					// buf = String.format("# alloc-free = %d",
-					// BulletGlobals.gNumAlignedAllocs -
-					// BulletGlobals.gNumAlignedFree);
-					// TODO: BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
-					// yStart += yIncr;
 
-					// enable BT_DEBUG_MEMORY_ALLOCATIONS define in
-					// Bullet/src/LinearMath/btAlignedAllocator.h for memory
-					// leak
-					// detection
-					// #ifdef BT_DEBUG_MEMORY_ALLOCATIONS
-					// glRasterPos3f(xOffset,yStart,0);
-					// sprintf(buf,"gTotalBytesAlignedAllocs = %d",gTotalBytesAlignedAllocs);
-					// BMF_DrawString(BMF_GetFont(BMF_kHelvetica10),buf);
-					// yStart += yIncr;
-					// #endif //BT_DEBUG_MEMORY_ALLOCATIONS
+					s = "Arrow Keys = Camera";
+					drawString(s, Math.round(xOffset), Math.round(yStart),
+						TEXT_COLOR);
+					yStart += yIncr;
 
+					s = "SPACE = Jump";
+					drawString(s, Math.round(xOffset), Math.round(yStart),
+						TEXT_COLOR);
+					yStart += yIncr;
+
+					s = "CONTROL/RMB = Shoot Box";
+					drawString(s, Math.round(xOffset), Math.round(yStart),
+						TEXT_COLOR);
+					yStart += yIncr;
+
+					s = "ADVANCED:";
+					drawString(s, Math.round(xOffset), Math.round(yStart),
+						TEXT_COLOR);
+					yStart += yIncr;
+
+					// not yet hooked up again after refactoring...
+
+					s = "5 = normal gravity";
+					drawString(s, Math.round(xOffset), Math.round(yStart),
+						TEXT_COLOR);
+					yStart += yIncr;
+
+					s = "6 = anti-gravity";
+					drawString(s, Math.round(xOffset), Math.round(yStart),
+						TEXT_COLOR);
+					yStart += yIncr;
+
+					// JAVA NOTE: added
+					s = "7 = null gravity";
+					drawString(s, Math.round(xOffset), Math.round(yStart),
+						TEXT_COLOR);
+					yStart += yIncr;
+
+					s = "U = change box type to BOX";
+					drawString(s, Math.round(xOffset), Math.round(yStart),
+						TEXT_COLOR);
+					yStart += yIncr;
+					s = "J = change box type to ANTI-GRAV SPHERE";
+					drawString(s, Math.round(xOffset), Math.round(yStart),
+						TEXT_COLOR);
+					yStart += yIncr;
+					s = "K = change box type to CYLINDER";
+					drawString(s, Math.round(xOffset), Math.round(yStart),
+						TEXT_COLOR);
+					yStart += yIncr;
+					s = "; = change box type to CONE";
+					drawString(s, Math.round(xOffset), Math.round(yStart),
+						TEXT_COLOR);
+					yStart += yIncr;
+
+
+					
+					
 					if (getDynamicsWorld() != null) {
-						buf.setLength(0);
-						buf.append("# objects = ");
-						FastFormat.append(buf, getDynamicsWorld()
-								.getNumCollisionObjects());
-						drawString(buf, Math.round(xOffset),
-								Math.round(yStart), TEXT_COLOR);
-						yStart += yIncr;
-
-						buf.setLength(0);
-						buf.append("# pairs = ");
-						FastFormat.append(buf, getDynamicsWorld()
-								.getBroadphase().getOverlappingPairCache()
-								.getNumOverlappingPairs());
-						drawString(buf, Math.round(xOffset),
-								Math.round(yStart), TEXT_COLOR);
-						yStart += yIncr;
-
+						
 					}
 					// #endif //SHOW_NUM_DEEP_PENETRATIONS
 					// JAVA NOTE: added
 					int free = (int) Runtime.getRuntime().freeMemory();
 					int total = (int) Runtime.getRuntime().totalMemory();
-					buf.setLength(0);
-					buf.append("heap = ");
-					FastFormat.append(buf, (float) (total - free)
-							/ (1024 * 1024));
-					buf.append(" / ");
-					FastFormat.append(buf, (float) (total) / (1024 * 1024));
-					buf.append(" MB");
-					drawString(buf, Math.round(xOffset), Math.round(yStart),
-							TEXT_COLOR);
-					yStart += yIncr;
-
+					
 					resetPerspectiveProjection();
 				}
 
