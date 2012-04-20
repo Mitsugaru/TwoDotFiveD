@@ -1392,11 +1392,15 @@ public class TwoDotFiveDBsp extends DemoApplication {
 
 			@Override
 			public void onBlockPhysicsChange(BlockPhysicsChangeEvent event) {
-				for (Entity e : entityList.keySet()) {
-					if (e.getID().equals(event.getEntity().getID())) {
-						entityPhysicsList.put(e, event.getDirection());
-						break;
+				try {
+					for (Entity e : entityList.keySet()) {
+						if (e.getID().equals(event.getEntity().getID())) {
+							entityPhysicsList.put(e, event.getDirection());
+							break;
+						}
 					}
+				} catch (ConcurrentModificationException c) {
+					// Ignore
 				}
 			}
 		};
