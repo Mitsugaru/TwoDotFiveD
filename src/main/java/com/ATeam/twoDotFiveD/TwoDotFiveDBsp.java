@@ -212,7 +212,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		DefaultMotionState myMotionState = new DefaultMotionState(
 				startTransform);
 		player = new Entity(mass, myMotionState, colShape, localInertia,
-				Config.id, new Vector3f(1f, 1f, 1f), new String[] { "" });
+				Config.id, new Vector3f(0f, 1f, 0f), new String[] { "" });
 		dynamicsWorld.addRigidBody(player);
 		player.setActivationState(RigidBody.ISLAND_SLEEPING);
 		entityList.put(player, player);
@@ -445,12 +445,12 @@ public class TwoDotFiveDBsp extends DemoApplication {
 						+ t.origin.y, cameraPosition.z + t.origin.z,
 						t.origin.x, t.origin.y, t.origin.z, cameraUp.x,
 						cameraUp.y, cameraUp.z);
-				if (t.origin.y < -30) {
-					System.out.println("Fail condition!!");
+				if (t.origin.y < -60) {
+					//System.out.println("Fail condition!!");
 					Vector3f splode = new Vector3f(0f, 1f, 0f);
 					shootBox(splode);
 				}
-				if (t.origin.y < -31) {
+				if (t.origin.y < -65) {
 					t.origin.set(1, 2, 1);
 					o.setWorldTransform(t);
 				}
@@ -1066,7 +1066,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 			Vector3f camPos = new Vector3f(getCameraPosition());
 			// Fix stuff?
 			Vector3f shootfrom = player.getCenterOfMassPosition(new Vector3f());
-			shootfrom.y = shootfrom.y + 1;
+			shootfrom.y = shootfrom.y + 3;
 			startTransform.origin.set(shootfrom);
 
 			if (shapeType.equals("BOX")) {
@@ -1469,7 +1469,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 									entityA));
 							dynamicsWorld.removeCollisionObject(entityA);
 							entityList.remove(entityA);
-							entityB.translate(new Vector3f(5f, 0f, 0f));
+							//entityB.translate(new Vector3f(5f, 0f, 0f));
 						}
 					} else if (entityB.getCollisionShape().getName()
 							.equalsIgnoreCase("sphere")) {
@@ -1477,7 +1477,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 							eventDispatcher.notify(new BlockDestroyedEvent(
 									entityB));
 							dynamicsWorld.removeCollisionObject(entityB);
-							entityA.translate(new Vector3f(5f, 0f, 0f));
+							//entityA.translate(new Vector3f(5f, 0f, 0f));
 						}
 					} else {
 						// System.out.println("objA: " + entityA.getID()
