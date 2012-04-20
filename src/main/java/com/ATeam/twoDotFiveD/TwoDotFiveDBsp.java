@@ -218,6 +218,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 	player.setActivationState(RigidBody.ISLAND_SLEEPING);
 	player.setWorldTransform(startTransform);
 	player.setFriction(5f);
+	eventDispatcher.notify(new PlayerJoinEvent(player));
 	// entityList.put((Entity) player, (Entity)player );
 	makeboxes();
 	populate();
@@ -436,6 +437,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 	    if (o.equals(player)) {
 		// System.out.println("player found");
 		Transform t = o.getWorldTransform(new Transform());
+		eventDispatcher.notify(new PlayerMoveEvent(player, t));
 		// System.out.println(t.origin);
 		gl.gluLookAt(cameraPosition.x + t.origin.x, cameraPosition.y
 			+ t.origin.y, cameraPosition.z + t.origin.z,
@@ -759,7 +761,6 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		    System.out.println("ArrayIndexOutOfBounds in simulation");
 		}
 	    }
-	}
 	    if (down) {
 		elevator1.setLinearVelocity(new Vector3f(0, 0, 0));
 		elevator2.setLinearVelocity(new Vector3f(0, 0, 0));
@@ -805,13 +806,19 @@ public class TwoDotFiveDBsp extends DemoApplication {
 	    }
 	    // repopulate world
 	    populate();
+	}
+	case Keyboard.KEY_Q: {
+	    eventDispatcher.notify(new PlayerQuitEvent(player));
 	    break;
 	}
-
-	// gl.gluLookAt( eyex, eyey, eyez, RigidBody.upcast( ghostObject
-	// ).getCenterOfMassPosition( new Vector3f() ).x, centery, centerz, upx,
-	// upy, upz );
+	default:
+	    break;
+	}
     }
+
+    // gl.gluLookAt( eyex, eyey, eyez, RigidBody.upcast( ghostObject
+    // ).getCenterOfMassPosition( new Vector3f() ).x, centery, centerz, upx,
+    // upy, upz );
 
     @Override
     public void displayCallback() {
@@ -1172,7 +1179,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
     public static void main(String[] args) throws Exception {
 	demo = new TwoDotFiveDBsp(LWJGL.getGL());
 	try {
-	    client = new chatClient(null, "137.155.2.153", Config.id,
+	    client = new chatClient(null, "192.168.1.14", Config.id,
 		    remoteDispatcher);
 	    if (client.connect()) {
 		client.start();
@@ -1294,13 +1301,25 @@ public class TwoDotFiveDBsp extends DemoApplication {
 
 		@Override
 		public void onPlayerJoin(PlayerJoinEvent event) {
-		    float mass = (1f / event.getPlayer().getInvMass());
-		    Entity entity = localCreateEntity(mass, event.getPlayer()
-			    .getWorldTransform(new Transform()), event
-			    .getPlayer().getCollisionShape(), event.getPlayer()
-			    .getID(), event.getPlayer().getImage(),
-			    new String[] { "" });
-		    entityList.put(entity, entity);
+		    boolean has = false;
+		    for (Entity e : entityList.keySet()) {
+			if (e.getID().equals(event.getPlayer().getID())) {
+			    has = true;
+			}
+		    }
+		    if (!has) {
+			float mass = (1f / event.getPlayer().getInvMass());
+			Entity entity = localCreateEntity(
+				mass,
+				event.getPlayer().getWorldTransform(
+					new Transform()), event.getPlayer()
+					.getCollisionShape(), event.getPlayer()
+					.getID(), event.getPlayer().getImage(),
+				new String[] { "" });
+			entityList.put(entity, entity);
+			// Forward ourselves to remote as well
+			eventDispatcher.notify(new PlayerJoinEvent(player));
+		    }
 		}
 
 		@Override
@@ -1390,9 +1409,9 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		    // entityA.getRigidBody().setGravity( new Vector3f( 0f,
 		    // 10f,
 		    // 0f ) );
-		    System.out.println("OMG");
-		    System.out.println("Entitya: " + entityA.getID()
-			    + " EntityB: " + entityB.getID());
+		    // System.out.println("OMG");
+		    // System.out.println("Entitya: " + entityA.getID()
+		    // + " EntityB: " + entityB.getID());
 		    // }
 		    // else if ( entityB.getID().equals( "object2" ) )
 		    // {
