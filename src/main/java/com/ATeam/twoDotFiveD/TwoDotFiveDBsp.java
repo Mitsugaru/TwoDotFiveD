@@ -1618,25 +1618,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 							dynamicsWorld.removeCollisionObject(entityB);
 							// entityA.translate(new Vector3f(5f, 0f, 0f));
 						}
-					} else if (entityA.getCollisionShape().getName()
-							.equalsIgnoreCase("cone")) {
-						if (setGravity(entityB, new Vector3f(0f, 0f, 0f))) {
-							// entityA.setGravity(new Vector3f(0f, 30f, 0f));
-							eventDispatcher.notify(new BlockDestroyedEvent(
-									entityA));
-							dynamicsWorld.removeCollisionObject(entityA);
-							entityList.remove(entityA);
-							// entityB.translate(new Vector3f(5f, 0f, 0f));
-						}
-					} else if (entityB.getCollisionShape().getName()
-							.equalsIgnoreCase("cone")) {
-						if (setGravity(entityA, new Vector3f(0f, 0f, 0f))) {
-							eventDispatcher.notify(new BlockDestroyedEvent(
-									entityB));
-							dynamicsWorld.removeCollisionObject(entityB);
-							// entityA.translate(new Vector3f(5f, 0f, 0f));
-						}
-					} else if (entityA == player) {
+					} else if (entityA.getID().equals(player.getID())) {
 						if (entityB.getImage().equals(new Vector3f(1f, 0f, 0f))) {
 							Vector3f splode = new Vector3f(0f, 1f, 0f);
 							for (int i = 0; i < 7; i++) {
@@ -1648,7 +1630,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 								// new Vector3f(0f, 0f, 0f)));
 							}
 						}
-					} else if (entityB == player) {
+					} else if (entityB.getID().equals(player.getID())) {
 						if (entityA.getImage().equals(new Vector3f(1f, 0f, 0f))) {
 							Vector3f splode = new Vector3f(0f, 1f, 0f);
 							for (int i = 0; i < 7; i++) {
