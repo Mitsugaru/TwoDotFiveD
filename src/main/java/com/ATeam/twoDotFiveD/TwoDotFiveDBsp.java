@@ -153,7 +153,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 	public ConstraintSolver solver;
 	public DefaultCollisionConfiguration collisionConfiguration;
 
-	private static EventDispatcher eventDispatcher = new EventDispatcher();
+	public static EventDispatcher eventDispatcher = new EventDispatcher();
 	public static EventDispatcher remoteDispatcher = new EventDispatcher();
 	private static chatClient client;
 	int count = 0;
