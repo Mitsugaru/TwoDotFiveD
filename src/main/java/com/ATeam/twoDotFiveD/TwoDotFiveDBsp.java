@@ -1598,10 +1598,10 @@ public class TwoDotFiveDBsp extends DemoApplication {
 							for (int i = 0; i < 7; i++) {
 								Entity entity = shootEntityBox(splode);
 								entity.setEntityGravity(new Vector3f(0f, 0f, 0f));
-								eventDispatcher
-										.notify(new BlockPhysicsChangeEvent(
-												entity,
-												new Vector3f(0f, 0f, 0f)));
+//								eventDispatcher
+//										.notify(new BlockPhysicsChangeEvent(
+//												entity,
+//												new Vector3f(0f, 0f, 0f)));
 							}
 						}
 					} else if (entityB == player) {
@@ -1610,10 +1610,10 @@ public class TwoDotFiveDBsp extends DemoApplication {
 							for (int i = 0; i < 7; i++) {
 								Entity entity = shootEntityBox(splode);
 								entity.setEntityGravity(new Vector3f(0f, 0f, 0f));
-								eventDispatcher
-										.notify(new BlockPhysicsChangeEvent(
-												entity,
-												new Vector3f(0f, 0f, 0f)));
+//								eventDispatcher
+//										.notify(new BlockPhysicsChangeEvent(
+//												entity,
+//												new Vector3f(0f, 0f, 0f)));
 							}
 						}
 					} else {
