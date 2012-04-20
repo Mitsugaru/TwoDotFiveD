@@ -100,6 +100,7 @@ import demo.lwjgl.basic.GLCamera;
 
 import javax.vecmath.Color3f;
 import javax.vecmath.Matrix3f;
+import javax.vecmath.Matrix4f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
@@ -438,7 +439,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 	    if (o.equals(player)) {
 		// System.out.println("player found");
 		Transform t = o.getWorldTransform(new Transform());
-		eventDispatcher.notify(new PlayerMoveEvent(player, t));
+		
 		// System.out.println(t.origin);
 		gl.gluLookAt(cameraPosition.x + t.origin.x, cameraPosition.y
 			+ t.origin.y, cameraPosition.z + t.origin.z,
@@ -561,6 +562,9 @@ public class TwoDotFiveDBsp extends DemoApplication {
 
 	    }
 	    dynamicsWorld.stepSimulation(dt);
+	    Transform t = player.getWorldTransform(new Transform());
+	    eventDispatcher.notify(new PlayerMoveEvent(player, t));
+	    System.out.println(t.getMatrix(new Matrix4f()).toString());
 	    // optional but useful: debug drawing
 	    dynamicsWorld.debugDrawWorld();
 	} catch (NullPointerException e) {
