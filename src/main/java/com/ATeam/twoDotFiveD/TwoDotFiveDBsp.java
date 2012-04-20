@@ -389,10 +389,14 @@ public class TwoDotFiveDBsp extends DemoApplication {
 			// Ignore
 		}
 		entityPhysicsList.clear();
-		while (removeStuff.size() > maxboxes) {
-			entityList.remove(removeStuff.get(0));
-			dynamicsWorld.removeCollisionObject(removeStuff.get(0));
-			removeStuff.remove(0);
+		try {
+			while (removeStuff.size() > maxboxes) {
+				entityList.remove(removeStuff.get(0));
+				dynamicsWorld.removeCollisionObject(removeStuff.get(0));
+				removeStuff.remove(0);
+			}
+		} catch (ArrayIndexOutOfBoundsException a) {
+			// IGNORE
 		}
 		gl.glMatrixMode(GL_PROJECTION);
 		gl.glLoadIdentity();
