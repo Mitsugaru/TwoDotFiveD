@@ -373,7 +373,7 @@ public class EventPackage implements Serializable {
 		body.setEntityGravity(gravity);
 		return (new PlayerJoinEvent(body));
 	    } else if (className.contains("PlayerMoveEvent")) {
-		Entity e = new Entity(baseInfo, (String) data.get("entity.ID"),
+		Entity e = new Entity(baseInfo, (String) data.get("player.ID"),
 			null, null);
 		final Matrix4f transformMatrix = new Matrix4f(
 			(float[]) (data
