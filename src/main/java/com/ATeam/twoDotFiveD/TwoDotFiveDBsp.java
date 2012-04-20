@@ -1179,6 +1179,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 
     public static void main(String[] args) throws Exception {
 	demo = new TwoDotFiveDBsp(LWJGL.getGL());
+	demo.initListener();
 	try {
 	    client = new chatClient(null, "192.168.1.14", Config.id,
 		    remoteDispatcher);
@@ -1191,7 +1192,6 @@ public class TwoDotFiveDBsp extends DemoApplication {
 	    // No networking
 	    connected = false;
 	}
-	demo.initListener();
 	demo.setup();
 	demo.initPhysics();
 	demo.getDynamicsWorld()
