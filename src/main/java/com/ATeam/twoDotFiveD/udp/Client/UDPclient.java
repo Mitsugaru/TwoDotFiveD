@@ -101,7 +101,7 @@ public class UDPclient implements Runnable {
 	// new Thread(new temp(this)).start();
 	while (run) {
 	    // this is where data will be received need to know where to send it
-	    System.out.println("CLIENT LISTENING");
+	    //System.out.println("CLIENT LISTENING");
 	    sendMessage(new byte[] { (byte) 0xFF });
 	    receivePacket = new DatagramPacket(receiveData, receiveData.length);
 	    try {
@@ -143,7 +143,7 @@ public class UDPclient implements Runnable {
 	    // eventdispatcher.notify(event)
 	    // pntr.updateText(String.format("UDP-recieved from: %c:%c",(byte)
 	    // receiveData[0],(char) receiveData[1]));
-	    System.out.println("revcieved");
+	    //System.out.println("revcieved");
 	}
 	socket.close();
     }
