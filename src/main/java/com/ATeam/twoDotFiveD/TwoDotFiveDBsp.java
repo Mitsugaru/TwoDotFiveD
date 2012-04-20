@@ -1593,8 +1593,8 @@ public class TwoDotFiveDBsp extends DemoApplication {
 							// entityA.setGravity(new Vector3f(0f, 30f, 0f));
 							eventDispatcher.notify(new BlockDestroyedEvent(
 									entityA));
-							dynamicsWorld.removeCollisionObject(entityA);
-							entityList.remove(entityA);
+							//dynamicsWorld.removeCollisionObject(entityA);
+							removeStuff.add(entityA);
 							// entityB.translate(new Vector3f(5f, 0f, 0f));
 						}
 					} else if (entityB.getCollisionShape().getName()
@@ -1602,7 +1602,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 						if (setGravity(entityA, new Vector3f(0f, 30f, 0f))) {
 							eventDispatcher.notify(new BlockDestroyedEvent(
 									entityB));
-							dynamicsWorld.removeCollisionObject(entityB);
+							removeStuff.add(entityB);
 							// entityA.translate(new Vector3f(5f, 0f, 0f));
 						}
 					} else if (entityA.getCollisionShape().getName()
@@ -1611,8 +1611,8 @@ public class TwoDotFiveDBsp extends DemoApplication {
 							// entityA.setGravity(new Vector3f(0f, 30f, 0f));
 							eventDispatcher.notify(new BlockDestroyedEvent(
 									entityA));
-							dynamicsWorld.removeCollisionObject(entityA);
-							entityList.remove(entityA);
+							removeStuff.add(entityA);
+							//entityList.remove(entityA);
 							// entityB.translate(new Vector3f(5f, 0f, 0f));
 						}
 					} else if (entityB.getCollisionShape().getName()
@@ -1620,7 +1620,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 						if (setGravity(entityA, new Vector3f(0f, -30f, 0f))) {
 							eventDispatcher.notify(new BlockDestroyedEvent(
 									entityB));
-							dynamicsWorld.removeCollisionObject(entityB);
+							removeStuff.add(entityB);
 							// entityA.translate(new Vector3f(5f, 0f, 0f));
 						}
 					} /*else if (entityA.getID().equals(player.getID())) {
