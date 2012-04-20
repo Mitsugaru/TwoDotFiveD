@@ -121,11 +121,7 @@ public class UDPclient implements Runnable {
 			receiveData);
 		ObjectInputStream oos = new ObjectInputStream(baos);
 		EventPackage event = (EventPackage) oos.readObject();
-		try {
-		    eventdispatcher.notify(event.getEvent());
-		} catch (NullPointerException n) {
-		    n.printStackTrace();
-		}
+		eventdispatcher.notify(event.getEvent());
 		oos.close();
 		baos.close();
 		// eventdispatcher.notify(event);

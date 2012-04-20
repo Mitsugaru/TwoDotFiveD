@@ -146,6 +146,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
     // keep the collision shapes, for deletion/cleanup
     // Need to set this back to set / list
     public static Map<Entity, Entity> entityList = new HashMap<Entity, Entity>();
+    public static Set<Entity> playerList = new HashSet<Entity>();
     public BroadphaseInterface broadphase;
     public CollisionDispatcher dispatcher;
     public ConstraintSolver solver;
@@ -1291,8 +1292,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 	    PlayerListener remotePlayerListener = new PlayerListener() {
 		@Override
 		public void onPlayerMove(PlayerMoveEvent event) {
-		    System.out.println("Got player move event");
-		    for (Entity e : entityList.values()) {
+		    for (Entity e : playerList) {
 			if (e.getID().equals(event.getPlayer().getID())) {
 			    e.setWorldTransform(event.getTransform());
 			    break;
@@ -1304,7 +1304,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		public void onPlayerJoin(PlayerJoinEvent event) {
 		    System.out.println("Got player join event");
 		    boolean has = false;
-		    for (Entity e : entityList.keySet()) {
+		    for (Entity e : playerList) {
 			if (e.getID().equals(event.getPlayer().getID())) {
 			    has = true;
 			}
@@ -1323,6 +1323,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 			dynamicsWorld.addRigidBody(remotePlayer);
 			remotePlayer.setActivationState(RigidBody.ISLAND_SLEEPING);
 			entityList.put(remotePlayer, remotePlayer);
+			playerList.add(remotePlayer);
 			// Forward ourselves to remote as well
 			eventDispatcher.notify(new PlayerJoinEvent(player));
 		    }
@@ -1331,7 +1332,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		@Override
 		public void onPlayerQuit(PlayerQuitEvent event) {
 		    System.out.println("Got player quit event");
-		    for (Entity e : entityList.values()) {
+		    for (Entity e : playerList) {
 			if (e.getID().equals(event.getPlayer().getID())) {
 			    removeStuff.add(0, e);
 			    break;
