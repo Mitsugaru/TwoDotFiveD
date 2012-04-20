@@ -1126,6 +1126,22 @@ public class TwoDotFiveDBsp extends DemoApplication {
 
 	}
 
+	public synchronized void mouseFunc(int button, int state, int x, int y) {
+		Vector3f rayTo = new Vector3f(getRayTo(x, y));
+		switch (button) {
+		case 2: {
+			if (state == 0) {
+				shootEntityBox(rayTo);
+			}
+			break;
+		}
+		default: {
+			super.mouseFunc(button, state, x, y);
+			break;
+		}
+		}
+	}
+
 	public synchronized Entity shootEntityBox(Vector3f destination) {
 		if (dynamicsWorld != null) {
 			float mass = 50f;
@@ -1567,7 +1583,6 @@ public class TwoDotFiveDBsp extends DemoApplication {
 							// entityA.translate(new Vector3f(5f, 0f, 0f));
 						}
 					} else if (entityA == player) {
-						System.out.println("player A");
 						if (entityB.getImage().equals(new Vector3f(1f, 0f, 0f))) {
 							Vector3f splode = new Vector3f(0f, 1f, 0f);
 							for (int i = 0; i < 7; i++) {
@@ -1580,7 +1595,6 @@ public class TwoDotFiveDBsp extends DemoApplication {
 							}
 						}
 					} else if (entityB == player) {
-						System.out.println("player B");
 						if (entityA.getImage().equals(new Vector3f(1f, 0f, 0f))) {
 							Vector3f splode = new Vector3f(0f, 1f, 0f);
 							for (int i = 0; i < 7; i++) {
