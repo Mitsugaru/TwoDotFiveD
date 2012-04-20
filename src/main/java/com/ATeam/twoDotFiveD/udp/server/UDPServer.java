@@ -61,7 +61,7 @@ public class UDPServer implements Runnable {
 				socket.receive(receivePacket);
 
 				id=(byte) (receiveData[0]&0x0F);
-				System.out.println("Server Recieve From:" + id);
+				//System.out.println("Server Recieve From:" + id);
 				//System.out.println(id);
 				pntr = getByID(id);
 				if(!pntr.initialized()){
