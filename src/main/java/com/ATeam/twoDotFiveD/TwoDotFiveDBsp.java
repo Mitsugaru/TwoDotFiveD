@@ -1291,6 +1291,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 	    PlayerListener remotePlayerListener = new PlayerListener() {
 		@Override
 		public void onPlayerMove(PlayerMoveEvent event) {
+		    System.out.println("Got player move event");
 		    for (Entity e : entityList.values()) {
 			if (e.getID().equals(event.getPlayer().getID())) {
 			    e.setWorldTransform(event.getTransform());
@@ -1301,6 +1302,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 
 		@Override
 		public void onPlayerJoin(PlayerJoinEvent event) {
+		    System.out.println("Got player join event");
 		    boolean has = false;
 		    for (Entity e : entityList.keySet()) {
 			if (e.getID().equals(event.getPlayer().getID())) {
@@ -1309,14 +1311,18 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		    }
 		    if (!has) {
 			float mass = (1f / event.getPlayer().getInvMass());
-			Entity entity = localCreateEntity(
-				mass,
+			Vector3f localInertia = new Vector3f(0, 0, 0);
+			// colShape.calculateLocalInertia(mass, localInertia);
+			DefaultMotionState myMotionState = new DefaultMotionState(
 				event.getPlayer().getWorldTransform(
-					new Transform()), event.getPlayer()
-					.getCollisionShape(), event.getPlayer()
-					.getID(), event.getPlayer().getImage(),
-				new String[] { "" });
-			entityList.put(entity, entity);
+					new Transform()));
+			Entity remotePlayer = new Entity(mass, myMotionState, event.getPlayer()
+				.getCollisionShape(), localInertia,
+				event.getPlayer()
+				.getID(), event.getPlayer().getImage(), new String[] { "" });
+			dynamicsWorld.addRigidBody(remotePlayer);
+			remotePlayer.setActivationState(RigidBody.ISLAND_SLEEPING);
+			entityList.put(remotePlayer, remotePlayer);
 			// Forward ourselves to remote as well
 			eventDispatcher.notify(new PlayerJoinEvent(player));
 		    }
@@ -1324,6 +1330,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 
 		@Override
 		public void onPlayerQuit(PlayerQuitEvent event) {
+		    System.out.println("Got player quit event");
 		    for (Entity e : entityList.values()) {
 			if (e.getID().equals(event.getPlayer().getID())) {
 			    removeStuff.add(0, e);
@@ -1343,7 +1350,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 	    remoteDispatcher.registerListener(Type.PLAYER_QUIT,
 		    remotePlayerListener);
 	}
-	MusicPlayer mp = new MusicPlayer(eventDispatcher);
+	//MusicPlayer mp = new MusicPlayer(eventDispatcher);
     }
 
     public class LocalPlayerListener extends PlayerListener {
