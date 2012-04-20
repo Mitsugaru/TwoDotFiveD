@@ -1194,7 +1194,23 @@ public class TwoDotFiveDBsp extends DemoApplication {
 			Vector3f camPos = new Vector3f(getCameraPosition());
 			// Fix stuff?
 			Vector3f shootfrom = player.getCenterOfMassPosition(new Vector3f());
-			shootfrom.y = shootfrom.y + 3;
+			if (cam.getQuadrant()==1) {
+				shootfrom.z = shootfrom.z-1.5f;
+				shootfrom.y = shootfrom.y + 1.5f;
+			}
+			if (cam.getQuadrant()==2) {
+				shootfrom.x = shootfrom.x-1.5f;
+				shootfrom.y = shootfrom.y + 1.5f;
+			}
+			if (cam.getQuadrant()==3) {
+				shootfrom.z = shootfrom.z+1.5f;
+				shootfrom.y = shootfrom.y + 1.5f;
+			}
+			if (cam.getQuadrant()==4) {
+				shootfrom.x = shootfrom.x+1.5f;
+				shootfrom.y = shootfrom.y + 1.5f;
+			}
+			
 			startTransform.origin.set(shootfrom);
 
 			if (shapeType.equals("BOX")) {
