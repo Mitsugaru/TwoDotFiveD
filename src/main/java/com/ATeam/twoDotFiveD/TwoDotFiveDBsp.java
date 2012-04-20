@@ -45,6 +45,10 @@ import com.ATeam.twoDotFiveD.event.block.BlockCreateEvent;
 import com.ATeam.twoDotFiveD.event.block.BlockDestroyedEvent;
 import com.ATeam.twoDotFiveD.event.block.BlockListener;
 import com.ATeam.twoDotFiveD.event.block.BlockPhysicsChangeEvent;
+import com.ATeam.twoDotFiveD.event.player.PlayerJoinEvent;
+import com.ATeam.twoDotFiveD.event.player.PlayerListener;
+import com.ATeam.twoDotFiveD.event.player.PlayerMoveEvent;
+import com.ATeam.twoDotFiveD.event.player.PlayerQuitEvent;
 import com.ATeam.twoDotFiveD.music.MusicPlayer;
 import com.ATeam.twoDotFiveD.udp.Client.EventPackage;
 import com.ATeam.twoDotFiveD.world.BspYamlConverter;
@@ -206,7 +210,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 	DefaultMotionState myMotionState = new DefaultMotionState(
 		startTransform);
 	player = new Entity(mass, myMotionState, colShape, localInertia,
-		"PLAYER", new Vector3f(1f, 1f, 1f), new String[] { "" });
+		Config.id, new Vector3f(1f, 1f, 1f), new String[] { "" });
 	dynamicsWorld.addRigidBody(player);
 	player.setActivationState(RigidBody.ISLAND_SLEEPING);
 	entityList.put(player, player);
@@ -1167,24 +1171,18 @@ public class TwoDotFiveDBsp extends DemoApplication {
 
     public static void main(String[] args) throws Exception {
 	demo = new TwoDotFiveDBsp(LWJGL.getGL());
-	// try
-	// {
-	// client = new chatClient( null,
-	// "137.155.2.153",
-	// "BASE",
-	// remoteDispatcher );
-	// if ( client.connect() )
-	// {
-	// client.start();
-	// connected = true;
-	// }
-	// Thread.sleep( 2000 );
-	// }
-	// catch ( Exception e )
-	// {
-	// // No networking
-	// connected = false;
-	// }
+	try {
+	    client = new chatClient(null, "137.155.2.153", Config.id,
+		    remoteDispatcher);
+	    if (client.connect()) {
+		client.start();
+		connected = true;
+	    }
+	    Thread.sleep(2000);
+	} catch (Exception e) {
+	    // No networking
+	    connected = false;
+	}
 	demo.initListener();
 	demo.setup();
 	demo.initPhysics();
@@ -1208,11 +1206,15 @@ public class TwoDotFiveDBsp extends DemoApplication {
 	eventDispatcher.registerListener(Type.BLOCK_COLLISION, blockListener);
 	eventDispatcher.registerListener(Type.BLOCK_COLLISION_RESOLVED,
 		blockListener);
+	LocalPlayerListener playerListener = new LocalPlayerListener();
+	eventDispatcher.registerListener(Type.PLAYER_JOIN, playerListener);
+	eventDispatcher.registerListener(Type.PLAYER_MOVE, playerListener);
+	eventDispatcher.registerListener(Type.PLAYER_QUIT, playerListener);
 	/**
 	 * Remote events
 	 */
 	if (connected) {
-	    BlockListener remoteListener = new BlockListener() {
+	    BlockListener remoteBlockListener = new BlockListener() {
 		@Override
 		public void onBlockCreate(BlockCreateEvent event) {
 		    float mass = (1f / event.getEntity().getInvMass());
@@ -1249,42 +1251,112 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		public synchronized void onBlockDestroyed(
 			BlockDestroyedEvent event) {
 		    // System.out.println("Received destroyed event");
+		    // for (Entity e : entityList.values()) {
+		    // if (e.getID().equals(event.getEntity().getID())) {
+		    // final CollisionShape shape = e.getCollisionShape();
+		    // CollisionObject toRemove = null;
+		    // for (CollisionObject o : dynamicsWorld
+		    // .getCollisionObjectArray()) {
+		    // if (o.getCollisionShape().equals(shape)) {
+		    // // System.out.println("found in dynamics world");
+		    // toRemove = o;
+		    // break;
+		    // }
+		    // }
+		    // if (toRemove != null) {
+		    // // System.out.println("Removed");
+		    // try {
+		    // dynamicsWorld
+		    // .removeCollisionObject(toRemove);
+		    // } catch (NullPointerException n) {
+		    // System.out
+		    // .println("Attempted to remove object taht no longer exists.");
+		    // } catch (ArrayIndexOutOfBoundsException a) {
+		    // System.out
+		    // .println("Attempted to remove object taht no longer exists.");
+		    // }
+		    // }
+		    // break;
+		    // }
+		    // }
+		}
+	    };
+	    PlayerListener remotePlayerListener = new PlayerListener() {
+		@Override
+		public void onPlayerMove(PlayerMoveEvent event) {
 		    for (Entity e : entityList.values()) {
-			if (e.getID().equals(event.getEntity().getID())) {
-			    final CollisionShape shape = e.getCollisionShape();
-			    CollisionObject toRemove = null;
-			    for (CollisionObject o : dynamicsWorld
-				    .getCollisionObjectArray()) {
-				if (o.getCollisionShape().equals(shape)) {
-				    // System.out.println("found in dynamics world");
-				    toRemove = o;
-				    break;
-				}
-			    }
-			    if (toRemove != null) {
-				// System.out.println("Removed");
-				try {
-				    dynamicsWorld
-					    .removeCollisionObject(toRemove);
-				} catch (NullPointerException n) {
-				    System.out
-					    .println("Attempted to remove object taht no longer exists.");
-				} catch (ArrayIndexOutOfBoundsException a) {
-				    System.out
-					    .println("Attempted to remove object taht no longer exists.");
-				}
-			    }
+			if (e.getID().equals(event.getPlayer().getID())) {
+			    e.setWorldTransform(event.getTransform());
+			    break;
+			}
+		    }
+		}
+
+		@Override
+		public void onPlayerJoin(PlayerJoinEvent event) {
+		    float mass = (1f / event.getPlayer().getInvMass());
+		    Entity entity = localCreateEntity(mass, event.getPlayer()
+			    .getWorldTransform(new Transform()), event
+			    .getPlayer().getCollisionShape(), event.getPlayer()
+			    .getID(), event.getPlayer().getImage(),
+			    new String[] { "" });
+		    entityList.put(entity, entity);
+		}
+
+		@Override
+		public void onPlayerQuit(PlayerQuitEvent event) {
+		    for (Entity e : entityList.values()) {
+			if (e.getID().equals(event.getPlayer().getID())) {
+			    removeStuff.add(0, e);
 			    break;
 			}
 		    }
 		}
 	    };
-	    remoteDispatcher
-		    .registerListener(Type.BLOCK_CREATE, remoteListener);
+	    remoteDispatcher.registerListener(Type.BLOCK_CREATE,
+		    remoteBlockListener);
 	    remoteDispatcher.registerListener(Type.BLOCK_DESTROYED,
-		    remoteListener);
+		    remoteBlockListener);
+	    remoteDispatcher.registerListener(Type.PLAYER_JOIN,
+		    remotePlayerListener);
+	    remoteDispatcher.registerListener(Type.PLAYER_MOVE,
+		    remotePlayerListener);
+	    remoteDispatcher.registerListener(Type.PLAYER_QUIT,
+		    remotePlayerListener);
 	}
 	MusicPlayer mp = new MusicPlayer(eventDispatcher);
+    }
+
+    public class LocalPlayerListener extends PlayerListener {
+
+	@Override
+	public void onPlayerMove(PlayerMoveEvent event) {
+	    sendToRemote(event);
+	}
+
+	@Override
+	public void onPlayerQuit(PlayerQuitEvent event) {
+	    sendToRemote(event);
+	}
+
+	public void sendToRemote(Event<?> event) {
+	    if (connected) {
+		try {
+		    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		    final ObjectOutputStream oos = new ObjectOutputStream(baos);
+		    oos.writeObject(new EventPackage(event));
+		    oos.flush();
+		    byte[] data = baos.toByteArray();
+		    // System.out.println(data.length);
+		    client.sendMessage(data);
+		    oos.close();
+		    baos.close();
+		} catch (IOException e) {
+		    e.printStackTrace();
+		}
+	    }
+	}
+
     }
 
     public class BlockCollisionListener extends BlockListener {
@@ -1318,8 +1390,9 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		    // entityA.getRigidBody().setGravity( new Vector3f( 0f,
 		    // 10f,
 		    // 0f ) );
-		    System.out.println( "OMG" );
-		    System.out.println("Entitya: " + entityA.getID() + " EntityB: "+ entityB.getID());
+		    System.out.println("OMG");
+		    System.out.println("Entitya: " + entityA.getID()
+			    + " EntityB: " + entityB.getID());
 		    // }
 		    // else if ( entityB.getID().equals( "object2" ) )
 		    // {
