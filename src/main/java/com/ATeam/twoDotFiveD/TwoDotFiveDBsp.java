@@ -214,7 +214,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		DefaultMotionState myMotionState = new DefaultMotionState(
 				startTransform);
 		player = new Entity(mass, myMotionState, colShape, localInertia,
-				"mac4", new Vector3f(0f, 1f, 0f), new String[] { "" });
+				"mac0", new Vector3f(0f, 1f, 0f), new String[] { "" });
 		dynamicsWorld.addRigidBody(player);
 		player.setActivationState(RigidBody.ISLAND_SLEEPING);
 		entityList.put(player, player);
@@ -1294,7 +1294,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		demo = new TwoDotFiveDBsp(LWJGL.getGL());
 		demo.initListener();
 		try {
-			client = new chatClient(null, "137.155.2.104", "mac4",
+			client = new chatClient(null, "137.155.2.104", "mac0",
 					remoteDispatcher);
 			if (client.connect()) {
 				client.start();
@@ -1457,7 +1457,10 @@ public class TwoDotFiveDBsp extends DemoApplication {
 					}
 					// Forward ourselves to remote as well
 				}
+				if(player != null)
+				{
 				eventDispatcher.notify(new PlayerJoinEvent(player));
+				}
 			}
 
 			@Override
