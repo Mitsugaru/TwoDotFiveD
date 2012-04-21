@@ -71,17 +71,17 @@ public class LWJGL {
 
 	gl.init();
 	// DisplayStuff.initSubSystems("2.5D");
-//	LwjglRenderDevice render = new LwjglRenderDevice();
-//	LwjglInputSystem inputSystem = new LwjglInputSystem();
-//	try {
-//	    inputSystem.startup();
-//	} catch (Exception e) {
-//	    // TODO Auto-generated catch block
-//	    e.printStackTrace();
-//	}
-//	nifty = new Nifty(render, new OpenALSoundDevice(), inputSystem,
-//		new AccurateTimeProvider());
-//	nifty.fromXml(SPLASH_XML, "intro");
+	LwjglRenderDevice render = new LwjglRenderDevice();
+	LwjglInputSystem inputSystem = new LwjglInputSystem();
+	try {
+	    inputSystem.startup();
+	} catch (Exception e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+	nifty = new Nifty(render, new OpenALSoundDevice(), inputSystem,
+		new AccurateTimeProvider());
+	nifty.fromXml(SPLASH_XML, "intro");
 	demoApp.myinit();
 	demoApp.reshape(width, height);
 

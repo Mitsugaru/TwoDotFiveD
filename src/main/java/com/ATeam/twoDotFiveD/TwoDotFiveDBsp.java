@@ -228,7 +228,7 @@ public class TwoDotFiveDBsp extends DemoApplication {
 		populate();
 	}
 
-	public static boolean nifty = false;
+	public static boolean nifty = true;
 
 	private void makeboxes() {
 		Transform startTransform1 = new Transform();
